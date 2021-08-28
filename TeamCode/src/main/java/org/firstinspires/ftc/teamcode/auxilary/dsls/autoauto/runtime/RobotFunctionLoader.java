@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions.*;
-import org.firstinspires.ftc.teamcode.managers.ImuManager;
-import org.firstinspires.ftc.teamcode.managers.ManipulationManager;
-import org.firstinspires.ftc.teamcode.managers.MovementManager;
-import org.firstinspires.ftc.teamcode.managers.SensorManager;
+import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
+import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 
 import java.util.ArrayList;
 

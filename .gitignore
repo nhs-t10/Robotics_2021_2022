@@ -85,3 +85,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+*__autoauto.java
+*__controls.java
+**/buildhistory/BuildHistory.java

@@ -1,0 +1,5 @@
+if the aButton is pressed, then the speed is 0.5; otherwise, it is 1
+
+the driveMotors are fl, fr, br, and bl; bl is reversed.
+
+the leftStickY, the leftStickX, and the rightStickX control the driveMotors with the omni calculation and a scale of the speed.

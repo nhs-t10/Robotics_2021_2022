@@ -18,4 +18,54 @@ apply from: '../build.dependencies.gradle'
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+    implementation 'junit:junit:4.12'
+    implementation 'org.jetbrains:annotations-java5:15.0'
+}
+
+task generateAutoautoSources {
+    doFirst {
+        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js".execute()
+        script.in.eachLine { line -> println line }
+        script.err.eachLine { line ->
+            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
+            else println line;
+        }
+        script.waitFor()
+        if(script.exitValue() != 0) {
+            throw new Error();
+        }
+    }
+}
+
+task recordBuildHistory {
+    doFirst {
+        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js".execute()
+        script.in.eachLine { line -> println line }
+        script.err.eachLine { line ->
+            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
+            else println line;
+        }
+        script.waitFor()
+    }
+}
+
+task generateControlsSources {
+    doFirst {
+        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/controls2/compiler/compiler.js".execute()
+        script.in.eachLine { line -> println line }
+        script.err.eachLine { line ->
+            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
+            else println line;
+        }
+        script.waitFor()
+    }
+}
+
+
+android {
+    gradle.projectsEvaluated {
+        preBuild.dependsOn(generateAutoautoSources)
+        preBuild.dependsOn(recordBuildHistory)
+        preBuild.dependsOn(generateControlsSources)
+    }
 }

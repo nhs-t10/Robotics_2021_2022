@@ -17,11 +17,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.ImuManager;
-import org.firstinspires.ftc.teamcode.managers.ManipulationManager;
-import org.firstinspires.ftc.teamcode.managers.MovementManager;
-import org.firstinspires.ftc.teamcode.managers.SensorManager;
-import org.firstinspires.ftc.teamcode.managers.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.junit.Test;
 

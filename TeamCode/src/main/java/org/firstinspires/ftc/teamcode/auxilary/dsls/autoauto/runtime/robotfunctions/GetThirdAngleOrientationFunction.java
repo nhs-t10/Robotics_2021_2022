@@ -4,17 +4,18 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 
 public class GetThirdAngleOrientationFunction extends NativeRobotFunction {
     public String name = "getThirdAngleOrientation";
     public int argCount = 0;
-    public Class<?> declaringClass = org.firstinspires.ftc.teamcode.managers.ImuManager.class;
+    public Class<?> declaringClass = ImuManager.class;
 
 
-    private org.firstinspires.ftc.teamcode.managers.ImuManager manager;
+    private ImuManager manager;
 
     public GetThirdAngleOrientationFunction(FeatureManager manager) {
-        this.manager = (org.firstinspires.ftc.teamcode.managers.ImuManager)manager;
+        this.manager = (ImuManager)manager;
     }
 
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {

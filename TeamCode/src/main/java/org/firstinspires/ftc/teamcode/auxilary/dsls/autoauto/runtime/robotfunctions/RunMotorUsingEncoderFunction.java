@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunct
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 
 public class RunMotorUsingEncoderFunction extends NativeRobotFunction {
     public String name = "runUsingEncoders";
@@ -15,7 +14,7 @@ public class RunMotorUsingEncoderFunction extends NativeRobotFunction {
     private ManipulationManager manager;
 
     public RunMotorUsingEncoderFunction(FeatureManager manager) {
-        this.manager = (org.firstinspires.ftc.teamcode.managers.ManipulationManager)manager;
+        this.manager = (ManipulationManager)manager;
     }
 
     @Override

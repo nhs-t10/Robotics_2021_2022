@@ -7,11 +7,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.teamcode.autonomous.*;
-import org.firstinspires.ftc.teamcode.auxilary.*;
-import org.firstinspires.ftc.teamcode.managers.*;
-import org.firstinspires.ftc.teamcode.teleop.*;
-
 public class ColorSensor extends Sensor {
     /** The colorSensor field will contain a reference to our color sensor hardware object */
     NormalizedColorSensor colorSensor;

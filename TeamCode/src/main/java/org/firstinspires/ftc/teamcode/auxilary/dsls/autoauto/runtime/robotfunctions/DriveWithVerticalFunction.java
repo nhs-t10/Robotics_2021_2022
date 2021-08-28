@@ -5,17 +5,17 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 
 public class DriveWithVerticalFunction extends NativeRobotFunction {
     public String name = "driveWithVertical";
     public int argCount = 2;
-    public Class<?> declaringClass = org.firstinspires.ftc.teamcode.managers.MovementManager.class;
+    public Class<?> declaringClass = MovementManager.class;
 
     private MovementManager manager;
 
     public DriveWithVerticalFunction(FeatureManager manager) {
-        this.manager = (org.firstinspires.ftc.teamcode.managers.MovementManager)manager;
+        this.manager = (MovementManager)manager;
     }
 
     @Override

@@ -78,11 +78,12 @@ try {
 })();
 
 function updateTemplate(familyLine, time, name, history) {
-    var template = fs.readFileSync(path.join(__dirname, "BuildHistory.notjava")).toString();
+    var template = fs.readFileSync(path.join(__dirname, "not_BuildHistory.notjava")).toString();
     fs.writeFileSync(path.join(__dirname, "BuildHistory.java"), template
                                 .replace("BUILDER_BROWSER_FINGERPRINT", familyLine.browser)
                                 .replace("BUILD_TIME_ISO", time)
                                 .replace("BUILD_NAME", name)
+                                .replace("not_BuildHistory", "BuildHistory")
                                 .replace("BUILD_HISTORY", JSON.stringify(history).slice(1,-1))
                             )
 }

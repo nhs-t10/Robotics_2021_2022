@@ -15,6 +15,11 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
 import org.firstinspires.ftc.teamcode.managers.*;
+import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
+import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
+import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.junit.Test;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 

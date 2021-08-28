@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
-import org.firstinspires.ftc.teamcode.managers.ManipulationManager;
-import org.firstinspires.ftc.teamcode.managers.SensorManager;
+import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 
 public class ManagerDeviceScanner {
     public static void scan(AutoautoRuntimeVariableScope scope, ManipulationManager manip, SensorManager sense) {

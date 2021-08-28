@@ -33,7 +33,8 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     IfStatement: "I",
     BooleanOperator: "T",
     VariableReference: "H",
-    AutoautoBooleanValue: "B"
+    AutoautoBooleanValue: "B",
+    "Statement[]": ""
 };
 
 var PRIMITIVENESS_OF_TYPE = {
@@ -56,8 +57,10 @@ var PRIMITIVENESS_OF_TYPE = {
     AfterStatement: 1.5,
     IfStatement: 1.4,
 
+    "Statement[]": 1.3,
     State: 1,
 
+    "State[]": 0.9,
     Statepath: 0,
 
     AutoautoRuntime: -1
@@ -94,18 +97,24 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var programName = genNonce();
             
             var typedDefinitions = depthMappedDefinitions
+                .map(x=>
+                    x.definition
+                    .split(";")
+                    .filter(x=>x!="")
+                    .map(x=>x+";")
+                    .map((y,i,a)=>({ definition: y, depth: x.depth - (1 - (i / a.length))})))
+                .flat() //split by semicolons, make each statement into its own depth mapped definition
                 .sort((a,b) => {
                     var aType = JAVA_TYPE_REGEX.exec(a.definition.trim())[0];
                     var bType = JAVA_TYPE_REGEX.exec(b.definition.trim())[0];
                     return (PRIMITIVENESS_OF_TYPE[bType] - PRIMITIVENESS_OF_TYPE[aType]) || (b.depth - a.depth) || (b.definition.localeCompare(a.definition));
                     }) //sort more primitive things first. When it's the same, sort by depth; break ties by alphabetical order. Primitives/literals (like numeric values) ALWAYS go first.
-
                 .map(x => ({
                     definition: x.definition.trim(),
                     type: JAVA_TYPE_REGEX.exec(x.definition.trim())[0] //discern and record the type
                 }))
                 .map((x,i,a) => { //if the type is the same as the previous, join the declarations with commas instead of semicolons
-                    if(a[i-1] && a[i-1].type == x.type) x.definition = x.definition.replace(x.type, ""); 
+                    if(a[i-1] && a[i-1].type == x.type) x.definition = x.definition.replace(x.type, "").replace(/new \w+\[\]/, "");
                     if(a[i+1] && a[i+1].type == x.type) x.definition = x.definition.replace(/;$/, ",");
                     return x;
                 })
@@ -157,7 +166,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
-                definition: `Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}(new State[] { ${childDefs.map(x => x.varname).join(",")} }, ${label.varname});`
+                definition: `State[] $${nonce} = new State[] { ${childDefs.map(x => x.varname).join(",")} }; Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${label.varname});`
             });
 
             result = {
@@ -173,7 +182,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
-                definition: `State ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.State}(new Statement[] { ${childDefs.map(x => x.varname).join(",")} });`
+                definition: `Statement[] $${nonce} = new Statement[] { ${childDefs.map(x => x.varname).join(",")} }; State ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.State}($${nonce});`
             });
 
             result = {

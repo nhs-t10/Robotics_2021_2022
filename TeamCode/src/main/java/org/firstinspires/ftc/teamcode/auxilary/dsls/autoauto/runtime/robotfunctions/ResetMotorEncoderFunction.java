@@ -5,16 +5,17 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 
 public class ResetMotorEncoderFunction extends NativeRobotFunction {
     public String name = "resetEncoders";
     public int argCount = 1;
-    public Class<?> declaringClass = org.firstinspires.ftc.teamcode.managers.ManipulationManager.class;
+    public Class<?> declaringClass = ManipulationManager.class;
 
-    private org.firstinspires.ftc.teamcode.managers.ManipulationManager manager;
+    private ManipulationManager manager;
 
     public ResetMotorEncoderFunction(FeatureManager manager) {
-        this.manager = (org.firstinspires.ftc.teamcode.managers.ManipulationManager)manager;
+        this.manager = (ManipulationManager)manager;
     }
 
     @Override
