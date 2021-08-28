@@ -1,0 +1,139 @@
+/*PACKAGE_DECLARATION*/
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.auxilary.EncodedMotor;
+import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.*;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
+import org.firstinspires.ftc.teamcode.managers.*;
+import org.junit.Test;
+import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
+
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location.L;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram.P;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime.R;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath.S;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State.A;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.NextStatement.N;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionCallStatement.F;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.AfterStatement.W;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.FunctionCall.M;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.ArithmeticValue.O;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue.C;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString.U;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable.K;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue.E;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.GotoStatement.G;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.LetStatement.D;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.IfStatement.I;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.BooleanOperator.T;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference.H;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue.B;
+
+import java.util.HashMap;
+
+@SuppressWarnings("WrongPackageStatement")
+@Autonomous
+public class template extends OpMode {
+    MovementManager driver;
+    ManipulationManager limbs;
+    SensorManager sense;
+    ImuManager imu;
+
+    AutoautoRuntime runtime;
+    public void init() {
+        FeatureManager.isOpModeRunning = true;
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry);
+        telemetry = telemetryManager;
+        
+        if(this.internalOpModeServices!=null) FeatureManager.logger.setBackend(telemetry.log());
+
+        driver = new MovementManager(hardwareMap.get(DcMotor.class, "fl"),
+                hardwareMap.get(DcMotor.class, "fr"),
+                hardwareMap.get(DcMotor.class, "bl"),
+                hardwareMap.get(DcMotor.class, "br"));
+        limbs = new ManipulationManager(
+                new CRServo[] {
+                        /*CRSERVOS*/
+                },
+                new String[] {
+                        /*CRSERVO_NAMES*/
+                },
+                new Servo[] { /*NSERVOS*/ },
+                new String[] { /*NSERVO_NAMES*/ },
+                new DcMotor[] {
+                        hardwareMap.get(DcMotor.class, "drum"),
+                        hardwareMap.get(DcMotor.class, "intake"),
+                        new EncodedMotor(hardwareMap.get(DcMotor.class, "flywheel"), 70),
+                        //hardwareMap.get(DcMotor.class, "flywheel")
+                        hardwareMap.get(DcMotor.class, "spinner")
+                },
+                new String[] {
+                        "drum",
+                        "intake",
+                        "flywheel",
+                        "spinner"
+                }
+        );
+        driver.resetEncoders();
+        driver.runWithOutEncoders();
+
+         sense = new SensorManager(
+                    new ColorSensor[] {
+                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorOne")),
+                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorFour"))
+                    },
+                    new String[] {
+                            "sensorOne",
+                            "sensorFour"
+                    }
+            );
+
+            imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+
+        limbs.getServo("wobbleGrabRight").setDirection(Servo.Direction.REVERSE);
+        StringBuilder programJson = new StringBuilder();
+
+
+/*JAVA_CREATION_CODE*/
+        AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
+        telemetryManager.autoauto.setProgramJson(programJson.toString());
+        telemetryManager.autoauto.setGlobalScope(runtime.globalScope);
+    }
+
+    public void loop() {
+        telemetry.addData("Autoauto Build Name", "/*BUILD_NAME*/");
+        runtime.loop();
+    }
+
+    @Test
+    public void runTest() {
+        this.hardwareMap = new DummyHardwareMap();
+        this.init();
+        FeatureManager.logger.log(runtime.program.toString());
+        int TEST_ITERATIONS = /*TEST_ITERATIONS*/0/10;
+        //noinspection ConstantConditions
+        for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();
+        this.stop();
+    }
+
+    public static void sL(AutoautoProgramElement e, Location l) {
+        e.setLocation(l);
+    }
+
+    @Override
+    public void stop() {
+        FeatureManager.setIsOpModeRunning(false);
+    }
+
+    /*USER_DEFINED_FUNCTIONS*/
+}
