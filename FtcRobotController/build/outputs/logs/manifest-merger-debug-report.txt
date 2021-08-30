@@ -1,0 +1,123 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:1-66:12
+	package
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:4:11-52
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+	android:versionName
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:6:11-36
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:3:11-57
+	xmlns:android
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:5:11-35
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:8:3-79
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:8:20-76
+application
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:10:3-64:17
+	android:extractNativeLibs
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:13:5-37
+	android:label
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:15:5-37
+	android:largeHeap
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:12:5-29
+	android:icon
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:14:5-41
+	android:allowBackup
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:11:5-31
+	android:theme
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:16:5-41
+	android:usesCleartextTraffic
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:17:5-40
+meta-data#org.firstinspires.latestSupportedControlHubVersion
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:20:5-22:29
+	android:value
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:22:9-26
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:21:9-74
+activity#org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:25:5-36:16
+	android:screenOrientation
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:26:15-51
+	android:label
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:28:15-47
+	android:launchMode
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:29:15-46
+	android:configChanges
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:27:15-61
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:25:15-103
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:31:7-34:23
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:32:9-69
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:32:19-66
+action#android.intent.action.MAIN
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:33:9-61
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:33:17-58
+activity#org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:38:5-57:16
+	android:screenOrientation
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:40:7-43
+	android:label
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:42:7-39
+	android:launchMode
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:43:7-38
+	android:configChanges
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:41:7-53
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:39:7-95
+intent-filter#action:name:android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:45:7-47:23
+action#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:46:9-82
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:46:17-79
+meta-data#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:49:7-51:49
+	android:resource
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:51:9-46
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:50:9-71
+meta-data#org.firstinspires.main.entry
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:54:7-56:34
+	android:value
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:56:11-31
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:55:11-54
+service#com.qualcomm.ftccommon.FtcRobotControllerService
+ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:60:5-62:32
+	android:enabled
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:62:7-29
+	android:name
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml:61:7-70
+uses-sdk
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		ADDED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\coleh\Robotics_2021_2022\FtcRobotController\src\main\AndroidManifest.xml

@@ -61,11 +61,24 @@ task generateControlsSources {
     }
 }
 
+task generateControls3Sources {
+    doFirst {
+        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/controls3/compiler/compiler.js".execute()
+        script.in.eachLine { line -> println line }
+        script.err.eachLine { line ->
+            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
+            else println line;
+        }
+        script.waitFor()
+    }
+}
+
 
 android {
     gradle.projectsEvaluated {
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
         preBuild.dependsOn(generateControlsSources)
+        preBuild.dependsOn(generateControls3Sources)
     }
 }
