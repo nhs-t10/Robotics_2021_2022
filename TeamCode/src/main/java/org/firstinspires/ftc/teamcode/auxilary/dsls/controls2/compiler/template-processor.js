@@ -1,6 +1,6 @@
 var path = require("path");
-module.exports = function (template, code, filename) {
-    var className = path.basename(filename, ".controls") + "__controls";
+module.exports = function (template, code, filename, variation) {
+    var className = path.basename(filename, ".controls") + (variation ? "_" + variation : "") + "__controls";
     
     return template
         .replace("public class template", "public class " + className)

@@ -1,4 +1,4 @@
-first off, this uses TelemetryManager sometimes
+first off, this might benefit from using TelemetryManager or it might not so people should be able to choose if you can do that please
 
 if the aButton is pressed, then the speed is 0.5; otherwise, it is 1
 

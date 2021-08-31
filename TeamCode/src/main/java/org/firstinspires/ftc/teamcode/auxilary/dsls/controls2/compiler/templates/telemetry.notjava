@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.junit.Test;
 
@@ -35,6 +36,7 @@ public class template extends OpMode {
 
     public void init() {
         FeatureManager.setIsOpModeRunning(true);
+        telemetry = new TelemetryManager(telemetry);
         FeatureManager.logger.setBackend(telemetry.log());
 
 /*TYPE_SETUP_CODE*/
@@ -53,6 +55,7 @@ public class template extends OpMode {
         } catch(Throwable e) {
             FeatureManager.logger.log(e.toString());
         }
+        telemetry.update();
     }
 
     @Test

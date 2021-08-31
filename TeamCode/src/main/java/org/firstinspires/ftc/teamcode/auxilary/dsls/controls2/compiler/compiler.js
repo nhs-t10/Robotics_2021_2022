@@ -8,7 +8,8 @@ var processTemplate = require("./template-processor.js");
 //initiate folders, gitignore rules, etc. that are required
 (require("./initializer.js"))();
 
-var template = fs.readFileSync(path.join(__dirname, "template.notjava")).toString();
+var template = fs.readFileSync(path.join(__dirname, "templates/default.notjava")).toString();
+var teleTemplate = fs.readFileSync(path.join(__dirname, "templates/telemetry.notjava")).toString();
 
 var controlsPegjs = fs.readFileSync(path.join(__dirname, "controls.pegjs")).toString();
 
@@ -44,14 +45,20 @@ for(var i = 0; i < controlFiles.length; i++) {
             throw e;
         }
     }
+
+    //variation: telemtetry
+    if(ast.header.includes("TelemetryManager")) {
+        var opmode = processTemplate(teleTemplate, code, filename, "t");
+        fs.writeFileSync(getResultFilename(filename, "t"), opmode);
+    }
     var opmode = processTemplate(template, code, filename);
     
     fs.writeFileSync(getResultFilename(filename), opmode);
 }
 
-function getResultFilename(filename) {
+function getResultFilename(filename, variation) {
     var folder = path.join(srcDirectory.join(path.sep), "main/java/org/firstinspires/ftc/teamcode/__compiledcontrols");
-    return path.join(folder, path.basename(filename, ".controls") + "__controls.java")
+    return path.join(folder, path.basename(filename, ".controls") +  (variation ? "_" + variation : "") + "__controls.java")
 }
 
 function loadControlsFilesFromFolder(folder) {
