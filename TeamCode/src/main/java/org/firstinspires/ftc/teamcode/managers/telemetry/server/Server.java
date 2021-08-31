@@ -43,6 +43,7 @@ public class Server {
         }
         @Override
         public void run() {
+            new Thread(new FratricideCommitterThread(serverSocket)).start();
             try {
                 while (FeatureManager.isOpModeRunning) {
                     FeatureManager.logger.log("debug: dashboard waiting for connection");

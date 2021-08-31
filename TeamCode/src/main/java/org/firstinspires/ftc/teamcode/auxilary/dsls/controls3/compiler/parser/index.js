@@ -12,7 +12,7 @@ var NORTH_EAST = "north east";
 var nodeParser = require("./single-node.js");
 
 module.exports = function(source) {
-    source = source.replace(/\r\n/g, "\n");
+    source = source.replace(/\r\n/g, "\n").replace(/\t/g, "    ");
     
     var grid = makeCharGrid(source);
     var outs = findAll2d(grid);
@@ -41,6 +41,8 @@ function goBackUpGraph(grid, box, parentNode) {
     
     node.in = endNodes;
     node.source = getTextBox(grid, box).trim();
+
+    if(node.source.startsWith("(")) node.source = "math" + node.source;
     
     if(parentNode && node.source.startsWith("outTo(")) throwErrorAt([box.startCol, box.row], "Attempt to use outTo as a non-root node.");
     
@@ -213,7 +215,18 @@ function isUnbalanceableChar(char) {
 }
 
 function makeCharGrid(str) {
-    return str.split("\n").map(x=>x.split(""));
+    var unrectangled = str.split("\n");
+    var maxWidth = 0;
+    for(var i = 0; i < unrectangled.length; i++) {
+        maxWidth = Math.max(maxWidth, unrectangled[i].length);
+    }
+    return unrectangled.map(x=>pad(x, maxWidth, " ")).map(x=>x.split(""));;
+}
+
+function pad(s, w, c) {
+    c = c || " ";
+    while(s.length < w) s += c;
+    return s;
 }
 
 function findAll2d(grid) {

@@ -94,10 +94,7 @@ NAME
   = _ head:[a-zA-Z_] tail:[a-zA-Z0-9_]* _
     &{
     var name = head + tail.join("");
-    var reserved = ["and","as","assert","break","class","continue","def","del","elif",
-    				"else","except","finally","for","from","global","if","import","in","is",
-                    "lambda","None","nonlocal","not","or","pass","raise","return","try","while",
-                    "with","yield","False","True"];
+    var reserved = ["v","and","or"];
     if(reserved.indexOf(name) == -1) return true;
     else return false;
     }

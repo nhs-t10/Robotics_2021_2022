@@ -10,21 +10,3 @@ module.exports = function(ast, inputs, myName, genNonce, javaImports, methodSour
     
     return myName + "()";
 }
-
-function getSetterMethod(type) {
-    return ({
-        "dcmotor": "setPower",
-        "crservo": "setPower",
-        "servo": "setPosition",
-    })[type];
-}
-
-function outputTypeToClass(type) {
-    if(type == "dcmotor") return "DcMotor";
-    else if(type == "crservo") return "CRServo";
-    else if(type == "servo") return "Servo";
-}
-
-function pluralToSingular(type) {
-    return type.toLowerCase().replace(/s$/, "");
-}

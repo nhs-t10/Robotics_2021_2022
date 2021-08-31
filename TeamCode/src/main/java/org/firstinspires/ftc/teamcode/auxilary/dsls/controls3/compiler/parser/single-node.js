@@ -222,10 +222,7 @@ module.exports = /*
         peg$c37 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"], "_"], false, false),
         peg$c38 = function(head, tail) {
             var name = head + tail.join("");
-            var reserved = ["and","as","assert","break","class","continue","def","del","elif",
-            				"else","except","finally","for","from","global","if","import","in","is",
-                            "lambda","None","nonlocal","not","or","pass","raise","return","try","while",
-                            "with","yield","False","True"];
+            var reserved = ["v","and","or"];
             if(reserved.indexOf(name) == -1) return true;
             else return false;
             },

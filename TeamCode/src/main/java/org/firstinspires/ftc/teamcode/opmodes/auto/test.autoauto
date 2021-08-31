@@ -7,18 +7,18 @@
 
 #shooting:
     /*drive to sampling*/
-    driveRaw(0.4,0.4,-0.4,-0.4), after 1610vticks next/*, log(getTicks())*/;
-    driveRaw(0.3,-0.3,0.3,-0.3), after 520ticks next;
-    driveRaw(0.0,0.0,0.0,0.0), next;
+    driveRaw(0,0,0,0), after 1610vticks next/*, log(getTicks())*/;
+    driveRaw(0,0,0,0), after 520ticks next;
+    driveRaw(0,0,0,0), next;
 
 
     /*setting conditional*/
     let rings = 0, if(isSpecial(sensorOne) > 0) let rings = 1, if(isSpecial(sensorFour) > 0) let rings = 4, log(rings), after 1s next;
 
     /*drive to line*/
-    driveRaw(0.6,0.6,-0.6,-0.6), after 860vticks next;
+    driveRaw(0,0,0,0), after 860vticks next;
 
-    driveRaw(0.6,-0.6,0.6,-0.6), setServoPosition(shooterStop, 0.25), after 1400ticks next;
+    driveRaw(0,0,0,0), setServoPosition(shooterStop, 0.25), after 1400ticks next;
     let proportional = proportionalPID(getThirdAngleOrientation(), 0, 0.001f), driveRaw(-1*proportional, proportional, proportional, -1*proportional), if(getThirdAngleOrientation() == 179) next, after 1s next;
 
 
@@ -41,45 +41,45 @@
 
 #zeroRings:
     /*drive to correct position*/
-    driveRaw(0.4,0.4,-0.4,-0.4), after 1100vticks next;
+    driveRaw(0,0,0,0), after 1100vticks next;
 
-    driveRaw(-0.6,0.6,-0.6,0.6), after 1800ticks next;
+    driveRaw(0,0,0,0), after 1800ticks next;
 
-    driveRaw(0.0,0.0,0.0,0.0), after 1s next;
+    driveRaw(0,0,0,0), after 1s next;
 
     //release wobble goal
     setServoPosition(wobbleArmLeft, 0), setServoPosition(wobbleArmRight, 0), after 1s next;
     setServoPosition(wobbleGrabLeft, 0), setServoPosition(wobbleGrabRight, 0), after 1s next;
-    setServoPosition(wobbleArmLeft, 0.6), setServoPosition(wobbleArmRight, 0.6), driveRaw(0.6,-0.6,0.6,-0.6), after 1300ticks next;
+    setServoPosition(wobbleArmLeft, 0.6), setServoPosition(wobbleArmRight, 0.6), driveRaw(0,0,0,0), after 1300ticks next;
 
     //park on the line
-    driveRaw(-0.4,-0.4,0.4,0.4), after 600vticks goto end
+    driveRaw(0,0,0,0), after 600vticks goto end
 
 #oneRing:
     //drive to correct position
-    driveRaw(0.6,0.6,-0.6,-0.6), after 2250vticks next;
-    driveRaw(-0.6,0.6,-0.6,0.6), after 500ticks next;
+    driveRaw(0,0,0,0), after 2250vticks next;
+    driveRaw(0,0,0,0), after 500ticks next;
     //release wobble goal
         setServoPosition(wobbleArmLeft, 0), setServoPosition(wobbleArmRight, 0), after 1s next;
         setServoPosition(wobbleGrabLeft, 0), setServoPosition(wobbleGrabRight, 0), after 1s next;
-        setServoPosition(wobbleArmLeft, 0.6), setServoPosition(wobbleArmRight, 0.6), driveRaw(0.6,-0.6,0.6,-0.6), after 1300ticks next;
+        setServoPosition(wobbleArmLeft, 0.6), setServoPosition(wobbleArmRight, 0.6), driveRaw(0,0,0,0), after 1300ticks next;
 
     //park on the line
-    driveRaw(-0.6,-0.6,0.6,0.6), after 1600vticks goto end
+    driveRaw(0,0,0,0), after 1600vticks goto end
 
 #fourRings:
     //drive to correct position
-    driveRaw(0.6,0.6,-0.6,-0.6), after 2250vticks next;
+    driveRaw(0,0,0,0), after 2250vticks next;
     //turn to position
     let proportional = proportionalPID(getThirdAngleOrientation(), -90, 0.007f), driveRaw(-1*proportional, proportional, proportional, -1*proportional), if(getThirdAngleOrientation() == -90) next,after 2s next;
 
-    driveRaw(-0.6,-0.6,0.6,0.6), after 700ticks next;
+    driveRaw(0,0,0,0), after 700ticks next;
 
     //release wobble goal
     setServoPosition(wobbleArmLeft, 0), setServoPosition(wobbleArmRight, 0), after 1s next;
     setServoPosition(wobbleGrabLeft, 0), setServoPosition(wobbleGrabRight, 0), after 1s next;
     setServoPosition(wobbleArmLeft, 0.6), setServoPosition(wobbleArmRight, 0.6), next;
-    driveRaw(0.6,-0.6,0.6,-0.6), after 2300ticks goto end
+    driveRaw(0,0,0,0), after 2300ticks goto end
 
 #end:
-    driveRaw(0.0,0.0,0.0,0.0), setServoPosition(shooterArm, 0.63), setMotorPower(flywheel, 0), setMotorPower(drum, 0)
+    driveRaw(0,0,0,0), setServoPosition(shooterArm, 0.63), setMotorPower(flywheel, 0), setMotorPower(drum, 0)

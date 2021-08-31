@@ -67,7 +67,7 @@ module.exports = function(ast, inputs, myName, genNonce, javaImports, methodSour
     id = id.replace(/^(\.|_)/, "");
     
     methodSources.push(`public float ${myName}() {
-        return gamepad${gamepad}.${id};
+        return gamepad${gamepad}.${id}${inputTypes[id] == "boolean" ? "?1f:0f": ""};
     }`);
     
     return myName + "()";

@@ -1,3 +1,5 @@
+first off, this uses TelemetryManager sometimes
+
 if the aButton is pressed, then the speed is 0.5; otherwise, it is 1
 
 the driveMotors are fl, fr, br, and bl; bl is reversed.
