@@ -46,11 +46,11 @@ public class DummyHardwareMap extends HardwareMap {
     @Override
     public <T> T get(Class<? extends T> classOrInterface, String deviceName) {
         switch(classOrInterface.getSimpleName()) {
-            case "NormalizedColorSensor": return (T) new DummyNormalizedColorSensor();
-            case "BNO055IMU": return (T) new DummyImu();
-            case "DcMotor": return (T) new DummyDcMotor();
-            case "CRServo": return (T) new DummyCrServo();
-            case "Servo": return (T) new DummyServo();
+            case "NormalizedColorSensor": return classOrInterface.cast(new DummyNormalizedColorSensor());
+            case "BNO055IMU": return classOrInterface.cast(new DummyImu());
+            case "DcMotor": return classOrInterface.cast(new DummyDcMotor());
+            case "CRServo": return classOrInterface.cast(new DummyCrServo());
+            case "Servo": return classOrInterface.cast(new DummyServo());
         }
         throw new IllegalArgumentException(String.format("Unable to find a hardware device with name \"%s\" and type %s", deviceName, classOrInterface.getSimpleName()));
     }
