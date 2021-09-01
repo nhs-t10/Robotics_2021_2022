@@ -180,6 +180,9 @@
 
                     max = Math.round(max * 1000) / 1000;
                     min = Math.round(min * 1000) / 1000;
+                    
+                    min = config.yScaleMin || min;
+                    max = config.yScaleMax || max;
 
                     for (var i = 0; i < state.captions.length; i++) {
                         state.captions[i](max, min);
@@ -198,7 +201,18 @@
                         name: "xScaleSeconds",
                         type: "number",
                         default: 5
-                    }
+                    },
+                    {
+                        name: "yScaleMin",
+                        type: "number",
+                        default: 0
+                    },
+                    {
+                        name: "yScaleMax",
+                        type: "number",
+                        default: 0
+                    },
+                    
                 ]
             },
 
@@ -978,6 +992,9 @@
                 console.error(data);
                 console.error(e);
             }
+            //make autoauto variables normal, accessible fields. It's just easier.
+            Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
+            
             if (dataObject.fields !== undefined) fields = Object.keys(dataObject.fields);
             var widgets = Object.values(widgetsReg);
             for (var i = 0; i < widgets.length; i++) {

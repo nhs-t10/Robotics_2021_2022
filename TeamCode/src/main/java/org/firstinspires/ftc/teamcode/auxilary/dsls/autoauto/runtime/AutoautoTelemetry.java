@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference;
 
@@ -66,7 +65,7 @@ public class AutoautoTelemetry {
             r.append(PaulMath.JSONify(name));
             AutoautoPrimitive val = globalScope.get(name);
             if(val == null || val instanceof AutoautoUndefined) r.append("null");
-            else r.append(PaulMath.JSONify(val.getString()));
+            else r.append(val.getJSONString());
 
 
             if(i != variables.length - 1) {
