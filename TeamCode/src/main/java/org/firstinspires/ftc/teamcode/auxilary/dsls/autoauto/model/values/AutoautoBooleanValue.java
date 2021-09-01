@@ -58,4 +58,9 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
         c.setLocation(location);
         return c;
     }
+
+    @Override
+    public String getJSONString() {
+        return value + "";
+    }
 }

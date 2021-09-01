@@ -8,4 +8,5 @@ public abstract class AutoautoPrimitive extends AutoautoValue {
     public AutoautoPrimitive getResolvedValue() {
         return this;
     }
+    public abstract String getJSONString();
 }

@@ -55,6 +55,9 @@ public class template extends OpMode {
         } catch(Throwable e) {
             FeatureManager.logger.log(e.toString());
         }
+        for(int i = 0; i < values.length; i++) {
+            telemetry.addData(keys[i], values[i]);
+        }
         telemetry.update();
     }
 

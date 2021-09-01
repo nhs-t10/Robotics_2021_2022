@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgramElement;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
@@ -58,5 +59,10 @@ public class AutoautoString extends AutoautoPrimitive {
     @Override
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    @Override
+    public String getJSONString() {
+        return PaulMath.JSONify(value);
     }
 }

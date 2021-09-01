@@ -11,10 +11,43 @@
 
         var fields = [];
 
+        var configGlobals = {};
+
         var widgetTypes = {
             "none": {
                 init: function (parent) { parent.innerHTML = ""; },
                 ondata: function (data, parent) { }
+            },
+            "autoauto.statelayout": {
+                init: function (parent, state, config, box) {
+                    var statepathlist = document.createElement("ul");
+                },
+                ondata: function (data, parent, state, config) {
+                }
+            },
+            "autoauto.dataquantityconfig": {
+                init: function() {
+
+                },
+                ondata: function(data, parent, state, config) {
+                    //only send a request when it changes
+                    if(config.dataTransferAmount != configGlobals.autoautoDataTransferAmount) {
+                        configGlobals.autoautoDataTransferAmount = config.dataTransferAmount;
+                        var commands = {
+                            "Don't send data": "auauds",
+                            "Send all data": "auaus",
+                            "Send simplified program outline": "auaubs"
+                        };
+                        if(commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
+                    } 
+                },
+                config: [
+                    {
+                        name: "dataTransferAmount",
+                        type: "select",
+                        value: ["Don't send data","Send all data","Send simplified program outline"]
+                    }
+                ]
             },
             "meta.theme": {
                 init: function (parent) {
@@ -328,7 +361,7 @@
                     //override for when the scroll changes on hover
                     if (state.lastScrolledToBottom && state.lastScroll == parent.scrollTop) scrolledToBottom = true;
 
-                    if(data.log) state.pre.appendChild(document.createTextNode(data.log + "\n"));
+                    if (data.log) state.pre.appendChild(document.createTextNode(data.log + "\n"));
 
                     if (scrolledToBottom) parent.scrollTop = parent.scrollHeight - parent.clientHeight;
 
@@ -343,7 +376,7 @@
                     parent.appendChild(pre);
                 },
                 ondata: function (data, parent, state) {
-                    if(data.log) state.pre.appendChild(document.createTextNode(data.log + "\n"));
+                    if (data.log) state.pre.appendChild(document.createTextNode(data.log + "\n"));
                 }
             },
             "connection.serverlagtime": {
@@ -795,6 +828,10 @@
                             lbl.appendChild(
                                 createSelectControl(widgetsReg[id].config, configOption.name, fields)
                             );
+                        } else {
+                            lbl.appendChild(
+                                createSelectControl(widgetsReg[id].config, configOption.name, configOption.value)
+                            );
                         }
                     } else if (configOption.type == "number") {
 
@@ -818,7 +855,7 @@
 
             if (config[key] === undefined) config[key] = options[0];
 
-            options = options.map(x=>x + "").sort();
+            options = options.map(x => x + "").sort();
 
             for (var i = 0; i < options.length; i++) {
                 var opt = document.createElement("option");
@@ -859,14 +896,35 @@
             return input;
         }
 
-        function startDataRequest() {
+        function sendCommand() {
+            var argsArray = Array.from(arguments);
+
+            var cb = ()=>0;
+
+            if(typeof argsArray[argsArray.length - 1] == "function") cb = argsArray.pop();
+
+            var body = argsArray.join(",");
+
             var xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "/command");
+            xhr.onload = cb;
+            xhr.send(body);
+        }
+
+        var dataXhr = null;
+        function startDataRequest() {
+            if (dataXhr != null) return false;
+
+            var xhr = new XMLHttpRequest();
+            dataXhr = xhr;
 
             xhr.open("GET", "/stream");
 
             var currentChunkGlob = "";
             var lastIndex = -1;
             xhr.addEventListener("progress", function (event) {
+                hideErrorBanner();
                 var currentIndex = xhr.responseText.length;
                 if (lastIndex == currentIndex) return; // No new data
                 var streamData = xhr.responseText.substring(lastIndex, currentIndex);
@@ -892,11 +950,22 @@
                 lastIndex = currentIndex;
             });
 
+            xhr.addEventListener("error", function () {
+                dataXhr = null;
+                showErrorBanner();
+                //wait 5 seconds before restarting
+                //setting the xhr to null *before* waiting makes it more resistant to making thousands of requests
+                setTimeout(function () {
+                    startDataRequest();
+                }, 5000);
+            });
+
             xhr.send();
 
             //abort & restart after 30s
             setTimeout(function () {
                 xhr.abort();
+                dataXhr = null;
                 startDataRequest();
             }, 30000);
         }
@@ -965,6 +1034,22 @@
             return data.slice(firstDisplayedDatapointIndex);
         }
 
+        var errorBanner = document.createElement("div");
+        (function() {
+            errorBanner.style.display = "none";
+            errorBanner.textContent = "No live connection to robot-based server. Retrying connection currently."
+            errorBanner.classList.add("error-banner");
+            window.addEventListener("load", function() {
+                document.body.appendChild(errorBanner);
+            });
+        })();
+        function showErrorBanner() {
+            errorBanner.style.display = "block";
+        }
+        function hideErrorBanner() {
+            errorBanner.style.display = "none";
+        }
+
     </script>
     <style>
         * {
@@ -1003,6 +1088,18 @@
             --data-green: #007a58;
             --data-red: #a50909;
             --graph-label: #a8a8a8;
+        }
+
+        .error-banner {
+            background-color: var(--close-widget-color);
+            color: var(--widget-text-color);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            text-align: center;
+            opacity: 0.9;
+            width: 100%;
+            padding: 0.25em 1em;
         }
 
         .grid {
@@ -1276,20 +1373,20 @@
 </head>
 
 <body>
-<svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-    <linearGradient id="line-graph-fill-gradient" x2="0" y2="1">
-        <stop offset="0%" stop-color="#447799" id="line-graph-fill-gradient-color" />
-        <stop offset="100%" stop-color="#0000" id="line-graph-fill-bg-color" />
-    </linearGradient>
-</svg>
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="line-graph-fill-gradient" x2="0" y2="1">
+            <stop offset="0%" stop-color="#447799" id="line-graph-fill-gradient-color" />
+            <stop offset="100%" stop-color="#0000" id="line-graph-fill-bg-color" />
+        </linearGradient>
+    </svg>
 
-<div aria-hidden="true" class="grid" id="grid-background"></div>
-<div class="grid" id="grid-widgets"></div>
-<div aria-hidden="true" class="grid" id="grid-ui"></div>
-<div id="config-sidebar-parent">
-    <sidebar id="config-sidebar" data-side="left"></sidebar>
-</div>
-<script>
+    <div aria-hidden="true" class="grid" id="grid-background"></div>
+    <div class="grid" id="grid-widgets"></div>
+    <div aria-hidden="true" class="grid" id="grid-ui"></div>
+    <div id="config-sidebar-parent">
+        <sidebar id="config-sidebar" data-side="left"></sidebar>
+    </div>
+    <script>
         if (localStorage.getItem("theme") == "light") document.body.classList.add("dark-theme");
         else document.body.classList.add("dark-theme");
     </script>

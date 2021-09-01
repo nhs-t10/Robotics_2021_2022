@@ -8,8 +8,11 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Variab
 
 public class AutoautoTelemetry {
     String programJson;
+    String programOutlineJson;
     VariableReference[] variables;
-    AutoautoRuntimeVariableScope globalScope;
+    public AutoautoRuntimeVariableScope globalScope;
+
+    private int sendProgramJson = 2;
 
     public void setGlobalScope(AutoautoRuntimeVariableScope globalScope) {
         this.globalScope = globalScope;
@@ -38,8 +41,15 @@ public class AutoautoTelemetry {
         return r.toString();
     }
 
-    public final void setProgramJson(String programJson) {
-        this.programJson = programJson;
+    public void setProgramJsonSendingFlag(int t) {
+        this.sendProgramJson = t;
+    }
+
+    public final void setProgramJson(String json) {
+        this.programJson = json;
+    }
+    public final void setProgramOutlineJson(String json) {
+        this.programOutlineJson = json;
     }
 
     public final void setVariables(VariableReference[] variables) {

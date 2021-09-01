@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
+import android.preference.PreferenceActivity;
+
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -26,7 +28,6 @@ public class RequestHandlerThread implements Runnable {
 
     public void run() {
         try {
-            FeatureManager.logger.log("debug: i'm a request thread");
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
 
@@ -34,10 +35,18 @@ public class RequestHandlerThread implements Runnable {
             BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
 
             String requestMeta = reader.readLine();
-            FeatureManager.logger.log("debug: request meta is " + requestMeta);
             String[] terms = requestMeta.split(" ");
             String verb = terms[0];
             String path = terms[1];
+
+            QueryStringParams qsp;
+            if(path.indexOf('?') != -1) {
+                String query = path.substring(path.indexOf('?'));
+                path = path.substring(0, path.indexOf('?'));
+                qsp = QueryStringParams.from(query);
+            } else {
+                qsp = new QueryStringParams();
+            }
 
             if(path.equals("/stream")) {
                 writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
@@ -60,13 +69,15 @@ public class RequestHandlerThread implements Runnable {
                         StringBuilder r = new StringBuilder(e.getMessage());
                         for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
 
-                        writer.print("{\"error\":" + '"' + PaulMath.escapeString(r.toString()) + '"' + "}");
+                        writer.print("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");
                         writer.print("\n");
                         writer.flush();
                     }
                 }
                 if(!FeatureManager.isOpModeRunning) {
                     writer.print(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
+                } else {
+                    writer.print(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
                 }
             } else if(path.equals("/")) {
                 String file = ServerFiles.indexDotHtml;
@@ -74,42 +85,21 @@ public class RequestHandlerThread implements Runnable {
                             //+ "Content-Length: " + (file.getBytes(StandardCharsets.UTF_8).length) + HTTP_LINE_SEPARATOR
                             + "Content-Type: " + "text/html; charset=utf-8" + HTTP_LINE_SEPARATOR
                             + HTTP_LINE_SEPARATOR
-                            + HTTP_LINE_SEPARATOR
                             + file);
             } else if(path.equals("/command")) {
-                //consume & disregard headers
-                String line = requestMeta;
-                while(!line.equals("")) line = reader.readLine();
-
-                //body time!
-                StringBuilder reqBodyBuilder = new StringBuilder();
-                int nextChar;
-                while((nextChar = reader.read()) != -1) reqBodyBuilder.append((char)nextChar);
-
-                String body = reqBodyBuilder.toString();
+                String body;
+                if(qsp.has("command")) {
+                    body = qsp.get("command");
+                } else {
+                    body = BodyParser.from(reader);
+                }
+                FeatureManager.logger.log("debug: request body is " + body);
 
                 String[] commaSepValues = ParserTools.groupAwareSplit(body, ',');
 
-                if(commaSepValues[0].trim().equals(ControlCodes.STRUCK_WITH_A_TUNING_FORK)) {
-                    String tuneName = commaSepValues[1];
-                    float[] values = new float[commaSepValues.length - 2];
-
-                    for(int i = 2; i < commaSepValues.length; i++) values[i] = Float.parseFloat(commaSepValues[i]);
-                }
-
-                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
-                        //+ "Content-Length: " + (file.getBytes(StandardCharsets.UTF_8).length) + HTTP_LINE_SEPARATOR
-                        + "Content-Type: " + "text/plain; charset=utf-8" + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR
-                        + "200 OK");
-
+                writer.print(CommandHandler.handle(commaSepValues, dataSource));
             } else {
-                String r = "not found";
-                writer.print("HTTP/1.1 404 NOT FOUND" + HTTP_LINE_SEPARATOR
-                        + "Content-Length: " + (r.getBytes(StandardCharsets.UTF_8).length) + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR
-                        + r);
+                writer.print(HttpStatusCodeReplies.Not_Found);
             }
             writer.flush();
             socket.close();

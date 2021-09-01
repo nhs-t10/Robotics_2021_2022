@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
@@ -72,6 +73,20 @@ public class AutoautoTable extends AutoautoPrimitive {
         String str = strElems.toString();
         //use substring() to trim off ending comma & space
         return "[" + str.substring(0, Math.max(0, str.length() - 2)) + "]";
+    }
+
+    public String getJSONString() {
+        StringBuilder strElems = new StringBuilder();
+        for(String key : elems.keySet()) {
+            strElems
+                .append(PaulMath.JSONify(key))
+                .append(":")
+                .append(this.elems.get(key).getResolvedValue() == null ? "\"null\"" : this.elems.get(key).getResolvedValue().getJSONString())
+                .append(",");
+        }
+        String str = strElems.toString();
+        //use substring() to trim off ending comma & space
+        return "{" + str.substring(0, Math.max(0, str.length() - 1)) + "}";
     }
 
     @Override

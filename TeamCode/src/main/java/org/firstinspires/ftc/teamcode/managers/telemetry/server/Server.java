@@ -46,11 +46,9 @@ public class Server {
             new Thread(new FratricideCommitterThread(serverSocket)).start();
             try {
                 while (FeatureManager.isOpModeRunning) {
-                    FeatureManager.logger.log("debug: dashboard waiting for connection");
                     Socket socket = serverSocket.accept();
 
                     new Thread(new RequestHandlerThread(socket, dataSource)).start();
-                    FeatureManager.logger.log("debug: dashboard looping!!");
                 }
                 serverSocket.close();
             } catch(Exception e) {

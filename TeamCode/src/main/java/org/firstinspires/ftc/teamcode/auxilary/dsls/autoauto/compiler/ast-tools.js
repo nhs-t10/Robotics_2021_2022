@@ -154,8 +154,13 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var jsonProgram = JSON.stringify(ast);
 
             for(var i = 0; i < jsonProgram.length; i += 32768) {
-                result += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 1024)) + ");\n";
+                result += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 32768)) + ");\n";
             }
+
+            var simpleProgram = Object.fromEntries(ast.statepaths.map(x=>[x.label.value, x.statepath.states.length]));
+            var simpleProgramJson = JSON.stringify(simpleProgram);
+
+            result += "simpleProgramJson = " + JSON.stringify(simpleProgramJson) + ";\n";
 
             initFileState();
             break;

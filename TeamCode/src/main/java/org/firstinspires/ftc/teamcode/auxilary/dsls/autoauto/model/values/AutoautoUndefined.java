@@ -39,6 +39,11 @@ public class AutoautoUndefined extends AutoautoPrimitive {
     }
 
     @Override
+    public String getJSONString() {
+        return "null";
+    }
+
+    @Override
     public AutoautoUndefined clone() {
         AutoautoUndefined c = new AutoautoUndefined();
         c.setLocation(location);

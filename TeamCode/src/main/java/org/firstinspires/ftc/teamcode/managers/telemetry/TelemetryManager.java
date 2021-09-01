@@ -23,6 +23,9 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
     private Server server;
 
+    private long lastLoopTimeNano = System.nanoTime();
+    private long timeSinceLastLoopNano = 0;
+
     private HashMap<String, String> fields= new HashMap<String, String>();;
 
     private boolean hasNewData;
@@ -97,6 +100,10 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
     @Override
     public boolean update() {
+        //monitor loop times
+        timeSinceLastLoopNano = System.nanoTime() - lastLoopTimeNano;
+        lastLoopTimeNano = System.nanoTime();
+
         this.hasNewData = true;
         return backend.update();
     }
@@ -172,7 +179,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         String r = "{" +
                 "\"time\":" + System.currentTimeMillis();
                 r += "," +
-                        "\"fields\": { ";
+                        "\"fields\": {"
+                        + "\"meta.looptime\":" + timeSinceLastLoopNano + ",";
             for(Map.Entry<String, String> field : fields.entrySet()) {
                 r += "\"" + field.getKey() + "\":";
                 try {
@@ -185,8 +193,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
                 }
                 r += ",";
             }
-            //remove trailing comma. if there were no fields, then it'll remove the extra space inserted for that reason :)
-            //hacky? yes. working? also yes
+            //remove trailing comma
             r = r.substring(0, r.length() - 1);
 
         r += "}";

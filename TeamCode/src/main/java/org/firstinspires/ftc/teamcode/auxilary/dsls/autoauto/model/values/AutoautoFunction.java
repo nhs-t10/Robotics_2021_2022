@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
@@ -71,5 +72,10 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
         callScope.systemRemove(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME);
 
         return callState.getReturnValue();
+    }
+
+    @Override
+    public String getJSONString() {
+        return PaulMath.JSONify("[function Function]");
     }
 }
