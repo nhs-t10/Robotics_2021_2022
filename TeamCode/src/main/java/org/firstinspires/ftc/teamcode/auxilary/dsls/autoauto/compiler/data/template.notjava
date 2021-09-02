@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 
 import org.firstinspires.ftc.teamcode.auxilary.EncodedMotor;
 import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
@@ -118,7 +119,8 @@ public class template extends OpMode {
     }
 
     public void loop() {
-        telemetry.addData("Autoauto Build Name", "/*BUILD_NAME*/");
+        telemetry.addData("Build Name", BuildHistory.buildName);
+        telemetry.addData("Build Time", BuildHistory.buildTimeIso);
         runtime.loop();
     }
 

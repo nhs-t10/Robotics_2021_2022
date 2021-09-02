@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
 public class CommandHandler {
@@ -27,6 +28,7 @@ public class CommandHandler {
         }
     }
     private static String moveToAutoautoState(String[] args, TelemetryManager dataSource) {
+        FeatureManager.logger.log("debug: argslength " + args.length);
         //requires at least 2 extra args
         if(args.length < 3) return HttpStatusCodeReplies.Bad_Request;
         //and the 2nd one has to be a number
@@ -36,6 +38,8 @@ public class CommandHandler {
         }
 
         String statepathName = args[1].trim();
+
+        FeatureManager.logger.log("debug: statepath " + statepathName + "; state " + state);
 
         //check that the requested statepath exists
         String lengthOfStatepathVariableName = AutoautoSystemVariableNames.STATE_COUNT_OF_PREFIX + statepathName;

@@ -6,7 +6,6 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoTelemetry;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 
@@ -204,6 +203,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         r += ", \"gamepad2\": " + getGamepad2Info();
 
         r += ", \"autoautoVariables\": " + autoauto.getVariableValueJson();
+
+        r += ", \"autoautoProgram\": " + autoauto.getProgramJson();
 
                 r += "}";
 

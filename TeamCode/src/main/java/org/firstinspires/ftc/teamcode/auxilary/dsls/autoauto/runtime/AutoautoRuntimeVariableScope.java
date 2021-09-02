@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunct
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class AutoautoRuntimeVariableScope {
     public HashMap<String, StoredAutoautoValue> variables;
@@ -31,6 +32,10 @@ public class AutoautoRuntimeVariableScope {
         this.parentScope = parentScope;
         this.rootScope = parentScope.getRoot();
         this.variables = new HashMap<String, StoredAutoautoValue>();
+    }
+
+    public Set<String> getKeys() {
+        return variables.keySet();
     }
 
     public void put(String s, AutoautoPrimitive v) {

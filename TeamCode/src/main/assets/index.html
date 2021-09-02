@@ -20,32 +20,90 @@
             },
             "autoauto.statelayout": {
                 init: function (parent, state, config, box) {
+
                     var statepathlist = document.createElement("ul");
+                    statepathlist.classList.add("widget--autoauto-state-layout--list");
+                    parent.appendChild(statepathlist);
+                    state.list = statepathlist;
                 },
                 ondata: function (data, parent, state, config) {
+                    if (!state.statepathListInitiated) {
+                        if (!data.autoautoProgram) return false;
+
+                        state.statepaths = {};
+
+                        var programOutline = data.autoautoProgram;
+
+                        //it's a full program json wow
+                        if (programOutline.type === "Program") programOutline = programOutline.statepaths.map(x => [x.label.value, x.statepath.states.length]);
+                        else programOutline = Object.entries(programOutline);
+
+                        programOutline.forEach(x => {
+                            state.statepaths[x[0]] = [];
+
+                            var statepathListItem = document.createElement("li");
+                            var statepathNameHeader = document.createElement("h2");
+                            statepathNameHeader.textContent = x[0];
+
+                            var stateList = document.createElement("ol");
+
+                            statepathListItem.appendChild(statepathNameHeader);
+                            statepathListItem.appendChild(stateList);
+
+                            state.list.appendChild(statepathListItem);
+
+                            for (var i = 0; i < x[1]; i++) {
+                                (function (i) {
+                                    var stateButtonLi = document.createElement("li");
+                                    var button = document.createElement("button");
+
+                                    state.statepaths[x[0]].push(stateButtonLi);
+
+                                    stateButtonLi.appendChild(button);
+                                    button.textContent = i;
+                                    button.addEventListener("click", function () {
+                                        sendCommand("auauss", x[0], i);
+                                    });
+
+                                    stateList.appendChild(stateButtonLi);
+                                })(i);
+                            }
+                        });
+
+                        state.statepathListInitiated = true;
+                    }
+                    if (state.selectedButton) state.selectedButton.classList.remove("selected");
+                    if (state.statepaths[data.fields.__statepathName]) {
+                        var statepathsButtons = state.statepaths[data.fields.__statepathName];
+
+                        if (statepathsButtons[+data.fields.__stateNumber]) {
+                            state.selectedButton = statepathsButtons[+data.fields.__stateNumber];
+                            state.selectedButton.classList.add("selected");
+                        }
+                    }
                 }
             },
             "autoauto.dataquantityconfig": {
-                init: function() {
+                init: function () {
 
                 },
-                ondata: function(data, parent, state, config) {
+                ondata: function (data, parent, state, config) {
                     //only send a request when it changes
-                    if(config.dataTransferAmount != configGlobals.autoautoDataTransferAmount) {
+                    if (config.dataTransferAmount != configGlobals.autoautoDataTransferAmount) {
                         configGlobals.autoautoDataTransferAmount = config.dataTransferAmount;
                         var commands = {
                             "Don't send data": "auauds",
                             "Send all data": "auaus",
                             "Send simplified program outline": "auaubs"
                         };
-                        if(commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
-                    } 
+                        if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
+                    }
                 },
                 config: [
                     {
                         name: "dataTransferAmount",
                         type: "select",
-                        value: ["Don't send data","Send all data","Send simplified program outline"]
+                        value: ["Don't send data", "Send all data", "Send simplified program outline"]
                     }
                 ]
             },
@@ -180,7 +238,7 @@
 
                     max = Math.round(max * 1000) / 1000;
                     min = Math.round(min * 1000) / 1000;
-                    
+
                     min = config.yScaleMin || min;
                     max = config.yScaleMax || max;
 
@@ -212,7 +270,7 @@
                         type: "number",
                         default: 0
                     },
-                    
+
                 ]
             },
 
@@ -913,17 +971,17 @@
         function sendCommand() {
             var argsArray = Array.from(arguments);
 
-            var cb = ()=>0;
+            var cb = () => 0;
 
-            if(typeof argsArray[argsArray.length - 1] == "function") cb = argsArray.pop();
+            if (typeof argsArray[argsArray.length - 1] == "function") cb = argsArray.pop();
 
             var body = argsArray.join(",");
 
             var xhr = new XMLHttpRequest();
 
-            xhr.open("POST", "/command");
+            xhr.open("GET", "/command?command=" + encodeURIComponent(body));
             xhr.onload = cb;
-            xhr.send(body);
+            xhr.send();
         }
 
         var dataXhr = null;
@@ -967,11 +1025,6 @@
             xhr.addEventListener("error", function () {
                 dataXhr = null;
                 showErrorBanner();
-                //wait 5 seconds before restarting
-                //setting the xhr to null *before* waiting makes it more resistant to making thousands of requests
-                setTimeout(function () {
-                    startDataRequest();
-                }, 5000);
             });
 
             xhr.send();
@@ -994,7 +1047,7 @@
             }
             //make autoauto variables normal, accessible fields. It's just easier.
             Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
-            
+
             if (dataObject.fields !== undefined) fields = Object.keys(dataObject.fields);
             var widgets = Object.values(widgetsReg);
             for (var i = 0; i < widgets.length; i++) {
@@ -1052,11 +1105,11 @@
         }
 
         var errorBanner = document.createElement("div");
-        (function() {
+        (function () {
             errorBanner.style.display = "none";
             errorBanner.textContent = "No live connection to robot-based server. Retrying connection currently."
             errorBanner.classList.add("error-banner");
-            window.addEventListener("load", function() {
+            window.addEventListener("load", function () {
                 document.body.appendChild(errorBanner);
             });
         })();
@@ -1385,6 +1438,76 @@
 
         .st1 {
             fill: var(--widget-text-color);
+        }
+
+        .widget--autoauto-state-layout--list {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            flex-grow: 1;
+        }
+
+        .widget--autoauto-state-layout--list>li {
+            margin: 0 1em;
+            display: flex;
+            flex-direction: column-reverse;
+            text-align: center;
+        }
+
+        .widget--autoauto-state-layout--list h2 {
+            font-size: 0.85em;
+            letter-spacing: -0.001ch;
+            margin-top: 0.5em;
+            padding-top: 0.5em;
+            border-top: 1px solid var(--widget-text-color);
+            /*! text-transform: uppercase; */
+            font-weight: 600;
+        }
+
+        .widget--autoauto-state-layout--list ol {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .widget--autoauto-state-layout--list ol li {
+            width: min-content;
+            margin: 2px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: 2px solid var(--widget-text-color);
+            color: inherit;
+            font-size: 1.5em;
+            font-family: monospace;
+            font-weight: bold;
+            border-radius: 100%;
+            width: 2em;
+            height: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            text-align: center;
+        }
+
+        .widget--autoauto-state-layout--list ol li button {
+            background: none;
+            color: inherit;
+            font: inherit;
+            display: inline;
+            border: none;
+            text-align: center;
+        }
+
+        .widget--autoauto-state-layout--list ol li.selected {
+            background: var(--data-green);
+            color: var(--background-color);
+            border: 2px solid transparent;
         }
     </style>
 </head>

@@ -95,7 +95,7 @@ public class RequestHandlerThread implements Runnable {
                 }
                 FeatureManager.logger.log("debug: request body is " + body);
 
-                String[] commaSepValues = ParserTools.groupAwareSplit(body, ',');
+                String[] commaSepValues = body.split(",");
 
                 writer.print(CommandHandler.handle(commaSepValues, dataSource));
             } else {

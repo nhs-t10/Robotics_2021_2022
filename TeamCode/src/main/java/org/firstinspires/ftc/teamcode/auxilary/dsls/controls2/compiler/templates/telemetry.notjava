@@ -37,6 +37,7 @@ public class template extends OpMode {
     public void init() {
         FeatureManager.setIsOpModeRunning(true);
         telemetry = new TelemetryManager(telemetry);
+        ((TelemetryManager)telemetry).setGamepads(gamepad1, gamepad2);
         FeatureManager.logger.setBackend(telemetry.log());
 
 /*TYPE_SETUP_CODE*/
