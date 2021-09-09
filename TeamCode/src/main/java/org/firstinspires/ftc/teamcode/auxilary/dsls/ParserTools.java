@@ -16,7 +16,7 @@ public class ParserTools {
             lastIndex = searchIndex;
             searchIndex = groupAwareIndexOf(str, search, searchIndex + 1);
         }
-        if(str.length() - lastIndex > 2 && (lastIndex < 0 || includeLast)) strings.add(str.substring(lastIndex + 1));
+        if(str.length() - lastIndex > 0 && (lastIndex < 0 || includeLast)) strings.add(str.substring(lastIndex + 1));
 
         return strings.toArray(new String[0]);
     }

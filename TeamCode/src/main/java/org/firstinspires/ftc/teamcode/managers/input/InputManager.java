@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers.input;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 
 import java.util.HashMap;
 
@@ -11,81 +12,197 @@ import java.util.HashMap;
  */
 public class InputManager extends FeatureManager {
     // TODO: Implement with new, non-C1 format
-//    public Gamepad gamepad;
-//    public Gamepad gamepad2;
-//
-//    public ControlModel controlModel;
-//    public GamepadState gamepadHistory;
-//
-//    public static String lastKey;
-//
-//    public float currentSpeed = 0.6f;
-//
-//    public boolean dpad_leftPress = false;
-//    public boolean dpad_rightPress = false;
-//    public boolean dpad_leftBumper = false;
-//
+    public Gamepad gamepad;
+    public Gamepad gamepad2;
+
+    private HashMap<String, InputManagerInputNode> nodes;
+
 //    private long explosion;
 //
 //    public HashMap<String, Float> lastPresses = new HashMap<>();
 //    public HashMap<String, Boolean> togglePresses = new HashMap<>();
 //
-//    public InputManager(Gamepad _gamepad, ControlMap _controlMap) {
-//        this.gamepad = _gamepad;
-//        this.controlModel = new ControlModel(_controlMap);
-//        this.gamepadHistory = new GamepadState(gamepad, null);
-//
-//        this.explosion = System.currentTimeMillis() + 60_000;
-//    }
-//
-//    public InputManager(Gamepad _gamepad, Gamepad _gamepad2, ControlMap _controlMap) {
-//        this.gamepad = _gamepad;
-//        this.gamepad2 = _gamepad2;
-//
-//        this.controlModel = new ControlModel(_controlMap);
-//        this.gamepadHistory = new GamepadState(gamepad, null);
-//
-//        this.explosion = System.currentTimeMillis() + 60_000;
-//    }
-//
-//    public Gamepad getGamepad() {
-//        return this.gamepad;
-//    }
-//    public Gamepad getGamepad2() {
-//        return this.gamepad2;
-//    }
-//
-//    public void update() {
-//        if(gamepad2 != null) {
-//            gamepadHistory = new GamepadState(gamepad, gamepad2, gamepadHistory);
-//        }
-//        else {
-//            gamepadHistory = new GamepadState(gamepad, gamepadHistory);
-//        }
-//
-//    }
-//
-//    public float[] getVector(String name) {
-//        if(controlModel.get(name) == null) throw new IllegalArgumentException("Unknown control name " + name);
-//        return controlModel.get(name).res(gamepadHistory);
-//
-//    }
-//
-//    public boolean getBoolean(String name) {
-//        if(controlModel.get(name) == null) throw new IllegalArgumentException("Unknown control name " + name);
-//        return controlModel.get(name).res(gamepadHistory)[0] != 0;
-//    }
-//
-//    public float getScalar(String name) {
-//        if(controlModel.get(name) == null) throw new IllegalArgumentException("Unknown control name " + name);
-//        return controlModel.get(name).res(gamepadHistory)[0];
-//    }
-//
-//    public ControlModel.Control getControl(String name) {
-//        if(controlModel.get(name) == null) throw new IllegalArgumentException("Unknown control name " + name);
-//        return controlModel.get(name);
-//    }
+    public InputManager(Gamepad _gamepad, Gamepad _gamepad2) {
+        this.gamepad = _gamepad;
+        this.gamepad2 = _gamepad2;
+        nodes = new HashMap<>();
+    }
 
+    public Gamepad getGamepad() {
+        return this.gamepad;
+    }
+    public Gamepad getGamepad2() {
+        return this.gamepad2;
+    }
 
+    public void registerInput(String key, InputManagerInputNode node) {
+        node.init(this);
+        nodes.put(key, node);
+    }
+
+    public InputManagerInputNode getInputNode(String key) {
+        return nodes.get(key);
+    }
+
+    public float[] getFloatArrayOfInput(String key) {
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
+        return nodes.get(key).getResult().getFloatArray();
+    }
+
+    public float getKey(String key) {
+        String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
+        switch(normalizedKey) {
+            case "dpad_up":
+            case "gamepad1dpad_up":
+                return gamepad.dpad_up?1f:0f;
+            case "dpad_down":
+            case "gamepad1dpad_down":
+                return gamepad.dpad_down?1f:0f;
+            case "dpad_left":
+            case "gamepad1dpad_left":
+                return gamepad.dpad_left?1f:0f;
+            case "dpad_right":
+            case "gamepad1dpad_right":
+                return gamepad.dpad_right?1f:0f;
+            case "a":
+            case "gamepad1a":
+                return gamepad.a?1f:0f;
+            case "b":
+            case "gamepad1b":
+                return gamepad.b?1f:0f;
+            case "x":
+            case "gamepad1x":
+                return gamepad.x?1f:0f;
+            case "y":
+            case "gamepad1y":
+                return gamepad.y?1f:0f;
+            case "guide":
+            case "gamepad1guide":
+                return gamepad.guide?1f:0f;
+            case "start":
+            case "gamepad1start":
+                return gamepad.start?1f:0f;
+            case "back":
+            case "gamepad1back":
+                return gamepad.back?1f:0f;
+            case "left_bumper":
+            case "gamepad1left_bumper":
+                return gamepad.left_bumper?1f:0f;
+            case "right_bumper":
+            case "gamepad1right_bumper":
+                return gamepad.right_bumper?1f:0f;
+            case "left_stick_button":
+            case "gamepad1left_stick_button":
+                return gamepad.left_stick_button?1f:0f;
+            case "right_stick_button":
+            case "gamepad1right_stick_button":
+                return gamepad.right_stick_button?1f:0f;
+            case "circle":
+            case "gamepad1circle":
+                return gamepad.circle?1f:0f;
+            case "cross":
+            case "gamepad1cross":
+                return gamepad.cross?1f:0f;
+            case "triangle":
+            case "gamepad1triangle":
+                return gamepad.triangle?1f:0f;
+            case "square":
+            case "gamepad1square":
+                return gamepad.square?1f:0f;
+            case "share":
+            case "gamepad1share":
+                return gamepad.share?1f:0f;
+            case "options":
+            case "gamepad1options":
+                return gamepad.options?1f:0f;
+            case "touchpad":
+            case "gamepad1touchpad":
+                return gamepad.touchpad?1f:0f;
+            case "ps":
+            case "gamepad1ps":
+                return gamepad.ps?1f:0f;
+            case "left_stick_x":
+            case "gamepad1left_stick_x":
+                return gamepad.left_stick_x;
+            case "left_stick_y":
+            case "gamepad1left_stick_y":
+                return gamepad.left_stick_y;
+            case "right_stick_x":
+            case "gamepad1right_stick_x":
+                return gamepad.right_stick_x;
+            case "right_stick_y":
+            case "gamepad1right_stick_y":
+                return gamepad2.right_stick_y;
+            case "left_trigger":
+            case "gamepad1left_trigger":
+                return gamepad.left_trigger;
+            case "right_trigger":
+            case "gamepad1right_trigger":
+                return gamepad.right_trigger;
+            case "gamepad2left_stick_x":
+                return gamepad2.left_stick_x;
+            case "gamepad2left_stick_y":
+                return gamepad2.left_stick_y;
+            case "gamepad2right_stick_x":
+                return gamepad2.right_stick_x;
+            case "gamepad2right_stick_y":
+                return gamepad2.right_stick_y;
+            case "gamepad2left_trigger":
+                return gamepad2.left_trigger;
+            case "gamepad2right_trigger":
+                return gamepad2.right_trigger;
+            case "gamepad2dpad_up":
+                return gamepad2.dpad_up?1f:0f;
+            case "gamepad2dpad_down":
+                return gamepad2.dpad_down?1f:0f;
+            case "gamepad2dpad_left":
+                return gamepad2.dpad_left?1f:0f;
+            case "gamepad2dpad_right":
+                return gamepad2.dpad_right?1f:0f;
+            case "gamepad2a":
+                return gamepad2.a?1f:0f;
+            case "gamepad2b":
+                return gamepad2.b?1f:0f;
+            case "gamepad2x":
+                return gamepad2.x?1f:0f;
+            case "gamepad2y":
+                return gamepad2.y?1f:0f;
+            case "gamepad2guide":
+                return gamepad2.guide?1f:0f;
+            case "gamepad2start":
+                return gamepad2.start?1f:0f;
+            case "gamepad2back":
+                return gamepad2.back?1f:0f;
+            case "gamepad2left_bumper":
+                return gamepad2.left_bumper?1f:0f;
+            case "gamepad2right_bumper":
+                return gamepad2.right_bumper?1f:0f;
+            case "gamepad2left_stick_button":
+                return gamepad2.left_stick_button?1f:0f;
+            case "gamepad2right_stick_button":
+                return gamepad2.right_stick_button?1f:0f;
+            case "gamepad2circle":
+                return gamepad2.circle?1f:0f;
+            case "gamepad2cross":
+                return gamepad2.cross?1f:0f;
+            case "gamepad2triangle":
+                return gamepad2.triangle?1f:0f;
+            case "gamepad2square":
+                return gamepad2.square?1f:0f;
+            case "gamepad2share":
+                return gamepad2.share?1f:0f;
+            case "gamepad2options":
+                return gamepad2.options?1f:0f;
+            case "gamepad2touchpad":
+                return gamepad2.touchpad?1f:0f;
+            case "gamepad2ps":
+                return gamepad2.ps?1f:0f;
+        }
+        return 0f;
+    }
+
+    public void update() {
+        for(InputManagerInputNode node : nodes.values()) node.update();
+    }
 }
 

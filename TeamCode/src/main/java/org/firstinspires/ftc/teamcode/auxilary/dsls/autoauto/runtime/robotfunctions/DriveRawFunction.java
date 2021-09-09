@@ -1,31 +1,18 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 
 public class DriveRawFunction extends NativeRobotFunction {
-    public String name = "driveRaw";
-    public int argCount = 4;
-    public Class<?> declaringClass = MovementManager.class;
-
-    private MovementManager manager;
+    private org.firstinspires.ftc.teamcode.managers.movement.MovementManager manager;
 
     public DriveRawFunction(FeatureManager manager) {
-        this.manager = (MovementManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.movement.MovementManager)manager;
     }
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        manager.driveRaw(
-            ((AutoautoNumericValue)args[0]).getFloat(),
-            ((AutoautoNumericValue)args[1]).getFloat(),
-            ((AutoautoNumericValue)args[2]).getFloat(),
-            ((AutoautoNumericValue)args[3]).getFloat()
-        );
-        return new AutoautoUndefined();
+        if(args.length == 4) {if(args[0] instanceof AutoautoNumericValue&&args[1] instanceof AutoautoNumericValue&&args[2] instanceof AutoautoNumericValue&&args[3] instanceof AutoautoNumericValue) {manager.driveRaw(((AutoautoNumericValue)args[0]).getFloat(),((AutoautoNumericValue)args[1]).getFloat(),((AutoautoNumericValue)args[2]).getFloat(),((AutoautoNumericValue)args[3]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No driveRaw with 4 args");
     }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TelemetryManager extends FeatureManager implements Telemetry {
+    public OhNoJavaFieldMonitorAndExposer opmodeFieldMonitor;
+    private OpMode opmode;
     public AutoautoTelemetry autoauto;
     private Telemetry backend;
     private LogCatcher backendLog;
@@ -38,6 +41,20 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.fields = new HashMap<String, String>();
 
         BuildHistory.init();
+    }
+    public TelemetryManager(Telemetry backend, OpMode opMode) {
+        this.backend = backend;
+        this.backendLog = new LogCatcher(backend.log());
+        this.server = new Server(this);
+        this.autoauto = new AutoautoTelemetry();
+        this.opmode = opMode;
+        this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(opMode);
+
+        this.fields = new HashMap<String, String>();
+
+        BuildHistory.init();
+
+        setGamepads(opmode.gamepad1, opmode.gamepad2);
     }
 
     @Override

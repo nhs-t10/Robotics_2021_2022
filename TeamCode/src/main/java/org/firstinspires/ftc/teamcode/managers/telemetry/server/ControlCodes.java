@@ -10,4 +10,6 @@ public abstract class ControlCodes {
     public static final String ACTUALLY_AUNT_AUTOAUTO_I_DO_WANT_TO_HEAR_YOUR_LIFE_STORY = "auaus";
     public static final String COULD_I_GET_LIKE_A_QUICK_SUMMARY_OF_THE_AUTOAUTO_PROGRAMS_LIFE_PLEASE = "auaubs";
     public static final String PLEASE_SKIP_TO_THIS_AUTOAUTO_STATE = "auauss";
+
+    public static final String THERES_THIS_OPMODE_FIELD_COULD_YOU_SET_IT_PLEASE_TY = "spojf";
 }

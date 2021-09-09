@@ -129,7 +129,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${stringDefinitions[ast.statepaths[0].label.value]});
             ${locationSetters.join("")}`;
 
-            var runtimeSetup = `runtime = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoRuntime}(${programName}, driver, limbs, sense, imu);`;
+            var runtimeSetup = `runtime = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoRuntime}(${programName}, driver, limbs, sense, telemetryManager);`;
 
             result = "";
             result += strings + "\n\n";

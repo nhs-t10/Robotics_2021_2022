@@ -1,25 +1,18 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 
 public class DownScaleFunction extends NativeRobotFunction {
-    public String name = "downScale";
-    public int argCount = 0;
-    public Class<?> declaringClass = MovementManager.class;
-
-    private MovementManager manager;
+    private org.firstinspires.ftc.teamcode.managers.movement.MovementManager manager;
 
     public DownScaleFunction(FeatureManager manager) {
-        this.manager = (MovementManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.movement.MovementManager)manager;
     }
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        manager.downScale();
-        return new AutoautoUndefined();
+        if(args.length == 0) {manager.downScale(); return new AutoautoUndefined();}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No downScale with 0 args");
     }
 }

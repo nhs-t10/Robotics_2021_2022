@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
+import com.qualcomm.robotcore.hardware.configuration.ExpansionHubMotorControllerParamsState;
+
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
@@ -23,9 +25,20 @@ public class CommandHandler {
                 return HttpStatusCodeReplies.No_Content;
             case ControlCodes.PLEASE_SKIP_TO_THIS_AUTOAUTO_STATE:
                 return moveToAutoautoState(args, dataSource);
+            case ControlCodes.THERES_THIS_OPMODE_FIELD_COULD_YOU_SET_IT_PLEASE_TY:
+                return setOpmodeField(args, dataSource);
             default:
                 return HttpStatusCodeReplies.Bad_Request;
         }
+    }
+    private static String setOpmodeField(String[] args, TelemetryManager dataSource) {
+        if(dataSource.opmodeFieldMonitor == null) return HttpStatusCodeReplies.Bad_Gateway;
+        if(args.length < 3) return HttpStatusCodeReplies.Bad_Request;
+        if(!dataSource.opmodeFieldMonitor.hasKey(args[1])) return HttpStatusCodeReplies.Not_Found;
+
+        dataSource.opmodeFieldMonitor.parseAndSet(args[0], args[2]);
+
+        return HttpStatusCodeReplies.No_Content;
     }
     private static String moveToAutoautoState(String[] args, TelemetryManager dataSource) {
         FeatureManager.logger.log("debug: argslength " + args.length);

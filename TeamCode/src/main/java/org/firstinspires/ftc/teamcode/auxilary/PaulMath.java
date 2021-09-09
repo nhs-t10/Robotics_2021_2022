@@ -200,7 +200,7 @@ public abstract class PaulMath extends FeatureManager {
     }
 
     /**
-     * Escape a string, so as to put it in a JSON object or Java source string
+     * Escape a string, so as to put it in a JSON object or Java source string. The inverse of unescapeString()
      * @param value The string to escape
      * @return Escaped string
      */
@@ -210,6 +210,19 @@ public abstract class PaulMath extends FeatureManager {
                 .replace("\"", "\\\"")
                 .replace("\t", "\\t")
                 .replace("\\", "\\\\");
+    }
+
+    /**
+     * Unescape a string like it was in a JSON object. The inverse of escapeString().
+     * @param value The escaped string
+     * @return Unescaped string
+     */
+    public static String unescapeString(String value) {
+        return value
+                .replace("\\n", "\n")
+                .replace("\\\"", "\"")
+                .replace("\\t", "\t")
+                .replace("\\\\", "\\");
     }
 
     public static String join(String s, String[] a) {
@@ -223,5 +236,10 @@ public abstract class PaulMath extends FeatureManager {
 
     public static String JSONify(String s) {
         return '"' + escapeString(s) + '"';
+    }
+    public static String JSONify(Object s) {
+        if(s == "null") return "null";
+        else if(s.getClass().isPrimitive()) return s.toString();
+        else return JSONify(s.toString());
     }
 }

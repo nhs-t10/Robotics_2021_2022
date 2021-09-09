@@ -1,24 +1,18 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 
 public class IsSpecialFunction extends NativeRobotFunction {
-    public String name = "isSpecial";
-    public int argCount = 1;
-    public Class<?> declaringClass = SensorManager.class;
-
-    private SensorManager manager;
+    private org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manager;
 
     public IsSpecialFunction(FeatureManager manager) {
-        this.manager = (SensorManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.sensor.SensorManager)manager;
     }
 
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        return new AutoautoBooleanValue( manager.isSpecial((int) ((AutoautoNumericValue)args[0]).getFloat()));
+        if(args.length == 1) {if(args[0] instanceof AutoautoNumericValue) {return new AutoautoBooleanValue(manager.isSpecial((int)((AutoautoNumericValue)args[0]).getFloat()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No isSpecial with 1 args");
     }
 }

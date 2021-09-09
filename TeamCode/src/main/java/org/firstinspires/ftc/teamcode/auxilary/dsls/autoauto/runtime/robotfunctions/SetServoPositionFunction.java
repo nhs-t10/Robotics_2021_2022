@@ -1,30 +1,18 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 
 public class SetServoPositionFunction extends NativeRobotFunction {
-    public String name = "setServoPosition";
-    public int argCount = 2;
-    public Class<?> declaringClass = ManipulationManager.class;
-
-    private ManipulationManager manager;
+    private org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manager;
 
     public SetServoPositionFunction(FeatureManager manager) {
-        this.manager = (ManipulationManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager)manager;
     }
 
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(args.length < 2) FeatureManager.logger.log(args.length + " is not a valid argument count for " + name + "()" + AutoautoProgram.formatStack(this.getLocation()));
-        if(args[0] == null) FeatureManager.logger.log( "args[0] is null for " + name + "()" + AutoautoProgram.formatStack(this.getLocation()));
-        if(args[1] == null) FeatureManager.logger.log( "args[1] is null for " + name + "()" + AutoautoProgram.formatStack(this.getLocation()));
-
-        manager.setServoPosition((int)((AutoautoNumericValue)args[0]).getFloat(), ((AutoautoNumericValue)args[1]).getFloat());
-        return new AutoautoUndefined();
+        if(args.length == 2) {if(args[0] instanceof AutoautoString&&args[1] instanceof AutoautoNumericValue) {manager.setServoPosition(((AutoautoString)args[0]).getString(),(double)((AutoautoNumericValue)args[1]).getFloat()); return new AutoautoUndefined();}if(args[0] instanceof AutoautoNumericValue&&args[1] instanceof AutoautoNumericValue) {manager.setServoPosition((int)((AutoautoNumericValue)args[0]).getFloat(),(double)((AutoautoNumericValue)args[1]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No setServoPosition with 2 args");
     }
 }

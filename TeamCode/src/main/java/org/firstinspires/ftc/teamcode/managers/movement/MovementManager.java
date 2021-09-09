@@ -66,6 +66,9 @@ public class MovementManager extends FeatureManager {
         float[] sum = PaulMath.omniCalc(powers[0]*scale, powers[1]*scale, powers[2] * scale);
         driveRaw(sum[0], sum[1], sum[2], sum[3]);
     }
+    public void driveOmni(float v, float h, float r) {
+        driveOmni(new float[] {v, h, r});
+    }
 
     public void driveOmniExponential(float[] powers) {
         float[] sum = PaulMath.omniCalc(

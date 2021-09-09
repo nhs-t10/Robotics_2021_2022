@@ -65,4 +65,12 @@ public class AutoautoString extends AutoautoPrimitive {
     public String getJSONString() {
         return PaulMath.JSONify(value);
     }
+
+
+    public static AutoautoString fromJSON(String str) {
+        String trim = str.trim();
+        if(trim.startsWith("\"")) trim = trim.substring(1, trim.length() - 1);
+
+        return new AutoautoString(PaulMath.unescapeString(trim));
+    }
 }

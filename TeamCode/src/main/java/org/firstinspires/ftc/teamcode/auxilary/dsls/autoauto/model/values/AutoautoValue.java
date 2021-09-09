@@ -27,4 +27,17 @@ public abstract class AutoautoValue implements AutoautoProgramElement {
     public int hashCode() {
         return getString().hashCode();
     }
+
+
+    public static AutoautoValue fromJSON(String str) {
+        String trim = str.trim();
+
+        if(trim.startsWith("\"")) AutoautoString.fromJSON(trim);
+        else if(trim.startsWith("{")) AutoautoTable.fromJSONObject(trim);
+        else if(trim.startsWith("[")) AutoautoTable.fromJSONArray(trim);
+        else if(trim.equals("null")) return new AutoautoUndefined();
+        else return new AutoautoNumericValue(Float.parseFloat(trim));
+
+        return new AutoautoUndefined();
+    }
 }

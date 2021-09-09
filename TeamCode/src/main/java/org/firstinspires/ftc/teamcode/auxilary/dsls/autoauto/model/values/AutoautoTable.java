@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
@@ -18,6 +19,10 @@ public class AutoautoTable extends AutoautoPrimitive {
     }
     public static AutoautoTable K(HashMap<String, AutoautoValue> e) {
         return new AutoautoTable(e);
+    }
+
+    public AutoautoTable() {
+        this.elems = new HashMap<String, AutoautoValue>();
     }
 
     public AutoautoTable(HashMap<String, AutoautoValue> elems) {
@@ -150,5 +155,38 @@ public class AutoautoTable extends AutoautoPrimitive {
     public final void delete(AutoautoPrimitive key) {
         String keyStr = key.getString();
         elems.remove(keyStr);
+    }
+
+    public static AutoautoTable fromJSONObject(String str) {
+        AutoautoTable table = new AutoautoTable();
+
+        String nonBracketString = str;
+        if(str.startsWith("{")) nonBracketString = str.substring(1, str.length() - 1);
+
+        String[] elems = ParserTools.groupAwareSplit(nonBracketString, ',');
+
+        for(int i = 0; i < elems.length; i++) {
+            int keyIndex = elems[i].indexOf(':');
+            String key = elems[i].substring(0, keyIndex);
+            String value = elems[i].substring(keyIndex + 1);
+            table.set((AutoautoPrimitive) AutoautoValue.fromJSON(key), AutoautoValue.fromJSON(value));
+        }
+
+        return table;
+    }
+
+    public static AutoautoTable fromJSONArray(String str) {
+        AutoautoTable table = new AutoautoTable();
+
+        String nonBracketString = str;
+        if(str.startsWith("[")) nonBracketString = str.substring(1, str.length() - 1);
+
+        String[] elems = ParserTools.groupAwareSplit(nonBracketString, ',');
+
+        for(int i = 0; i < elems.length; i++) {
+            table.set(new AutoautoNumericValue(i), AutoautoValue.fromJSON(elems[i]));
+        }
+
+        return table;
     }
 }

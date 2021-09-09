@@ -1,23 +1,18 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 
 public class GetServoPowerFunction extends NativeRobotFunction {
-    public String name = "getServoPower";
-    public int argCount = 1;
-    public Class<?> declaringClass = ManipulationManager.class;
-
-    private ManipulationManager manager;
+    private org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manager;
 
     public GetServoPowerFunction(FeatureManager manager) {
-        this.manager = (ManipulationManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager)manager;
     }
 
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        return new AutoautoNumericValue((float) manager.getServoPower((int)((AutoautoNumericValue)args[0]).getFloat()));
+        if(args.length == 1) {if(args[0] instanceof AutoautoString) {return new AutoautoNumericValue(manager.getServoPower(((AutoautoString)args[0]).getString()));}if(args[0] instanceof AutoautoNumericValue) {return new AutoautoNumericValue(manager.getServoPower((int)((AutoautoNumericValue)args[0]).getFloat()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getServoPower with 1 args");
     }
 }
