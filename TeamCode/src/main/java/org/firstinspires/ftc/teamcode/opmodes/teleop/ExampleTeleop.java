@@ -25,6 +25,7 @@ public class ExampleTeleop extends OpMode {
     public void init() {
         FeatureManager.setIsOpModeRunning(true);
         telemetry = new TelemetryManager(telemetry, this);
+        FeatureManager.logger.setBackend(telemetry.log());
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -50,5 +51,9 @@ public class ExampleTeleop extends OpMode {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         telemetry.update();
+    }
+
+    public void stop() {
+        FeatureManager.setIsOpModeRunning(false);
     }
 }

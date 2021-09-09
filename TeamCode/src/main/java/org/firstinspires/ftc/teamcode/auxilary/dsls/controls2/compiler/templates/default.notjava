@@ -61,6 +61,7 @@ public class template extends OpMode {
         this.init();
         for(int i = 0; i < 3; i++) this.loop();
         this.stop();
+        telemetry.update();
     }
 
     @Override
