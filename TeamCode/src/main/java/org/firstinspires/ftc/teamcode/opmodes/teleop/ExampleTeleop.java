@@ -14,6 +14,10 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
+import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
+import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
+import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
+import org.junit.Test;
 
 @TeleOp
 public class ExampleTeleop extends OpMode {
@@ -55,5 +59,24 @@ public class ExampleTeleop extends OpMode {
 
     public void stop() {
         FeatureManager.setIsOpModeRunning(false);
+    }
+
+    @Test
+    public void test() {
+        this.hardwareMap = new DummyHardwareMap();
+        this.gamepad1 = new DummyGamepad();
+        this.gamepad2 = new DummyGamepad();
+        this.telemetry = new DummyTelemetry();
+
+        long startTime = System.currentTimeMillis();
+
+        this.start();
+        this.init();
+        this.init_loop();
+        for(int i = 0; i < 3; i++) {
+            this.time = (System.currentTimeMillis() - startTime) * 0.001;
+            this.loop();
+        }
+        this.stop();
     }
 }
