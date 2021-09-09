@@ -49,5 +49,6 @@ public class ExampleTeleop extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        telemetry.update();
     }
 }

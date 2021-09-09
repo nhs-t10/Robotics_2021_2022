@@ -72,6 +72,9 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
 }
 
+//see if more methods have been made
+(require("./functionloader"));
+
 function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName) {
     return template
         .replace("public class template", "public class " + className)

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 
 import java.util.HashMap;
 
@@ -35,7 +36,12 @@ public class InputManager extends FeatureManager {
         return this.gamepad2;
     }
 
-    public void registerInput(String key, InputManagerInputNode node) {
+    public void registerInput(String key, InputManagerInputNode... registerNodes) {
+        InputManagerInputNode node = null;
+        if(registerNodes.length == 0) throw new IllegalArgumentException("Must have more than 0 args");
+        else if(registerNodes.length == 1) node = registerNodes[0];
+        else node = new MultiInputNode(registerNodes);
+
         node.init(this);
         nodes.put(key, node);
     }
