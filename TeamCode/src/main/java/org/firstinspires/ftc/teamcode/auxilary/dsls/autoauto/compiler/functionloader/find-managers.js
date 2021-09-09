@@ -6,8 +6,12 @@ var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/managers");
 
+
+var cacheFile = path.join(__dirname, ".cache/managers.json");
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "{}");
+var cacheManagers = require(cacheFile);
+
 var managerArgs = {};
-var managerArgNumber = 0;
 
 var generateAaMethods = require("./parse-and-generate-aa-methods.js");
 
@@ -17,11 +21,23 @@ var managers = loadManagersFromFolder(managersDir);
 
 var methods = [];
 for (var i = 0; i < managers.length; i++) {
-    var fileContent = fs.readFileSync(managers[i]).toString();
+    var manager = managers[i];
+    var fileContent = fs.readFileSync(manager).toString();
     
-    var preexistingNames = methods.map(x=>x[1].map(y=>y[0])).flat();
+    var sha = crypto.createHash("sha256").update(fileContent).digest("hex");
     
-    methods.push(generateAaMethods(fileContent, preexistingNames));
+    if(cacheManagers[manager] === undefined) cacheManagers[manager] = {};
+    
+    if(cacheManagers[manager].javaSha === sha) {
+        methods.push(cacheManagers[manager].methods);
+    } else {
+        cacheManagers[manager].javaSha = sha
+        var preexistingNames = methods.map(x=>x[1].map(y=>y[0])).flat();
+        
+        cacheManagers[manager].methods = generateAaMethods(fileContent, preexistingNames);
+        
+        methods.push(cacheManagers[manager].methods);
+    }
 }
 
 
@@ -41,6 +57,8 @@ var robotFunctionLoader = robotFunctionsTemplate(
     Object.entries(managerArgs).map(x=>x[0] + " " + x[1]).join(",")
 );
 fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
+
+fs.writeFileSync(cacheFile, JSON.stringify(cacheManagers));
 
 function makeManagerName(name) {
     if(name == "") return "";
