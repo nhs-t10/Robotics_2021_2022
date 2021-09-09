@@ -34,19 +34,11 @@ public class RequestHandlerThread implements Runnable {
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
 
-            String requestMeta = reader.readLine();
-            String[] terms = requestMeta.split(" ");
-            String verb = terms[0];
-            String path = terms[1];
+            HttpHeaderLine requestMeta = HttpHeaderLine.from(reader);
+            Headers headers = Headers.from(reader);
+            String body = BodyParser.from(reader, headers);
 
-            QueryStringParams qsp;
-            if(path.indexOf('?') != -1) {
-                String query = path.substring(path.indexOf('?'));
-                path = path.substring(0, path.indexOf('?'));
-                qsp = QueryStringParams.from(query);
-            } else {
-                qsp = new QueryStringParams();
-            }
+            String path = requestMeta.path;
 
             if(path.equals("/stream")) {
                 writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
@@ -87,15 +79,15 @@ public class RequestHandlerThread implements Runnable {
                             + HTTP_LINE_SEPARATOR
                             + file);
             } else if(path.equals("/command")) {
-                String body;
-                if(qsp.has("command")) {
-                    body = qsp.get("command");
+                String command;
+                if(requestMeta.queryStringParams.has("command")) {
+                    command = requestMeta.queryStringParams.get("command");
                 } else {
-                    body = BodyParser.from(reader);
+                    command = body;
                 }
-                FeatureManager.logger.log("debug: request body is " + body);
+                FeatureManager.logger.log("debug: request body is " + command);
 
-                String[] commaSepValues = body.split(",");
+                String[] commaSepValues = command.split(",");
 
                 writer.print(CommandHandler.handle(commaSepValues, dataSource));
             } else {

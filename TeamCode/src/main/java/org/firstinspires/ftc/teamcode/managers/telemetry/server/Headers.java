@@ -10,6 +10,9 @@ public class Headers {
     public Headers() {
         this.headers = new HashMap<String, ArrayList<String>>();
     }
+    public String toString() {
+        return headers.toString();
+    }
     public String get(String name) {
         String key = name.trim().toLowerCase();
         if(!headers.containsKey(key)) return "";
@@ -41,7 +44,7 @@ public class Headers {
             line = line.trim();
             if(line.equals("")) break;
 
-            String[] keyVal = line.split(",", 2);
+            String[] keyVal = line.split(":", 2);
 
             //if the line isn't of the form header:value, discard it
             if(keyVal.length != 2) continue;
