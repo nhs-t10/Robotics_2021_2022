@@ -14,6 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TelemetryManager extends FeatureManager implements Telemetry {
+    public static class BITMASKS {
+        public static final int ALL = ~0;
+        public static final int NONE = 0;
+
+        private static final int WEBSERVER = 1;
+        private static final int BUILD_HISTORY = 1 << 1;
+        private static final int POJO_MONITOR = 1 << 2;
+    }
+
     public OhNoJavaFieldMonitorAndExposer opmodeFieldMonitor;
     private OpMode opmode;
     public AutoautoTelemetry autoauto;
@@ -32,29 +41,32 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
     private boolean hasNewData;
 
-    public TelemetryManager(Telemetry backend) {
+    /**
+     *
+     * @param backend
+     * @param opMode
+     * @param config An integer code to use. It's advised that you use the static `BITMASKS` property, which has presets for most desired options.
+     */
+    public TelemetryManager(Telemetry backend, OpMode opMode, int config) {
         this.backend = backend;
         this.backendLog = new LogCatcher(backend.log());
-        this.server = new Server(this);
-        this.autoauto = new AutoautoTelemetry();
 
-        this.fields = new HashMap<String, String>();
+        if((config & BITMASKS.WEBSERVER) != 0) this.server = new Server(this);
 
-        BuildHistory.init();
-    }
-    public TelemetryManager(Telemetry backend, OpMode opMode) {
-        this.backend = backend;
-        this.backendLog = new LogCatcher(backend.log());
-        this.server = new Server(this);
         this.autoauto = new AutoautoTelemetry();
         this.opmode = opMode;
-        this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(opMode);
+
+        if((config & BITMASKS.POJO_MONITOR) != 0) this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(opMode);
 
         this.fields = new HashMap<String, String>();
 
-        BuildHistory.init();
+        if((config & BITMASKS.BUILD_HISTORY) != 0) BuildHistory.init();
 
         setGamepads(opmode.gamepad1, opmode.gamepad2);
+    }
+
+    public TelemetryManager(Telemetry backend, OpMode opMode) {
+        this(backend, opMode, BITMASKS.ALL);
     }
 
     @Override
@@ -65,13 +77,16 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
     @Override
     public Item addData(String caption, Object value) {
-        if(fields != null) fields.put(caption, value.toString());
+        if(fields != null) {
+            if(value != null) fields.put(caption, value.toString());
+            else fields.put(caption, "null");
+        }
         return backend.addData(caption, value);
     }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {
-        return backend.addData(caption, valueProducer);
+        return backend.addData(caption, valueProducer.value());
     }
 
     @Override

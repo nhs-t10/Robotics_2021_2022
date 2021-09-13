@@ -2,12 +2,16 @@ var os = require("os");
 var crypto = require("crypto");
 var path = require("path");
 var fs = require("fs");
+const getDirectorySha = require("./get-dir-sha.js");
+const what3Words = require("./what-3-words-hash.js");
 
 var HASH_SECRET = "autoauto family";
 var GITIGNORED = ["**/buildhistory/BuildHistory.java"];
+var BUILD_HASH_IGNORED = ["__compiledautoauto", "__compiledcontrols", "genealogy", "BuildHistory.java"];
 
 var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
+var srcDirectory = directory.slice(0, directory.indexOf("teamcode") + 1).join(path.sep);
 
 //update gitignore with build history files
 var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
@@ -53,9 +57,16 @@ try {
 
     var name = getName(familyLine.buildCount, familyLine.cognomen);
     var time = (new Date()).toISOString();
+    var buildHash = getDirectorySha(srcDirectory, BUILD_HASH_IGNORED);
+    var w3w = what3Words.simpleNouns(buildHash);
+    var phrase = what3Words.complexPhrase(buildHash);
+    
     familyLine.builds.push({
         name: name,
-        time: time
+        time: time,
+        buildHash: buildHash,
+        w3w: w3w,
+        phrase: phrase
     });
 
     familyLine.builds = familyLine.builds.slice(-100);
@@ -74,10 +85,10 @@ try {
         .map(x=>x.name + "," + x.time) //transform to CSV
         .join("\n") //join CSV rows together
 
-    updateTemplate(familyLine, time, name, history);
+    updateTemplate(familyLine, time, name, history, buildHash, w3w);
 })();
 
-function updateTemplate(familyLine, time, name, history) {
+function updateTemplate(familyLine, time, name, history, hash, phrase) {
     var template = fs.readFileSync(path.join(__dirname, "not_BuildHistory.notjava")).toString();
     fs.writeFileSync(path.join(__dirname, "BuildHistory.java"), template
                                 .replace("BUILDER_BROWSER_FINGERPRINT", familyLine.browser)
@@ -85,6 +96,8 @@ function updateTemplate(familyLine, time, name, history) {
                                 .replace("BUILD_NAME", name)
                                 .replace("not_BuildHistory", "BuildHistory")
                                 .replace("BUILD_HISTORY", JSON.stringify(history).slice(1,-1))
+                                .replace("BUILD_HASH", hash)
+                                .replace("BUILD_PHRASE", phrase)
                             )
 }
 

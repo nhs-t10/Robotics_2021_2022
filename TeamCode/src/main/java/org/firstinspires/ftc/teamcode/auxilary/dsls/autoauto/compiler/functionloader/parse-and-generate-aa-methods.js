@@ -74,9 +74,10 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         callMethodSource += `}`;
     }
     callMethodSource += `throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No ${noConflictName} with ${overload.args.length} args");`;
-    
+
+    noConflictName = replaceNumbers(noConflictName);
+
     var classname = noConflictName.charAt(0).toUpperCase() + noConflictName.substring(1) + "Function";
-    classname = replaceNumbers(classname);
         
     var template = processTemplate(callMethodSource, definedClass, classname);
     

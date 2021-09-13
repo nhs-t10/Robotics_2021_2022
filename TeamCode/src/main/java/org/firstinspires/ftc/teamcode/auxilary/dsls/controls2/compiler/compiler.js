@@ -47,7 +47,7 @@ for(var i = 0; i < controlFiles.length; i++) {
     }
 
     //variation: telemtetry
-    if(ast.header.includes("TelemetryManager")) {
+    if((ast.header || "").includes("TelemetryManager")) {
         var opmode = processTemplate(teleTemplate, code, filename, "t");
         fs.writeFileSync(getResultFilename(filename, "t"), opmode);
     }

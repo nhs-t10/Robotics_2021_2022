@@ -46,7 +46,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("updateSensorManager", new UpdateSensorManagerFunction(manSensor));
             scope.put("getColorInteger", new GetColorIntegerFunction(manSensor));
             scope.put("isSpecial", new IsSpecialFunction(manSensor));
-            scope.put("isSpecial1", new IsSpecialOneFunction(manSensor));
+            scope.put("isSpecialOne", new IsSpecialOneFunction(manSensor));
             
             scope.put("clear", new ClearFunction(manTelemetry));
             scope.put("clearAll", new ClearAllFunction(manTelemetry));
@@ -62,8 +62,8 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("setCaptionValueSeparator", new SetCaptionValueSeparatorFunction(manTelemetry));
             scope.put("readData", new ReadDataFunction(manTelemetry));
             scope.put("hasNewData", new HasNewDataFunction(manTelemetry));
-            scope.put("getGamepad1Info", new GetGamepadOneInfoFunction(manTelemetry));
-            scope.put("getGamepad2Info", new GetGamepadTwoInfoFunction(manTelemetry));
+            scope.put("getGamepadOneInfo", new GetGamepadOneInfoFunction(manTelemetry));
+            scope.put("getGamepadTwoInfo", new GetGamepadTwoInfoFunction(manTelemetry));
             
         }
     }

@@ -58,7 +58,7 @@ public class template extends OpMode {
     AutoautoRuntime runtime;
     public void init() {
         FeatureManager.isOpModeRunning = true;
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry);
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this);
         telemetry = telemetryManager;
         
         if(this.internalOpModeServices!=null) FeatureManager.logger.setBackend(telemetry.log());

@@ -15,11 +15,25 @@ public class AutoautoRuntime {
     public AutoautoRuntimeVariableScope globalScope;
     public AutoautoProgram program;
 
-    public static AutoautoRuntime R(AutoautoProgram program, MovementManager drive, ManipulationManager manip, SensorManager sense, TelemetryManager tel) {
-        return new AutoautoRuntime(program, drive, manip, sense, tel);
+    public static AutoautoRuntime R(AutoautoProgram program, FeatureManager... managers) {
+        return new AutoautoRuntime(program, managers);
     }
 
-    public AutoautoRuntime(AutoautoProgram program, MovementManager drive, ManipulationManager manip, SensorManager sense, TelemetryManager telemetry) {
+    public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) {
+        MovementManager drive = null;
+        ManipulationManager manip = null;
+        SensorManager sense = null;
+        TelemetryManager telemetry = null;
+        //find managers of each required type
+        for(FeatureManager f : managers) {
+            if(f instanceof MovementManager) drive = (MovementManager) f;
+            if(f instanceof ManipulationManager) manip = (ManipulationManager) f;
+            if(f instanceof SensorManager) sense = (SensorManager) f;
+            if(f instanceof TelemetryManager) telemetry = (TelemetryManager) f;
+        }
+
+        if(drive == null || manip == null || sense == null || telemetry == null) throw new IllegalArgumentException("Managers must contain at least one of each type.");
+
         this.globalScope = new AutoautoRuntimeVariableScope();
         globalScope.initSugarVariables();
         globalScope.initBuiltinFunctions(this);

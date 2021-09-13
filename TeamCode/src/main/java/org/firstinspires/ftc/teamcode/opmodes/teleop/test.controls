@@ -1,6 +1,6 @@
-first off, this might benefit from using TelemetryManager or it might not so people should have choices while running it.
+the aButton sets the drum to 2.
 
-if the aButton is pressed, then the speed is 0.5; otherwise, it is 1
+if the xButton is pressed, then the speed is 0.5; otherwise, it is 1
 
 the driveMotors are fl, fr, br, and bl; bl is reversed.
 

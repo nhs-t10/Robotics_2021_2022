@@ -4,7 +4,7 @@ module.exports = function(ast, inputs, myName, genNonce, javaImports, methodSour
     javaImports.push("org.firstinspires.ftc.teamcode.managers.FeatureManager");
 
     inits.push("FeatureManager.setIsOpModeRunning(true);");
-    inits.push("telemetry = new TelemetryManager(telemetry);");
+    inits.push("telemetry = new TelemetryManager(telemetry, this);");
     inits.push("((TelemetryManager)telemetry).setGamepads(gamepad1, gamepad2);");
     inits.push("FeatureManager.logger.setBackend(telemetry.log());");
 
