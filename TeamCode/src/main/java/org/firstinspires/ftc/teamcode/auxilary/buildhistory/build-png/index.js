@@ -4,6 +4,7 @@ var path = require("path");
 
 var savePng = require("./save-png");
 var PngFile = require("./png-file/png-file");
+var crc32 = require("./png-file/crc");
 
 var ENTER_FILE = [0xff, 0x00, 0xff];
 var ENTER_DIRECTORY = [0x00, 0xff, 0x00];
@@ -102,9 +103,9 @@ function addFileToImage(file, ignores) {
     if(fs.statSync(file).isDirectory()) return addDirectoryToImage(file, ignores);
     
     var fileContent = fs.readFileSync(file);
-    var chunks = chunkify(fileContent, 5);
+    var chunks = chunkify(fileContent, 100);
     
-    var hash = chunks.map(x=>crypto.createHash("sha1").update(x).digest("hex")).join("");
+    var hash = chunks.map(x=>crc32(x).toString("hex")).join("");
     
     pixels.push(ENTER_FILE);
     addHexPixels(fileContent.length.toString(16));
@@ -114,11 +115,10 @@ function addFileToImage(file, ignores) {
     return hash;
 }
 
-function chunkify(buffer, chunkCount) {
+function chunkify(buffer, chunkLength) {
     var chunks = [];
-    var bytesPerChunk = Math.floor(buffer.length / chunkCount);
-    for(var i = 0; i < chunkCount; i++) {
-        chunks.push(buffer.slice(i * bytesPerChunk, i * bytesPerChunk + bytesPerChunk));
+    for(var i = 0; i < buffer.length; i+= chunkLength) {
+        chunks.push(buffer.slice(i, i + chunkLength));
     }
     return chunks;
 }
