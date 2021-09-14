@@ -14,7 +14,7 @@ function getDirectorySha(directory, ignores) {
     
     var fileHashBuffers = [Buffer.from("tree " + dir.length + "\u0000")];
     
-    for(var i = 0; i < dir.length; i++) {
+    for(var i = 0; i < dir.length; i++) { 
         if(ignores.includes(dir[i])) continue;
         
         var fileSha = getFileSha(path.join(directory, dir[i]), ignores);

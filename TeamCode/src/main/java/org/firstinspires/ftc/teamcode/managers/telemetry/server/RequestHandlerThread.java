@@ -90,7 +90,24 @@ public class RequestHandlerThread implements Runnable {
                 String[] commaSepValues = command.split(",");
 
                 writer.print(CommandHandler.handle(commaSepValues, dataSource));
-            } else {
+            } else if(path.startsWith("/buildimgs")) {
+                try (InputStream file = getClass().getResourceAsStream(path)) {
+                    if (file == null) {
+                        writer.print(HttpStatusCodeReplies.Not_Found);
+                    } else {
+                        writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
+                                + "Content-Type: " + "image/png" + HTTP_LINE_SEPARATOR
+                                + HTTP_LINE_SEPARATOR);
+                        //flush the class file into the stream
+                        while (true) {
+                            int fbyte = file.read();
+                            if (fbyte == -1) break;
+                            output.write(fbyte);
+                        }
+                        output.flush();
+                    }
+                }
+            }else {
                 writer.print(HttpStatusCodeReplies.Not_Found);
             }
             writer.flush();

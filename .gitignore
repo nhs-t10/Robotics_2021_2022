@@ -93,3 +93,4 @@ lint/tmp/
 *__controls3.java
 **/buildhistory/BuildHistory.java
 **/.cache/
+**/buildimgs/

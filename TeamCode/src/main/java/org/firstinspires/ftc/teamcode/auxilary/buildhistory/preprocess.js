@@ -4,10 +4,11 @@ var path = require("path");
 var fs = require("fs");
 const getDirectorySha = require("./get-dir-sha.js");
 const what3Words = require("./what-3-words-hash.js");
+const buildPng = require("./build-png");
 
 var HASH_SECRET = "autoauto family";
 var GITIGNORED = ["**/buildhistory/BuildHistory.java"];
-var BUILD_HASH_IGNORED = ["__compiledautoauto", "__compiledcontrols", "genealogy", "BuildHistory.java"];
+var BUILD_HASH_IGNORED = ["__compiledautoauto", "__compiledcontrols", "genealogy", "BuildHistory.java", "last-build-pixels.json"];
 
 var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
@@ -60,6 +61,7 @@ try {
     var buildHash = getDirectorySha(srcDirectory, BUILD_HASH_IGNORED);
     var w3w = what3Words.simpleNouns(buildHash);
     var phrase = what3Words.complexPhrase(buildHash);
+    var pngFile = buildPng(familyLine.buildCount, srcDirectory, BUILD_HASH_IGNORED);
     
     familyLine.builds.push({
         name: name,
@@ -85,10 +87,10 @@ try {
         .map(x=>x.name + "," + x.time) //transform to CSV
         .join("\n") //join CSV rows together
 
-    updateTemplate(familyLine, time, name, history, buildHash, w3w);
+    updateTemplate(familyLine, time, name, history, buildHash, w3w, pngFile);
 })();
 
-function updateTemplate(familyLine, time, name, history, hash, phrase) {
+function updateTemplate(familyLine, time, name, history, hash, phrase, pngFile) {
     var template = fs.readFileSync(path.join(__dirname, "not_BuildHistory.notjava")).toString();
     fs.writeFileSync(path.join(__dirname, "BuildHistory.java"), template
                                 .replace("BUILDER_BROWSER_FINGERPRINT", familyLine.browser)
@@ -98,6 +100,7 @@ function updateTemplate(familyLine, time, name, history, hash, phrase) {
                                 .replace("BUILD_HISTORY", JSON.stringify(history).slice(1,-1))
                                 .replace("BUILD_HASH", hash)
                                 .replace("BUILD_PHRASE", phrase)
+                                .replace("BUILD_HASH_IMAGE", pngFile)
                             )
 }
 

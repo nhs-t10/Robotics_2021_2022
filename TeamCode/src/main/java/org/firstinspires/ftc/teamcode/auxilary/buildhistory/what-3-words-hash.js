@@ -1,24 +1,26 @@
-var adjectives = require("./adjectives.json");
-var nouns = require("./nouns.json");
-var familymembers = require("./familymembers.json");
-var possessivePronouns = require("./possessive-pronouns.json");
+var adjectives = require("./words/adjectives.json");
+var nouns = require("./words/nouns.json");
+var familymembers = require("./words/familymembers.json");
+var possessivePronouns = require("./words/possessive-pronouns.json");
+
+var simpleNouns = require("./words/simple-nouns.js");
 
 var SIMPLE_NOUNS_LIMIT = 3;
 
 module.exports = {
     complexPhrase: complexPhraseHash,
-    simpleNouns: simpleNouns
+    simpleNouns: simpleNounHash
 }
 
-function simpleNouns(hash) {
-    var hashCharPerWord = Math.ceil(Math.floor(Math.log2(nouns.length)) / 4);
+function simpleNounHash(hash) {
+    var hashCharPerWord = Math.ceil(Math.floor(Math.log2(simpleNouns.length)) / 4);
     
     var words = [];
     for(var i = 0; i < hash.length; i+= hashCharPerWord) {
         var code = hash.substring(i, i + hashCharPerWord);
         var numerical = +('0x' + code);
         
-        words.push(getNoun(numerical));
+        words.push(getSimpleNoun(numerical));
         
         if(words.length >= SIMPLE_NOUNS_LIMIT) break;
     }
@@ -77,4 +79,7 @@ function getAdjective(id) {
 }
 function getNoun(id) {
     return nouns[id % nouns.length];
+}
+function getSimpleNoun(id) {
+    return simpleNouns[id % simpleNouns.length];
 }

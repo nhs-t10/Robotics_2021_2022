@@ -25,6 +25,7 @@ public class not_BuildHistory {
     public static String buildHistory = "BUILD_HISTORY";
     public static String buildContentPhrase = "BUILD_PHRASE";
     public static String buildContentHash = "BUILD_HASH";
+    public static String buildContentHashImage = "BUILD_HASH_IMAGE";
 
     public static final String MEMORY_FILE = "build-history.csv";
     public static final int MOST_RECENT_INCLUDE_NUM = 200;

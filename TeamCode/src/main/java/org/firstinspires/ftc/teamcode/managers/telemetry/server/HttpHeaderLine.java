@@ -12,7 +12,8 @@ public class HttpHeaderLine {
 
     public HttpHeaderLine(String verb, String path) {
         this.verb = verb;
-        this.path = path;
+        //remove possible directory escape attacks
+        this.path = path.replace("/./", "/").replace("/../", "/");
 
         this.pathSegments = path.split("/");
 
