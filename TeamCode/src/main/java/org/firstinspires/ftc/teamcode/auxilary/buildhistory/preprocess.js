@@ -84,7 +84,7 @@ try {
         .flat() //transform the array of family-build-data arrays into just 1 array
         .sort((a, b) => a.time > b.time ? -1 : 1) //sort descending by time; alphabetical will work well for ISO timestamps
         .slice(0, 100) //only get last 100 builds
-        .map(x=>x.name + "," + x.time) //transform to CSV
+        .map(x=>x.name + "," + x.time + "," + x.w3w) //transform to CSV
         .join("\n") //join CSV rows together
 
     updateTemplate(familyLine, time, name, history, buildHash, w3w, pngFile);
