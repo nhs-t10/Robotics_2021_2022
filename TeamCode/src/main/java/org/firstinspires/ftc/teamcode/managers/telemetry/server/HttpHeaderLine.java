@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
+import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class HttpHeaderLine {
     public String verb;
@@ -24,9 +27,14 @@ public class HttpHeaderLine {
     }
 
     public static HttpHeaderLine from(BufferedReader reqReader) throws IOException {
-        String line = reqReader.readLine();
 
-        String[] words = line.split(" ");
+        StringBuilder line = new StringBuilder();
+        while(true) {
+            int nextByte = reqReader.read();
+            if(nextByte < 0) break;
+            line.append((char) nextByte);
+        }
+        String[] words = line.toString().split(" ");
 
         return new HttpHeaderLine(words[0], words[1]);
     }

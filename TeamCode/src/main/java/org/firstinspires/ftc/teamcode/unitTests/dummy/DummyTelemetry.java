@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.unitTests.dummy;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 
 public class DummyTelemetry implements Telemetry {
-    private DummyLog log;
 
     @Override
     public Item addData(String caption, String format, Object... args) {
@@ -128,10 +130,12 @@ public class DummyTelemetry implements Telemetry {
 
     @Override
     public Log log() {
-        if(this.log == null) this.log = new DummyLog();
-        return this.log;
+        return new DummyLog();
     }
-    private static class DummyLog implements Log {
+    private static class DummyLog implements Telemetry.Log {
+
+        private DummyLog() {
+        }
 
         @Override
         public int getCapacity() {
@@ -145,12 +149,11 @@ public class DummyTelemetry implements Telemetry {
 
         @Override
         public DisplayOrder getDisplayOrder() {
-            return null;
+            return DisplayOrder.OLDEST_FIRST;
         }
 
         @Override
         public void setDisplayOrder(DisplayOrder displayOrder) {
-
         }
 
         @Override

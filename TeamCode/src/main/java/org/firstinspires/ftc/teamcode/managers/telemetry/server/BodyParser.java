@@ -9,12 +9,13 @@ public class BodyParser {
 
     public static String from(BufferedReader reader, Headers headers) throws IOException {
         int contentLength = headers.getAsInt("content-length");
+        boolean hasContentLength = headers.hasHeader("content-length");
 
         //body time!
         StringBuilder reqBodyBuilder = new StringBuilder();
         int nextChar = 0;
         int length = 0;
-        while(contentLength == 0 || length < contentLength) {
+        while(!hasContentLength || length < contentLength) {
             nextChar = reader.read();
             if(nextChar == -1) break;
             reqBodyBuilder.append((char)nextChar);

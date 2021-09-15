@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class RequestHandlerThread implements Runnable {
     private static final String HTTP_LINE_SEPARATOR = "\r\n";
@@ -91,7 +92,7 @@ public class RequestHandlerThread implements Runnable {
 
                 writer.print(CommandHandler.handle(commaSepValues, dataSource));
             } else if(path.startsWith("/buildimgs")) {
-                try (InputStream file = getClass().getResourceAsStream(path)) {
+                try (InputStream file = ServerFiles.getAssetStream(path)) {
                     if (file == null) {
                         writer.print(HttpStatusCodeReplies.Not_Found);
                     } else {
@@ -115,7 +116,7 @@ public class RequestHandlerThread implements Runnable {
 
 
         } catch(Exception e) {
-            dataSource.log().add("dashboard status" + e.toString());
+            dataSource.log().add("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
         }
     }
 }

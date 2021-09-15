@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
+import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -63,6 +64,7 @@ public class template extends OpMode {
 
     @Test
     public void runTest() {
+        this.telemetry = new DummyTelemetry();
         this.hardwareMap = new DummyHardwareMap();
         this.init();
         for(int i = 0; i < 3; i++) this.loop();

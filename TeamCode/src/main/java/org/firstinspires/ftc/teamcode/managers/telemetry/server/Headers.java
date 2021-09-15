@@ -14,9 +14,14 @@ public class Headers {
         return headers.toString();
     }
     public String get(String name) {
+        String val = tryGet(name);
+        if(val == null) return "";
+        else return val;
+    }
+    public String tryGet(String name) {
         String key = name.trim().toLowerCase();
-        if(!headers.containsKey(key)) return "";
-        if(headers.get(key).size() == 0) return "";
+        if(!headers.containsKey(key)) return null;
+        if(headers.get(key).size() == 0) return null;
         return headers.get(key).get(0);
     }
     public int getAsInt(String name) {
@@ -25,6 +30,9 @@ public class Headers {
         } catch (NumberFormatException ignored) {
             return 0;
         }
+    }
+    public boolean hasHeader(String name) {
+        return get(name) != null;
     }
     public void add(String name, String value) {
         String key = name.trim().toLowerCase(), val = value.trim();

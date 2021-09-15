@@ -4,7 +4,7 @@ var path = require("path");
 
 var savePng = require("./save-png");
 var PngFile = require("./png-file/png-file");
-var crc32 = require("./png-file/crc");
+var badPerceptualHash = require("./bad-percep-hash");
 
 var ENTER_FILE = [0xff, 0x00, 0xff];
 var ENTER_DIRECTORY = [0x00, 0xff, 0x00];
@@ -42,6 +42,8 @@ function pixelsDiff(a, b) {
         var isDifferent = difference[0] || difference[1] || difference[2];
         
         if(isDifferent) {
+            delta.push([0xff, itemsSinceDifference, 0xf0]);
+            delta = delta.concat(getHexPixels(itemsSinceDifference.toString(15)) + "ff");
             delta.push(difference);
             
             itemsSinceDifference = 0;
@@ -87,7 +89,7 @@ function addDirectoryToImage(directory, ignores) {
         
         pixels.push(START_ITEM);
         
-        addStrAsPixels(dir[i]);
+        addStrAsPixels(dir[i].substring(0, 30));
         
         pixels.push(START_HASH);
         
@@ -103,24 +105,12 @@ function addFileToImage(file, ignores) {
     if(fs.statSync(file).isDirectory()) return addDirectoryToImage(file, ignores);
     
     var fileContent = fs.readFileSync(file);
-    var chunks = chunkify(fileContent, 100);
-    
-    var hash = chunks.map(x=>crc32(x).toString("hex")).join("");
+    var hash = badPerceptualHash(fileContent).toString("hex")
     
     pixels.push(ENTER_FILE);
-    addHexPixels(fileContent.length.toString(16));
-    pixels.push(START_HASH);
-    addHexPixels(hash);
+    addHexPixels(fileContent.length.toString(16).substring(0,6));
     
     return hash;
-}
-
-function chunkify(buffer, chunkLength) {
-    var chunks = [];
-    for(var i = 0; i < buffer.length; i+= chunkLength) {
-        chunks.push(buffer.slice(i, i + chunkLength));
-    }
-    return chunks;
 }
 
 function addHexPixels(str) {
