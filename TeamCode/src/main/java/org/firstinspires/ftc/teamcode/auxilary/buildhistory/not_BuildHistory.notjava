@@ -23,6 +23,7 @@ public class not_BuildHistory {
     public static String buildTimeIso = "BUILD_TIME_ISO";
     public static String buildName = "BUILD_NAME";
     public static String buildHistory = "BUILD_HISTORY";
+    public static String buildHistoryIncludeLocal = "";
     public static String buildContentPhrase = "BUILD_PHRASE";
     public static String buildContentHash = "BUILD_HASH";
     public static String buildContentHashImage = "BUILD_HASH_IMAGE";
@@ -30,6 +31,22 @@ public class not_BuildHistory {
 
     public static final String MEMORY_FILE = "build-history.csv";
     public static final int MOST_RECENT_INCLUDE_NUM = 200;
+
+    public static String getJSON() {
+        String json = "{";
+        json += PaulMath.JSONify("builderBrowser") + ":" + PaulMath.JSONify(builderBrowserFingerprint) + ",";
+        json += PaulMath.JSONify("time") + ":" + PaulMath.JSONify(buildTimeIso) + ",";
+        json += PaulMath.JSONify("name") + ":" + PaulMath.JSONify(buildName) + ",";
+        json += PaulMath.JSONify("historyCsv") + ":" + PaulMath.JSONify(buildHistory) + ",";
+        json += PaulMath.JSONify("historyCsvLocal") + ":" + PaulMath.JSONify(buildHistoryIncludeLocal) + ",";
+        json += PaulMath.JSONify("w3w") + ":" + PaulMath.JSONify(buildContentPhrase) + ",";
+        json += PaulMath.JSONify("hash") + ":" + PaulMath.JSONify(buildContentHash) + ",";
+        json += PaulMath.JSONify("img") + ":" + PaulMath.JSONify(buildContentHashImage) + ",";
+        json += PaulMath.JSONify("num") + ":" + PaulMath.JSONify(buildNumber);
+        json += "}";
+
+        return json;
+    }
 
     public static void init() {
         loadLocalMemory();
@@ -97,7 +114,7 @@ public class not_BuildHistory {
         //save values, both in the file and in the static variable so that others can have up-to-date data
         String content = PaulMath.join("\n", sliceRows);
         localFile.overwriteFile(content);
-        buildHistory = content;
+        buildHistoryIncludeLocal = content;
     }
     public static String[][] getBuildHistoryAsTable() {
         return parseCsvToTable(buildHistory);

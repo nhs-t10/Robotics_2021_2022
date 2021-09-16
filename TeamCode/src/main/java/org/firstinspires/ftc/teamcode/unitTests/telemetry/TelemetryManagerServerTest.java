@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class TelemetryManagerServerTest {
     @Test
     public void test() throws IOException {
-        int testDurationMs = 30_000;
+        int testDurationMs = 300_000;
         long testStart = System.currentTimeMillis();
 
         FeatureManager.setIsOpModeRunning(true);

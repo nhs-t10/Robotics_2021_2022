@@ -1,0 +1,15 @@
+<svg viewBox="0 0 200 200" xmlns='http://www.w3.org/2000/svg'>
+    <filter id='noiseFilter' filterUnits="objectBoundingBox" x="0" y="0" width="1" height="1">
+        <feTurbulence type="turbulence" baseFrequency="3"
+                      numOctaves="2" result="turbulence"/>
+
+    </filter>
+
+
+    <g style="overflow:hidden">
+        <foreignObject  width='30' height='30'>
+            <img src="http://localhost:5567/buildimgs/1.png" style="image-rendering:crisp-edges;width:30">
+        </foreignObject>
+        <rect width="30" height="30" filter='url(#noiseFilter)' style="opacity:0.8;filter:grayscale(1)"></rect>
+    </g>
+</svg>

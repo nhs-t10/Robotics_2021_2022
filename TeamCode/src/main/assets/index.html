@@ -18,6 +18,39 @@
                 init: function (parent) { parent.innerHTML = ""; },
                 ondata: function (data, parent) { }
             },
+            "buildhistory.profile": {
+                init: function (parent, state, config, box) {
+                    var title = document.createElement("h2");
+                    title.setAttribute("style", 'margin:0');
+                    var image = document.createElement("img");
+                    image.setAttribute("style", 'margin-right:0.25em;border-radius:2em;width:4em');
+
+                    var toprow = document.createElement("div");
+                    toprow.setAttribute("style", 'display:flex;align-items:center');
+
+                    toprow.appendChild(image);
+                    toprow.appendChild(title);
+
+                    var description = document.createElement("p");
+
+                    parent.appendChild(toprow);
+                    parent.appendChild(description);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        var buildHistory = JSON.parse(xhr.responseText);
+                        title.textContent = buildHistory.w3w;
+                        image.src = buildHistory.img;
+                        description.textContent = buildHistory.hash;
+                    }
+                    xhr.open("GET", "/build-history");
+                    xhr.send();
+                },
+                ondata: function (data, parent, state, config) {
+
+                },
+                config: []
+            },
             "autoauto.statelayout": {
                 init: function (parent, state, config, box) {
 
@@ -638,6 +671,7 @@
             });
 
             startDataRequest();
+            recoverSavedItems();
         });
 
         window.addEventListener("mousemove", function (event) {
@@ -645,480 +679,559 @@
             mouseY = Math.floor(event.clientY / gridSize);
         });
 
+        var saveItemDatabase = null, userDeniedStorage = false;
+        
+        function recoverSavedItems() {
+            idbPolyfill();
+            if (userDeniedStorage) return false;
+            if (saveItemDatabase == null) return acquireItemDatabase(recoverSavedItems);
+
+            var transaction = saveItemDatabase.transaction(["widgets"], "readwrite");
+            var objectStore = transaction.objectStore("widgets");
+            var request = objectStore.getAll();
+            
+            request.onsuccess = function(e) {
+                var vals = e.target.result;
+                for(var i = 0; i < vals.length; i++) {
+                    var val = vals[i];
+                    var newWidg = createWidget(val.box.x, val.box.y, val.box.width, val.box.height);
+                    newWidg.type = val.type;
+                    newWidg.config = val.config;
+                    newWidg.state = {};
+                    
+                    widgetTypes[newWidg.type].init(newWidg.content, newWidg.state, newWidg.config, newWidg.box);
+                }
+            }
+        }
+        function saveItemChanges(widget) {
+            idbPolyfill();
+            if (userDeniedStorage) return false;
+            if (saveItemDatabase == null) return acquireItemDatabase(function() { saveItemChanges(widget); });
+
+            var transaction = saveItemDatabase.transaction(["widgets"], "readwrite");
+            var objectStore = transaction.objectStore("widgets");
+            
+            var clonable = {
+                id: widget.id,
+                type: widget.type,
+                config: widget.config,
+                box: widget.box
+            }
+            objectStore.put(clonable, widget.id);
+        }
+        function acquireItemDatabase(cb) {
+                    var request = window.indexedDB.open("savedData", 1);
+                    request.onerror = function (event) {
+                        userDeniedStorage = true;
+
+                        if (cb) cb();
+                    };
+                    request.onsuccess = function (event) {
+                        saveItemDatabase = event.target.result;
+
+                        if (cb) cb();
+                    };
+                    request.onupgradeneeded = function (event) {
+                        // Save the IDBDatabase interface
+                        var db = event.target.result;
+
+                        // Create an objectStore for this database
+                        var objectStore = db.createObjectStore("widgets", {});
+                    };
+
+                }
+
+        function idbPolyfill() {
+                    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+                    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || { READ_WRITE: "readwrite" }; // This line should only be needed if it is needed to support the object's constants for older browsers
+                    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+                }
+
         function createWidget(x, y, width, height) {
-            var id = widgetsReg.__counter || 0;
-            widgetsReg.__counter = id + 1;
+                    var id = widgetsReg.__counter || 0;
+                    widgetsReg.__counter = id + 1;
 
-            var widget = document.createElement("div");
-            widget.classList.add("widget");
+                    var widget = document.createElement("div");
+                    widget.classList.add("widget");
 
-            widget.style.gridColumn = (x) + " / " + (x + width);
-            widget.style.gridRow = (y) + " / " + (y + height);
+                    widget.style.gridColumn = (x) + " / " + (x + width);
+                    widget.style.gridRow = (y) + " / " + (y + height);
 
-            var widgetInner = document.createElement("div");
-            widgetInner.classList.add("widget--inner");
+                    var widgetInner = document.createElement("div");
+                    widgetInner.classList.add("widget--inner");
 
-            var selfWidget = {
-                id: id,
-                widget: widget,
-                widgetInner: widgetInner,
-                toolbar: createWidgetToolbar(id, widgetInner),
-                content: createWidgetContent(id, widgetInner),
-                type: "none",
-                box: {
-                    x: x,
-                    y: y,
-                    height: height,
-                    width: width
+                    var selfWidget = {
+                        id: id,
+                        widget: widget,
+                        widgetInner: widgetInner,
+                        toolbar: createWidgetToolbar(id, widgetInner),
+                        content: createWidgetContent(id, widgetInner),
+                        type: "none",
+                        state: {},
+                        config: {},
+                        box: {
+                            x: x,
+                            y: y,
+                            height: height,
+                            width: width
+                        }
+                    };
+
+                    widgetsReg[id] = selfWidget;
+
+                    (function dragging() {
+                        var pointerEvents = ["click", "dblclick", "mousedown"];
+
+                        for (var i = 0; i < pointerEvents.length; i++) {
+                            widget.addEventListener(pointerEvents[i], function (e) {
+                                e.stopPropagation();
+                            });
+                        }
+
+                        var downX, downY, dragging, dragShadow;
+
+                        widget.addEventListener("contextmenu", function (event) {
+                            event.preventDefault();
+                            openSidebar(id);
+                        });
+
+                        widget.addEventListener("mousedown", function (event) {
+                            if (event.ctrlKey) {
+                                event.preventDefault();
+                                var widgetCopy = createWidget(x, y, width, height);
+
+                                widgetCopy.type = selfWidget.type;
+                                widgetCopy.config = JSON.parse(JSON.stringify(selfWidget.config));
+                                widgetCopy.state = {};
+
+                                widgetTypes[widgetCopy.type].init(widgetCopy.content, widgetCopy.state, widgetCopy.config, widgetCopy.box);
+                            }
+                            downX = mouseX, downY = mouseY;
+                            dragging = true;
+                            draggedWidget = widget;
+                        });
+                        document.addEventListener("mousemove", function (event) {
+                            if (dragging) {
+                                event.preventDefault();
+                                if (!dragShadow) dragShadow = makeDragShadow();
+
+                                var shadowX = x + (mouseX - downX);
+                                var shadowY = y + (mouseY - downY);
+
+                                dragShadow.style.gridColumn = shadowX + " / " + (shadowX + width);
+                                dragShadow.style.gridRow = shadowY + " / " + (shadowY + height);
+                            }
+                        });
+                        function stopDrag(event) {
+                            if (dragShadow && dragShadow.parentElement) {
+                                dragShadow.parentElement.removeChild(dragShadow);
+                                dragShadow = undefined;
+                            }
+
+                            if (dragging && (mouseX - downX != 0 || mouseY - downY != 0)) {
+                                x += (mouseX - downX);
+                                y += (mouseY - downY);
+
+                                y = Math.max(y, 0);
+                                x = Math.max(x, 0);
+
+                                widget.style.gridColumn = (x) + " / " + (x + width);
+                                widget.style.gridRow = (y) + " / " + (y + height);
+                                
+                                selfWidget.box = {
+                                    x: x,
+                                    y: y,
+                                    height: height,
+                                    width: width
+                                };
+                                saveItemChanges(selfWidget);
+                            }
+                            dragging = false;
+                        }
+                        document.addEventListener("mouseup", stopDrag);
+                        widget.addEventListener("mouseup", stopDrag);
+                    })();
+
+                    widget.appendChild(widgetInner);
+
+                    widgetsParent.appendChild(widget)
+
+                    return selfWidget;
                 }
-            };
-
-            widgetsReg[id] = selfWidget;
-
-            (function dragging() {
-                var pointerEvents = ["click", "dblclick", "mousedown"];
-
-                for (var i = 0; i < pointerEvents.length; i++) {
-                    widget.addEventListener(pointerEvents[i], function (e) {
-                        e.stopPropagation();
-                    });
-                }
-
-                var downX, downY, dragging, dragShadow;
-
-                widget.addEventListener("contextmenu", function (event) {
-                    event.preventDefault();
-                    openSidebar(id);
-                });
-
-                widget.addEventListener("mousedown", function (event) {
-                    if (event.ctrlKey) {
-                        event.preventDefault();
-                        var widgetCopy = createWidget(x, y, width, height);
-
-                        widgetCopy.type = selfWidget.type;
-                        widgetCopy.config = JSON.parse(JSON.stringify(selfWidget.config));
-                        widgetCopy.state = {};
-
-                        widgetTypes[widgetCopy.type].init(widgetCopy.content, widgetCopy.state, widgetCopy.config, widgetCopy.box);
-                    }
-                    downX = mouseX, downY = mouseY;
-                    dragging = true;
-                    draggedWidget = widget;
-                });
-                document.addEventListener("mousemove", function (event) {
-                    if (dragging) {
-                        event.preventDefault();
-                        if (!dragShadow) dragShadow = makeDragShadow();
-
-                        var shadowX = x + (mouseX - downX);
-                        var shadowY = y + (mouseY - downY);
-
-                        dragShadow.style.gridColumn = shadowX + " / " + (shadowX + width);
-                        dragShadow.style.gridRow = shadowY + " / " + (shadowY + height);
-                    }
-                });
-                function stopDrag(event) {
-                    if (dragShadow && dragShadow.parentElement) {
-                        dragShadow.parentElement.removeChild(dragShadow);
-                        dragShadow = undefined;
-                    }
-
-                    if (dragging && (mouseX - downX != 0 || mouseY - downY != 0)) {
-                        x += (mouseX - downX);
-                        y += (mouseY - downY);
-
-                        y = Math.max(y, 0);
-                        x = Math.max(x, 0);
-
-                        widget.style.gridColumn = (x) + " / " + (x + width);
-                        widget.style.gridRow = (y) + " / " + (y + height);
-                    }
-                    dragging = false;
-                }
-                document.addEventListener("mouseup", stopDrag);
-                widget.addEventListener("mouseup", stopDrag);
-            })();
-
-            widget.appendChild(widgetInner);
-
-            widgetsParent.appendChild(widget)
-
-            return selfWidget;
-        }
         function createWidgetToolbar(id, parent) {
-            var toolbar = document.createElement("nav");
-            toolbar.classList.add("widget--toolbar");
+                    var toolbar = document.createElement("nav");
+                    toolbar.classList.add("widget--toolbar");
 
-            var settingsButton = document.createElement("button");
-            settingsButton.setAttribute("aria-label", "Settings");
-            settingsButton.classList.add("widget--toolbar--settings-button")
-            settingsButton.addEventListener("click", function () {
-                openSidebar(id);
-            });
-            toolbar.appendChild(settingsButton);
+                    var settingsButton = document.createElement("button");
+                    settingsButton.setAttribute("aria-label", "Settings");
+                    settingsButton.classList.add("widget--toolbar--settings-button")
+                    settingsButton.addEventListener("click", function () {
+                        openSidebar(id);
+                    });
+                    toolbar.appendChild(settingsButton);
 
-            var deleteButton = document.createElement("button");
-            deleteButton.setAttribute("aria-label", "Remove Widget");
-            deleteButton.classList.add("widget--toolbar--delete-button")
-            deleteButton.addEventListener("click", function () {
-                var widgetParent = widgetsReg[id].widget;
-                if (widgetParent.parentElement) {
-                    widgetParent.parentElement.removeChild(widgetParent);
-                    delete widgetsReg[id];
+                    var deleteButton = document.createElement("button");
+                    deleteButton.setAttribute("aria-label", "Remove Widget");
+                    deleteButton.classList.add("widget--toolbar--delete-button")
+                    deleteButton.addEventListener("click", function () {
+                        var widgetParent = widgetsReg[id].widget;
+                        if (widgetParent.parentElement) {
+                            widgetParent.parentElement.removeChild(widgetParent);
+                            delete widgetsReg[id];
+                        }
+                    });
+
+                    toolbar.appendChild(deleteButton);
+                    parent.appendChild(toolbar);
+
+                    return toolbar;
                 }
-            });
-
-            toolbar.appendChild(deleteButton);
-            parent.appendChild(toolbar);
-
-            return toolbar;
-        }
         function createWidgetContent(id, parent) {
-            var content = document.createElement("div");
-            content.classList.add("widget--content");
-            parent.appendChild(content);
-            return content;
-        }
+                    var content = document.createElement("div");
+                    content.classList.add("widget--content");
+                    parent.appendChild(content);
+                    return content;
+                }
         function makeDragShadow() {
-            var shadow = document.createElement("div");
-            shadow.classList.add("drag-shadow");
-            document.getElementById("grid-ui").appendChild(shadow);
-            return shadow;
-        }
+                    var shadow = document.createElement("div");
+                    shadow.classList.add("drag-shadow");
+                    document.getElementById("grid-ui").appendChild(shadow);
+                    return shadow;
+                }
 
         var openSidebar, closeSidebar;
-        (function sidebar() {
-            var sidebarInited = false, sidebarFocusedWidgetId, sidebarOpen;
-            openSidebar = function openSidebar(id) {
-                if (!sidebarInited) initSidebar();
-                if (sidebarOpen) closeSidebar();
+            (function sidebar() {
+                var sidebarInited = false, sidebarFocusedWidgetId, sidebarOpen;
+                openSidebar = function openSidebar(id) {
+                    if (!sidebarInited) initSidebar();
+                    if (sidebarOpen) closeSidebar();
 
-                sidebarFocusedWidgetId = id;
+                    sidebarFocusedWidgetId = id;
 
-                var sidebarParent = document.getElementById("config-sidebar-parent");
-                var sidebar = document.getElementById("config-sidebar");
+                    var sidebarParent = document.getElementById("config-sidebar-parent");
+                    var sidebar = document.getElementById("config-sidebar");
 
-                sidebar.innerHTML = "";
-                populateSidebar(id, sidebar);
+                    sidebar.innerHTML = "";
+                    populateSidebar(id, sidebar);
 
-                sidebarParent.style.display = "block";
-                sidebar.setAttribute("open", "true");
-                sidebar.focus();
+                    sidebarParent.style.display = "block";
+                    sidebar.setAttribute("open", "true");
+                    sidebar.focus();
 
-                sidebarOpen = true;
-            }
-            closeSidebar = function closeSidebar() {
-                if (!sidebarInited) initSidebar();
-
-                if (!sidebarOpen) return false;
-
-                var sidebarParent = document.getElementById("config-sidebar-parent");
-                var sidebar = document.getElementById("config-sidebar");
-                sidebarParent.style.display = "none";
-                sidebar.removeAttribute("open");
-
-                sidebarOpen = false;
-
-                if (sidebarFocusedWidgetId && widgetsReg[sidebarFocusedWidgetId]) widgetsReg[sidebarFocusedWidgetId].widget.focus();
-                sidebarFocusedWidgetId = undefined;
-            }
-            function initSidebar() {
-                var sidebarParent = document.getElementById("config-sidebar-parent");
-
-                var pointerEvents = ["click", "dblclick", "mousedown"];
-
-                for (var i = 0; i < pointerEvents.length; i++) {
-                    sidebarParent.addEventListener(pointerEvents[i], function (e) {
-                        e.stopPropagation();
-                    });
+                    sidebarOpen = true;
                 }
+                closeSidebar = function closeSidebar() {
+                    if (!sidebarInited) initSidebar();
 
-                sidebarParent.addEventListener("click", function (e) {
-                    if (e.target == sidebarParent) closeSidebar();
-                });
+                    if (!sidebarOpen) return false;
 
-                document.addEventListener("keyup", function escapeListener(e) {
-                    if (e.which == 27 || e.key == "Escape" || e.code == "Escape") closeSidebar();
-                });
+                    var sidebarParent = document.getElementById("config-sidebar-parent");
+                    var sidebar = document.getElementById("config-sidebar");
+                    sidebarParent.style.display = "none";
+                    sidebar.removeAttribute("open");
 
-                sidebarInited = true;
+                    sidebarOpen = false;
 
-            }
-
-            function populateSidebar(id, sidebar) {
-
-                var typeSelect = document.createElement("select");
-                var settings = document.createElement("fieldset");
-                settings.classList.add("sidebar--config-fields");
-
-                var keys = Object.keys(widgetTypes).sort();
-                for (var i = 0; i < keys.length; i++) {
-                    var opt = document.createElement("option");
-                    if (keys[i] == widgetsReg[id].type) opt.selected = true;
-                    opt.textContent = keys[i];
-                    typeSelect.appendChild(opt);
+                    if (sidebarFocusedWidgetId && widgetsReg[sidebarFocusedWidgetId]) widgetsReg[sidebarFocusedWidgetId].widget.focus();
+                    sidebarFocusedWidgetId = undefined;
                 }
-                typeSelect.addEventListener("change", function () {
-                    widgetsReg[id].type = keys[typeSelect.selectedIndex] || "none";
-                    widgetsReg[id].state = {};
-                    widgetsReg[id].config = {};
-                    widgetsReg[id].content.innerHTML = "";
-                    widgetsReg[id].content.className = "widget--content";
-                    widgetTypes[widgetsReg[id].type].init(widgetsReg[id].content, widgetsReg[id].state, widgetsReg[id].config, widgetsReg[id].box);
+                function initSidebar() {
+                    var sidebarParent = document.getElementById("config-sidebar-parent");
 
-                    populateSidebarConfig(id, settings);
-                });
-                var label = document.createElement("label");
-                label.textContent = "Widget Type: ";
-                label.appendChild(typeSelect)
-                sidebar.appendChild(label);
+                    var pointerEvents = ["click", "dblclick", "mousedown"];
 
-                sidebar.appendChild(document.createElement("hr"));
-
-
-                populateSidebarConfig(id, settings);
-                sidebar.appendChild(settings);
-            }
-
-            function populateSidebarConfig(id, sidebar) {
-                var type = widgetTypes[widgetsReg[id].type];
-                var config = type.config || [];
-
-                if (config.length == 0) sidebar.classList.add("no-settings");
-                else sidebar.classList.remove("no-settings");
-
-                sidebar.innerHTML = "";
-
-                for (var i = 0; i < config.length; i++) {
-                    var configOption = config[i]
-                    var lbl = document.createElement("label");
-                    lbl.textContent = configOption.name + ": ";
-
-                    if (configOption.type == "select") {
-                        if (configOption.value == "field") {
-                            lbl.appendChild(
-                                createSelectControl(widgetsReg[id].config, configOption.name, fields)
-                            );
-                        } else {
-                            lbl.appendChild(
-                                createSelectControl(widgetsReg[id].config, configOption.name, configOption.value)
-                            );
-                        }
-                    } else if (configOption.type == "number") {
-
-                        lbl.appendChild(
-                            createNumberControl(widgetsReg[id].config, configOption.name, configOption.default)
-                        );
-                    } else if (configOption.type == "text") {
-
-                        lbl.appendChild(
-                            createTextControl(widgetsReg[id].config, configOption.name, configOption.default)
-                        );
+                    for (var i = 0; i < pointerEvents.length; i++) {
+                        sidebarParent.addEventListener(pointerEvents[i], function (e) {
+                            e.stopPropagation();
+                        });
                     }
 
-                    sidebar.appendChild(lbl);
-                }
-            }
-        })();
+                    sidebarParent.addEventListener("click", function (e) {
+                        if (e.target == sidebarParent) closeSidebar();
+                    });
 
-        function createSelectControl(config, key, options) {
-            var select = document.createElement("select");
+                    document.addEventListener("keyup", function escapeListener(e) {
+                        if (e.which == 27 || e.key == "Escape" || e.code == "Escape") closeSidebar();
+                    });
 
-            if (config[key] === undefined) config[key] = options[0];
+                    sidebarInited = true;
 
-            options = options.map(x => x + "").sort();
-
-            for (var i = 0; i < options.length; i++) {
-                var opt = document.createElement("option");
-                if (config[key] === options[i]) opt.setAttribute("selected", "true");
-                opt.textContent = options[i];
-                select.appendChild(opt);
-            }
-            select.addEventListener("change", function () {
-                config[key] = options[select.selectedIndex];
-            });
-            return select;
-        }
-
-        function createNumberControl(config, key, defaultValue) {
-            if (config[key] === undefined) {
-                config[key] = defaultValue || 0;
-            }
-            var input = document.createElement("input");
-            input.type = "number";
-            input.value = config[key];
-            input.addEventListener("change", function () {
-                config[key] = input.valueAsNumber;
-            });
-
-            return input;
-        }
-
-        function createTextControl(config, key, defaultValue) {
-            if (config[key] === undefined) {
-                config[key] = defaultValue || "";
-            }
-            var input = document.createElement("input");
-            input.value = config[key];
-            input.addEventListener("change", function () {
-                config[key] = input.value;
-            });
-
-            return input;
-        }
-
-        function sendCommand() {
-            var argsArray = Array.from(arguments);
-
-            var cb = () => 0;
-
-            if (typeof argsArray[argsArray.length - 1] == "function") cb = argsArray.pop();
-
-            var body = argsArray.join(",");
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.open("GET", "/command?command=" + encodeURIComponent(body));
-            xhr.onload = cb;
-            xhr.send();
-        }
-
-        var dataXhr = null;
-        function startDataRequest() {
-            if (dataXhr != null) return false;
-
-            var xhr = new XMLHttpRequest();
-            dataXhr = xhr;
-
-            xhr.open("GET", "/stream");
-
-            var currentChunkGlob = "";
-            var lastIndex = -1;
-            xhr.addEventListener("progress", function (event) {
-                hideErrorBanner();
-                var currentIndex = xhr.responseText.length;
-                if (lastIndex == currentIndex) return; // No new data
-                var streamData = xhr.responseText.substring(lastIndex, currentIndex);
-
-                currentChunkGlob += streamData;
-
-                var validChunkGlob = "";
-                //must be a valid chunk!!
-                if (currentChunkGlob.indexOf("\n") != -1) {
-                    validChunkGlob = currentChunkGlob.substring(0, currentChunkGlob.lastIndexOf("\n"));
-                    currentChunkGlob = currentChunkGlob.substring(currentChunkGlob.lastIndexOf("\n"));
-                } else {
-                    return;
                 }
 
-                var streamChunks = validChunkGlob.split("\n");
+                function populateSidebar(id, sidebar) {
 
-                for (var i = 0; i < streamChunks.length; i++) {
-                    if (streamChunks[i].startsWith("{")) processData(streamChunks[i]);
-                    //else console.log("Control code: " + streamChunks[i]);
+                    var typeSelect = document.createElement("select");
+                    var settings = document.createElement("fieldset");
+                    settings.classList.add("sidebar--config-fields");
+
+                    var keys = Object.keys(widgetTypes).sort();
+                    for (var i = 0; i < keys.length; i++) {
+                        var opt = document.createElement("option");
+                        if (keys[i] == widgetsReg[id].type) opt.selected = true;
+                        opt.textContent = keys[i];
+                        typeSelect.appendChild(opt);
+                    }
+                    typeSelect.addEventListener("change", function () {
+                        widgetsReg[id].type = keys[typeSelect.selectedIndex] || "none";
+                        widgetsReg[id].state = {};
+                        widgetsReg[id].config = {};
+                        widgetsReg[id].content.innerHTML = "";
+                        widgetsReg[id].content.className = "widget--content";
+                        widgetTypes[widgetsReg[id].type].init(widgetsReg[id].content, widgetsReg[id].state, widgetsReg[id].config, widgetsReg[id].box);
+
+                        populateSidebarConfig(id, settings);
+                        saveItemChanges(selfWidget);
+                    });
+                    var label = document.createElement("label");
+                    label.textContent = "Widget Type: ";
+                    label.appendChild(typeSelect)
+                    sidebar.appendChild(label);
+
+                    sidebar.appendChild(document.createElement("hr"));
+
+
+                    populateSidebarConfig(id, settings);
+                    sidebar.appendChild(settings);
                 }
 
-                lastIndex = currentIndex;
-            });
+                function populateSidebarConfig(id, sidebar) {
+                    var type = widgetTypes[widgetsReg[id].type];
+                    var config = type.config || [];
 
-            xhr.addEventListener("error", function () {
-                dataXhr = null;
-                showErrorBanner();
-            });
+                    if (config.length == 0) sidebar.classList.add("no-settings");
+                    else sidebar.classList.remove("no-settings");
 
-            xhr.send();
+                    sidebar.innerHTML = "";
 
-            //abort & restart after 30s
-            setTimeout(function () {
-                xhr.abort();
-                dataXhr = null;
-                startDataRequest();
-            }, 30000);
-        }
+                    for (var i = 0; i < config.length; i++) {
+                        var configOption = config[i]
+                        var lbl = document.createElement("label");
+                        lbl.textContent = configOption.name + ": ";
 
-        function processData(data) {
-            var dataObject = {};
-            try {
-                dataObject = JSON.parse(data);
-            } catch (e) {
-                console.error(data);
-                console.error(e);
+                        if (configOption.type == "select") {
+                            if (configOption.value == "field") {
+                                lbl.appendChild(
+                                    createSelectControl(widgetsReg[id].config, configOption.name, fields)
+                                );
+                            } else {
+                                lbl.appendChild(
+                                    createSelectControl(widgetsReg[id].config, configOption.name, configOption.value)
+                                );
+                            }
+                        } else if (configOption.type == "number") {
+
+                            lbl.appendChild(
+                                createNumberControl(widgetsReg[id].config, configOption.name, configOption.default)
+                            );
+                        } else if (configOption.type == "text") {
+
+                            lbl.appendChild(
+                                createTextControl(widgetsReg[id].config, configOption.name, configOption.default)
+                            );
+                        }
+
+                        sidebar.appendChild(lbl);
+                    }
+                }
+            })();
+
+            function createSelectControl(config, key, options) {
+                var select = document.createElement("select");
+
+                if (config[key] === undefined) config[key] = options[0];
+
+                options = options.map(x => x + "").sort();
+
+                for (var i = 0; i < options.length; i++) {
+                    var opt = document.createElement("option");
+                    if (config[key] === options[i]) opt.setAttribute("selected", "true");
+                    opt.textContent = options[i];
+                    select.appendChild(opt);
+                }
+                select.addEventListener("change", function () {
+                    config[key] = options[select.selectedIndex];
+                });
+                return select;
             }
-            //make autoauto variables normal, accessible fields. It's just easier.
-            Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
 
-            if (dataObject.fields !== undefined) fields = Object.keys(dataObject.fields);
-            var widgets = Object.values(widgetsReg);
-            for (var i = 0; i < widgets.length; i++) {
-                //skip `__continue`
-                if (typeof widgets[i] == "number") continue;
+            function createNumberControl(config, key, defaultValue) {
+                if (config[key] === undefined) {
+                    config[key] = defaultValue || 0;
+                }
+                var input = document.createElement("input");
+                input.type = "number";
+                input.value = config[key];
+                input.addEventListener("change", function () {
+                    config[key] = input.valueAsNumber;
+                });
 
+                return input;
+            }
+
+            function createTextControl(config, key, defaultValue) {
+                if (config[key] === undefined) {
+                    config[key] = defaultValue || "";
+                }
+                var input = document.createElement("input");
+                input.value = config[key];
+                input.addEventListener("change", function () {
+                    config[key] = input.value;
+                });
+
+                return input;
+            }
+
+            function sendCommand() {
+                var argsArray = Array.from(arguments);
+
+                var cb = () => 0;
+
+                if (typeof argsArray[argsArray.length - 1] == "function") cb = argsArray.pop();
+
+                var body = argsArray.join(",");
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open("GET", "/command?command=" + encodeURIComponent(body));
+                xhr.onload = cb;
+                xhr.send();
+            }
+
+            var dataXhr = null;
+            function startDataRequest() {
+                if (dataXhr != null) return false;
+
+                var xhr = new XMLHttpRequest();
+                dataXhr = xhr;
+
+                xhr.open("GET", "/stream");
+
+                var currentChunkGlob = "";
+                var lastIndex = -1;
+                xhr.addEventListener("progress", function (event) {
+                    hideErrorBanner();
+                    var currentIndex = xhr.responseText.length;
+                    if (lastIndex == currentIndex) return; // No new data
+                    var streamData = xhr.responseText.substring(lastIndex, currentIndex);
+
+                    currentChunkGlob += streamData;
+
+                    var validChunkGlob = "";
+                    //must be a valid chunk!!
+                    if (currentChunkGlob.indexOf("\n") != -1) {
+                        validChunkGlob = currentChunkGlob.substring(0, currentChunkGlob.lastIndexOf("\n"));
+                        currentChunkGlob = currentChunkGlob.substring(currentChunkGlob.lastIndexOf("\n"));
+                    } else {
+                        return;
+                    }
+
+                    var streamChunks = validChunkGlob.split("\n");
+
+                    for (var i = 0; i < streamChunks.length; i++) {
+                        if (streamChunks[i].startsWith("{")) processData(streamChunks[i]);
+                        //else console.log("Control code: " + streamChunks[i]);
+                    }
+
+                    lastIndex = currentIndex;
+                });
+
+                xhr.addEventListener("error", function () {
+                    dataXhr = null;
+                    showErrorBanner();
+                });
+
+                xhr.send();
+
+                //abort & restart after 30s
+                setTimeout(function () {
+                    xhr.abort();
+                    dataXhr = null;
+                    startDataRequest();
+                }, 30000);
+            }
+
+            function processData(data) {
+                var dataObject = {};
                 try {
-                    widgetTypes[widgets[i].type].ondata(dataObject, widgets[i].content, widgets[i].state, widgets[i].config);
+                    dataObject = JSON.parse(data);
                 } catch (e) {
+                    console.error(data);
                     console.error(e);
-                    console.error(widgets[i]);
+                }
+                //make autoauto variables normal, accessible fields. It's just easier.
+                Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
+
+                if (dataObject.fields !== undefined) fields = Object.keys(dataObject.fields);
+                var widgets = Object.values(widgetsReg);
+                for (var i = 0; i < widgets.length; i++) {
+                    //skip `__continue`
+                    if (typeof widgets[i] == "number") continue;
+
+                    try {
+                        widgetTypes[widgets[i].type].ondata(dataObject, widgets[i].content, widgets[i].state, widgets[i].config);
+                    } catch (e) {
+                        console.error(e);
+                        console.error(widgets[i]);
+                    }
                 }
             }
-        }
 
-        function drawLine(datapoints, box, xScale, isFilled) {
-            var xRightEdge = Date.now();
+            function drawLine(datapoints, box, xScale, isFilled) {
+                var xRightEdge = Date.now();
 
-            //find top point & bottom point
-            var max = datapoints[0].y;
-            var min = datapoints[0].y;
-            for (var i = 0; i < datapoints.length; i++) {
-                max = Math.max(max, datapoints[i].y);
-                min = Math.min(min, datapoints[i].y);
-            }
-
-            var range = max - min;
-
-            var path = "";
-
-            for (var i = 0; i < datapoints.length; i++) {
-                var point = datapoints[i];
-
-                var x = 1 - ((xRightEdge - point.x) / xScale);
-                var y = (range - (point.y - min)) / range;
-
-                //initialization
-                if (i == 0) path += "M" + (x * box.width) + "," + (y * box.height);
-
-                path += "L" + (x * box.width) + "," + (y * box.height);
-            }
-            return path;
-        }
-
-        function sliceData(data, leftEdge) {
-            var firstDisplayedDatapointIndex = 0;
-            //find the first displayed datapoint. If there's not enough data to cover the graph, it'll select everything.
-            for (var i = data.length - 1; i >= 0; i--) {
-                if (data[i].x < leftEdge) {
-                    firstDisplayedDatapointIndex = i + 1;
-                    break;
+                //find top point & bottom point
+                var max = datapoints[0].y;
+                var min = datapoints[0].y;
+                for (var i = 0; i < datapoints.length; i++) {
+                    max = Math.max(max, datapoints[i].y);
+                    min = Math.min(min, datapoints[i].y);
                 }
-            }
-            return data.slice(firstDisplayedDatapointIndex);
-        }
 
-        var errorBanner = document.createElement("div");
-        (function () {
-            errorBanner.style.display = "none";
-            errorBanner.textContent = "No live connection to robot-based server. Retrying connection currently."
-            errorBanner.classList.add("error-banner");
-            window.addEventListener("load", function () {
-                document.body.appendChild(errorBanner);
-            });
-        })();
-        function showErrorBanner() {
-            errorBanner.style.display = "block";
-        }
-        function hideErrorBanner() {
-            errorBanner.style.display = "none";
-        }
+                var range = max - min;
+
+                var path = "";
+
+                for (var i = 0; i < datapoints.length; i++) {
+                    var point = datapoints[i];
+
+                    var x = 1 - ((xRightEdge - point.x) / xScale);
+                    var y = (range - (point.y - min)) / range;
+
+                    //initialization
+                    if (i == 0) path += "M" + (x * box.width) + "," + (y * box.height);
+
+                    path += "L" + (x * box.width) + "," + (y * box.height);
+                }
+                return path;
+            }
+
+            function sliceData(data, leftEdge) {
+                var firstDisplayedDatapointIndex = 0;
+                //find the first displayed datapoint. If there's not enough data to cover the graph, it'll select everything.
+                for (var i = data.length - 1; i >= 0; i--) {
+                    if (data[i].x < leftEdge) {
+                        firstDisplayedDatapointIndex = i + 1;
+                        break;
+                    }
+                }
+                return data.slice(firstDisplayedDatapointIndex);
+            }
+
+            var errorBanner = document.createElement("div");
+            (function () {
+                errorBanner.style.display = "none";
+                errorBanner.textContent = "No live connection to robot-based server. Retrying connection currently."
+                errorBanner.classList.add("error-banner");
+                window.addEventListener("load", function () {
+                    document.body.appendChild(errorBanner);
+                });
+            })();
+            function showErrorBanner() {
+                errorBanner.style.display = "block";
+            }
+            function hideErrorBanner() {
+                errorBanner.style.display = "none";
+            }
 
     </script>
     <style>
@@ -1527,8 +1640,8 @@
         <sidebar id="config-sidebar" data-side="left"></sidebar>
     </div>
     <script>
-        if (localStorage.getItem("theme") == "light") document.body.classList.add("dark-theme");
-        else document.body.classList.add("dark-theme");
+            if (localStorage.getItem("theme") == "light") document.body.classList.add("dark-theme");
+            else document.body.classList.add("dark-theme");
     </script>
 </body>
 

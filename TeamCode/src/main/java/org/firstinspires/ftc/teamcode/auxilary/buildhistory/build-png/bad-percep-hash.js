@@ -2,6 +2,7 @@ var OUTPUT_LENGTH_BYTES = 3600;
 var BYTES_PER_BUCKET = 1;
 var UINT_MAX = 65536;
 
+var crc32 = require("./png-file/crc");
 
 module.exports = {
     hash: hashBuffer,
@@ -60,10 +61,12 @@ function hashBuffer(buffer) {
     
     for(var i = 0; i < deltas.length; i++) {
         var rangeAdjustedDelta = deltas[i] - smallestDelta;
+
         
-        var bucketIndexPosition = (rangeAdjustedDelta / deltaRange);
-        //weight things towards the edges.
-        bucketIndexPosition = Math.cbrt(2 * bucketIndexPosition - 1) / 2 + 0.5;
+        //put it through a crc32 algorithm so that pixels are evenly spread out
+        var bucketIndexBuffer = Buffer.from(rangeAdjustedDelta.toString(16), "hex");
+        var bucketIndexPositionHash = crc32(bucketIndexBuffer);
+        var bucketIndexPosition = (bucketIndexPositionHash[0] * 0xff + bucketIndexPositionHash[1] ) / UINT_MAX;
         
         var bucketIndex = Math.floor(bucketIndexPosition * buckets.length);
         buckets[bucketIndex] += deltas[i];

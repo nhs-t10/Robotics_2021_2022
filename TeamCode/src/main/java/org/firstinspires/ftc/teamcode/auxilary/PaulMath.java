@@ -206,10 +206,10 @@ public abstract class PaulMath extends FeatureManager {
      */
     public static String escapeString(String value) {
         return value
+                .replace("\\", "\\\\")
                 .replace("\n", "\\n")
                 .replace("\"", "\\\"")
-                .replace("\t", "\\t")
-                .replace("\\", "\\\\");
+                .replace("\t", "\\t");
     }
 
     /**

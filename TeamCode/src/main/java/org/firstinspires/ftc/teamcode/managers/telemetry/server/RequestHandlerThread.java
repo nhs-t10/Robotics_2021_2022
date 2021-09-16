@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
@@ -107,7 +108,12 @@ public class RequestHandlerThread implements Runnable {
                         output.flush();
                     }
                 }
-            }else {
+            } else if(path.equals("/build-history")) {
+                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
+                        + "Content-Type: " + "application/json" + HTTP_LINE_SEPARATOR
+                        + HTTP_LINE_SEPARATOR);
+                writer.print(BuildHistory.getJSON());
+            } else {
                 writer.print(HttpStatusCodeReplies.Not_Found);
             }
             writer.flush();

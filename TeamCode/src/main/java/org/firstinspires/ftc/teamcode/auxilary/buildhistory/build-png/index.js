@@ -11,7 +11,7 @@ if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "\"\"");
 
 var pixels = [];
 
-module.exports = function(buildNumber, directory, ignores) {
+module.exports = function(buildNumber, directory, ignores) {rmal
     pixels = [];
     
     var hash = getDirectoryHash(directory, ignores).toString("hex");
@@ -24,14 +24,11 @@ module.exports = function(buildNumber, directory, ignores) {
     
     fs.writeFileSync(cacheFile, '"' + hash + '"');
     
-    var matrix = pixelsToMatrix(pixels);
-    
-    console.log(matrix);
-    
+    var matrix = pixelsToMatrix(normalizeBrightness(pixels));
     
     if(matrix.length == 0) matrix = [[[0,0,0]]];
     
-    var png = new PngFile(matrix, matrix[0].length);
+    var png = new PngFile(matrix, 128);
     
     return savePng(buildNumber, png.toBuffer());
 };
@@ -50,6 +47,33 @@ function hexDiff(a, b) {
         if(delta != 0) res += Math.abs(delta).toString(16);
     }
     return res;
+}
+
+function normalizeBrightness(pixels) {
+    
+    //TODO: better normalization
+    return pixels;
+    
+    var greatestBrightness = 0;
+    for(var i = 0; i < pixels.length; i++) {
+        var brightness = (pixels[i][0] + pixels[i][1] + pixels[i][2]) / 3;
+        greatestBrightness = Math.max(greatestBrightness, brightness);
+    }
+    var normalizedPixels = [];
+    
+    //don't normalize up to 255, bc that's white. 
+    //128 is a pure hue; do that instead
+    for(var i = 0; i < pixels.length; i++) {
+        var pixel = pixels[i];
+        
+        var brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
+        var brightnessFactor = (brightness / greatestBrightness) * (brightness < 128 ? 128 : 256);
+        
+        var normPix = [pixel[0] * brightnessFactor, pixel[1] * brightnessFactor, pixel[2] * brightnessFactor];
+        
+        normalizedPixels.push(normPix);
+    }
+    return normalizedPixels;
 }
 
 function pixelsToMatrix(pixels) {

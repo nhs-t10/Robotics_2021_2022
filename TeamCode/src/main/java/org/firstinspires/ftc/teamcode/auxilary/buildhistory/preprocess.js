@@ -8,11 +8,11 @@ const buildPng = require("./build-png");
 
 var HASH_SECRET = "autoauto family";
 var GITIGNORED = ["**/buildhistory/BuildHistory.java"];
-var BUILD_HASH_IGNORED = ["__compiledautoauto", "__compiledcontrols", "genealogy", "BuildHistory.java", "last-build-pixels.json"];
+var BUILD_HASH_IGNORED = ["__compiledautoauto", "__compiledcontrols", "genealogy", "BuildHistory.java", "last-build-pixels.json", "buildimgs"];
 
 var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
-var srcDirectory = directory.slice(0, directory.indexOf("teamcode") + 1).join(path.sep);
+var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
 //update gitignore with build history files
 var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
