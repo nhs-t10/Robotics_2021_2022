@@ -26,15 +26,21 @@ public class HttpHeaderLine {
 
     }
 
+    public String toString() {
+        return this.verb + " " + this.path + " HTTP/1.1";
+    }
+
     public static HttpHeaderLine from(BufferedReader reqReader) throws IOException {
 
         StringBuilder line = new StringBuilder();
         while(true) {
             int nextByte = reqReader.read();
-            if(nextByte < 0) break;
+            if(nextByte == '\n' || nextByte < 0) break;
             line.append((char) nextByte);
         }
         String[] words = line.toString().split(" ");
+
+        if(words.length < 2) return new HttpHeaderLine("", "");
 
         return new HttpHeaderLine(words[0], words[1]);
     }

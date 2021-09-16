@@ -6,62 +6,46 @@ var savePng = require("./save-png");
 var PngFile = require("./png-file/png-file");
 var badPerceptualHash = require("./bad-percep-hash");
 
-var ENTER_FILE = [0xff, 0x00, 0xff];
-var ENTER_DIRECTORY = [0x00, 0xff, 0x00];
-var LEAVE_DIRECTORY = [0xff, 0x00, 0x00];
-var START_HASH = [0x00, 0x00, 0x00];
-var START_ITEM = [0x00, 0x00, 0xff];
-var START_DELTA = [0xff, 0xff, 0xff];
-
-if(!fs.existsSync(__dirname + "/last-build-pixels.json")) fs.writeFileSync(__dirname + "/last-build-pixels.json", "[]");
+var cacheFile = path.join(__dirname, "last-build-pixels.json");
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "");
 
 var pixels = [];
 
 module.exports = function(buildNumber, directory, ignores) {
     pixels = [];
-    addDirectoryToImage(directory, ignores);
+    var hash = getDirectoryHash(directory, ignores).toString("hex");
     
-    var deltaEncodedPixels = pixelsDiff(pixels, require("./last-build-pixels.json"));
+    var deltaEncodedPixels = hexDiff(pixels, require(cacheFile));
     
-    fs.writeFileSync(__dirname + "/last-build-pixels.json", JSON.stringify(pixels));
+    console.log(deltaEncodedPixels);
+    
+    addHexPixels(deltaEncodedPixels);
+    
+    fs.writeFileSync(cacheFile, '"' + hash + '"');
     
     var matrix = pixelsToMatrix(deltaEncodedPixels);
     
     if(matrix.length == 0) matrix = [[[0,0,0]]];
     
-    var png = new PngFile(matrix, matrix[0].length * 4);
+    var png = new PngFile(matrix, matrix[0].length);
     
     return savePng(buildNumber, png.toBuffer());
 };
 
-function pixelsDiff(a, b) {
-    var delta = [];
-    var itemsSinceDifference = 0;
-    for(var i = 0; i < a.length; i++) {
-        var difference = pixelDiff(a[i], b[i]);
-        var isDifferent = difference[0] || difference[1] || difference[2];
-        
-        if(isDifferent) {
-            delta.push([0xff, itemsSinceDifference, 0xf0]);
-            delta = delta.concat(getHexPixels(itemsSinceDifference.toString(15)) + "ff");
-            delta.push(difference);
-            
-            itemsSinceDifference = 0;
-        }
-        itemsSinceDifference++;
-    }
-    return delta;
-}
-
-function pixelDiff(a, b) {
-    if(!a) a = [0,0,0];
-    if(!b) b = [0,0,0];
+function hexDiff(a, b) {
+    var res = "";
     
-    return [
-        a[0] - b[0],
-        a[1] - b[1],
-        a[2] - b[2]
-    ];
+    for(var i = 0; i < a.length; i++) {
+        var counterpoint = b[i] || 0;
+        var counterNumber = +('0x' + counterpoint);
+        
+        var digit = +('0x' + a[i]);
+        
+        var delta = digit - counterNumber;
+        
+        if(delta != 0) res += Math.abs(delta).toString(16);
+    }
+    return res;
 }
 
 function pixelsToMatrix(pixels) {
@@ -74,41 +58,32 @@ function pixelsToMatrix(pixels) {
     return rows;
 }
 
-function addDirectoryToImage(directory, ignores) {
+function getDirectoryHash(directory, ignores) {
     ignores = ignores || [];
     
     directory = directory + "";
-    if(!fs.existsSync(directory)) return "tree -1\u0000";
+    if(!fs.existsSync(directory)) return null;
     
     var dir = fs.readdirSync(directory).sort();
     
-    pixels.push(ENTER_DIRECTORY);
+    var hashes = [];
     
     for(var i = 0; i < dir.length; i++) {
         if(ignores.includes(dir[i])) continue;
         
-        pixels.push(START_ITEM);
-        
-        addStrAsPixels(dir[i].substring(0, 30));
-        
-        pixels.push(START_HASH);
-        
-        addFileToImage(path.join(directory, dir[i]), ignores);
+        hashes.push(getFileHash(path.join(directory, dir[i]), ignores));
     }
     
-    pixels.push(LEAVE_DIRECTORY);
+    return badPerceptualHash.combineHashes(hashes);
 }
 
-function addFileToImage(file, ignores) {
+function getFileHash(file, ignores) {
     file = file + "";
-    if(!fs.existsSync(file)) return "blob -1\u0000";
-    if(fs.statSync(file).isDirectory()) return addDirectoryToImage(file, ignores);
+    if(!fs.existsSync(file)) return null;
+    if(fs.statSync(file).isDirectory()) return getDirectoryHash(file, ignores);
     
     var fileContent = fs.readFileSync(file);
-    var hash = badPerceptualHash(fileContent).toString("hex")
-    
-    pixels.push(ENTER_FILE);
-    addHexPixels(fileContent.length.toString(16).substring(0,6));
+    var hash = badPerceptualHash.hash(fileContent);
     
     return hash;
 }
