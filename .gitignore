@@ -94,3 +94,4 @@ lint/tmp/
 **/buildhistory/BuildHistory.java
 **/.cache/
 **/buildimgs/
+last-build-pixels.json

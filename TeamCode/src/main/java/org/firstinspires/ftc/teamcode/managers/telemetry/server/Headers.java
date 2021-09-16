@@ -32,7 +32,7 @@ public class Headers {
         }
     }
     public boolean hasHeader(String name) {
-        return get(name) != null;
+        return tryGet(name) != null;
     }
     public void add(String name, String value) {
         String key = name.trim().toLowerCase(), val = value.trim();

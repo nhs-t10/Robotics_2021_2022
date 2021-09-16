@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.unitTests.http;
 
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.BodyParser;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.HttpHeaderLine;
+import org.firstinspires.ftc.teamcode.managers.telemetry.server.HttpStatusLine;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
@@ -36,7 +35,7 @@ public class BodyParsingTest {
     public void test() throws IOException {
         BufferedReader reqReader = new BufferedReader(new StringReader(HTTP_REQUEST));
 
-        HttpHeaderLine headerLine = HttpHeaderLine.from(reqReader);
+        HttpStatusLine headerLine = HttpStatusLine.from(reqReader);
 
         assertEquals("/", headerLine.path);
         assertEquals("POST", headerLine.verb);

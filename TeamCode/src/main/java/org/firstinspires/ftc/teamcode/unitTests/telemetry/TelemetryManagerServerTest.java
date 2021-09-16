@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.BodyParser;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.HttpHeaderLine;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.ServerFiles;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -28,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class TelemetryManagerServerTest {
     @Test
     public void test() throws IOException {
-        int testDurationMs = 60_000;
+        int testDurationMs = 30_000;
         long testStart = System.currentTimeMillis();
 
         FeatureManager.setIsOpModeRunning(true);
@@ -41,17 +38,21 @@ public class TelemetryManagerServerTest {
 
         assertTrue(connectAddress("localhost", server.port));
 
-        String httpGetRoot = getResponse("localhost", server.port, "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+        String httpReply = getResponse("localhost", server.port,
+                "GET / HTTP/1.1\r\n" +
+                        "Host: localhost\r\n\r\n");
 
-        FeatureManager.logger.log(PaulMath.JSONify(httpGetRoot));
+        BufferedReader httpBodyReader = new BufferedReader(new StringReader(httpReply));
 
-        BufferedReader httpReader = new BufferedReader(new StringReader(httpGetRoot));
+        //discard status line
+        assertEquals("HTTP/1.1 200 OK", httpBodyReader.readLine());
 
-        Headers headers = Headers.from(httpReader);
-        String body = BodyParser.from(httpReader, headers);
+        Headers headers = Headers.from(httpBodyReader);
+        assertEquals("text/html; charset=utf-8", headers.get("Content-Type"));
 
-        assertNotNull(body);
-        assertEquals(ServerFiles.indexDotHtml, body);
+        String httpBody = BodyParser.from(httpBodyReader, headers);
+
+        assertEquals(ServerFiles.indexDotHtml, httpBody);
 
         while(System.currentTimeMillis() - testStart < testDurationMs) {}
 
@@ -73,17 +74,16 @@ public class TelemetryManagerServerTest {
             PrintWriter sendWriter = new PrintWriter(socket.getOutputStream());
             sendWriter.write(sendBody);
             sendWriter.flush();
-            sendWriter.close();
 
             try(InputStream response = socket.getInputStream()) {
                 StringBuilder responseMessage = new StringBuilder();
                 while(true) {
-                    FeatureManager.logger.log(responseMessage.toString());
                     int nextByte = response.read();
                     if(nextByte < 0) break;
                     else responseMessage.append((char) nextByte);
                 }
-
+                sendWriter.close();
+                socket.close();
                 return responseMessage.toString();
             }
 

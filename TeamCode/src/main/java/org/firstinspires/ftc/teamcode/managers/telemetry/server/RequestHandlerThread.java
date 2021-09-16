@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
-import android.preference.PreferenceActivity;
-
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
@@ -35,7 +32,7 @@ public class RequestHandlerThread implements Runnable {
             InputStream input = socket.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
 
-            HttpHeaderLine requestMeta = HttpHeaderLine.from(reader);
+            HttpStatusLine requestMeta = HttpStatusLine.from(reader);
             Headers headers = Headers.from(reader);
             String body = BodyParser.from(reader, headers);
 
@@ -77,6 +74,7 @@ public class RequestHandlerThread implements Runnable {
                     writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                             //+ "Content-Length: " + (file.getBytes(StandardCharsets.UTF_8).length) + HTTP_LINE_SEPARATOR
                             + "Content-Type: " + "text/html; charset=utf-8" + HTTP_LINE_SEPARATOR
+                            + "Content-Length: " + ServerFiles.indexDotHtml.getBytes(StandardCharsets.UTF_8).length + HTTP_LINE_SEPARATOR
                             + HTTP_LINE_SEPARATOR
                             + file);
             } else if(path.equals("/command")) {
@@ -99,6 +97,7 @@ public class RequestHandlerThread implements Runnable {
                         writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                                 + "Content-Type: " + "image/png" + HTTP_LINE_SEPARATOR
                                 + HTTP_LINE_SEPARATOR);
+                        writer.flush();
                         //flush the class file into the stream
                         while (true) {
                             int fbyte = file.read();

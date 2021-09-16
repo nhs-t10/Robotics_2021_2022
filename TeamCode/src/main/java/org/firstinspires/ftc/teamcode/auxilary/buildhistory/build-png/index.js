@@ -7,23 +7,27 @@ var PngFile = require("./png-file/png-file");
 var badPerceptualHash = require("./bad-percep-hash");
 
 var cacheFile = path.join(__dirname, "last-build-pixels.json");
-if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "");
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "\"\"");
 
 var pixels = [];
 
 module.exports = function(buildNumber, directory, ignores) {
     pixels = [];
+    
     var hash = getDirectoryHash(directory, ignores).toString("hex");
+    var oldHash = require(cacheFile);
     
-    var deltaEncodedPixels = hexDiff(pixels, require(cacheFile));
     
-    console.log(deltaEncodedPixels);
+    var hashDelta = hexDiff(hash, oldHash);
     
-    addHexPixels(deltaEncodedPixels);
+    addHexPixels(hashDelta);
     
     fs.writeFileSync(cacheFile, '"' + hash + '"');
     
-    var matrix = pixelsToMatrix(deltaEncodedPixels);
+    var matrix = pixelsToMatrix(pixels);
+    
+    console.log(matrix);
+    
     
     if(matrix.length == 0) matrix = [[[0,0,0]]];
     

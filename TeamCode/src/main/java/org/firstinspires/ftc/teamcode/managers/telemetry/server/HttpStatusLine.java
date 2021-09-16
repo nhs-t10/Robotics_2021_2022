@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class HttpHeaderLine {
+public class HttpStatusLine {
     public String verb;
     public String path;
     public String[] pathSegments;
 
     QueryStringParams queryStringParams;
 
-    public HttpHeaderLine(String verb, String path) {
+    public HttpStatusLine(String verb, String path) {
         this.verb = verb;
         //remove possible directory escape attacks
         this.path = path.replace("/./", "/").replace("/../", "/");
@@ -30,18 +27,13 @@ public class HttpHeaderLine {
         return this.verb + " " + this.path + " HTTP/1.1";
     }
 
-    public static HttpHeaderLine from(BufferedReader reqReader) throws IOException {
+    public static HttpStatusLine from(BufferedReader reqReader) throws IOException {
 
-        StringBuilder line = new StringBuilder();
-        while(true) {
-            int nextByte = reqReader.read();
-            if(nextByte == '\n' || nextByte < 0) break;
-            line.append((char) nextByte);
-        }
-        String[] words = line.toString().split(" ");
+        String line = reqReader.readLine();
+        String[] words = (line + "").split(" ");
 
-        if(words.length < 2) return new HttpHeaderLine("", "");
+        if(words.length < 2) return new HttpStatusLine("", "");
 
-        return new HttpHeaderLine(words[0], words[1]);
+        return new HttpStatusLine(words[0], words[1]);
     }
 }

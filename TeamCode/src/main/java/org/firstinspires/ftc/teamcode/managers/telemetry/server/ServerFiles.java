@@ -43,7 +43,7 @@ public class ServerFiles {
 
             return assets.open(asset);
         } catch(Exception e) {
-            FeatureManager.logger.log("Error getting context");
+            FeatureManager.logger.log("Unable to get context -- assuming text environment; falling back to FileInputStream loader");
             File file = new File("src/main/assets", asset);
 
             if(file.exists()) return new FileInputStream(file);
