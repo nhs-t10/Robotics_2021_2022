@@ -11,7 +11,7 @@ if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "\"\"");
 
 var pixels = [];
 
-module.exports = function(buildNumber, directory, ignores) {rmal
+module.exports = function(buildNumber, directory, ignores) {
     pixels = [];
     
     var hash = getDirectoryHash(directory, ignores).toString("hex");

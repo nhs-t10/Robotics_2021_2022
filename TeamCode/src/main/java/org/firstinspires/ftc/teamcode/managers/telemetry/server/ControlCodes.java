@@ -12,4 +12,7 @@ public abstract class ControlCodes {
     public static final String PLEASE_SKIP_TO_THIS_AUTOAUTO_STATE = "auauss";
 
     public static final String THERES_THIS_OPMODE_FIELD_COULD_YOU_SET_IT_PLEASE_TY = "spojf";
+
+
+    public static final int STREAM_SENDS_PERSEC = 30;
 }

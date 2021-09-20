@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class RequestHandlerThread implements Runnable {
+public class RequestHandlerThread extends Thread {
     private static final String HTTP_LINE_SEPARATOR = "\r\n";
     private Socket socket;
     TelemetryManager dataSource;
@@ -47,7 +47,6 @@ public class RequestHandlerThread implements Runnable {
                 long streamStartedAt = System.currentTimeMillis();
                 while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
                     try {
-                        long loopStart = System.currentTimeMillis();
                         if (dataSource.hasNewData()) writer.print(dataSource.readData());
                         else writer.print(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED);
 
@@ -55,7 +54,8 @@ public class RequestHandlerThread implements Runnable {
                         writer.flush();
 
                         //block until the next send
-                        while(System.currentTimeMillis() - loopStart < 1000/60) {}
+                        //noinspection BusyWait
+                        sleep(1000 / ControlCodes.STREAM_SENDS_PERSEC);
                     } catch(Throwable e) {
                         StringBuilder r = new StringBuilder(e.getMessage());
                         for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
