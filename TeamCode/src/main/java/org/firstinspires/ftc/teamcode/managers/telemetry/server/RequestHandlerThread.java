@@ -57,7 +57,8 @@ public class RequestHandlerThread extends Thread {
                         //noinspection BusyWait
                         sleep(1000 / ControlCodes.STREAM_SENDS_PERSEC);
                     } catch(Throwable e) {
-                        StringBuilder r = new StringBuilder(e.getMessage());
+                        String msg = e.getMessage();
+                        StringBuilder r = new StringBuilder(msg == null ? "<no message>" : msg);
                         for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
 
                         writer.print("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");

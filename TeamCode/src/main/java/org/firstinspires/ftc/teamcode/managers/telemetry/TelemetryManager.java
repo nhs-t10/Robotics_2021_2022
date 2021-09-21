@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 
 import java.util.HashMap;
@@ -18,9 +19,9 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         public static final int ALL = ~0;
         public static final int NONE = 0;
 
-        private static final int WEBSERVER = 1;
-        private static final int BUILD_HISTORY = 1 << 1;
-        private static final int POJO_MONITOR = 1 << 2;
+        public static final int WEBSERVER = 1;
+        public static final int BUILD_HISTORY = 1 << 1;
+        public static final int POJO_MONITOR = 1 << 2;
     }
 
     public OhNoJavaFieldMonitorAndExposer opmodeFieldMonitor;
@@ -32,7 +33,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     private Gamepad gamepad1;
     private Gamepad gamepad2;
 
-    private Server server;
+    public Server server;
 
     private long lastLoopTimeNano = System.nanoTime();
     private long timeSinceLastLoopNano = 0;
@@ -57,12 +58,21 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.opmode = opMode;
 
         if((config & BITMASKS.POJO_MONITOR) != 0) this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(opMode);
+        else this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer();
 
         this.fields = new HashMap<String, String>();
 
         if((config & BITMASKS.BUILD_HISTORY) != 0) BuildHistory.init();
 
         setGamepads(opmode.gamepad1, opmode.gamepad2);
+    }
+
+    public TelemetryManager(OpMode opMode) {
+        this(opMode.telemetry, opMode, BITMASKS.ALL);
+    }
+
+    public TelemetryManager(OpMode opMode, int bitmask) {
+        this(opMode.telemetry, opMode, bitmask);
     }
 
     public TelemetryManager(Telemetry backend, OpMode opMode) {
@@ -237,6 +247,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         r += ", \"autoautoVariables\": " + autoauto.getVariableValueJson();
 
         r += ", \"autoautoProgram\": " + autoauto.getProgramJson();
+
+        r += ", \"pojoFields\": " + opmodeFieldMonitor.getJSON();
 
                 r += "}";
 

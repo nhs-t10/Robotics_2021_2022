@@ -22,12 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class TelemetryManagerServerTest {
+public class HttpServerTest {
     @Test
     public void test() throws IOException {
-        int testDurationMs = 300_000;
-        long testStart = System.currentTimeMillis();
-
         FeatureManager.setIsOpModeRunning(true);
 
         TelemetryManager telManNoFeat = new TelemetryManager(new DummyTelemetry(), new DummyOpmode(), TelemetryManager.BITMASKS.NONE);
@@ -53,8 +50,6 @@ public class TelemetryManagerServerTest {
         String httpBody = BodyParser.from(httpBodyReader, headers);
 
         assertEquals(ServerFiles.indexDotHtml, httpBody);
-
-        while(System.currentTimeMillis() - testStart < testDurationMs) {}
 
         FeatureManager.setIsOpModeRunning(false);
     }

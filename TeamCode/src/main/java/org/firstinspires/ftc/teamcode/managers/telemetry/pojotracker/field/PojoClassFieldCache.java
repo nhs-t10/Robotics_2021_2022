@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.managers.telemetry;
+package org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 
 import java.lang.reflect.Field;
 
-public class PojoClassFieldCache {
+public class PojoClassFieldCache extends PojoClassProperty {
     Field field;
     Class type;
     Object object;
@@ -22,12 +22,14 @@ public class PojoClassFieldCache {
         this.type = field.getType();
         this.object = object;
     }
-
     public String getJSONFragment() {
+        return getJSONFragment("");
+    }
+    public String getJSONFragment(String prefix) {
         try {
-            return getJSONFragmentRecursiveBoy(name, field.get(object).toString());
-        } catch(IllegalAccessException ignored) {
-            return "";
+            return getJSONFragmentRecursiveBoy(prefix + name, field.get(object));
+        } catch(IllegalAccessException err) {
+            return "\"err\":" + PaulMath.JSONify(err.toString());
         }
     }
 
@@ -44,7 +46,7 @@ public class PojoClassFieldCache {
         else return key.substring(0, key.indexOf('[')).equals(name);
     }
 
-    public void set(String key, Object value) {
+    public void set(String key, Object value) throws IllegalArgumentException {
         if(!containsKey(key)) throw new IllegalArgumentException();
         String path = key.substring(name.length());
 
@@ -82,18 +84,5 @@ public class PojoClassFieldCache {
         }
         arrAddressed[indexes[indexes.length - 1]] = value;
         return array;
-    }
-
-    private static String getJSONFragmentRecursiveBoy(String name, Object value) {
-        Class type = value.getClass();
-        if(!type.isArray()) return PaulMath.JSONify(name) + ":" + PaulMath.JSONify(value);
-
-        StringBuilder result = new StringBuilder();
-        Object[] target = (Object[])value;
-        for(int i = 0; i < target.length; i++) {
-            result.append(getJSONFragmentRecursiveBoy(name + "[" + i + "]", target[i]));
-            if(i + 1 < target.length) result.append(",");
-        }
-        return result.toString();
     }
 }

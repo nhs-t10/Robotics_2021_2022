@@ -208,6 +208,7 @@ public abstract class PaulMath extends FeatureManager {
         return value
                 .replace("\\", "\\\\")
                 .replace("\n", "\\n")
+                .replace("\r", "\\r")
                 .replace("\"", "\\\"")
                 .replace("\t", "\\t");
     }
@@ -218,11 +219,25 @@ public abstract class PaulMath extends FeatureManager {
      * @return Unescaped string
      */
     public static String unescapeString(String value) {
-        return value
-                .replace("\\n", "\n")
-                .replace("\\\"", "\"")
-                .replace("\\t", "\t")
-                .replace("\\\\", "\\");
+        StringBuilder result = new StringBuilder();
+        char[] chars = value.toCharArray();
+
+        boolean escaped = false;
+        for (char c : chars) {
+            if (escaped) {
+                escaped = false;
+                if (c == 'n') result.append('\n');
+                else if (c == 'r') result.append('\r');
+                else if (c == 't') result.append('\t');
+                else result.append(c);
+            } else if (c == '\\') {
+                escaped = true;
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+
     }
 
     public static String join(String s, String[] a) {
@@ -234,12 +249,24 @@ public abstract class PaulMath extends FeatureManager {
         return r.toString();
     }
 
+    public static String deJSONify(String s) {
+        if(s.length() > 2 && s.startsWith("\"") && s.endsWith("\"")) {
+            return unescapeString(s.substring(1, s.length() - 1));
+        } else {
+            return s;
+        }
+    }
+
     public static String JSONify(String s) {
         return '"' + escapeString(s) + '"';
     }
     public static String JSONify(Object s) {
-        if(s == "null") return "null";
-        else if(s.getClass().isPrimitive()) return s.toString();
+        if(s == null) return "null";
+        else if(s instanceof Number || s instanceof Boolean) return s.toString();
         else return JSONify(s.toString());
+    }
+
+    public static boolean isJSONable(Object s) {
+        return s instanceof Number || s instanceof Boolean || s instanceof String || s instanceof Character;
     }
 }

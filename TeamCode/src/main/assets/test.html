@@ -1,15 +1,120 @@
-<svg viewBox="0 0 200 200" xmlns='http://www.w3.org/2000/svg'>
-    <filter id='noiseFilter' filterUnits="objectBoundingBox" x="0" y="0" width="1" height="1">
-        <feTurbulence type="turbulence" baseFrequency="3"
-                      numOctaves="2" result="turbulence"/>
+<div id="p">
 
-    </filter>
+</div>
 
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <g style="overflow:hidden">
-        <foreignObject  width='30' height='30'>
-            <img src="http://localhost:5567/buildimgs/1.png" style="image-rendering:crisp-edges;width:30">
-        </foreignObject>
-        <rect width="30" height="30" filter='url(#noiseFilter)' style="opacity:0.8;filter:grayscale(1)"></rect>
-    </g>
-</svg>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --widget-text-color: #EFF9FB;
+        --widget-background-color: #1B1D22;
+        --background-color: #2A2D34;
+        --grid-color: #EFF9FB;
+        --widget-inner-background-color: #24272D;
+        --close-widget-color: #C23838;
+        --widget-settings-color: #0092CC;
+        --sidebar-lightbox: #1B1D22cc;
+        --data-green: #10BC8B;
+        --data-red: #e72f2f;
+        --graph-label: #3E4247;
+    }
+
+    .widget--record {
+        background: #24242bff;
+        width: 18vmax;
+        height: 12vmax;
+    }
+
+    .widget--record nav {
+        padding: 0.5em;
+    }
+
+    .widget--record nav button {
+        border: 0;
+        font: inherit;
+        padding: 0.75em;
+        border-radius: 100%;
+        margin-right: 0.25em;
+        background-color: var(--widget-background-color);
+    }
+
+    .widget--record nav button[red-icon=true] svg path {
+        fill: var(--data-red);
+        animation: redpulse 0.5s infinite;
+        filter: drop-shadow(0 0 0.5em #ce292955 );
+    }
+    
+    @keyframes redpulse {
+        0% {
+            filter: drop-shadow(0 0 0.5em #ce292955 );
+        }
+        80% {
+            filter: drop-shadow(0 0 1em #2991ce00 );
+        }
+        90% {
+            filter: drop-shadow( 0 0 0.2em #2991ce1f);
+        }
+        100% {
+            filter: drop-shadow( 0 0 0.5em #2991ce55);
+        }
+    }
+
+    .widget--record nav button svg {
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    .widget--record nav button svg path {
+        fill: var(--widget-text-color);
+    }
+</style>
+
+<script>
+
+    function init(parent, state) {
+        var ICON_EJECT = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,1 h 1 v -0.25 h -1 z M 0 0.5 L 0.5 0 L 1 0.5 Z'></svg>";
+        var ICON_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 1,0.5 A 0.5,0.5 0 0 1 0.5,1 0.5,0.5 0 0 1 0,0.5 0.5,0.5 0 0 1 0.5,0 0.5,0.5 0 0 1 1,0.5 Z'></svg>";
+        var ICON_STOP_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 H 1 V 1 H -1 Z'></svg>";
+        var ICON_PLAY = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 L 1 0.5 L 0 1 Z'></svg>";
+        var ICON_PAUSE = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.0,0 h 0.35 V 1 h -0.35 z M 1 0 h -0.35 V 1 h 0.35 z'></svg>";
+            
+        parent.classList.add("widget--record");
+        var buttonContainer = document.createElement("nav");
+        parent.appendChild(buttonContainer);
+
+        var buttonRecord = document.createElement("button");
+        buttonRecord.classList.add("recorder");
+        buttonRecord.addEventListener("click", function () {
+            state.recording = ((state.recording || 0) + 1) % 3;
+            updateIcons();
+        });
+        buttonContainer.appendChild(buttonRecord);
+
+        var buttonPlaypause = document.createElement("button");
+        buttonPlaypause.classList.add("play-pause");
+        buttonPlaypause.addEventListener("click", function () {
+            if(state.recording == 2) state.playing = !state.playing;
+            updateIcons();
+        });
+        buttonContainer.appendChild(buttonPlaypause)
+
+        updateIcons();
+        function updateIcons() {
+            buttonRecord.setAttribute("red-icon", state.recording == 1);
+
+            if(state.recording == 2) buttonRecord.innerHTML = ICON_EJECT;
+            else buttonRecord.innerHTML = ICON_RECORD;
+
+            if(state.playing) buttonPlaypause.innerHTML = ICON_PAUSE;
+            else buttonPlaypause.innerHTML = ICON_PLAY;
+        }
+
+    }
+
+    var s = {};
+    var p = document.getElementById("p");
+    init(p, s);
+</script>

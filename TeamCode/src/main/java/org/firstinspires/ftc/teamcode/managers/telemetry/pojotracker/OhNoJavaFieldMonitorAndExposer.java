@@ -1,29 +1,30 @@
-package org.firstinspires.ftc.teamcode.managers.telemetry;
+package org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.HttpStatusCodeReplies;
+import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassFieldCache;
+import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassMethodWrapper;
+import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassProperty;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class OhNoJavaFieldMonitorAndExposer {
 
-    private OpMode opmode;
+    private Object object;
 
-    private PojoClassFieldCache[] fields;
+    private PojoClassProperty[] fields;
 
-    public OhNoJavaFieldMonitorAndExposer(OpMode opmode) {
-        this.opmode = opmode;
+    public OhNoJavaFieldMonitorAndExposer() {}
 
-        this.fields = getUsableFields(opmode);
+    public OhNoJavaFieldMonitorAndExposer(Object object) {
+        this.object = object;
+
+        this.fields = getUsableFields(object);
     }
 
     public boolean hasKey(String name) {
-        for (PojoClassFieldCache field : fields) {
+        for (PojoClassProperty field : fields) {
             if (field.containsKey(name)) {
                 return true;
             }
@@ -32,7 +33,7 @@ public class OhNoJavaFieldMonitorAndExposer {
     }
 
     public Class<?> getTypeOfField(String name) {
-        for (PojoClassFieldCache field : fields) {
+        for (PojoClassProperty field : fields) {
             if (field.containsKey(name)) {
                 return field.getType();
             }
@@ -41,7 +42,7 @@ public class OhNoJavaFieldMonitorAndExposer {
     }
 
     public void set(String name, Object value) {
-        for(PojoClassFieldCache field : fields) {
+        for(PojoClassProperty field : fields) {
             if(field.containsKey(name)) {
                 try {
                     field.set(name, value);
@@ -52,11 +53,12 @@ public class OhNoJavaFieldMonitorAndExposer {
     }
 
     public String getJSON() {
-        if(fields == null || opmode == null) return "null";
+        if(fields == null || object == null) return "null";
 
 
         StringBuilder r = new StringBuilder("{");
         for(int i = 0; i < fields.length; i++) {
+            System.out.println(fields[i].getName());
             r.append(fields[i].getJSONFragment());
 
             if(i != fields.length - 1) {
@@ -86,18 +88,27 @@ public class OhNoJavaFieldMonitorAndExposer {
             set(key, value);
         }
     }
-    public static PojoClassFieldCache[] getUsableFields(Object obj) {
+    public static PojoClassProperty[] getUsableFields(Object obj) {
         Field[] fields = obj.getClass().getFields();
-        ArrayList<PojoClassFieldCache> usableFields = new ArrayList<PojoClassFieldCache>();
+        Method[] methods = obj.getClass().getMethods();
+
+        ArrayList<PojoClassProperty> usableFields = new ArrayList<PojoClassProperty>();
         int eventualLength = 0;
 
         for(int i = 0; i < fields.length; i++) {
-            if(fields[i].getType().isPrimitive() || fields[i].getType().isAssignableFrom(String.class)) {
-                usableFields.add(new PojoClassFieldCache(fields[i], obj));
-                fields[i].getType().getName();
+            usableFields.add(new PojoClassFieldCache(fields[i], obj));
+            eventualLength++;
+        }
+        for(int i = 0; i < methods.length; i++) {
+            //no sense in including Class's methods
+            if(methods[i].getDeclaringClass().equals(Class.class)) continue;
+            if(methods[i].getName().equals("getClass")) continue;
+
+            if(methods[i].getParameterTypes().length == 0 && methods[i].getName().startsWith("get")) {
+                usableFields.add(new PojoClassMethodWrapper(methods[i], obj));
                 eventualLength++;
             }
         }
-        return usableFields.toArray(new PojoClassFieldCache[eventualLength]);
+        return usableFields.toArray(new PojoClassProperty[eventualLength]);
     }
 }
