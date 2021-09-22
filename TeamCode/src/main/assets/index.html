@@ -40,7 +40,8 @@
 
                     var buttonRecord = document.createElement("button");
                     buttonRecord.classList.add("recorder");
-                    buttonRecord.addEventListener("click", function () {
+                    buttonRecord.addEventListener("click", clickRecordButton);
+                    function clickRecordButton() {
                         state.recording = ((state.recording || 0) + 1) % 3;
 
                         if (state.recording == 0) {
@@ -53,15 +54,19 @@
                             reportStartRecordPlayback();
                             state.currentFrame = 1;
                             scrubTo(0);
+                            dataScrubber.setAttribute("aria-valuemin", 0);
+                            dataScrubber.setAttribute("aria-valuemax", state.historyBuffer.length - 1);
+                            dataScrubber.setAttribute("step", 1);
                         }
 
                         updateIcons();
-                    });
+                    }
                     buttonContainer.appendChild(buttonRecord);
 
                     var buttonPlaypause = document.createElement("button");
                     buttonPlaypause.classList.add("play-pause");
-                    buttonPlaypause.addEventListener("click", function () {
+                    buttonPlaypause.addEventListener("click", clickPlaypauseButton);
+                    function clickPlaypauseButton() {
                         if (state.recording == 2) {
                             state.playing = !state.playing;
                             if (state.playing) {
@@ -88,7 +93,7 @@
                                     var scrubberPx = ((state.currentFrame + (state.historyBuffer.length % 2) / 2) / state.historyBuffer.length) * dsow;
                                     dataScrubberCurrentTimeIndicator.style.transform = `translateX(${scrubberPx}px)`;
 
-                                    console.log(state.currentFrame, tDelta);
+                                    dataScrubber.setAttribute("aria-valuenow", state.currentFrame);
 
                                     setTimeout(playNextFrame, tDelta);
                                 }
@@ -96,14 +101,15 @@
                             }
                         }
                         updateIcons();
-                    });
+                    }
                     buttonContainer.appendChild(buttonPlaypause);
 
                     var buttonDownload = document.createElement("button");
                     buttonDownload.classList.add("download");
                     buttonContainer.appendChild(buttonDownload);
                     buttonDownload.innerHTML = ICON_DL;
-                    buttonDownload.addEventListener("click", function () {
+                    buttonDownload.addEventListener("click", clickDownloadButton);
+                    function clickDownloadButton() {
                         var flattened = state.historyBuffer.map(x => flattenObj(x));
 
                         var keys = [];
@@ -127,7 +133,7 @@
                         var csvFile = rows.join("\n");
                         var csvBlob = new Blob([csvFile], {type: "text/csv"})
                         downloadURL(window.URL.createObjectURL(csvBlob), "recording-" + new Date().toISOString() + ".csv");
-                    });
+                    }
 
                     function updateIcons() {
                         buttonRecord.setAttribute("red-icon", state.recording == 1);
@@ -198,15 +204,19 @@
                         }
                     });
                     dataScrubber.addEventListener("keydown", function (e) {
-                        console.log(e);
                         if (state.recording == 2) {
-                            if (state.currentFrame === undefined) state.currentFrame = state.historyBuffer.length - 1;
-
-
+                            console.log(e.key);
+                            
                             if (e.key == "ArrowRight") {
                                 scrubTo(state.currentFrame + 1);
                             } else if (e.key == "ArrowLeft") {
                                 scrubTo(state.currentFrame - 1);
+                            } else if(!isNaN(+e.key)) {
+                                var parseNum = +e.key;
+                                console.log("pNum", parseNum);
+                                var frame = Math.round((parseNum / 10) * state.historyBuffer.length);
+                                console.log(frame);
+                                scrubTo(frame);
                             }
                         }
                     });
@@ -232,18 +242,45 @@
                                 dispatchData(state.historyBuffer[i]);
                             }
                         }
-                    }
-
-                    function resetWidgets() {
-                        var w = Object.values(widgetsReg);
-                        for (var i = 0; i < w.length; i++) {
-                            if (widgetTypes[w[i].type]) widgetTypes[w[i].type].reset(w[i].widget, w[i].state);
-                        }
+                        
+                        dataScrubber.setAttribute("aria-valuenow", frame);
                     }
 
                     dataScrubber.appendChild(dataScrubberPointsSvg);
                     parent.appendChild(dataScrubber);
                     updateIcons();
+                    
+                    parent.setAttribute("tabIndex", 0);
+                    parent.addEventListener("keydown", function(e) {
+                        if(e.key == " " || e.key == "Enter") e.preventDefault();
+                        
+                        if(e.key == " ") {
+                            if(state.recording == 2) clickPlaypauseButton();
+                            else clickRecordButton();
+                        } else if(e.key == "Delete") {
+                            if(state.recording == 2) {
+                                clickRecordButton();
+                            }
+                        } else if(e.key == "D") {
+                            clickDownloadButton();
+                        } else {
+                            var cloneEvent = new KeyboardEvent("keydown", {
+                                key: e.key,
+                                keyCode: e.keyCode,
+                                location: e.location,
+                                code: e.code,
+                                ctrlKey: e.ctrlKey,
+                                shiftKey: e.shiftKey,
+                                altKey: e.altKey,
+                                metaKey: e.metaKey,
+                                repeat: e.repeat,
+                                isComposing: e.isComposing,
+                                charCode: e.charCode,
+                                which: e.which
+                            });
+                            dataScrubber.dispatchEvent(cloneEvent);
+                        }
+                    })
 
                 },
                 reset: function (parent, state) {
@@ -254,6 +291,7 @@
                 },
                 onbeforedelete: function () {
                     reportStopRecordPlayback();
+                    resetWidgets();
                 },
                 ondata: function (data, parent, state, config) {
                     if (state.recording == 1) {
@@ -275,6 +313,7 @@
                         var dataScrubberPathCode = "";
 
                         var renderedPathPoints = Math.min(Math.floor(state.dataScrubberTotalWidth / 4), state.historyBuffer.length);
+                        renderedPathPoints += state.historyBuffer.length % 4;
                         for (var i = 0; i < renderedPathPoints; i++) {
                             var x = i + (state.historyBuffer.length % 2) / 2;
                             dataScrubberPathCode += "M" + (dataScrubberTotalWidth * (x / renderedPathPoints)) + " " + 1000;
@@ -1383,22 +1422,22 @@
                     if (configOption.type == "select") {
                         if (configOption.value == "field") {
                             lbl.appendChild(
-                                createSelectControl(widgetsReg[id].config, configOption.name, fields)
+                                createSelectControl(widgetsReg[id].config, configOption.name, fields, widgetsReg[id])
                             );
                         } else {
                             lbl.appendChild(
-                                createSelectControl(widgetsReg[id].config, configOption.name, configOption.value)
+                                createSelectControl(widgetsReg[id].config, configOption.name, configOption.value, widgetsReg[id])
                             );
                         }
                     } else if (configOption.type == "number") {
 
                         lbl.appendChild(
-                            createNumberControl(widgetsReg[id].config, configOption.name, configOption.default)
+                            createNumberControl(widgetsReg[id].config, configOption.name, configOption.default, widgetsReg[id])
                         );
                     } else if (configOption.type == "text") {
 
                         lbl.appendChild(
-                            createTextControl(widgetsReg[id].config, configOption.name, configOption.default)
+                            createTextControl(widgetsReg[id].config, configOption.name, configOption.default, widgetsReg[id])
                         );
                     }
 
@@ -1407,7 +1446,7 @@
             }
         })();
 
-        function createSelectControl(config, key, options) {
+        function createSelectControl(config, key, options, widget) {
             var select = document.createElement("select");
 
             if (config[key] === undefined) config[key] = options[0];
@@ -1422,11 +1461,12 @@
             }
             select.addEventListener("change", function () {
                 config[key] = options[select.selectedIndex];
+                saveItemChanges(widget);
             });
             return select;
         }
 
-        function createNumberControl(config, key, defaultValue) {
+        function createNumberControl(config, key, defaultValue, widget) {
             if (config[key] === undefined) {
                 config[key] = defaultValue || 0;
             }
@@ -1435,12 +1475,13 @@
             input.value = config[key];
             input.addEventListener("change", function () {
                 config[key] = input.valueAsNumber;
+                saveItemChanges(widget);
             });
 
             return input;
         }
 
-        function createTextControl(config, key, defaultValue) {
+        function createTextControl(config, key, defaultValue, widget) {
             if (config[key] === undefined) {
                 config[key] = defaultValue || "";
             }
@@ -1448,6 +1489,7 @@
             input.value = config[key];
             input.addEventListener("change", function () {
                 config[key] = input.value;
+                saveItemChanges(widget);
             });
 
             return input;
@@ -1542,6 +1584,12 @@
         }
         function reportStopRecordPlayback() {
             shouldDispatchData = true;
+        }
+        function resetWidgets() {
+            var w = Object.values(widgetsReg);
+            for (var i = 0; i < w.length; i++) {
+                if (widgetTypes[w[i].type]) widgetTypes[w[i].type].reset(w[i].widget, w[i].state);
+            }
         }
 
 
@@ -2038,12 +2086,14 @@
 
         .widget--record {
             display: flex;
-            flex-direction: column;
             padding: 0.5em;
+            flex-wrap: wrap;
+            flex-direction: row;
         }
 
         .widget--record div[role=slider] {
             flex-grow: 1;
+            min-height: 2.5em;
             background: var(--widget-background-color);
             position: relative;
         }
@@ -2055,6 +2105,8 @@
 
         .widget--record nav {
             padding-bottom: 0.5em;
+            max-width: max-content;
+            margin: auto 0;
         }
 
         .widget--record nav button {
