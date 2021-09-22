@@ -51,6 +51,7 @@
 
                         if (state.recording == 2) {
                             reportStartRecordPlayback();
+                            state.currentFrame = 1;
                             scrubTo(0);
                         }
 
@@ -167,7 +168,7 @@
                     dataScrubberHoverCursor.style.fill = "var(--widget-text-color)";
                     dataScrubberPointsSvg.appendChild(dataScrubberHoverCursor);
                     dataScrubberHoverCursor.setAttribute("d", "M0 0V1000h-1V0Z");
-                    dataScrubberHoverCursor.style.opacity = "0.4";
+                    dataScrubberHoverCursor.style.opacity = "0";
                     dataScrubber.addEventListener("mousemove", function (e) {
                         if (state.recording == 2) {
                             var rawX = e.clientX - dataScrubber.offsetLeft;
@@ -176,6 +177,12 @@
                             var finalX = (roundX / state.historyBuffer.length) * dataScrubber.offsetWidth;
                             dataScrubberHoverCursor.style.transform = `translateX(${finalX}px)`;
                         }
+                    });
+                    dataScrubber.addEventListener("mouseenter", function() {
+                        dataScrubberHoverCursor.style.opacity = 0.4;
+                    });
+                    dataScrubber.addEventListener("mouseleave", function() {
+                        dataScrubberHoverCursor.style.opacity = 0;
                     });
 
                     var dataScrubberCurrentTimeIndicator = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -206,6 +213,8 @@
 
 
                     function scrubTo(frame) {
+                        var oldFrame = state.currentFrame;
+                        
                         frame = (frame + state.historyBuffer.length) % state.historyBuffer.length;
                         state.currentFrame = frame;
 
@@ -213,10 +222,15 @@
                         var scrubberPx = ((frame + (state.historyBuffer.length % 2) / 2) / state.historyBuffer.length) * dataScrubber.offsetWidth;
                         dataScrubberCurrentTimeIndicator.style.transform = `translateX(${scrubberPx}px)`;
 
-                        resetWidgets();
-                        for (var i = 0; i < frame; i++) {
-                            console.log("dispatching data");
-                            dispatchData(state.historyBuffer[i]);
+                        if(frame > oldFrame) {
+                            for (var i = oldFrame; i <= frame; i++) {
+                                dispatchData(state.historyBuffer[i]);
+                            }
+                        } else if(frame < oldFrame) {   
+                            resetWidgets();
+                            for (var i = 0; i <= frame; i++) {
+                                dispatchData(state.historyBuffer[i]);
+                            }
                         }
                     }
 
@@ -849,7 +863,7 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("nooverflow");
                 },
-                reset: function () {
+                reset: function (parent, state) {
                     var buttons = Object.values(state.buttons);
                     for (var i = 0; i < buttons.length; i++) {
                         buttons[i].style.fill = "var(--widget-inner-background-color)";
@@ -897,7 +911,7 @@
                     state.buttons = buttons;
 
                 },
-                reset: function () {
+                reset: function (parent, state) {
                     var buttons = Object.values(state.buttons);
                     for (var i = 0; i < buttons.length; i++) {
                         buttons[i].style.fill = "var(--widget-inner-background-color)";
