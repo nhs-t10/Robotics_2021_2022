@@ -20,7 +20,7 @@ public class OhNoJavaFieldMonitorAndExposer {
     public OhNoJavaFieldMonitorAndExposer(Object object) {
         this.object = object;
 
-        this.fields = getUsableFields(object);
+        this.fields = new PojoClassProperty[0]; //getUsableFields(object);
     }
 
     public boolean hasKey(String name) {

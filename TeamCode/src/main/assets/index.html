@@ -19,7 +19,260 @@
         var widgetTypes = {
             "none": {
                 init: function (parent) { parent.innerHTML = ""; },
+                reset: function () { },
                 ondata: function (data, parent) { }
+            },
+            "meta.recordandreplay": {
+                init: function (parent, state) {
+                    state.historyBuffer = [];
+
+                    var ICON_EJECT = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,1 h 1 v -0.25 h -1 z M 0 0.5 L 0.5 0 L 1 0.5 Z'></svg>";
+                    var ICON_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 1,0.5 A 0.5,0.5 0 0 1 0.5,1 0.5,0.5 0 0 1 0,0.5 0.5,0.5 0 0 1 0.5,0 0.5,0.5 0 0 1 1,0.5 Z'></svg>";
+                    var ICON_STOP_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 H 1 V 1 H -1 Z'></svg>";
+                    var ICON_PLAY = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 L 1 0.5 L 0 1 Z'></svg>";
+                    var ICON_PAUSE = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.0,0 h 0.35 V 1 h -0.35 z M 1 0 h -0.35 V 1 h 0.35 z'></svg>";
+                    var ICON_PAUSE = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.0,0 h 0.35 V 1 h -0.35 z M 1 0 h -0.35 V 1 h 0.35 z'></svg>";
+                    var ICON_DL = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.42257158,0 V 0.70668617 L 0.1419469,0.42606148 0.03360137,0.53440702 0.3908488,0.89165445 h 4.8803e-4 L 0.49919434,0.99999997 0.60753986,0.89165445 0.96478729,0.53440702 0.85644175,0.42606148 0.57581708,0.70668617 V 0 Z'></svg>";
+
+                    parent.classList.add("widget--record");
+                    var buttonContainer = document.createElement("nav");
+                    parent.appendChild(buttonContainer);
+
+                    var buttonRecord = document.createElement("button");
+                    buttonRecord.classList.add("recorder");
+                    buttonRecord.addEventListener("click", function () {
+                        state.recording = ((state.recording || 0) + 1) % 3;
+
+                        if (state.recording == 0) {
+                            reportStopRecordPlayback();
+                            state.historyBuffer = [];
+                            if (state.dataScrubberPath) state.dataScrubberPath.setAttribute("d", "");
+                        }
+
+                        if (state.recording == 2) {
+                            reportStartRecordPlayback();
+                            scrubTo(0);
+                        }
+
+                        updateIcons();
+                    });
+                    buttonContainer.appendChild(buttonRecord);
+
+                    var buttonPlaypause = document.createElement("button");
+                    buttonPlaypause.classList.add("play-pause");
+                    buttonPlaypause.addEventListener("click", function () {
+                        if (state.recording == 2) {
+                            state.playing = !state.playing;
+                            if (state.playing) {
+                                if (state.currentFrame === undefined) scrubTo(0);
+
+                                var dsow = dataScrubber.offsetWidth;
+
+                                function playNextFrame() {
+                                    if (!state.playing) return;
+
+                                    //if it's ended, loop
+                                    if (state.currentFrame + 1 == state.historyBuffer.length) {
+                                        resetWidgets();
+                                        state.currentFrame = 0;
+                                    }
+
+                                    var currentTime = state.historyBuffer[state.currentFrame].time;
+                                    var nextTime = state.historyBuffer[state.currentFrame + 1].time;
+                                    var tDelta = Math.abs(nextTime - currentTime);
+
+                                    dispatchData(state.historyBuffer[state.currentFrame]);
+                                    state.currentFrame++;
+
+                                    var scrubberPx = ((state.currentFrame + (state.historyBuffer.length % 2) / 2) / state.historyBuffer.length) * dsow;
+                                    dataScrubberCurrentTimeIndicator.style.transform = `translateX(${scrubberPx}px)`;
+
+                                    console.log(state.currentFrame, tDelta);
+
+                                    setTimeout(playNextFrame, tDelta);
+                                }
+                                playNextFrame();
+                            }
+                        }
+                        updateIcons();
+                    });
+                    buttonContainer.appendChild(buttonPlaypause);
+
+                    var buttonDownload = document.createElement("button");
+                    buttonDownload.classList.add("download");
+                    buttonContainer.appendChild(buttonDownload);
+                    buttonDownload.innerHTML = ICON_DL;
+                    buttonDownload.addEventListener("click", function () {
+                        var flattened = state.historyBuffer.map(x => flattenObj(x));
+
+                        var keys = [];
+                        for (var i = 0; i < flattened.length; i++) {
+                            for (var key in flattened[i]) {
+                                if (!keys.includes(key)) keys.push(key);
+                            }
+                        }
+
+                        var csvHeader = keys.map(x => csvEscape(x)).join(",");
+                        var rows = [csvHeader];
+                        for (var i = 0; i < flattened.length; i++) {
+                            var row = [];
+                            for (var j = 0; j < keys.length; j++) {
+                                if (flattened[i][keys[j]] !== undefined) row.push(csvEscape(flattened[i][keys[j]]));
+                                else row.push("");
+                            }
+                            rows.push(row.join(","));
+                        }
+
+                        var csvFile = rows.join("\n");
+                        var csvBlob = new Blob([csvFile], {type: "text/csv"})
+                        downloadURL(window.URL.createObjectURL(csvBlob), "recording-" + new Date().toISOString() + ".csv");
+                    });
+
+                    function updateIcons() {
+                        buttonRecord.setAttribute("red-icon", state.recording == 1);
+                        buttonPlaypause.setAttribute("greyed", state.recording != 2);
+                        buttonDownload.setAttribute("greyed", state.recording != 2);
+
+                        if (state.recording == 2) buttonRecord.innerHTML = ICON_EJECT;
+                        else buttonRecord.innerHTML = ICON_RECORD;
+
+                        if (state.playing) buttonPlaypause.innerHTML = ICON_PAUSE;
+                        else buttonPlaypause.innerHTML = ICON_PLAY;
+
+                        if (state.recording != 2) {
+                            dataScrubberHoverCursor.style.opacity = 0;
+                            dataScrubberCurrentTimeIndicator.style.opacity = 0;
+                        } else {
+                            dataScrubberHoverCursor.style.opacity = 0.4;
+                            dataScrubberCurrentTimeIndicator.style.opacity = 1;
+                        }
+                    }
+
+
+                    var dataScrubber = document.createElement("div");
+                    dataScrubber.setAttribute("role", "slider");
+                    dataScrubber.setAttribute("tabindex", "0");
+
+                    var dataScrubberPointsSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    dataScrubberPointsSvg.style.pointerEvents = "none";
+                    dataScrubberPointsSvg.style.width = "100%";
+                    dataScrubberPointsSvg.style.height = "100%";
+
+                    var dataScrubberPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    dataScrubberPath.style.fill = "var(--graph-label)";
+                    dataScrubberPointsSvg.appendChild(dataScrubberPath);
+                    state.dataScrubberPath = dataScrubberPath;
+
+                    var dataScrubberHoverCursor = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    dataScrubberHoverCursor.style.fill = "var(--widget-text-color)";
+                    dataScrubberPointsSvg.appendChild(dataScrubberHoverCursor);
+                    dataScrubberHoverCursor.setAttribute("d", "M0 0V1000h-1V0Z");
+                    dataScrubberHoverCursor.style.opacity = "0.4";
+                    dataScrubber.addEventListener("mousemove", function (e) {
+                        if (state.recording == 2) {
+                            var rawX = e.clientX - dataScrubber.offsetLeft;
+                            var normX = rawX / dataScrubber.offsetWidth;
+                            var roundX = Math.round(normX * state.historyBuffer.length) + (state.historyBuffer.length % 2) / 2;
+                            var finalX = (roundX / state.historyBuffer.length) * dataScrubber.offsetWidth;
+                            dataScrubberHoverCursor.style.transform = `translateX(${finalX}px)`;
+                        }
+                    });
+
+                    var dataScrubberCurrentTimeIndicator = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    dataScrubberCurrentTimeIndicator.style.fill = "var(--data-red)";
+                    dataScrubberPointsSvg.appendChild(dataScrubberCurrentTimeIndicator);
+                    dataScrubberCurrentTimeIndicator.setAttribute("d", "M0 0V1000h-1V0Z");
+                    dataScrubber.addEventListener("click", function (e) {
+                        if (state.recording == 2) {
+                            var rawX = e.clientX - dataScrubber.offsetLeft;
+                            var normX = rawX / dataScrubber.offsetWidth;
+                            var roundX = Math.round(normX * state.historyBuffer.length);
+                            scrubTo(roundX);
+                        }
+                    });
+                    dataScrubber.addEventListener("keydown", function (e) {
+                        console.log(e);
+                        if (state.recording == 2) {
+                            if (state.currentFrame === undefined) state.currentFrame = state.historyBuffer.length - 1;
+
+
+                            if (e.key == "ArrowRight") {
+                                scrubTo(state.currentFrame + 1);
+                            } else if (e.key == "ArrowLeft") {
+                                scrubTo(state.currentFrame - 1);
+                            }
+                        }
+                    });
+
+
+                    function scrubTo(frame) {
+                        frame = (frame + state.historyBuffer.length) % state.historyBuffer.length;
+                        state.currentFrame = frame;
+
+
+                        var scrubberPx = ((frame + (state.historyBuffer.length % 2) / 2) / state.historyBuffer.length) * dataScrubber.offsetWidth;
+                        dataScrubberCurrentTimeIndicator.style.transform = `translateX(${scrubberPx}px)`;
+
+                        resetWidgets();
+                        for (var i = 0; i < frame; i++) {
+                            console.log("dispatching data");
+                            dispatchData(state.historyBuffer[i]);
+                        }
+                    }
+
+                    function resetWidgets() {
+                        var w = Object.values(widgetsReg);
+                        for (var i = 0; i < w.length; i++) {
+                            if (widgetTypes[w[i].type]) widgetTypes[w[i].type].reset(w[i].widget, w[i].state);
+                        }
+                    }
+
+                    dataScrubber.appendChild(dataScrubberPointsSvg);
+                    parent.appendChild(dataScrubber);
+                    updateIcons();
+
+                },
+                reset: function (parent, state) {
+                    if (state.recording != 2) {
+                        state.historyBuffer = [];
+                        if (state.dataScrubberPath) state.dataScrubberPath.setAttribute("d", "");
+                    }
+                },
+                onbeforedelete: function () {
+                    reportStopRecordPlayback();
+                },
+                ondata: function (data, parent, state, config) {
+                    if (state.recording == 1) {
+                        state.historyBuffer.push(data);
+
+                        if (!state.dataScrubberTotalWidth) state.dataScrubberTotalWidth = state.dataScrubberPath.parentElement.clientWidth;
+                        var dataScrubberTotalWidth = state.dataScrubberTotalWidth;
+
+                        var dataScrubberTotalHeight = state.dataScrubberTotalHeight;
+                        if (!state.dataScrubberTotalHeight) {
+                            var h = state.dataScrubberPath.parentElement.clientHeight;
+                            if (!state.smallDataScrubberHeight) state.smallDataScrubberHeight = h;
+                            if (h > state.smallDataScrubberHeight) state.dataScrubberTotalHeight = h;
+
+                            dataScrubberTotalHeight = h;
+                        }
+
+
+                        var dataScrubberPathCode = "";
+
+                        var renderedPathPoints = Math.min(Math.floor(state.dataScrubberTotalWidth / 4), state.historyBuffer.length);
+                        for (var i = 0; i < renderedPathPoints; i++) {
+                            var x = i + (state.historyBuffer.length % 2) / 2;
+                            dataScrubberPathCode += "M" + (dataScrubberTotalWidth * (x / renderedPathPoints)) + " " + 1000;
+
+                            var barHeight = -1000;
+
+                            dataScrubberPathCode += `v ${barHeight} h 1 v ${barHeight} z`;
+                        }
+
+                        state.dataScrubberPath.setAttribute("d", dataScrubberPathCode);
+                    }
+                }
             },
             "buildhistory.profile": {
                 init: function (parent, state, config, box) {
@@ -49,6 +302,7 @@
                     xhr.open("GET", "/build-history");
                     xhr.send();
                 },
+                reset: function () { },
                 ondata: function (data, parent, state, config) {
 
                 },
@@ -61,6 +315,14 @@
                     statepathlist.classList.add("widget--autoauto-state-layout--list");
                     parent.appendChild(statepathlist);
                     state.list = statepathlist;
+                },
+                reset: function (parent, state) {
+                    if (state.list) {
+                        while (state.list.children[0]) {
+                            state.list.removeChild(state.list.children[0]);
+                        }
+                    }
+                    state.statepathListInitiated = false;
                 },
                 ondata: function (data, parent, state, config) {
                     if (!state.statepathListInitiated) {
@@ -135,6 +397,7 @@
                         if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
                     }
                 },
+                reset: function () { },
                 config: [
                     {
                         name: "dataTransferAmount",
@@ -165,6 +428,7 @@
 
                     parent.appendChild(select);
                 },
+                reset: function () { },
                 ondata: function (data, parent) { }
             },
             "debug.alldata": {
@@ -172,6 +436,11 @@
                     var pre = document.createElement("pre");
                     state.pre = pre;
                     parent.appendChild(pre);
+                },
+                reset: function (parent, state) {
+                    if (state.pre) state.pre.textContent = "";
+                    state.lastScroll = 0;
+                    parent.scrollTop = 0;
                 },
                 ondata: function (data, parent, state) {
                     var scrolledToBottom = parent.scrollHeight - Math.abs(parent.scrollTop) === parent.clientHeight;
@@ -255,13 +524,18 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("nooverflow");
                 },
+                reset: function (parent, state) {
+                    state.datapoints = [];
+                    if (state.path) state.path.setAttribute("d", "");
+                    if (state.fill) state.fill.setAttribute("d", "");
+                },
                 ondata: function (data, parent, state, config) {
                     state.datapoints.push({
-                        x: Date.now(),
+                        x: data.time,
                         y: data.fields[config.field]
                     });
 
-                    var dataDisplayed = sliceData(state.datapoints, Date.now() - config.xScaleSeconds * 1000);
+                    var dataDisplayed = sliceData(state.datapoints, data.time - config.xScaleSeconds * 1000);
 
                     var line = drawLine(dataDisplayed, state.box, config.xScaleSeconds * 1000);
 
@@ -322,6 +596,10 @@
                     parent.classList.add("nooverflow");
                     parent.classList.add("center");
                 },
+                reset: function (parent, state) {
+                    state.num.textContent = "";
+                    state.caption.textContent = "";
+                },
                 ondata: function (data, parent, state, config) {
                     if (data.fields === undefined) return false;
 
@@ -377,6 +655,13 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("nooverflow");
                     parent.classList.add("center");
+                },
+                reset: function (parent, state) {
+                    state.lastNum = 0;
+
+                    state.delta.textContent = "";
+                    state.caption.textContent = "";
+                    state.deltaIcon.textContent = "";
                 },
                 ondata: function (data, parent, state, config) {
                     var num = data.fields[config.field] || 0;
@@ -438,6 +723,10 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("center");
                 },
+                reset: function (parent, state) {
+                    state.field.textContent = "";
+                    state.caption.textContent = "";
+                },
                 ondata: function (data, parent, state, config) {
                     if (data.fields === undefined) return false;
 
@@ -463,6 +752,9 @@
                     state.pre = pre;
                     parent.appendChild(pre);
                 },
+                reset: function (parent, state) {
+                    state.pre.textContent = "";
+                },
                 ondata: function (data, parent, state) {
                     var scrolledToBottom = parent.scrollHeight - Math.abs(parent.scrollTop) === parent.clientHeight;
 
@@ -482,6 +774,9 @@
                     var pre = document.createElement("pre");
                     state.pre = pre;
                     parent.appendChild(pre);
+                },
+                reset: function (parent, state) {
+                    state.pre.textContent = "";
                 },
                 ondata: function (data, parent, state) {
                     if (data.log) state.pre.appendChild(document.createTextNode(data.log + "\n"));
@@ -504,6 +799,11 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("nooverflow");
                     parent.classList.add("center");
+                },
+                reset: function (parent, state) {
+                    state.lastConnectionLag = 0;
+                    state.delta.textContent = "";
+                    state.deltaIcon.textContent = "";
                 },
                 ondata: function (data, parent, state) {
                     var connectionLag = Date.now() - data.time;
@@ -549,6 +849,12 @@
                     parent.classList.add("nopadding");
                     parent.classList.add("nooverflow");
                 },
+                reset: function () {
+                    var buttons = Object.values(state.buttons);
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].style.fill = "var(--widget-inner-background-color)";
+                    }
+                },
                 ondata: function (data, parent, state) {
                     if (data.gamepad1) {
 
@@ -559,7 +865,6 @@
                             } else {
                                 entries[i][1].style.fill = "var(--widget-inner-background-color)";
                             }
-
                         }
 
                         state.buttons.right_stick.style.transform = `translate(${data.gamepad1.right_stick_x * 15}px, ${data.gamepad1.right_stick_y * 10}px)`;
@@ -591,6 +896,12 @@
 
                     state.buttons = buttons;
 
+                },
+                reset: function () {
+                    var buttons = Object.values(state.buttons);
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].style.fill = "var(--widget-inner-background-color)";
+                    }
                 },
                 ondata: function (data, parent, state) {
                     if (data.gamepad2) {
@@ -731,10 +1042,12 @@
         }
 
         function deleteWidget(id) {
-            var widgetParent = widgetsReg[id].widget;
+            var widget = widgetsReg[id];
+            var widgetParent = widget.widget;
             if (widgetParent && widgetParent.parentElement) {
                 widgetParent.parentElement.removeChild(widgetParent);
             }
+            if (widgetTypes[widget.type].onbeforedelete) widgetTypes[widget.type].onbeforedelete(widgetParent, widget.state)
             delete widgetsReg[id];
 
             idbPolyfill();
@@ -794,7 +1107,7 @@
             var id = Date.now() + ":" + (widgetsReg.__counter || 0);
             widgetsReg.__counter = (widgetsReg.__counter || 0) + 1;
 
-            if(recoveredId) id = recoveredId;
+            if (recoveredId) id = recoveredId;
 
             var widget = document.createElement("div");
             widget.classList.add("widget");
@@ -1195,6 +1508,7 @@
             }, 30000);
         }
 
+        var shouldDispatchData = true;
         function processData(data) {
             var dataObject = {};
             try {
@@ -1206,6 +1520,18 @@
             //make autoauto variables normal, accessible fields. It's just easier.
             Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
 
+            if (shouldDispatchData) dispatchData(dataObject);
+        }
+
+        function reportStartRecordPlayback() {
+            shouldDispatchData = false;
+        }
+        function reportStopRecordPlayback() {
+            shouldDispatchData = true;
+        }
+
+
+        function dispatchData(dataObject) {
             if (dataObject.fields !== undefined) fields = Object.keys(dataObject.fields);
             var widgets = Object.values(widgetsReg);
             for (var i = 0; i < widgets.length; i++) {
@@ -1221,8 +1547,32 @@
             }
         }
 
+        function flattenObj(obj) {
+            var res = {};
+            for (var i in obj) {
+                if (typeof obj[i] === "object") {
+                    var flattenedProperty = flattenObj(obj[i]);
+                    for (var j in flattenedProperty) {
+                        res[i + '.' + j] = flattenedProperty[j];
+                    }
+                } else {
+                    res[i] = obj[i];
+                }
+            }
+            return res;
+        }
+        function downloadURL(uri, name) {
+            var link = document.createElement("a");
+            link.download = name;
+            link.href = uri;
+            link.click();
+        }
+        function csvEscape(val) {
+            if(typeof val == "string") return '"' + val.replace('"', '""') + '"';
+            else return val;
+        }
         function drawLine(datapoints, box, xScale, isFilled) {
-            var xRightEdge = Date.now();
+            var xRightEdge = 0;
 
             //find top point & bottom point
             var max = datapoints[0].y;
@@ -1230,6 +1580,8 @@
             for (var i = 0; i < datapoints.length; i++) {
                 max = Math.max(max, datapoints[i].y);
                 min = Math.min(min, datapoints[i].y);
+
+                xRightEdge = Math.max(xRightEdge, datapoints[i].x);
             }
 
             var range = max - min;
@@ -1668,6 +2020,53 @@
             background: var(--data-green);
             color: var(--background-color);
             border: 2px solid transparent;
+        }
+
+        .widget--record {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5em;
+        }
+
+        .widget--record div[role=slider] {
+            flex-grow: 1;
+            background: var(--widget-background-color);
+            position: relative;
+        }
+
+        .widget--record div[role=slider] svg {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .widget--record nav {
+            padding-bottom: 0.5em;
+        }
+
+        .widget--record nav button {
+            border: 0;
+            font: inherit;
+            padding: 0.75em;
+            border-radius: 100%;
+            margin-right: 0.25em;
+            background-color: var(--widget-background-color);
+        }
+
+        .widget--record nav button[red-icon=true] svg path {
+            fill: var(--data-red);
+        }
+
+        .widget--record nav button[greyed=true] svg path {
+            opacity: 0.5;
+        }
+
+        .widget--record nav button svg {
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        .widget--record nav button svg path {
+            fill: var(--widget-text-color);
         }
     </style>
 </head>

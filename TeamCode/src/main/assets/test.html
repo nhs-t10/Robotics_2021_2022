@@ -26,10 +26,18 @@
         background: #24242bff;
         width: 18vmax;
         height: 12vmax;
+        display: flex;
+        flex-direction: column;
+        padding: 0.5em;
+    }
+    
+    .widget--record div[role=slider] {
+        flex-grow: 1;
+        background: var(--widget-background-color);
     }
 
     .widget--record nav {
-        padding: 0.5em;
+        padding-bottom: 0.5em;
     }
 
     .widget--record nav button {
@@ -43,23 +51,9 @@
 
     .widget--record nav button[red-icon=true] svg path {
         fill: var(--data-red);
-        animation: redpulse 0.5s infinite;
-        filter: drop-shadow(0 0 0.5em #ce292955 );
     }
-    
-    @keyframes redpulse {
-        0% {
-            filter: drop-shadow(0 0 0.5em #ce292955 );
-        }
-        80% {
-            filter: drop-shadow(0 0 1em #2991ce00 );
-        }
-        90% {
-            filter: drop-shadow( 0 0 0.2em #2991ce1f);
-        }
-        100% {
-            filter: drop-shadow( 0 0 0.5em #2991ce55);
-        }
+    .widget--record nav button[greyed=true] svg path {
+        opacity: 0.5;
     }
 
     .widget--record nav button svg {
@@ -75,11 +69,15 @@
 <script>
 
     function init(parent, state) {
+        state.historyBuffer = [];
+        
         var ICON_EJECT = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,1 h 1 v -0.25 h -1 z M 0 0.5 L 0.5 0 L 1 0.5 Z'></svg>";
         var ICON_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 1,0.5 A 0.5,0.5 0 0 1 0.5,1 0.5,0.5 0 0 1 0,0.5 0.5,0.5 0 0 1 0.5,0 0.5,0.5 0 0 1 1,0.5 Z'></svg>";
         var ICON_STOP_RECORD = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 H 1 V 1 H -1 Z'></svg>";
         var ICON_PLAY = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0,0 L 1 0.5 L 0 1 Z'></svg>";
         var ICON_PAUSE = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.0,0 h 0.35 V 1 h -0.35 z M 1 0 h -0.35 V 1 h 0.35 z'></svg>";
+        var ICON_PAUSE = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.0,0 h 0.35 V 1 h -0.35 z M 1 0 h -0.35 V 1 h 0.35 z'></svg>";
+        var ICON_DL = "<svg width='1' height='1' viewBox='0 0 1 1'><path d='M 0.42257158,0 V 0.70668617 L 0.1419469,0.42606148 0.03360137,0.53440702 0.3908488,0.89165445 h 4.8803e-4 L 0.49919434,0.99999997 0.60753986,0.89165445 0.96478729,0.53440702 0.85644175,0.42606148 0.57581708,0.70668617 V 0 Z'></svg>";
             
         parent.classList.add("widget--record");
         var buttonContainer = document.createElement("nav");
@@ -99,11 +97,18 @@
             if(state.recording == 2) state.playing = !state.playing;
             updateIcons();
         });
-        buttonContainer.appendChild(buttonPlaypause)
+        buttonContainer.appendChild(buttonPlaypause);
+        
+        var buttonDownload = document.createElement("button");
+        buttonDownload.classList.add("download");
+        buttonContainer.appendChild(buttonDownload);
+        buttonDownload.innerHTML = ICON_DL;
 
         updateIcons();
         function updateIcons() {
             buttonRecord.setAttribute("red-icon", state.recording == 1);
+            buttonPlaypause.setAttribute("greyed", state.recording != 2);
+            buttonDownload.setAttribute("greyed", state.recording != 2);
 
             if(state.recording == 2) buttonRecord.innerHTML = ICON_EJECT;
             else buttonRecord.innerHTML = ICON_RECORD;
@@ -111,6 +116,11 @@
             if(state.playing) buttonPlaypause.innerHTML = ICON_PAUSE;
             else buttonPlaypause.innerHTML = ICON_PLAY;
         }
+        
+        
+        var dataScrubber = document.createElement("div");
+        dataScrubber.setAttribute("role", "slider");
+        parent.appendChild(dataScrubber);
 
     }
 
