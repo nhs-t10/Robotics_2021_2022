@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.server.ControlCodes;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
+import org.hamcrest.core.StringContains;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -19,7 +20,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class PojoInspectionServerTest {
@@ -59,7 +62,7 @@ public class PojoInspectionServerTest {
             dataLine = httpBodyReader.readLine();
         }
 
-        assertTrue(dataLine.contains("{\"testString\":\"foobar\",\"testInt\":\"3\",\"testFloat\":\"2.4\",\"time\":\"0.0\",\"msStuckDetectInit\":\"5000\",\"msStuckDetectInitLoop\":\"5000\",\"msStuckDetectStart\":\"5000\",\"msStuckDetectLoop\":\"5000\",\"msStuckDetectStop\":\"900\"}"));
+        assertThat("Reply data contains pojo data", dataLine, containsString("\"testString\":\"foobar\",\"testInt\":3,\"testFloat\":2.4"));
 
         httpReply.close();
 

@@ -51,29 +51,57 @@ function hexDiff(a, b) {
 
 function normalizeBrightness(pixels) {
     
-    //TODO: better normalization
-    return pixels;
-    
     var greatestBrightness = 0;
     for(var i = 0; i < pixels.length; i++) {
-        var brightness = (pixels[i][0] + pixels[i][1] + pixels[i][2]) / 3;
+        var brightness = getPixelBrightness(pixels[i]);
         greatestBrightness = Math.max(greatestBrightness, brightness);
     }
     var normalizedPixels = [];
+    
+    //sanity checks!
+    greatestBrightness = Math.min(greatestBrightness, 1);
     
     //don't normalize up to 255, bc that's white. 
     //128 is a pure hue; do that instead
     for(var i = 0; i < pixels.length; i++) {
         var pixel = pixels[i];
         
-        var brightness = (pixel[0] + pixel[1] + pixel[2]) / 3;
-        var brightnessFactor = (brightness / greatestBrightness) * (brightness < 128 ? 128 : 256);
+        var brightness = getPixelBrightness(brightness);
+        var brightnessFactor = (brightness / greatestBrightness);
         
-        var normPix = [pixel[0] * brightnessFactor, pixel[1] * brightnessFactor, pixel[2] * brightnessFactor];
+        var normPix = setBrightnessOfPixel(pixel, brightnessFactor);
         
         normalizedPixels.push(normPix);
     }
     return normalizedPixels;
+}
+
+function setBrightnessOfPixel(pixel, brightness) {
+    var currentBrightness = getPixelBrightness(pixel);
+    
+    var brightDiff = brightness - currentBrightness;
+    
+    var percentagePixel = [pixel[0] / 0xFF, pixel[1] / 0xFF, pixel[2] / 0xFF];
+    var increaseCoef = 1;
+    if(brightDiff > 0) {
+        var min = Math.min(percentagePixel[0], percentagePixel[1], percentagePixel[2]);
+        increaseCoef = Math.min(1 - min, brightDiff) / (1 - min);
+    } else {
+        var max = Math.max(percentagePixel[0], percentagePixel[1], percentagePixel[2]);
+        increaseCoef = -Math.max(max, 0) / max;
+    }
+    
+    var brightenedPercentages = percentagePixel.map(x=>x + ((1 - x) * increaseCoef));
+    var roundedPixel = brightenedPercentages.map(x=> Math.max(0, Math.min(255, Math.round(x*0xFF))));
+    
+    return brightenedPercentages;
+}
+
+function getPixelBrightness(pixel) {
+    var max = Math.max(pixel[0], pixel[1], pixel[2]);
+    var min = Math.min(pixel[0], pixel[1], pixel[2]);
+    
+    return ((max + min) / 2) / 0xFF;
 }
 
 function pixelsToMatrix(pixels) {

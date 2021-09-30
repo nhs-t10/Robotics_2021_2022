@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassFieldCache;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassMethodWrapper;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field.PojoClassProperty;
+import org.firstinspires.ftc.teamcode.unitTests.telemetry.PojoMonitorTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 public class OhNoJavaFieldMonitorAndExposer {
 
+    private int depth;
+    private int maxDepth;
     private Object object;
 
     private PojoClassProperty[] fields;
@@ -18,9 +21,21 @@ public class OhNoJavaFieldMonitorAndExposer {
     public OhNoJavaFieldMonitorAndExposer() {}
 
     public OhNoJavaFieldMonitorAndExposer(Object object) {
-        this.object = object;
+        this(object, Integer.MAX_VALUE, false);
+    }
+    public OhNoJavaFieldMonitorAndExposer(Object object, boolean ignoreInheritedFields) {
+        this(object, Integer.MAX_VALUE, ignoreInheritedFields);
+    }
+    public OhNoJavaFieldMonitorAndExposer(Object object, int maxDepth) {
+        this(object, maxDepth, false);
+    }
 
-        this.fields = new PojoClassProperty[0]; //getUsableFields(object);
+    public OhNoJavaFieldMonitorAndExposer(Object object, int maxDepth, boolean ignoreInheritedFields) {
+        this.object = object;
+        this.depth = 0;
+        this.maxDepth = maxDepth;
+
+        this.fields = PojoClassProperty.getUsableFields(object, "", depth, maxDepth, ignoreInheritedFields);
     }
 
     public boolean hasKey(String name) {
@@ -54,24 +69,12 @@ public class OhNoJavaFieldMonitorAndExposer {
 
     public String getJSON() {
         if(fields == null || object == null) return "null";
-
-
-        StringBuilder r = new StringBuilder("{");
-        for(int i = 0; i < fields.length; i++) {
-            System.out.println(fields[i].getName());
-            r.append(fields[i].getJSONFragment());
-
-            if(i != fields.length - 1) {
-                r.append(",");
-            }
-        }
-        r.append("}");
-        return r.toString();
+        return"{" + PojoClassProperty.getJSONFragmentFromProperties(fields) +
+                "}";
     }
 
     public void parseAndSet(String key, String value) {
         Class type = getTypeOfField(key);
-        if(type == null) throw new IllegalArgumentException();
 
         if(type.isPrimitive()) {
                 if(type.equals(Integer.class)) set(key, Integer.valueOf(value));
@@ -84,31 +87,9 @@ public class OhNoJavaFieldMonitorAndExposer {
                 else if(type.equals(Short.class)) set(key, Short.valueOf(value));
         }
         //if not, it *has* to be a String
+        //or null, which can be handled automagically
         else {
             set(key, value);
         }
-    }
-    public static PojoClassProperty[] getUsableFields(Object obj) {
-        Field[] fields = obj.getClass().getFields();
-        Method[] methods = obj.getClass().getMethods();
-
-        ArrayList<PojoClassProperty> usableFields = new ArrayList<PojoClassProperty>();
-        int eventualLength = 0;
-
-        for(int i = 0; i < fields.length; i++) {
-            usableFields.add(new PojoClassFieldCache(fields[i], obj));
-            eventualLength++;
-        }
-        for(int i = 0; i < methods.length; i++) {
-            //no sense in including Class's methods
-            if(methods[i].getDeclaringClass().equals(Class.class)) continue;
-            if(methods[i].getName().equals("getClass")) continue;
-
-            if(methods[i].getParameterTypes().length == 0 && methods[i].getName().startsWith("get")) {
-                usableFields.add(new PojoClassMethodWrapper(methods[i], obj));
-                eventualLength++;
-            }
-        }
-        return usableFields.toArray(new PojoClassProperty[eventualLength]);
     }
 }

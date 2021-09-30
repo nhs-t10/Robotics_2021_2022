@@ -9,8 +9,21 @@ import static org.junit.Assert.assertEquals;
 public class PojoMonitorTest {
     @Test
     public void test() {
-        OhNoJavaFieldMonitorAndExposer monitor = new OhNoJavaFieldMonitorAndExposer(new TestPojoOpmode());
-        assertEquals("{\"testString\":\"foobar\",\"testInt\":\"3\",\"testFloat\":\"2.4\",\"time\":\"0.0\",\"msStuckDetectInit\":\"5000\",\"msStuckDetectInitLoop\":\"5000\",\"msStuckDetectStart\":\"5000\",\"msStuckDetectLoop\":\"5000\",\"msStuckDetectStop\":\"900\"}", monitor.getJSON());
+        TestPojoOpmode testPojoOpmode = new TestPojoOpmode();
+        OhNoJavaFieldMonitorAndExposer monitor = new OhNoJavaFieldMonitorAndExposer(testPojoOpmode, true);
+
+        assertEquals(
+                "{\"testString\":\"foobar\",\"testInt\":3,\"testFloat\":2.4,\"nullField\":null,\"arrayTest[0]\":\"foo\",\"arrayTest[1]\":3,\"objectField.foobar\":\"feeeeees!\",\"getMethodTestString()\":\"boofar\"}",
+                monitor.getJSON()
+        );
+        testPojoOpmode.testString = "barfoo";
+
+        assertEquals("barfoo", testPojoOpmode.testString);
+
+        assertEquals(
+                "{\"testString\":\"barfoo\",\"testInt\":3,\"testFloat\":2.4,\"nullField\":null,\"arrayTest[0]\":\"foo\",\"arrayTest[1]\":3,\"objectField.foobar\":\"feeeeees!\",\"getMethodTestString()\":\"boofar\"}",
+                monitor.getJSON()
+        );
     }
 
     public static class TestPojoOpmode extends DummyOpmode {
@@ -21,8 +34,16 @@ public class PojoMonitorTest {
         private String thisOneShouldntBePrinted;
         public String nullField;
 
-        public String thisOnesAMethod() {
-            return "";
+        public Object[] arrayTest = new Object[] {"foo", 3};
+
+        public TestPojoPropertyClass objectField = new TestPojoPropertyClass();
+
+        public String getMethodTestString() {
+            return "boofar";
         }
+    }
+
+    public static class TestPojoPropertyClass {
+        public String foobar = "feeeeees!";
     }
 }

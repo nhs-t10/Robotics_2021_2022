@@ -267,6 +267,6 @@ public abstract class PaulMath extends FeatureManager {
     }
 
     public static boolean isJSONable(Object s) {
-        return s instanceof Number || s instanceof Boolean || s instanceof String || s instanceof Character;
+        return s == null || s instanceof Number || s instanceof Boolean || s instanceof String || s instanceof Character;
     }
 }

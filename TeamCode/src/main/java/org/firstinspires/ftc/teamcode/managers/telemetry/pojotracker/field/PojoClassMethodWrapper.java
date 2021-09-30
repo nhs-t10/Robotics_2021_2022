@@ -10,28 +10,34 @@ public class PojoClassMethodWrapper extends PojoClassProperty {
     Class type;
     Object object;
 
-    public String name;
 
-    public PojoClassMethodWrapper(Method method, Object object) {
+    public PojoClassMethodWrapper(Method method, Object object, String prefix, int depth, int maxDepth) {
         if(object == null) throw new IllegalArgumentException("given Object is null");
         if(method == null) throw new IllegalArgumentException("given Field is null");
         if(!method.getDeclaringClass().isAssignableFrom(object.getClass())) throw new IllegalArgumentException("given Field isn't declared on given Object");
 
-        this.name = method.getName() + "()";
+        if(prefix.equals("")) this.name = method.getName() + "()";
+        else this.name = prefix + "." + method.getName() + "()";
+
         this.method = method;
         this.type = method.getReturnType();
         this.object = object;
+
+        this.depth = depth;
+        this.maxDepth = maxDepth;
     }
 
     public String getJSONFragment() {
-        return getJSONFragment("");
-    }
-    public String getJSONFragment(String prefix) {
         try {
-            return getJSONFragmentRecursiveBoy(prefix + name, method.invoke(object));
-        } catch(InvocationTargetException | IllegalAccessException err) {
+            Object value = method.invoke(object);
+            return getJSONFragment(value);
+        } catch(IllegalAccessException | InvocationTargetException err) {
             return "\"err\":" + PaulMath.JSONify(err.toString());
         }
+    }
+
+    protected void invalidateChildren() {
+        this.children = PojoClassProperty.getUsableFields(cachedValue, name, depth, maxDepth);
     }
 
     public Class getType() {

@@ -21,7 +21,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class TelemetryManagerIntegratedServerTest {
@@ -59,9 +61,8 @@ public class TelemetryManagerIntegratedServerTest {
             dataLine = httpBodyReader.readLine();
         }
 
-        assertEquals("3", dataLine);
-        assertTrue(dataLine.contains("\"foo\":3.0"));
-        assertTrue(dataLine.contains("\"log\": \"bar\\n\""));
+        assertThat("Reply data contains the sent field `foo`", dataLine, containsString("\"foo\":3.0"));
+        assertThat("Reply data contains the log data", dataLine, containsString("\"log\": \"bar\\n\""));
 
         httpReply.close();
 
