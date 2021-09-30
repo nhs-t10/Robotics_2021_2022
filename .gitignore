@@ -95,3 +95,4 @@ lint/tmp/
 **/.cache/
 **/buildimgs/
 last-build-pixels.json
+.idea/misc.xml
