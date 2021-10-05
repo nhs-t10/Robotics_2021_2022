@@ -49,7 +49,9 @@ public class InputManager extends FeatureManager {
 
         node.init(this);
         nodes.put(key, node);
-        updateThread.addNode(node);
+        synchronized (updateThread) {
+            updateThread.addNode(node);
+        }
     }
 
 

@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode
 import java.util.ArrayList;
 
 public class InputUpdateThread extends Thread {
-    private ArrayList<InputManagerInputNode> nodes;
+    private final ArrayList<InputManagerInputNode> nodes;
     public InputUpdateThread() {
-        nodes = new ArrayList<InputManagerInputNode>();
+        nodes = new ArrayList<>();
     }
     public void addNode(InputManagerInputNode node) {
         nodes.add(node);
@@ -18,7 +18,11 @@ public class InputUpdateThread extends Thread {
     @Override
     public void run() {
         while(FeatureManager.isOpModeRunning) {
-            for (InputManagerInputNode node : nodes) node.update();
+            synchronized (this) {
+            for (InputManagerInputNode node : nodes) {
+                    node.update();
+                }
+            }
         }
     }
 }
