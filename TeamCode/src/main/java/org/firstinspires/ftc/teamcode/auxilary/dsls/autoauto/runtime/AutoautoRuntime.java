@@ -12,14 +12,21 @@ import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
 public class AutoautoRuntime {
+    private final FeatureManager[] managers;
     public AutoautoRuntimeVariableScope globalScope;
     public AutoautoProgram program;
 
     public static AutoautoRuntime R(AutoautoProgram program, FeatureManager... managers) {
-        return new AutoautoRuntime(program, managers);
+
+        try {
+            return new AutoautoRuntime(program, managers);
+        } catch (ManagerSetupException e) {
+            FeatureManager.logger.log(e.toString());
+            return null;
+        }
     }
 
-    public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) {
+    public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) throws ManagerSetupException {
         MovementManager drive = null;
         ManipulationManager manip = null;
         SensorManager sense = null;
@@ -33,22 +40,8 @@ public class AutoautoRuntime {
         }
 
         if(drive == null || manip == null || sense == null || telemetry == null) throw new IllegalArgumentException("Managers must contain at least one of each type.");
-
-        this.globalScope = new AutoautoRuntimeVariableScope();
-        globalScope.initSugarVariables();
-        globalScope.initBuiltinFunctions(this);
-
-        this.program = program;
-        this.program.setScope(globalScope);
-
-        InputManager dummyInputMan = new InputManager(null, null);
-
-        RobotFunctionLoader.loadFunctions(new FeatureManager(), dummyInputMan, manip, drive, sense, telemetry, globalScope);
-
-        ManagerDeviceScanner.scan(globalScope, manip, sense);
-
-        this.program.init();
-        this.program.stepInit();
+        this.managers = managers;
+        setProgram(program);
     }
 
     public int getCurrentState() {
@@ -63,5 +56,22 @@ public class AutoautoRuntime {
         this.program.loop();
     }
 
+    public void setProgram(AutoautoProgram program) throws ManagerSetupException {
+        if(program != null) {
 
+            this.globalScope = new AutoautoRuntimeVariableScope();
+            globalScope.initSugarVariables();
+            globalScope.initBuiltinFunctions(this);
+
+            this.program = program;
+            this.program.setScope(globalScope);
+
+            RobotFunctionLoader.loadFunctions(globalScope, managers);
+
+            ManagerDeviceScanner.scan(globalScope, managers);
+
+            this.program.init();
+            this.program.stepInit();
+        }
+    }
 }

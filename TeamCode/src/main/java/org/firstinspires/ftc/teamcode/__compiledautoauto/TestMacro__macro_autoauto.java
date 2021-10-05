@@ -1,4 +1,4 @@
-/*PACKAGE_DECLARATION*/
+package org.firstinspires.ftc.teamcode.__compiledautoauto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -50,106 +50,23 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values
 import java.util.HashMap;
 
 @SuppressWarnings("WrongPackageStatement")
-@Autonomous
-public class template extends AutoautoOpmode {
-    MovementManager driver;
-    ManipulationManager limbs;
-    SensorManager sense;
-    ImuManager imu;
-
+public class TestMacro__macro_autoauto extends AutoautoMacro {
     public static AutoautoProgram program = generateProgram();
-
-    AutoautoRuntime runtime;
-    public void init() {
-        FeatureManager.isOpModeRunning = true;
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this);
-        telemetry = telemetryManager;
-        
-        if(this.internalOpModeServices!=null) FeatureManager.logger.setBackend(telemetry.log());
-
-        driver = new MovementManager(hardwareMap.get(DcMotor.class, "fl"),
-                hardwareMap.get(DcMotor.class, "fr"),
-                hardwareMap.get(DcMotor.class, "bl"),
-                hardwareMap.get(DcMotor.class, "br"));
-        limbs = new ManipulationManager(
-                new CRServo[] {
-                        /*CRSERVOS*/
-                },
-                new String[] {
-                        /*CRSERVO_NAMES*/
-                },
-                new Servo[] { /*NSERVOS*/ },
-                new String[] { /*NSERVO_NAMES*/ },
-                new DcMotor[] {
-                        hardwareMap.get(DcMotor.class, "drum"),
-                        hardwareMap.get(DcMotor.class, "intake"),
-                        new EncodedMotor(hardwareMap.get(DcMotor.class, "flywheel"), 70),
-                        //hardwareMap.get(DcMotor.class, "flywheel")
-                        hardwareMap.get(DcMotor.class, "spinner")
-                },
-                new String[] {
-                        "drum",
-                        "intake",
-                        "flywheel",
-                        "spinner"
-                }
-        );
-        driver.resetEncoders();
-        driver.runWithOutEncoders();
-
-         sense = new SensorManager(
-                    new ColorSensor[] {
-                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorOne")),
-                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorFour"))
-                    },
-                    new String[] {
-                            "sensorOne",
-                            "sensorFour"
-                    }
-            );
-
-            imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
-
-        limbs.getServo("wobbleGrabRight").setDirection(Servo.Direction.REVERSE);
-        StringBuilder programJson = new StringBuilder();
-        String simpleProgramJson = "";
-
-        /*JSON_SETTING_CODE*/
-
-        AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
-        telemetryManager.autoauto.setProgramJson(programJson.toString());
-        telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
-        telemetryManager.autoauto.setGlobalScope(runtime.globalScope);
-    }
-
-    public void loop() {
-        telemetry.addData("Build Name", BuildHistory.buildName);
-        telemetry.addData("Build Time", BuildHistory.buildTimeIso);
-        runtime.loop();
-    }
-
-    @Test
-    public void runTest() {
-        this.hardwareMap = new DummyHardwareMap();
-        this.init();
-        FeatureManager.logger.log(runtime.program.toString());
-        int TEST_ITERATIONS = /*TEST_ITERATIONS*/0/10;
-        //noinspection ConstantConditions
-        for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();
-        this.stop();
-    }
 
     public static void sL(AutoautoProgramElement e, Location l) {
         e.setLocation(l);
     }
 
-    @Override
-    public void stop() {
-        FeatureManager.setIsOpModeRunning(false);
-    }
     /*USER_DEFINED_FUNCTIONS*/
 
     public static AutoautoProgram generateProgram() {
-/*JAVA_CREATION_CODE*/
+final String i="setServoPosition",j="i",m="arm",v="s",q0="end";
+
+AutoautoUnitValue u=E(3,v);AutoautoNumericValue o=C(3),k0=C(1);AutoautoString l=U(m),i0=U(m);AutoautoValue[]k={l,o},h0={i0,
+k0};FunctionCall h=M(i,k),e0=M(i,h0);NextStatement y=N();FunctionCallStatement g=F(h),d0=F(e0);GotoStatement p0=G(q0);AfterStatement t=W(u,
+y);Statement[]$f=new Statement[]{g,t},$c0={d0,p0};State f=A($f),c0=A($c0);State[]$e=new State[]{f,c0};Statepath e=S($e,j);HashMap<String,
+Statepath> d = new HashMap<String,Statepath>();d.put(j,e);AutoautoProgram x0 = P(d,j);sL(l,L(j,0,2,18));sL(o,L(j,0,2,25));sL(h,
+L(j,0,2,1));sL(g,L(j,0,2,1));sL(u,L(j,0,2,35));sL(y,L(j,0,2,38));sL(t,L(j,0,2,29));sL(f,L(j,0,2,1));sL(i0,L(j,1,3,18));sL(k0,
+L(j,1,3,25));sL(e0,L(j,1,3,1));sL(d0,L(j,1,3,1));sL(p0,L(j,1,3,29));sL(c0,L(j,1,2,43));return x0;
     }
 }

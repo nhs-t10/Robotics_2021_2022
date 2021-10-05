@@ -1,0 +1,3 @@
+#i:
+setServoPosition("arm", 3), after 3s next;
+setServoPosition("arm", 1), goto end

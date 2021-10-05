@@ -14,7 +14,10 @@ var directory = __dirname.split(path.sep);
 
 var PACKAGE_DECLARATION = "package org.firstinspires.ftc.teamcode.__compiledautoauto;";
 
-var template = fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString();
+var templates = {
+    "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString(),
+    "macro": fs.readFileSync(path.join(__dirname, "data" + path.sep + "macro.notjava")).toString()
+}
 
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 
@@ -39,7 +42,11 @@ var autoautoFiles = loadAutoautoFilesFromFolder(srcDirectory.join(path.sep));
 for(var i = 0; i < autoautoFiles.length; i++) {
     var fileSource = fs.readFileSync(autoautoFiles[i]).toString();
     var fileName = autoautoFiles[i].substring(autoautoFiles[i].lastIndexOf(path.sep) + 1);
-    var className = fileName.replace(".autoauto", "__autoauto");
+    var templateUsed = fileName.includes(".macro") ? "macro" : "template";
+    var className = jClassIfy(fileName)
+        .replace(".macro.autoauto", "__macro_autoauto")
+        .replace(".autoauto", "__autoauto");
+
     var javaFileName = className + ".java";
 
     var resultFile = compiledResultDirectory + "/" + javaFileName;
@@ -63,7 +70,12 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
         var javaCreationCode = astJavaify(parsedModel);
 
-        fs.writeFileSync(resultFile, processTemplate(template, className, frontMatter.frontMatter, javaStringFileSource, javaCreationCode, autoautoFiles[i]));
+        var programModelGeneration = javaCreationCode.genCode;
+        var jsonSettingCode = javaCreationCode.jsonSettingCode;
+
+        fs.writeFileSync(resultFile,
+            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode)
+        );
     } catch(e) {
         console.error(autoautoFiles[i] + ":" + (e.location ? e.location.start.line + ":" + e.location.start.column + ":" : "") + "\t" + e.toString());
         if(!e.location) console.error(e.stack);
@@ -75,7 +87,14 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 //see if more methods have been made
 (require("./functionloader"));
 
-function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName) {
+function jClassIfy(str) {
+    return str.split("-").map(x=>capitalize(x)).join("");
+}
+function capitalize(str) {
+    return str[0].toUpperCase() + str.substring(1);
+}
+
+function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode) {
     return template
         .replace("public class template", "public class " + className)
         .replace("/*NSERVO_NAMES*/", buildServoNames(frontMatter.servos))
@@ -84,6 +103,7 @@ function processTemplate(template, className, frontMatter, javaStringFileSource,
         .replace("/*CRSERVO_NAMES*/", buildCrServoNames(frontMatter.crServos))
         .replace("/*CRSERVOS*/", buildCrServos(frontMatter.crServos))
         .replace("/*PACKAGE_DECLARATION*/", PACKAGE_DECLARATION)
+        .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
         .replace("/*TEST_ITERATIONS*/",  (frontMatter.testIterations === undefined ? 3 : frontMatter.testIterations))
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1));
 }

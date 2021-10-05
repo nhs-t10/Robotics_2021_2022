@@ -1,7 +1,13 @@
 package org.firstinspires.ftc.teamcode.managers.input;
 
+import com.qualcomm.ftccommon.FtcEventLoop;
+import com.qualcomm.ftccommon.FtcEventLoopBase;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeServices;
+import org.firstinspires.ftc.robotcore.internal.opmode.RegisteredOpModes;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
@@ -16,17 +22,16 @@ public class InputManager extends FeatureManager {
     public Gamepad gamepad;
     public Gamepad gamepad2;
 
-    private HashMap<String, InputManagerInputNode> nodes;
+    private final HashMap<String, InputManagerInputNode> nodes;
 
-//    private long explosion;
-//
-//    public HashMap<String, Float> lastPresses = new HashMap<>();
-//    public HashMap<String, Boolean> togglePresses = new HashMap<>();
+    private final InputUpdateThread updateThread;
 //
     public InputManager(Gamepad _gamepad, Gamepad _gamepad2) {
         this.gamepad = _gamepad;
         this.gamepad2 = _gamepad2;
         nodes = new HashMap<>();
+        updateThread = new InputUpdateThread();
+        updateThread.start();
     }
 
     public Gamepad getGamepad() {
@@ -44,7 +49,9 @@ public class InputManager extends FeatureManager {
 
         node.init(this);
         nodes.put(key, node);
+        updateThread.addNode(node);
     }
+
 
     public InputManagerInputNode getInputNode(String key) {
         return nodes.get(key);
@@ -208,7 +215,16 @@ public class InputManager extends FeatureManager {
     }
 
     public void update() {
-        for(InputManagerInputNode node : nodes.values()) node.update();
+    }
+
+
+    public boolean getBool(String key) {
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
+        return nodes.get(key).getResult().getFloat() != 0;
+    }
+    public float getFloat(String key) {
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
+        return nodes.get(key).getResult().getFloat();
     }
 }
 
