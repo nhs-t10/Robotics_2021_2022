@@ -42,7 +42,9 @@ public class ExampleTeleop extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         driver = new MovementManager(fl, fr, br, bl);
 
-        hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {}, new String[] {});
+        hands = new ManipulationManager(new CRServo[] {},
+                new String[] {}, new Servo[] {}, new String[] {},
+                new DcMotor[] {}, new String[] {});
 
         input = new InputManager(gamepad1, gamepad2);
 
@@ -52,6 +54,9 @@ public class ExampleTeleop extends OpMode {
                 new JoystickNode("left_stick_y"),
                 new JoystickNode("right_stick_x")
             )
+        );
+        input.registerInput("turnAround",
+            new ButtonNode("right_stick_button")
         );
 
         input.registerInput("servoMacro", new ComboNode(
@@ -68,6 +73,9 @@ public class ExampleTeleop extends OpMode {
         if(input.getBool("servoMacro")) {
             macros.runMacro("servoMacro");
         }
+        float[] drive = input.getFloatArrayOfInput("drivingControls");
+        boolean spin = input.getBool("right_stick_button");
+        if (spin) drive[2] = 1f;
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         telemetry.update();
     }
