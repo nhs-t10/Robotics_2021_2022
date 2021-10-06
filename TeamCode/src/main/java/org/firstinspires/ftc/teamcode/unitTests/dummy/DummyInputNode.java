@@ -25,7 +25,7 @@ public class DummyInputNode extends InputManagerInputNode {
     }
 
     @Override
-    public InputManagerNodeResult getResult() {
+    public final InputManagerNodeResult getResult() {
         return new InputManagerNodeResult(value);
     }
 

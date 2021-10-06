@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.__compiledautoauto.TestMacro__macro_autoauto;
@@ -40,6 +41,9 @@ public class ExampleTeleop extends OpMode {
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
+
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+
         driver = new MovementManager(fl, fr, br, bl);
 
         hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {}, new String[] {});
@@ -65,9 +69,6 @@ public class ExampleTeleop extends OpMode {
 
     @Override
     public void loop() {
-        if(input.getBool("servoMacro")) {
-            macros.runMacro("servoMacro");
-        }
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         telemetry.update();
     }

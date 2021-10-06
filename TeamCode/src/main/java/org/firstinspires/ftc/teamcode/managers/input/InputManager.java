@@ -67,17 +67,17 @@ public class InputManager extends FeatureManager {
     public float getKey(String key) {
         String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
         switch(normalizedKey) {
-            case "dpad_up":
-            case "gamepad1dpad_up":
+            case "dpadup":
+            case "gamepad1dpadup":
                 return gamepad.dpad_up?1f:0f;
-            case "dpad_down":
-            case "gamepad1dpad_down":
+            case "dpaddown":
+            case "gamepad1dpaddown":
                 return gamepad.dpad_down?1f:0f;
-            case "dpad_left":
-            case "gamepad1dpad_left":
+            case "dpadleft":
+            case "gamepad1dpadleft":
                 return gamepad.dpad_left?1f:0f;
-            case "dpad_right":
-            case "gamepad1dpad_right":
+            case "dpadright":
+            case "gamepad1dpadright":
                 return gamepad.dpad_right?1f:0f;
             case "a":
             case "gamepad1a":
@@ -100,17 +100,17 @@ public class InputManager extends FeatureManager {
             case "back":
             case "gamepad1back":
                 return gamepad.back?1f:0f;
-            case "left_bumper":
-            case "gamepad1left_bumper":
+            case "leftbumper":
+            case "gamepad1leftbumper":
                 return gamepad.left_bumper?1f:0f;
-            case "right_bumper":
-            case "gamepad1right_bumper":
+            case "rightbumper":
+            case "gamepad1rightbumper":
                 return gamepad.right_bumper?1f:0f;
-            case "left_stick_button":
-            case "gamepad1left_stick_button":
+            case "leftstickbutton":
+            case "gamepad1leftstickbutton":
                 return gamepad.left_stick_button?1f:0f;
-            case "right_stick_button":
-            case "gamepad1right_stick_button":
+            case "rightstickbutton":
+            case "gamepad1rightstickbutton":
                 return gamepad.right_stick_button?1f:0f;
             case "circle":
             case "gamepad1circle":
@@ -136,43 +136,43 @@ public class InputManager extends FeatureManager {
             case "ps":
             case "gamepad1ps":
                 return gamepad.ps?1f:0f;
-            case "left_stick_x":
-            case "gamepad1left_stick_x":
+            case "leftstickx":
+            case "gamepad1leftstickx":
                 return gamepad.left_stick_x;
-            case "left_stick_y":
-            case "gamepad1left_stick_y":
+            case "leftsticky":
+            case "gamepad1leftsticky":
                 return gamepad.left_stick_y;
-            case "right_stick_x":
-            case "gamepad1right_stick_x":
+            case "rightstickx":
+            case "gamepad1rightstickx":
                 return gamepad.right_stick_x;
-            case "right_stick_y":
-            case "gamepad1right_stick_y":
+            case "rightsticky":
+            case "gamepad1rightsticky":
                 return gamepad2.right_stick_y;
-            case "left_trigger":
-            case "gamepad1left_trigger":
+            case "lefttrigger":
+            case "gamepad1lefttrigger":
                 return gamepad.left_trigger;
-            case "right_trigger":
-            case "gamepad1right_trigger":
+            case "righttrigger":
+            case "gamepad1righttrigger":
                 return gamepad.right_trigger;
-            case "gamepad2left_stick_x":
+            case "gamepad2leftstickx":
                 return gamepad2.left_stick_x;
-            case "gamepad2left_stick_y":
+            case "gamepad2leftsticky":
                 return gamepad2.left_stick_y;
-            case "gamepad2right_stick_x":
+            case "gamepad2rightstickx":
                 return gamepad2.right_stick_x;
-            case "gamepad2right_stick_y":
+            case "gamepad2rightsticky":
                 return gamepad2.right_stick_y;
-            case "gamepad2left_trigger":
+            case "gamepad2lefttrigger":
                 return gamepad2.left_trigger;
-            case "gamepad2right_trigger":
+            case "gamepad2righttrigger":
                 return gamepad2.right_trigger;
-            case "gamepad2dpad_up":
+            case "gamepad2dpadup":
                 return gamepad2.dpad_up?1f:0f;
-            case "gamepad2dpad_down":
+            case "gamepad2dpaddown":
                 return gamepad2.dpad_down?1f:0f;
-            case "gamepad2dpad_left":
+            case "gamepad2dpadleft":
                 return gamepad2.dpad_left?1f:0f;
-            case "gamepad2dpad_right":
+            case "gamepad2dpadright":
                 return gamepad2.dpad_right?1f:0f;
             case "gamepad2a":
                 return gamepad2.a?1f:0f;
@@ -188,13 +188,13 @@ public class InputManager extends FeatureManager {
                 return gamepad2.start?1f:0f;
             case "gamepad2back":
                 return gamepad2.back?1f:0f;
-            case "gamepad2left_bumper":
+            case "gamepad2leftbumper":
                 return gamepad2.left_bumper?1f:0f;
-            case "gamepad2right_bumper":
+            case "gamepad2rightbumper":
                 return gamepad2.right_bumper?1f:0f;
-            case "gamepad2left_stick_button":
+            case "gamepad2leftstickbutton":
                 return gamepad2.left_stick_button?1f:0f;
-            case "gamepad2right_stick_button":
+            case "gamepad2rightstickbutton":
                 return gamepad2.right_stick_button?1f:0f;
             case "gamepad2circle":
                 return gamepad2.circle?1f:0f;
@@ -213,7 +213,7 @@ public class InputManager extends FeatureManager {
             case "gamepad2ps":
                 return gamepad2.ps?1f:0f;
         }
-        return 0f;
+        return -1f;
     }
 
     public void update() {
