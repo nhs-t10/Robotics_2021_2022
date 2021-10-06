@@ -24,7 +24,7 @@ public class PojoMonitorPerformanceTest {
         }
         long duration = System.currentTimeMillis() - timeStart;
         long durationPerRun = duration / TEST_RUNS;
-        assertThat("Average duration per run must be under 1ms", durationPerRun, lessThan(5));
+        assertThat("Average duration per run must be under 16ms for 60Hz performance", durationPerRun, lessThan(16));
 
 
     }
@@ -37,7 +37,7 @@ public class PojoMonitorPerformanceTest {
         private String thisOneShouldntBePrinted;
         public String nullField;
 
-        public Object[] arrayTest = new Object[] {"foo", 3};
+        public Object[] arrayTest = new Object[] {"foo", 3, null};
 
         public ComplexPojoChild1 objectField = new ComplexPojoChild1();
 
@@ -68,8 +68,8 @@ public class PojoMonitorPerformanceTest {
                 }
             }
             public void scramble() {
-                n = (Math.random() + "").substring(2);
                 if(Math.random() < 0.5) {
+                    n = (Math.random() + "").substring(2);
                     for (int i = 0; i < childs.length; i++) childs[i].scramble();
                 }
             }

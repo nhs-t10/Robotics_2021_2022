@@ -129,7 +129,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${stringDefinitions[ast.statepaths[0].label.value]});
             ${locationSetters.join("")}`;
 
-            var runtimeSetup = `runtime = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoRuntime}(${programName}, driver, limbs, sense, telemetryManager);`;
+            var runtimeSetup = `runtime = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoRuntime}(program, driver, limbs, sense, telemetryManager);`;
 
             result = "";
             result += strings + "\n\n";
@@ -148,19 +148,29 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             }
             result += line;
 
-            result += "\n\n" + runtimeSetup;
+            result += `return ${programName};`
 
-            result += "\n\n";
+            var simpleProgramJsonSet
+
             var jsonProgram = JSON.stringify(ast);
 
+            var jsonSettingCode = "";
+
+            jsonSettingCode += runtimeSetup + "\n\n";
+
             for(var i = 0; i < jsonProgram.length; i += 32768) {
-                result += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 32768)) + ");\n";
+                jsonSettingCode += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 32768)) + ");\n";
             }
 
             var simpleProgram = Object.fromEntries(ast.statepaths.map(x=>[x.label.value, x.statepath.states.length]));
             var simpleProgramJson = JSON.stringify(simpleProgram);
 
-            result += "simpleProgramJson = " + JSON.stringify(simpleProgramJson) + ";\n";
+            jsonSettingCode += "simpleProgramJson = " + JSON.stringify(simpleProgramJson) + ";\n";
+
+            result = {
+                genCode: result,
+                jsonSettingCode: jsonSettingCode
+            }
 
             initFileState();
             break;
@@ -175,7 +185,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             });
 
             result = {
-                varname: nonce
+                varname: nonce,
+                noLocation: true
             };
             break;
         case "Statepath":
@@ -448,9 +459,9 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
         statepathNonce = stringDefinitions[statepath]
     }
     
-    if (typeof result == "object" && result.definitions != "" && !result.noLocation) {
+    if (typeof result == "object" && result.definitions != "" && !result.noLocation && statepathNonce) {
         locationSetters.push(`sL(${nonce},L(` +
-            (statepathNonce || null) + "," + JSON.stringify(stateNumber || 0) + "," + 
+            (statepathNonce) + "," + JSON.stringify(stateNumber || 0) + "," +
             JSON.stringify(ast.location.start.line) + "," + JSON.stringify(ast.location.start.column) + "));");
     }
     return result;

@@ -1,17 +1,17 @@
 module.exports = function(loadFunctionsSrc, margs) {
     return `package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
+    import org.firstinspires.ftc.teamcode.managers.FeatureManager;
     import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions.*;
-    import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
-    import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
-    import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
-    import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
-    
     import java.util.ArrayList;
     
     public class RobotFunctionLoader {
     
-        public static void loadFunctions(${margs}, AutoautoRuntimeVariableScope scope) {
+        public static void loadFunctions(AutoautoRuntimeVariableScope scope, FeatureManager... managers) {
+${indent(3,margs.map(x=>x[0] + " " + x[1] + " = null;").join("\n"))}
+            for(FeatureManager f : managers) {
+${indent(4,margs.map(x=>"if(f instanceof " + x[0] + ") " + x[1] + " = (" + x[0] + ")f;").join("\n"))}
+            }
 ${indent(3, remExcessiveWhitespace(loadFunctionsSrc))}
         }
     }

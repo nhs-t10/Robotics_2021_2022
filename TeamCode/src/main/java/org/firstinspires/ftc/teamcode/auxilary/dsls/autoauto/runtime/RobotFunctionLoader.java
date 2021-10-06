@@ -1,20 +1,38 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
+    import org.firstinspires.ftc.teamcode.managers.FeatureManager;
     import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions.*;
-    import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
-    import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
-    import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
-    import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
-    
     import java.util.ArrayList;
     
     public class RobotFunctionLoader {
     
-        public static void loadFunctions(org.firstinspires.ftc.teamcode.managers.FeatureManager manFeature,org.firstinspires.ftc.teamcode.managers.input.InputManager manInput,org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manManipulation,org.firstinspires.ftc.teamcode.managers.movement.MovementManager manMovement,org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manSensor,org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager manTelemetry, AutoautoRuntimeVariableScope scope) {
+        public static void loadFunctions(AutoautoRuntimeVariableScope scope, FeatureManager... managers) {
+            org.firstinspires.ftc.teamcode.managers.FeatureManager manFeature = null;
+            org.firstinspires.ftc.teamcode.managers.input.InputManager manInput = null;
+            org.firstinspires.ftc.teamcode.managers.macro.MacroManager manMacro = null;
+            org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manManipulation = null;
+            org.firstinspires.ftc.teamcode.managers.movement.MovementManager manMovement = null;
+            org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manSensor = null;
+            org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager manTelemetry = null;
+            for(FeatureManager f : managers) {
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.FeatureManager) manFeature = (org.firstinspires.ftc.teamcode.managers.FeatureManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.input.InputManager) manInput = (org.firstinspires.ftc.teamcode.managers.input.InputManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.macro.MacroManager) manMacro = (org.firstinspires.ftc.teamcode.managers.macro.MacroManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager) manManipulation = (org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.movement.MovementManager) manMovement = (org.firstinspires.ftc.teamcode.managers.movement.MovementManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.sensor.SensorManager) manSensor = (org.firstinspires.ftc.teamcode.managers.sensor.SensorManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager) manTelemetry = (org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager)f;
+            }
             scope.put("setIsOpModeRunning", new SetIsOpModeRunningFunction(manFeature));
             
             scope.put("getKey", new GetKeyFunction(manInput));
             scope.put("update", new UpdateFunction(manInput));
+            scope.put("getBool", new GetBoolFunction(manInput));
+            scope.put("getFloat", new GetFloatFunction(manInput));
+            
+            scope.put("runMacro", new RunMacroFunction(manMacro));
+            scope.put("stopMacro", new StopMacroFunction(manMacro));
+            scope.put("isMacroRunning", new IsMacroRunningFunction(manMacro));
             
             scope.put("setServoPosition", new SetServoPositionFunction(manManipulation));
             scope.put("setServoPower", new SetServoPowerFunction(manManipulation));

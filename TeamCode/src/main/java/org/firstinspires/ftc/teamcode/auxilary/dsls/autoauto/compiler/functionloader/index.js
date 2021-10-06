@@ -56,7 +56,7 @@ var robotFunctionLoader = robotFunctionsTemplate(
     )
     .join("\n"),
     
-    Object.entries(managerArgs).map(x=>x[0] + " " + x[1]).join(",")
+    Object.entries(managerArgs)
 );
 fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
 
