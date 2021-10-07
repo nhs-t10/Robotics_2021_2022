@@ -15,7 +15,7 @@ public class MovementManager extends FeatureManager {
     public DcMotor backRight;
     private ElapsedTime timer;
 
-    private static float scale = 0.5f;
+    private static float scale = 1.0f;
 
     /**
      * Create a MovementManager with four motors.
