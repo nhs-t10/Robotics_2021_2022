@@ -25,6 +25,7 @@ public class ComboNode extends InputManagerInputNode {
     @Override
     public void update() {
         InputManagerNodeResult lastResult = null;
+        boolean comboMatch = true;
 
         for(int i = 0; i < conditionals.length; i++) {
             InputManagerInputNode node = conditionals[i];
@@ -38,13 +39,10 @@ public class ComboNode extends InputManagerInputNode {
 
 
             if(rBool) lastResult = r;
-        }
-        //ensure that the list of times is sorted
-        boolean comboMatch = true;
-        for(int i = 0; i < risingEdgeTime.length; i++) {
+
+            //check if the list of times is sorted
             if(risingEdgeTime[i] == -1 || (i > 0 && risingEdgeTime[i] < risingEdgeTime[i - 1])) {
                 comboMatch = false;
-                break;
             }
         }
         if(comboMatch && lastResult != null) {
