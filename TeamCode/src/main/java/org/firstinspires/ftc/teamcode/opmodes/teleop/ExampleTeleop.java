@@ -32,17 +32,16 @@ public class ExampleTeleop extends OpMode {
     private MacroManager macros;
 
     @Override
-    public void init() {
-        FeatureManager.setIsOpModeRunning(true);
+    public void init() {        FeatureManager.setIsOpModeRunning(true);
         telemetry = new TelemetryManager(telemetry, this);
         FeatureManager.logger.setBackend(telemetry.log());
+
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
 
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         driver = new MovementManager(fl, fr, br, bl);
 
