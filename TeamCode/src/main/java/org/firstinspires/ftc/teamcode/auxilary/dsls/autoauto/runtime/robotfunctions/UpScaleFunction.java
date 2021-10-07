@@ -13,6 +13,6 @@ public class UpScaleFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(args.length == 0) {manager.upScale(); return new AutoautoUndefined();}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No upScale with 0 args");
+        if(args.length == 1) {if(args[0] instanceof AutoautoNumericValue) {manager.upScale(((AutoautoNumericValue)args[0]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No upScale with 1 args");
     }
 }

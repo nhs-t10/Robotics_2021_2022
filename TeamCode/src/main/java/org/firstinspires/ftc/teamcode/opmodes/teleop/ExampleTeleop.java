@@ -7,15 +7,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.__compiledautoauto.TestMacro__macro_autoauto;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
-import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -29,47 +26,63 @@ public class ExampleTeleop extends OpMode {
     private MovementManager driver;
     private ManipulationManager hands;
     private InputManager input;
-    private MacroManager macros;
+    private boolean dashing = false;
 
     @Override
     public void init() {
         FeatureManager.setIsOpModeRunning(true);
-        telemetry = new TelemetryManager(telemetry, this);
+        telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         FeatureManager.logger.setBackend(telemetry.log());
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
-
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
-
         driver = new MovementManager(fl, fr, br, bl);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {}, new String[] {});
 
         input = new InputManager(gamepad1, gamepad2);
 
         input.registerInput("drivingControls",
-            new MultiInputNode(
-                new JoystickNode("left_stick_x"),
-                new JoystickNode("left_stick_y"),
-                new JoystickNode("right_stick_x")
-            )
+                new MultiInputNode(
+                        new JoystickNode("left_stick_x"),
+                        new JoystickNode("left_stick_y"),
+                        new JoystickNode("right_stick_x")
+                )
         );
-
-        input.registerInput("servoMacro", new ComboNode(
-                new ButtonNode("a"),
-                new ButtonNode("left_trigger")
-        ));
-
-        macros = new MacroManager();
-        macros.registerMacro("test", new TestMacro__macro_autoauto());
+        input.registerInput("dashing",
+                new ButtonNode("b")
+        );
+        input.registerInput("taunts",
+                new MultiInputNode(
+                        new ButtonNode("dpad_up"),
+                        new ButtonNode("dpad_left"),
+                        new ButtonNode("dpad_right"),
+                        new ButtonNode("dpad_down")
+                )
+        );
     }
 
     @Override
     public void loop() {
+        input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        if (input.getBool("dashing") == true && dashing == false){
+            driver.upScale(0.5f);
+            dashing = true;
+        }
+        else if (input.getBool("dashing") == true && dashing == true){
+            dashing = true;
+        }
+        else if (input.getBool("dashing") == false && dashing == true){
+            driver.downScale(0.5f);
+            dashing = false;
+        }
+        else {
+            dashing = false;
+        }
         telemetry.update();
     }
 

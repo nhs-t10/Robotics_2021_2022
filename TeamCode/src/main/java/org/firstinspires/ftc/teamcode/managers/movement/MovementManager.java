@@ -137,11 +137,11 @@ public class MovementManager extends FeatureManager {
     public float getScale(){
         return scale;
     }
-    public void upScale(){
-        scale+=0.01;
+    public void upScale(float ScaleFactor){
+        scale+=ScaleFactor;
     }
-    public void downScale(){
-        scale-=0.01;
+    public void downScale(float ScaleFactor){
+        scale-=ScaleFactor;
     }
 
     public float[] getMotorPositions() {
