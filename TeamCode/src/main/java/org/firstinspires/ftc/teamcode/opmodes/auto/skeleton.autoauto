@@ -1,0 +1,31 @@
+#init:
+    goto sampling
+
+#sampling:
+    let value = computerVision(), next;
+    driveRaw(1, 1, 1, 1), after 100ticks driveRaw(0,0,0,0), next;
+    if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto thirdPosition
+
+#firstPosition:
+    setMotorPower("deposit", 1), after 100ticks setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#secondPosition:
+    setMotorPower("deposit", 1), after 200ticks setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#thirdPosition:
+    setMotorPower("deposit", 1), after 300ticks setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#finalMovement:
+    driveRaw(-1, -1, -1, -1), after 100ticks next;
+    driveRaw(-1, 1, -1, 1), after 300ticks next;
+    spinCarousell(), after 3s stopCarousell(), next;
+    driveRaw(1, -1, 1, -1), after 600ticks driveRaw(0, 0, 0, 0), goto parking
+
+#parking:
+    driveRaw(0,0,0,0), stopAllMotors()

@@ -30,7 +30,7 @@ public class MovementManager extends FeatureManager {
         this.backRight = br;
         this.backLeft = bl;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -42,7 +42,7 @@ public class MovementManager extends FeatureManager {
         this.backLeft = bl;
         this.timer = timer;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -137,11 +137,11 @@ public class MovementManager extends FeatureManager {
     public float getScale(){
         return scale;
     }
-    public void upScale(){
-        scale+=0.01;
+    public void upScale(float ScaleFactor){
+        scale+=ScaleFactor;
     }
-    public void downScale(){
-        scale-=0.01;
+    public void downScale(float ScaleFactor){
+        scale-=ScaleFactor;
     }
 
     public float[] getMotorPositions() {

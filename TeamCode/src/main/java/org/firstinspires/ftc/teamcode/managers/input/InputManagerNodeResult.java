@@ -36,4 +36,11 @@ public class InputManagerNodeResult {
             return 0;
         }
     }
+    public String toString() {
+        if(childs == null || childs.length == 0) return "" + value;
+
+        StringBuilder r = new StringBuilder("[");
+        for(InputManagerNodeResult c : childs) r.append(c).append(",");
+        return r.append("]").toString();
+    }
 }

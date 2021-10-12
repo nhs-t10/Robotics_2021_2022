@@ -1,0 +1,22 @@
+{
+    "browser": "2c2de184f84c6664b572e88e3505f2b3",
+    "cognomen": "Allmaner",
+    "builds": [
+        {
+            "name": "Lexie Allmaner",
+            "time": "2021-10-07T20:02:18.922Z",
+            "buildHash": "06df23bbb921c97de614bde2da72054366a1f5f584af24871c9de60a8a524209",
+            "w3w": "Mayer hallway arrow",
+            "phrase": "really my favourite aunt but still pretty valiant"
+        },
+        {
+            "name": "Amelia Allmaner",
+            "time": "2021-10-07T20:03:38.555Z",
+            "buildHash": "06df23bbb921c97de614bde2da72054366a1f5f584af24871c9de60a8a524209",
+            "w3w": "Mayer hallway arrow",
+            "phrase": "really my favourite aunt but still pretty valiant"
+        }
+    ],
+    "buildCount": 2,
+    "lastBuildTimeUnixMs": 1633637020095
+}

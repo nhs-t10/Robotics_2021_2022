@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import com.google.gson.internal.$Gson$Preconditions;
+
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
@@ -8,13 +10,12 @@ public class ComboNode extends InputManagerInputNode {
     InputManagerInputNode[] conditionals;
 
     private InputManagerNodeResult result  = new InputManagerNodeResult(0f);
-    private long previous;
+    private long[] risingEdgeTime;
 
     public ComboNode(InputManagerInputNode... conditionals) {
         this.conditionals = conditionals;
-        if(conditionals.length > 30) throw new IllegalArgumentException("No more than 30 buttons in a combo");
 
-        previous = 0L;
+        risingEdgeTime = new long[conditionals.length];
     }
     @Override
     public void init(InputManager boss) {
@@ -23,35 +24,32 @@ public class ComboNode extends InputManagerInputNode {
 
     @Override
     public void update() {
-        boolean markedFalse = false;
-        for(InputManagerInputNode i : conditionals) {
-            i.update();
-            //we need to keep looping to update everything,
-            // so we have a helper variable to ensure that soemthing marked false will remain false
-            long lastMask = 1;
-            int currentBitIndex = 0;
-            if(!markedFalse) {
-                InputManagerNodeResult r = i.getResult();
-                boolean rBool = r == null || r.getFloat() == 0;
+        InputManagerNodeResult lastResult = null;
+        boolean comboMatch = true;
 
-                boolean previouslyTrue = (previous & lastMask) != 0;
-                if(rBool && previouslyTrue) {
-                    markedFalse = true;
-                }
-                FeatureManager.logger.log(previous);
+        for(int i = 0; i < conditionals.length; i++) {
+            InputManagerInputNode node = conditionals[i];
+            node.update();
 
-                //record in bitwise:
-                //set the bit to 0
-                previous &= ~(1 << currentBitIndex);
-                //if the value is true, set the bit to 1; otherwise, leave it 0
-                previous |= (rBool ? 1 : 0) << currentBitIndex;
+            InputManagerNodeResult r = node.getResult();
+            boolean rBool = r != null && r.getFloat() > 0;
 
-                //update bitindex & mask
-                currentBitIndex++;
-                lastMask <<= 1;
+            if(!rBool) risingEdgeTime[i] = -1;
+            else if(risingEdgeTime[i] == -1) risingEdgeTime[i] = System.nanoTime();
+
+
+            if(rBool) lastResult = r;
+
+            //check if the list of times is sorted
+            if(risingEdgeTime[i] == -1 || (i > 0 && risingEdgeTime[i] < risingEdgeTime[i - 1])) {
+                comboMatch = false;
             }
         }
-        this.result = new InputManagerNodeResult(0f);
+        if(comboMatch && lastResult != null) {
+            this.result = lastResult;
+        } else {
+            this.result = new InputManagerNodeResult(0f);
+        }
     }
 
     @Override

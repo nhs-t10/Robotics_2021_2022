@@ -13,6 +13,6 @@ public class DownScaleFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(args.length == 0) {manager.downScale(); return new AutoautoUndefined();}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No downScale with 0 args");
+        if(args.length == 1) {if(args[0] instanceof AutoautoNumericValue) {manager.downScale(((AutoautoNumericValue)args[0]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No downScale with 1 args");
     }
 }
