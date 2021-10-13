@@ -11,7 +11,9 @@ module.exports = {
 
 function combineHashes(hashes) {
     hashes = hashes.filter(x=>x!=null);
-    
+
+    if(hashes.length == 0) return hashBuffer(Buffer.from([]));
+
     var avg = [];
     for(var i = 0; i < hashes[0].length; i++) {
         var cellAverage = 0;
