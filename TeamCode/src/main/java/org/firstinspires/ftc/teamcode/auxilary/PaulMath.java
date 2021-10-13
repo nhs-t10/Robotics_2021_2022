@@ -73,7 +73,7 @@ public abstract class PaulMath extends FeatureManager {
 
         // Motor powers of fl, fr, br, bl
         // Motor powers used to be 0.4f for all motors other than fl
-        float[] vertical = {v, v, v, v};
+        float[] vertical = {-v, -v, -v, -v};
         float[] horizontal = {h, -h, h, -h};
         float[] rotational = {r, -r, -r, r};
 

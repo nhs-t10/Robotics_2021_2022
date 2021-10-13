@@ -26,7 +26,9 @@ public class ExampleTeleop extends OpMode {
     private MovementManager driver;
     private ManipulationManager hands;
     private InputManager input;
-    private boolean dashing = false;
+    private boolean precision = false;
+
+    boolean dashing;
 
 
     public DcMotor NewMotor(DcMotor motor, String name) {
@@ -37,6 +39,7 @@ public class ExampleTeleop extends OpMode {
 
     @Override
     public void init() {
+        /* Phone is labelled as Not Ready For Use */
         FeatureManager.setIsOpModeRunning(true);
         telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
 
@@ -61,12 +64,12 @@ public class ExampleTeleop extends OpMode {
 
         input.registerInput("drivingControls",
                 new MultiInputNode(
-                        new JoystickNode("left_stick_x"),
                         new JoystickNode("left_stick_y"),
+                        new JoystickNode("left_stick_x"),
                         new JoystickNode("right_stick_x")
                 )
         );
-        input.registerInput("dashing",
+        input.registerInput("PrecisionDriving",
                 new ButtonNode("b")
         );
         input.registerInput("taunts",
@@ -86,12 +89,12 @@ public class ExampleTeleop extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("dashing") == true && dashing == false){
-            driver.upScale(0.5f);
-            dashing = true;
+        if (input.getBool("PrecisionDriving") == true && precision == false){
+            driver.downScale(0.5f);
+            precision = true;
         }
-        else if (input.getBool("dashing") == true && dashing == true){
-            dashing = true;
+        else if (input.getBool("PrecisionDriving") == true && precision == true){
+            precision = true;
         }
         else if (input.getBool("dashing") == false && dashing == true){
             driver.downScale(0.5f);
@@ -99,7 +102,7 @@ public class ExampleTeleop extends OpMode {
 //            hands.setMotorPower("turn",1);
         }
         else {
-            dashing = false;
+            precision = false;
         }
         telemetry.update();
     }
