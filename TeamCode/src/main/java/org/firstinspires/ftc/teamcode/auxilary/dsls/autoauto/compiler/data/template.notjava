@@ -80,19 +80,8 @@ public class template extends AutoautoOpmode {
                 },
                 new Servo[] { /*NSERVOS*/ },
                 new String[] { /*NSERVO_NAMES*/ },
-                new DcMotor[] {
-                        hardwareMap.get(DcMotor.class, "drum"),
-                        hardwareMap.get(DcMotor.class, "intake"),
-                        new EncodedMotor(hardwareMap.get(DcMotor.class, "flywheel"), 70),
-                        //hardwareMap.get(DcMotor.class, "flywheel")
-                        hardwareMap.get(DcMotor.class, "spinner")
-                },
-                new String[] {
-                        "drum",
-                        "intake",
-                        "flywheel",
-                        "spinner"
-                }
+                new DcMotor[] {},
+                new String[] {}
         );
         driver.resetEncoders();
         driver.runWithOutEncoders();
