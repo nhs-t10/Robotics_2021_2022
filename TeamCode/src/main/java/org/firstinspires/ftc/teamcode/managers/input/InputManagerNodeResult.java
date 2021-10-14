@@ -43,4 +43,8 @@ public class InputManagerNodeResult {
         for(InputManagerNodeResult c : childs) r.append(c).append(",");
         return r.append("]").toString();
     }
+
+    public boolean getBool() {
+        return getFloat() != 0;
+    }
 }

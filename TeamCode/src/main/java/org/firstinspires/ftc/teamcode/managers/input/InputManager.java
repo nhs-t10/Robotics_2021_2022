@@ -222,7 +222,7 @@ public class InputManager extends FeatureManager {
 
     public boolean getBool(String key) {
         if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
-        return nodes.get(key).getResult().getFloat() != 0;
+        return nodes.get(key).getResult().getBool();
     }
     public float getFloat(String key) {
         if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");

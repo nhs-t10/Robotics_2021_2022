@@ -32,7 +32,7 @@ public class ComboNode extends InputManagerInputNode {
             node.update();
 
             InputManagerNodeResult r = node.getResult();
-            boolean rBool = r != null && r.getFloat() > 0;
+            boolean rBool = r != null && r.getBool();
 
             if(!rBool) risingEdgeTime[i] = -1;
             else if(risingEdgeTime[i] == -1) risingEdgeTime[i] = System.nanoTime();
