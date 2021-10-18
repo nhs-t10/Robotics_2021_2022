@@ -20,21 +20,21 @@ public class ToggleNodeTest {
         toggler.set(1);
         toggleNode.update();
 
-        assertEquals(1, toggleNode.getResult().getFloat(), 1);
+        assertEquals(1, toggleNode.getResult().getFloat(), 0);
 
         toggleNode.update();
 
-        assertEquals(0, toggleNode.getResult().getFloat(), 1);
+        assertEquals(1, toggleNode.getResult().getFloat(), 0);
 
         toggler.set(0);
         toggleNode.update();
 
-        assertEquals(0, toggleNode.getResult().getFloat(), 1);
+        assertEquals(1, toggleNode.getResult().getFloat(), 0);
 
         toggler.set(1);
         toggleNode.update();
 
-        assertEquals(1, toggleNode.getResult().getFloat(), 0);
+        assertEquals(0, toggleNode.getResult().getFloat(), 0);
 
         toggleNode.update();
 
