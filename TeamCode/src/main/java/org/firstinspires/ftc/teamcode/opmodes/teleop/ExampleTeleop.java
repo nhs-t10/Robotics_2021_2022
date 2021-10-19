@@ -56,9 +56,8 @@ public class ExampleTeleop extends OpMode {
         DcMotor turn = hardwareMap.get(DcMotor.class, "turn");
 
         hands = new ManipulationManager(
-                new CRServo[] {}, new String[] {},
-                new Servo[] {}, new String[] {},
-                new DcMotor[] {turn}, new String[] {"turn"});
+                hardwareMap, new String[] {}, new String[] {}, new String[] {"turn"}
+        );
 
         input = new InputManager(gamepad1, gamepad2);
 

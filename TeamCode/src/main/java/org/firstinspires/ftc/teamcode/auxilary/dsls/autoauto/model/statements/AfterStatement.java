@@ -27,6 +27,9 @@ public class AfterStatement extends Statement {
         this.action = action;
     }
 
+    AutoautoCallableValue getTicks;
+    boolean waitUnits;
+
     @NotNull
     public String toString() {
         return "after " + this.wait.toString() + " " + this.action.toString();
@@ -48,12 +51,13 @@ public class AfterStatement extends Statement {
     @Override
     public void stepInit() {
         this.stepStartTime = System.currentTimeMillis();
-
-        if(wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks")) {
-            AutoautoCallableValue getTicks = (AutoautoCallableValue) scope.get(
+        waitUnits = wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks") || wait.unit.equals("degs");
+        if(waitUnits) {
+            getTicks = (AutoautoCallableValue) scope.get(
                     wait.unit.equals("ticks") ? "getTicks" :
                             wait.unit.equals("hticks") ? "getHorizontalTicks" :
-                                    wait.unit.equals("vticks") ? "getVerticalTicks" : "");
+                                    wait.unit.equals("vticks") ? "getVerticalTicks" :
+                                            wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
             this.stepStartTick = (int)((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
@@ -61,15 +65,12 @@ public class AfterStatement extends Statement {
     public void loop() {
         if(wait.unitType == AutoautoUnitValue.UnitType.TIME) {
             if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
-        } else if(wait.unitType == AutoautoUnitValue.UnitType.DISTANCE) {
+        } else if(waitUnits) {
             int tarTicks = (int) wait.baseAmount;
             int ticksReferPoint = stepStartTick;
-            AutoautoCallableValue cTicksFunction =  (AutoautoCallableValue)scope.get(
-                wait.unit.equals("ticks") ? "getTicks" :
-                    wait.unit.equals("hticks") ? "getHorizontalTicks" :
-                        wait.unit.equals("vticks") ? "getVerticalTicks" : "ERROR BAD BAD UNIT");
 
-            int cTicks = (int)((AutoautoNumericValue)cTicksFunction.call(new AutoautoPrimitive[0])).getFloat();
+
+            int cTicks = (int)((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
             
             if(Math.abs(cTicks - ticksReferPoint) >= Math.abs(tarTicks)) action.loop();
