@@ -9,6 +9,8 @@ var srcDirectory = directory.slice(0, directory.indexOf("src") + 1);
 
 var controlFiles = loadControlsFilesFromFolder(srcDirectory.join(path.sep));
 
+createResultFolder();
+
 for(var i = 0; i < controlFiles.length; i++) {
     var fileContent = fs.readFileSync(controlFiles[i]).toString();
     var basename = path.basename(controlFiles[i], ".c3");
@@ -18,6 +20,10 @@ for(var i = 0; i < controlFiles.length; i++) {
     fs.writeFileSync(getResultFilename(controlFiles[i]), source);
 }
 
+function createResultFolder() {
+    var folder = path.join(srcDirectory.join(path.sep), "main/java/org/firstinspires/ftc/teamcode/__compiledcontrols");
+    if(!fs.existsSync(folder)) fs.mkdirSync(folder);
+}
 
 function getResultFilename(filename) {
     var folder = path.join(srcDirectory.join(path.sep), "main/java/org/firstinspires/ftc/teamcode/__compiledcontrols");

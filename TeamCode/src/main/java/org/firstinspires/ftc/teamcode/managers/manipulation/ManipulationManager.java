@@ -41,6 +41,7 @@ public class ManipulationManager extends FeatureManager {
         if(_crservoNames.length != _crservos.length) throw new IllegalArgumentException("CRServo Names must be the same length as CRServos");
         if(_servoNames.length != _servos.length) throw new IllegalArgumentException("Servo Names must be the same length as Servos");
         if(_motorNames.length != _motors.length) throw new IllegalArgumentException("Motor Names must be the same length as Motors");
+
         this.crservos = _crservos;
         this.crservoNames = _crservoNames;
         this.servos = _servos;
