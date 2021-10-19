@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.managers.manipulation;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -22,6 +23,18 @@ public class ManipulationManager extends FeatureManager {
         this.crservos = _crservos;
         this.servos = _servos;
         this.motors = _motors;
+    }
+
+    public ManipulationManager(HardwareMap _hardwareMap, String[] _crservos, String[] _servos, String[] _motors) {
+        this.crservos = new CRServo[_crservos.length];
+        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.get(CRServo.class, _crservos[i]); }
+        this.crservoNames = _crservos;
+        this.servos = new Servo[_servos.length];
+        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.get(Servo.class, _servos[i]); }
+        this.servoNames = _servos;
+        this.motors = new DcMotor[_motors.length];
+        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
+        this.motorNames = _motors;
     }
 
     public ManipulationManager(CRServo[] _crservos, String[] _crservoNames, Servo[] _servos, String[] _servoNames, DcMotor[] _motors, String[] _motorNames) {
