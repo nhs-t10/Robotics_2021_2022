@@ -3,13 +3,6 @@
     "cognomen": "Ansekalt",
     "builds": [
         {
-            "name": "Eddie Ansekalt",
-            "time": "2021-10-01T14:25:07.740Z",
-            "buildHash": "6e64562a2ce631416f9bbbf971e9570dcdb3ce43e8c9b64cb87aa4c4db9651c3",
-            "w3w": "clearing caught brunt",
-            "phrase": "seriously, not my favourite obscenity, it's compromising"
-        },
-        {
             "name": "Silas Ansekalt",
             "time": "2021-10-01T14:32:46.898Z",
             "buildHash": "365af292971846f1e27ea2d9d3f9c9d38a92543cc9ff27fb8ced63dd809320d1",
@@ -701,8 +694,15 @@
             "buildHash": "92fc5ebba3cf8f47dcead8f176a4323f0add1a89d12fdabb1b5e4b0f069055eb",
             "w3w": "cynicism jones captaincy",
             "phrase": "really my squad"
+        },
+        {
+            "name": "Lauryn Ansekalt",
+            "time": "2021-10-19T18:27:38.343Z",
+            "buildHash": "ce06638b7a60a31ec3998bbb3adcf55901f7a408b2cc6b4b77bb8efd5bbc6274",
+            "w3w": "gallantry Mayer catfish",
+            "phrase": "really not my favourite carcass, but still low-carb"
         }
     ],
-    "buildCount": 1610,
-    "lastBuildTimeUnixMs": 1634563019146
+    "buildCount": 1611,
+    "lastBuildTimeUnixMs": 1634668062636
 }
