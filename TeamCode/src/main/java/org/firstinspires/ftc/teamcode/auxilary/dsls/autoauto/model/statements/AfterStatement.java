@@ -16,7 +16,7 @@ public class AfterStatement extends Statement {
     AutoautoRuntimeVariableScope scope;
 
     private long stepStartTime = 0;
-    private int stepStartTick;
+    private float stepStartTick;
 
     public static AfterStatement W (AutoautoUnitValue wait, Statement action) {
         return new AfterStatement(wait, action);
@@ -58,22 +58,22 @@ public class AfterStatement extends Statement {
                             wait.unit.equals("hticks") ? "getHorizontalTicks" :
                                     wait.unit.equals("vticks") ? "getVerticalTicks" :
                                             wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
-            this.stepStartTick = (int)((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+            this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
 
     public void loop() {
-        if(wait.unitType == AutoautoUnitValue.UnitType.TIME) {
-            if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
-        } else if(waitUnits) {
-            int tarTicks = (int) wait.baseAmount;
-            int ticksReferPoint = stepStartTick;
+        if(waitUnits) {
+            float tarTicks = wait.baseAmount;
+            float ticksReferPoint = stepStartTick;
 
 
-            int cTicks = (int)((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+            float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
             
             if(Math.abs(cTicks - ticksReferPoint) >= Math.abs(tarTicks)) action.loop();
+        } else {
+            if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
         }
     }
 
