@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class Server {
     public int port;
@@ -23,6 +24,8 @@ public class Server {
         int port;
         ServerSocket serverSocket;
         TelemetryManager dataSource;
+
+        private HashMap<String, RequestHandlerThread> streamRegistry = new HashMap<>();
 
         public ServerThread(TelemetryManager d, Server parentProcess) {
             this.dataSource = d;
@@ -58,7 +61,8 @@ public class Server {
                 while (FeatureManager.isOpModeRunning) {
                     Socket socket = serverSocket.accept();
 
-                    new Thread(new RequestHandlerThread(socket, dataSource)).start();
+                    RequestHandlerThread rht = new RequestHandlerThread(socket, dataSource, streamRegistry);
+                    new Thread(rht).start();
                 }
                 serverSocket.close();
             } catch(Exception e) {

@@ -66,11 +66,8 @@ public class AfterStatement extends Statement {
         if(waitUnits) {
             float tarTicks = wait.baseAmount;
             float ticksReferPoint = stepStartTick;
-
-
             float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
-            
             if(Math.abs(cTicks - ticksReferPoint) >= Math.abs(tarTicks)) action.loop();
         } else {
             if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -41,7 +42,7 @@ public class ExampleTeleop extends OpMode {
     public void init() {
         /* Phone is labelled as Not Ready For Use */
         FeatureManager.setIsOpModeRunning(true);
-        telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
+        telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
 
 
 
@@ -53,10 +54,8 @@ public class ExampleTeleop extends OpMode {
         driver = new MovementManager(fl, fr, br, bl);
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        DcMotor turn = hardwareMap.get(DcMotor.class, "turn");
-
         hands = new ManipulationManager(
-                hardwareMap, new String[] {}, new String[] {}, new String[] {"turn"}
+                hardwareMap, new String[] {}, new String[] {}, new String[] {}
         );
 
         input = new InputManager(gamepad1, gamepad2);
@@ -64,7 +63,7 @@ public class ExampleTeleop extends OpMode {
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new JoystickNode("left_stick_x"),
+                        new ScaleNode(-1, new JoystickNode("left_stick_x")),
                         new JoystickNode("right_stick_x")
                 )
         );
@@ -88,21 +87,6 @@ public class ExampleTeleop extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("PrecisionDriving") == true && precision == false){
-            driver.downScale(0.5f);
-            precision = true;
-        }
-        else if (input.getBool("PrecisionDriving") == true && precision == true){
-            precision = true;
-        }
-        else if (input.getBool("dashing") == false && dashing == true){
-            driver.downScale(0.5f);
-            dashing = false;
-//            hands.setMotorPower("turn",1);
-        }
-        else {
-            precision = false;
-        }
         telemetry.update();
     }
 

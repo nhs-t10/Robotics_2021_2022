@@ -19,13 +19,14 @@ public class ScaleNode extends InputManagerInputNode {
         this.node = node;
     }
     public ScaleNode(float scaleBy, InputManagerInputNode node) {
-        this.scale = new StaticValueNode(scaleBy);;
+        this.scale = new StaticValueNode(scaleBy);
         this.node = node;
     }
 
     @Override
     public void init(InputManager boss) {
         this.boss = boss;
+        node.init(boss);
     }
 
     @Override

@@ -447,7 +447,7 @@
                             "Send all data": "auaus",
                             "Send simplified program outline": "auaubs"
                         };
-                        if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
+                        if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount], configGlobals.streamID);
                     }
                 },
                 reset: function () { },
@@ -456,6 +456,26 @@
                         name: "dataTransferAmount",
                         type: "select",
                         value: ["Don't send data", "Send all data", "Send simplified program outline"]
+                    }
+                ]
+            },
+            "meta.datarateconfig": {
+                init: function () {
+
+                },
+                ondata: function (data, parent, state, config) {
+                    //only send a request when it changes
+                    if (config.sendsPerSecond != configGlobals.sendsPerSecond) {
+                        configGlobals.sendsPerSecond = config.sendsPerSecond;
+                        sendCommand("sps", configGlobals.streamID, config.sendsPerSecond);
+                    }
+                },
+                reset: function () { },
+                config: [
+                    {
+                        name: "sendsPerSecond",
+                        type: "number",
+                        default: 30
                     }
                 ]
             },
@@ -583,9 +603,15 @@
                     if (state.fill) state.fill.setAttribute("d", "");
                 },
                 ondata: function (data, parent, state, config) {
+                    var num = data.fields[config.field];
+
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
                     state.datapoints.push({
                         x: data.time,
-                        y: data.fields[config.field]
+                        y: num
                     });
 
                     var dataDisplayed = sliceData(state.datapoints, data.time - config.xScaleSeconds * 1000);
@@ -633,6 +659,11 @@
                         type: "number",
                         default: 0
                     },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
+                    }
 
                 ]
             },
@@ -658,13 +689,17 @@
 
                     var num = data.fields[config.field];
 
-                    var numRounded = (Math.round(num / config.base10Precision) * config.base10Precision).toString();
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
+                    var numRounded = config.base10Precision ? (Math.round(num / config.base10Precision) * config.base10Precision).toString() : num.toString();
 
                     var greaterPart = numRounded.split(".")[0];
                     var lesserPart = numRounded.split(".")[1];
                     //if there's a decimal part...
                     if (greaterPart != numRounded) {
-                        var decimalPartRoundingLength = (config.base10Precision.toString().split(".")[1] || "").length;
+                        var decimalPartRoundingLength = config.base10Precision ? (config.base10Precision.toString().split(".")[1] || "").length : lesserPart.length;
                         numRounded = greaterPart + "." + lesserPart.substring(0, decimalPartRoundingLength);
                     }
 
@@ -681,6 +716,11 @@
                         name: "label",
                         type: "text",
                         default: ""
+                    },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
                     },
                     {
                         name: "base10Precision",
@@ -719,15 +759,19 @@
                 ondata: function (data, parent, state, config) {
                     var num = data.fields[config.field] || 0;
 
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
                     if (state.lastNum === undefined) state.lastNum = num;
 
-                    var numRounded = (Math.round(num / config.base10Precision) * config.base10Precision).toString();
+                    var numRounded =config.base10Precision ? (Math.round(num / config.base10Precision) * config.base10Precision).toString() : num.toString();
 
                     var greaterPart = numRounded.split(".")[0];
                     var lesserPart = numRounded.split(".")[1];
                     //if there's a decimal part...
                     if (greaterPart != numRounded) {
-                        var decimalPartRoundingLength = (config.base10Precision.toString().split(".")[1] || "").length;
+                        var decimalPartRoundingLength = config.base10Precision ? (config.base10Precision.toString().split(".")[1] || "").length : lesserPart.length;
                         numRounded = greaterPart + "." + lesserPart.substring(0, decimalPartRoundingLength);
                     }
 
@@ -757,6 +801,11 @@
                         name: "label",
                         type: "text",
                         default: ""
+                    },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
                     },
                     {
                         name: "base10Precision",
@@ -1573,8 +1622,14 @@
                 console.error(data);
                 console.error(e);
             }
+            //if it's a streamid setter, do that first
+            if(dataObject.streamID) {
+                configGlobals.streamID = dataObject.streamID;
+                return;
+            }
+
             //make autoauto variables normal, accessible fields. It's just easier.
-            Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
+            if(dataObject.fields) Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
 
             if (shouldDispatchData) dispatchData(dataObject);
         }

@@ -94,11 +94,6 @@ public class NewTeleop extends OpMode {
         else if (input.getBool("PrecisionDriving") == true && precision == true){
             precision = true;
         }
-        else if (input.getBool("dashing") == false && dashing == true){
-            driver.downScale(0.5f);
-            dashing = false;
-//            hands.setMotorPower("turn",1);
-        }
         else {
             precision = false;
         }
