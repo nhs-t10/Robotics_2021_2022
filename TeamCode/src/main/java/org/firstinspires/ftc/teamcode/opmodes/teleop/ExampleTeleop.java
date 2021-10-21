@@ -53,12 +53,10 @@ public class ExampleTeleop extends OpMode {
         driver = new MovementManager(fl, fr, br, bl);
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        DcMotor turn = hardwareMap.get(DcMotor.class, "turn");
-
         hands = new ManipulationManager(
                 new CRServo[] {}, new String[] {},
                 new Servo[] {}, new String[] {},
-                new DcMotor[] {turn}, new String[] {"turn"});
+                new DcMotor[] {}, new String[] {});
 
         input = new InputManager(gamepad1, gamepad2);
 
@@ -96,10 +94,8 @@ public class ExampleTeleop extends OpMode {
         else if (input.getBool("PrecisionDriving") == true && precision == true){
             precision = true;
         }
-        else if (input.getBool("dashing") == false && dashing == true){
-            driver.downScale(0.5f);
-            dashing = false;
-//            hands.setMotorPower("turn",1);
+        else if (input.getBool("PrecisionDriving") == false && precision == true){
+            precision = false;
         }
         else {
             precision = false;

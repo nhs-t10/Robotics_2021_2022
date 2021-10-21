@@ -87,19 +87,11 @@ public class template extends AutoautoOpmode {
         driver.runWithOutEncoders();
 
          sense = new SensorManager(
-                    new ColorSensor[] {
-                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorOne")),
-                            new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, "sensorFour"))
-                    },
-                    new String[] {
-                            "sensorOne",
-                            "sensorFour"
-                    }
+                    new ColorSensor[] {},
+                    new String[] {}
             );
 
             imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
-
-        limbs.getServo("wobbleGrabRight").setDirection(Servo.Direction.REVERSE);
         StringBuilder programJson = new StringBuilder();
         String simpleProgramJson = "";
 
