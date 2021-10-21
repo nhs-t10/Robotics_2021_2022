@@ -14,7 +14,7 @@ public class GetServoPositionFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .ManipulationManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No ManipulationManager; please define one in template.notjava");
         if(args.length == 1) {if(args[0] instanceof AutoautoString) {return new AutoautoNumericValue(manager.getServoPosition(((AutoautoString)args[0]).getString()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getServoPosition with 1 args");
     }
 }

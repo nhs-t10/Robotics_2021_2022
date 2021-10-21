@@ -14,7 +14,7 @@ public class GetMotorPowerFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .ManipulationManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No ManipulationManager; please define one in template.notjava");
         if(args.length == 1) {if(args[0] instanceof AutoautoString) {return new AutoautoNumericValue(manager.getMotorPower(((AutoautoString)args[0]).getString()));}if(args[0] instanceof AutoautoNumericValue) {return new AutoautoNumericValue(manager.getMotorPower((int)((AutoautoNumericValue)args[0]).getFloat()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getMotorPower with 1 args");
     }
 }
