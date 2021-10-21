@@ -25,6 +25,7 @@ public class not_BuildHistory {
     public static String buildHistory = "BUILD_HISTORY";
     public static String buildHistoryIncludeLocal = "";
     public static String buildContentPhrase = "BUILD_PHRASE";
+    public static String buildContentPhraseLong = "BUILD_PHRASE_LONG";
     public static String buildContentHash = "BUILD_HASH";
     public static String buildContentHashImage = "BUILD_HASH_IMAGE";
     public static int buildNumber = BUILD_COUNT;
@@ -40,6 +41,7 @@ public class not_BuildHistory {
         json += PaulMath.JSONify("historyCsv") + ":" + PaulMath.JSONify(buildHistory) + ",";
         json += PaulMath.JSONify("historyCsvLocal") + ":" + PaulMath.JSONify(buildHistoryIncludeLocal) + ",";
         json += PaulMath.JSONify("w3w") + ":" + PaulMath.JSONify(buildContentPhrase) + ",";
+        json += PaulMath.JSONify("phrase") + ":" + PaulMath.JSONify(buildContentPhraseLong) + ",";
         json += PaulMath.JSONify("hash") + ":" + PaulMath.JSONify(buildContentHash) + ",";
         json += PaulMath.JSONify("img") + ":" + PaulMath.JSONify(buildContentHashImage) + ",";
         json += PaulMath.JSONify("num") + ":" + PaulMath.JSONify(buildNumber);

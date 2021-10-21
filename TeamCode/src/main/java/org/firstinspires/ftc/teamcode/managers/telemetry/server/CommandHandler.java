@@ -9,26 +9,46 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSys
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
-public class CommandHandler {
-    public static String handle(String[] args, TelemetryManager dataSource) {
-        if(args.length == 0) return HttpStatusCodeReplies.Bad_Request;
+import java.util.HashMap;
 
-        switch(args[0].trim()) {
+public class CommandHandler {
+    public static String handle(String[] args, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
+        if(args.length == 0 || args[0] == null) return HttpStatusCodeReplies.Bad_Request;
+        if(args.length == 1) return HttpStatusCodeReplies.Unauthorized;
+
+        String command = args[0].trim();
+        String streamID = args[1];
+        StreamHandler stream = streamRegistry.get(streamID);
+
+        if(stream == null) return HttpStatusCodeReplies.Forbidden;
+
+        switch(command) {
             case ControlCodes.DONT_SEND_YOUR_AUTOAUTO_PROGRAMS_ENTIRE_LIFE_STORY_IT_GETS_BORING:
-                dataSource.autoauto.setProgramJsonSendingFlag(0);
+                stream.programJsonSendingFlag = 0;
                 return HttpStatusCodeReplies.No_Content;
             case ControlCodes.ACTUALLY_AUNT_AUTOAUTO_I_DO_WANT_TO_HEAR_YOUR_LIFE_STORY:
-                dataSource.autoauto.setProgramJsonSendingFlag(1);
+                stream.programJsonSendingFlag = 1;
                 return HttpStatusCodeReplies.No_Content;
             case ControlCodes.COULD_I_GET_LIKE_A_QUICK_SUMMARY_OF_THE_AUTOAUTO_PROGRAMS_LIFE_PLEASE:
-                dataSource.autoauto.setProgramJsonSendingFlag(2);
+                stream.programJsonSendingFlag = 2;
                 return HttpStatusCodeReplies.No_Content;
             case ControlCodes.PLEASE_SKIP_TO_THIS_AUTOAUTO_STATE:
                 return moveToAutoautoState(args, dataSource);
             case ControlCodes.THERES_THIS_OPMODE_FIELD_COULD_YOU_SET_IT_PLEASE_TY:
                 return setOpmodeField(args, dataSource);
+            case ControlCodes.SET_PERSEC_STREAMS:
+                return setPersec(args, dataSource, stream);
             default:
                 return HttpStatusCodeReplies.Bad_Request;
+        }
+    }
+    private static String setPersec(String[] args, TelemetryManager dataSource, StreamHandler stream) {
+        if(args.length < 3) return HttpStatusCodeReplies.Bad_Request("Not enough arguments; must be command,streamid,persec.");
+        try {
+            stream.sendPerSecond = Float.parseFloat(args[2]);
+            return HttpStatusCodeReplies.No_Content;
+        } catch(NumberFormatException ignored) {
+            return HttpStatusCodeReplies.Bad_Request;
         }
     }
     private static String setOpmodeField(String[] args, TelemetryManager dataSource) {

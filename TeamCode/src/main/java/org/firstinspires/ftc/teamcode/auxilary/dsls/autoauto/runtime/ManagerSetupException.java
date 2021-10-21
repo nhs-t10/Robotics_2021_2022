@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
-public class ManagerSetupException extends Exception {
+public class ManagerSetupException extends RuntimeException {
     private final String msg;
 
     public ManagerSetupException(String s) {

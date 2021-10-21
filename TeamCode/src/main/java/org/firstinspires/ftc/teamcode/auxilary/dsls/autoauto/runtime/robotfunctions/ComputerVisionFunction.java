@@ -5,16 +5,16 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobot
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
-public class GetColorIntegerFunction extends NativeRobotFunction {
+public class ComputerVisionFunction extends NativeRobotFunction {
     private org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manager;
 
-    public GetColorIntegerFunction(FeatureManager manager) {
+    public ComputerVisionFunction(FeatureManager manager) {
         this.manager = (org.firstinspires.ftc.teamcode.managers.sensor.SensorManager)manager;
     }
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         if(manager == null) throw new ManagerSetupException("No SensorManager; please define one in template.notjava");
-        if(args.length == 1) {if(args[0] instanceof AutoautoNumericValue) {return new AutoautoNumericValue(manager.getColorInteger((int)((AutoautoNumericValue)args[0]).getFloat()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getColorInteger with 1 args");
+        if(args.length == 0) {return new AutoautoNumericValue(manager.computerVision());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No computerVision with 0 args");
     }
 }

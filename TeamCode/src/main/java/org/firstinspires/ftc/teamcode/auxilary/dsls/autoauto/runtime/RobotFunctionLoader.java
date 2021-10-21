@@ -8,6 +8,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
     
         public static void loadFunctions(AutoautoRuntimeVariableScope scope, FeatureManager... managers) {
             org.firstinspires.ftc.teamcode.managers.FeatureManager manFeature = null;
+            org.firstinspires.ftc.teamcode.managers.imu.ImuManager manImu = null;
             org.firstinspires.ftc.teamcode.managers.input.InputManager manInput = null;
             org.firstinspires.ftc.teamcode.managers.macro.MacroManager manMacro = null;
             org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manManipulation = null;
@@ -16,6 +17,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager manTelemetry = null;
             for(FeatureManager f : managers) {
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.FeatureManager) manFeature = (org.firstinspires.ftc.teamcode.managers.FeatureManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.imu.ImuManager) manImu = (org.firstinspires.ftc.teamcode.managers.imu.ImuManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.input.InputManager) manInput = (org.firstinspires.ftc.teamcode.managers.input.InputManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.macro.MacroManager) manMacro = (org.firstinspires.ftc.teamcode.managers.macro.MacroManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager) manManipulation = (org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager)f;
@@ -24,6 +26,8 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager) manTelemetry = (org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager)f;
             }
             scope.put("setIsOpModeRunning", new SetIsOpModeRunningFunction(manFeature));
+            
+            scope.put("getThirdAngleOrientation", new GetThirdAngleOrientationFunction(manImu));
             
             scope.put("getKey", new GetKeyFunction(manInput));
             scope.put("update", new UpdateFunction(manInput));
@@ -65,6 +69,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getColorInteger", new GetColorIntegerFunction(manSensor));
             scope.put("isSpecial", new IsSpecialFunction(manSensor));
             scope.put("isSpecialOne", new IsSpecialOneFunction(manSensor));
+            scope.put("computerVision", new ComputerVisionFunction(manSensor));
             
             scope.put("clear", new ClearFunction(manTelemetry));
             scope.put("clearAll", new ClearAllFunction(manTelemetry));

@@ -41,6 +41,10 @@ public class ImuManager extends FeatureManager {
         return imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
     }
 
+    public float getThirdAngleOrientation() {
+        return getOrientation().thirdAngle;
+    }
+
     public Position getPosition() {
         return imu.getPosition();
     }

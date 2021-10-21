@@ -77,7 +77,7 @@ public abstract class PojoClassProperty {
     }
 
     public static PojoClassProperty[] getUsableFields(Object obj, String prefix, int depth, int maxDepth) {
-        return getUsableFields(obj, prefix, depth, maxDepth, false);
+        return getUsableFields(obj, prefix, depth, maxDepth, true);
     }
     public static PojoClassProperty[] getUsableFields(Object obj, String prefix, int depth, int maxDepth, boolean onlyUseFieldsDefinedOnClass) {
 

@@ -59,11 +59,6 @@ public class InputManager extends FeatureManager {
         return nodes.get(key);
     }
 
-    public float[] getFloatArrayOfInput(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
-        return nodes.get(key).getResult().getFloatArray();
-    }
-
     public float getKey(String key) {
         String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
         switch(normalizedKey) {
@@ -219,13 +214,17 @@ public class InputManager extends FeatureManager {
     public void update() {
     }
 
+    public float[] getFloatArrayOfInput(String key) {
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
+        return nodes.get(key).getResult().getFloatArray();
+    }
 
     public boolean getBool(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `" + key + "` registered");
         return nodes.get(key).getResult().getBool();
     }
     public float getFloat(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No key `" + key + "`");
+        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
         return nodes.get(key).getResult().getFloat();
     }
 }

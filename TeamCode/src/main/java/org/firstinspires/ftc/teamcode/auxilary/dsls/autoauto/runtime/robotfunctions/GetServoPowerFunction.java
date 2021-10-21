@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunct
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 public class GetServoPowerFunction extends NativeRobotFunction {
@@ -13,6 +14,7 @@ public class GetServoPowerFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+        if(manager == null) throw new ManagerSetupException("No .ManipulationManager; please define one in template.notjava");
         if(args.length == 1) {if(args[0] instanceof AutoautoString) {return new AutoautoNumericValue(manager.getServoPower(((AutoautoString)args[0]).getString()));}if(args[0] instanceof AutoautoNumericValue) {return new AutoautoNumericValue(manager.getServoPower((int)((AutoautoNumericValue)args[0]).getFloat()));}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getServoPower with 1 args");
     }
 }

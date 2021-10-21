@@ -221,7 +221,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
                 "\"time\":" + System.currentTimeMillis();
                 r += "," +
                         "\"fields\": {"
-                        + "\"meta.looptime\":" + timeSinceLastLoopNano + ",";
+                        + "\"meta.looptimeNs\":" + timeSinceLastLoopNano + ",";
             for(Map.Entry<String, String> field : fields.entrySet()) {
                 r += "\"" + field.getKey() + "\":";
                 try {
