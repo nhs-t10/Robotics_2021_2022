@@ -27,6 +27,7 @@ public class ScaleNode extends InputManagerInputNode {
     public void init(InputManager boss) {
         this.boss = boss;
         node.init(boss);
+        scale.init(boss);
     }
 
     @Override
