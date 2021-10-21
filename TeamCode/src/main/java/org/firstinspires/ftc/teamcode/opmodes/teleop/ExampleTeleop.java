@@ -95,6 +95,7 @@ public class ExampleTeleop extends OpMode {
             precision = true;
         }
         else if (input.getBool("PrecisionDriving") == false && precision == true){
+            driver.upScale(0.5f);
             precision = false;
         }
         else {
