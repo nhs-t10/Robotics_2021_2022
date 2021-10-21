@@ -14,7 +14,7 @@ public class RunUsingEncodersFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .ManipulationManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No ManipulationManager; please define one in template.notjava");
         if(args.length == 0) {manager.runUsingEncoders(); return new AutoautoUndefined();}if(args.length == 1) {if(args[0] instanceof AutoautoString) {manager.runUsingEncoders(((AutoautoString)args[0]).getString()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No runUsingEncoders with 1 args");
     }
 }
