@@ -42,7 +42,7 @@ public class ExampleTeleop extends OpMode {
     public void init() {
         /* Phone is labelled as Not Ready For Use */
         FeatureManager.setIsOpModeRunning(true);
-        telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
+        telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
 
 
 
