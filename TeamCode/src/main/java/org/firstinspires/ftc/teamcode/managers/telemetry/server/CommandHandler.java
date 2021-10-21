@@ -12,13 +12,13 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import java.util.HashMap;
 
 public class CommandHandler {
-    public static String handle(String[] args, TelemetryManager dataSource, HashMap<String, RequestHandlerThread> streamRegistry) {
+    public static String handle(String[] args, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
         if(args.length == 0 || args[0] == null) return HttpStatusCodeReplies.Bad_Request;
         if(args.length == 1) return HttpStatusCodeReplies.Unauthorized;
 
         String command = args[0].trim();
         String streamID = args[1];
-        RequestHandlerThread stream = streamRegistry.get(streamID);
+        StreamHandler stream = streamRegistry.get(streamID);
 
         if(stream == null) return HttpStatusCodeReplies.Forbidden;
 
@@ -42,7 +42,7 @@ public class CommandHandler {
                 return HttpStatusCodeReplies.Bad_Request;
         }
     }
-    private static String setPersec(String[] args, TelemetryManager dataSource, RequestHandlerThread stream) {
+    private static String setPersec(String[] args, TelemetryManager dataSource, StreamHandler stream) {
         if(args.length < 3) return HttpStatusCodeReplies.Bad_Request("Not enough arguments; must be command,streamid,persec.");
         try {
             stream.sendPerSecond = Float.parseFloat(args[2]);

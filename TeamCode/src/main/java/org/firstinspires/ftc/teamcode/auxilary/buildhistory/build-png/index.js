@@ -7,7 +7,8 @@ var PngFile = require("./png-file/png-file");
 var badPerceptualHash = require("./bad-percep-hash");
 
 var cacheFile = path.join(__dirname, "last-build-pixels.json");
-if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "\"\"");
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"}));
+
 
 var pixels = [];
 
@@ -16,22 +17,52 @@ module.exports = function(buildNumber, directory, ignores) {
     
     var hash = getDirectoryHash(directory, ignores).toString("hex");
     var oldHash = require(cacheFile);
+    //translate between old cache and new cache
+    if(typeof oldHash === "string") {
+        oldHash = {
+            c: oldHash,
+            p: "buildimgs/0.png"
+        };
+    }
     
     
-    var hashDelta = hexDiff(hash, oldHash);
+    var hashDelta = normalizeHex(hexDiff(hash, oldHash.c));
     
     addHexPixels(hashDelta);
-    
-    fs.writeFileSync(cacheFile, '"' + hash + '"');
+
     
     var matrix = pixelsToMatrix(normalizeBrightness(pixels));
     
-    if(matrix.length == 0) matrix = [[[0,0,0]]];
+    if(matrix.length == 0) return oldHash.p;
     
     var png = new PngFile(matrix, 128);
     
-    return savePng(buildNumber, png.toBuffer());
+    var nonzeroBuild = savePng(buildNumber, png.toBuffer());
+    
+    fs.writeFileSync(cacheFile, JSON.stringify({
+        c: hash,
+        p: nonzeroBuild
+    }));
+    
+    return nonzeroBuild;
 };
+
+function normalizeHex(hex) {
+    var digits = hex.split("").map(x=>+('0x'+x));
+    
+    var max = 0;
+    for(var i = 0; i < digits; i++) {
+        max = Math.max(max, digits[i]);
+    }
+    
+    var result = "";
+    
+    for(var i = 0; i < digits.length; i++) {
+        result += Math.round((digits[i] / max) * 15).toString(16);
+    }
+    
+    return result;
+}
 
 function hexDiff(a, b) {
     var res = "";

@@ -65,7 +65,13 @@ public class SensorManager extends FeatureManager {
         return ((ColorSensor)this.sensors[index]).isSpecial1();
     }
 
-
+    /**
+     * TODO: make this actually work
+     * @return
+     */
+    public int computerVision() {
+        return 0;
+    }
 
 
 }

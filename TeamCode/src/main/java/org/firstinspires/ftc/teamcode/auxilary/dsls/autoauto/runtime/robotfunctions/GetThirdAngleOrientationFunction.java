@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunct
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 public class GetThirdAngleOrientationFunction extends NativeRobotFunction {
@@ -13,6 +14,7 @@ public class GetThirdAngleOrientationFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+        if(manager == null) throw new ManagerSetupException("No .ImuManager; please define one in template.notjava");
         if(args.length == 0) {return new AutoautoNumericValue(manager.getThirdAngleOrientation());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getThirdAngleOrientation with 0 args");
     }
 }

@@ -17,16 +17,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class RequestHandlerThread extends Thread {
-    private static final String HTTP_LINE_SEPARATOR = "\r\n";
-    private final HashMap<String, RequestHandlerThread> streamRegistry;
-    public int programJsonSendingFlag = 2;
-    public float sendPerSecond = ControlCodes.STREAM_SENDS_PERSEC;
+    public static final String HTTP_LINE_SEPARATOR = "\r\n";
+    private final HashMap<String, StreamHandler> streamRegistry;
 
     private Socket socket;
     TelemetryManager dataSource;
     private String streamID;
 
-    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, HashMap<String, RequestHandlerThread> streamRegistry) {
+    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
         this.socket = socket;
         this.dataSource = dataSource;
         this.streamRegistry = streamRegistry;
@@ -47,49 +45,13 @@ public class RequestHandlerThread extends Thread {
             String path = requestMeta.path;
 
             if(path.equals("/stream")) {
-                //add this stream to the registry
+                StreamHandler stream = new StreamHandler(writer, dataSource, socket);
+                //add this stream to the registry and start it
                 synchronized (streamRegistry) {
                     streamID = genStreamID();
-                    streamRegistry.put(streamID, this);
-                }
-                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
-                        + "Content-Type: " + "text/plain; charset=utf-8" + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR);
-
-                writer.print("{\"streamID\": \""+streamID+"\"}\n");
-                writer.flush();
-
-                long streamStartedAt = System.currentTimeMillis();
-                while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
-                    try {
-                        if (dataSource.hasNewData()) {
-                            dataSource.autoauto.setProgramJsonSendingFlag(programJsonSendingFlag);
-                            writer.print(dataSource.readData());
-                        }
-                        else {
-                            writer.print(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED);
-                        }
-
-                        writer.print("\n");
-                        writer.flush();
-
-                        //block until the next send
-                        //noinspection BusyWait
-                        sleep((long) (1000 / sendPerSecond));
-                    } catch(Throwable e) {
-                        String msg = e.getMessage();
-                        StringBuilder r = new StringBuilder(msg == null ? "<no message>" : msg);
-                        for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
-
-                        writer.print("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");
-                        writer.print("\n");
-                        writer.flush();
-                    }
-                }
-                if(!FeatureManager.isOpModeRunning) {
-                    writer.print(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
-                } else {
-                    writer.print(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
+                    streamRegistry.put(streamID, stream);
+                    stream.setStreamID(streamID);
+                    stream.start();
                 }
             } else if(path.equals("/")) {
                 String file = ServerFiles.indexDotHtml;

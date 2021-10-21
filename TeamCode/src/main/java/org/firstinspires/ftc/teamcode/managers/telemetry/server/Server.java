@@ -25,7 +25,7 @@ public class Server {
         ServerSocket serverSocket;
         TelemetryManager dataSource;
 
-        private HashMap<String, RequestHandlerThread> streamRegistry = new HashMap<>();
+        private HashMap<String, StreamHandler> streamRegistry = new HashMap<>();
 
         public ServerThread(TelemetryManager d, Server parentProcess) {
             this.dataSource = d;

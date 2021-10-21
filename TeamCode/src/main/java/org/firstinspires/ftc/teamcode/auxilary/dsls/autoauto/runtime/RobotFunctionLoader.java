@@ -69,6 +69,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getColorInteger", new GetColorIntegerFunction(manSensor));
             scope.put("isSpecial", new IsSpecialFunction(manSensor));
             scope.put("isSpecialOne", new IsSpecialOneFunction(manSensor));
+            scope.put("computerVision", new ComputerVisionFunction(manSensor));
             
             scope.put("clear", new ClearFunction(manTelemetry));
             scope.put("clearAll", new ClearAllFunction(manTelemetry));
