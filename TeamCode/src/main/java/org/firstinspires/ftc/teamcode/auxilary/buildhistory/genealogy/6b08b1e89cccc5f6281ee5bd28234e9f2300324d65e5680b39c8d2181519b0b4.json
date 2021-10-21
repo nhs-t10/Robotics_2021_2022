@@ -36,8 +36,15 @@
             "buildHash": "9be1236ce73e615cfc27c8397ef196e653a90ece745a08b22b983d8f18222456",
             "w3w": "digger handling arrow",
             "phrase": "really the same as my snail"
+        },
+        {
+            "name": "Julian Allmaner",
+            "time": "2021-10-19T23:15:37.132Z",
+            "buildHash": "0bba18567c23e5e17db83d9cd895636577b6b535e6d3075078261d231d0dbebe",
+            "w3w": "Sister feedback airtime",
+            "phrase": "really the same as my disarmament but still pretty clanking"
         }
     ],
-    "buildCount": 5,
-    "lastBuildTimeUnixMs": 1634238958560
+    "buildCount": 6,
+    "lastBuildTimeUnixMs": 1634685346450
 }

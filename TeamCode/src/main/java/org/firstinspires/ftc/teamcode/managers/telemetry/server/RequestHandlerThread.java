@@ -14,15 +14,20 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class RequestHandlerThread extends Thread {
-    private static final String HTTP_LINE_SEPARATOR = "\r\n";
+    public static final String HTTP_LINE_SEPARATOR = "\r\n";
+    private final HashMap<String, StreamHandler> streamRegistry;
+
     private Socket socket;
     TelemetryManager dataSource;
+    private String streamID;
 
-    public RequestHandlerThread(Socket socket, TelemetryManager dataSource) {
+    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
         this.socket = socket;
         this.dataSource = dataSource;
+        this.streamRegistry = streamRegistry;
     }
 
     public void run() {
@@ -40,36 +45,13 @@ public class RequestHandlerThread extends Thread {
             String path = requestMeta.path;
 
             if(path.equals("/stream")) {
-                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
-                        + "Content-Type: " + "text/plain; charset=utf-8" + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR);
-
-                long streamStartedAt = System.currentTimeMillis();
-                while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
-                    try {
-                        if (dataSource.hasNewData()) writer.print(dataSource.readData());
-                        else writer.print(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED);
-
-                        writer.print("\n");
-                        writer.flush();
-
-                        //block until the next send
-                        //noinspection BusyWait
-                        sleep(1000 / ControlCodes.STREAM_SENDS_PERSEC);
-                    } catch(Throwable e) {
-                        String msg = e.getMessage();
-                        StringBuilder r = new StringBuilder(msg == null ? "<no message>" : msg);
-                        for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
-
-                        writer.print("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");
-                        writer.print("\n");
-                        writer.flush();
-                    }
-                }
-                if(!FeatureManager.isOpModeRunning) {
-                    writer.print(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
-                } else {
-                    writer.print(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
+                StreamHandler stream = new StreamHandler(writer, dataSource, socket);
+                //add this stream to the registry and start it
+                synchronized (streamRegistry) {
+                    streamID = genStreamID();
+                    streamRegistry.put(streamID, stream);
+                    stream.setStreamID(streamID);
+                    stream.start();
                 }
             } else if(path.equals("/")) {
                 String file = ServerFiles.indexDotHtml;
@@ -79,7 +61,7 @@ public class RequestHandlerThread extends Thread {
                             + "Content-Length: " + ServerFiles.indexDotHtml.getBytes(StandardCharsets.UTF_8).length + HTTP_LINE_SEPARATOR
                             + HTTP_LINE_SEPARATOR
                             + file);
-            } else if(path.equals("/command")) {
+            } else if(path.startsWith("/command")) {
                 String command;
                 if(requestMeta.queryStringParams.has("command")) {
                     command = requestMeta.queryStringParams.get("command");
@@ -90,7 +72,7 @@ public class RequestHandlerThread extends Thread {
 
                 String[] commaSepValues = command.split(",");
 
-                writer.print(CommandHandler.handle(commaSepValues, dataSource));
+                writer.print(CommandHandler.handle(commaSepValues, dataSource, streamRegistry));
             } else if(path.startsWith("/buildimgs")) {
                 try (InputStream file = ServerFiles.getAssetStream(path)) {
                     if (file == null) {
@@ -124,5 +106,8 @@ public class RequestHandlerThread extends Thread {
         } catch(Exception e) {
             dataSource.log().add("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
         }
+    }
+    public String genStreamID() {
+        return Long.toHexString(System.nanoTime()) + Integer.toHexString((int)(Math.random() * 1000));
     }
 }

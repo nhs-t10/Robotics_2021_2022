@@ -3,6 +3,7 @@ module.exports = function(callMethodSource, definingClass, classname) {
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 public class ${classname} extends NativeRobotFunction {
@@ -14,6 +15,7 @@ public class ${classname} extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+        if(manager == null) throw new ManagerSetupException("No ${definingClass.substring(definingClass.lastIndexOf(".") + 1)}; please define one in template.notjava");
         ${callMethodSource}
     }
 }`;

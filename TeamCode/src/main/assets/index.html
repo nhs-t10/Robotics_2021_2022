@@ -22,6 +22,24 @@
                 reset: function () { },
                 ondata: function (data, parent) { }
             },
+            "local.fullscreenbutton": {
+                init: function(parent) {
+                    var button = document.createElement("button");
+                    button.setAttribute("style", `height:100%;border:0;margin:0.5em;background:var(--widget-settings-color)`);
+                    button.addEventListener("click", function() {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen();
+                            button.style.background = `var(--widget-settings-color)`;
+                        } else {
+                            document.documentElement.requestFullscreen();
+                            button.style.background = `var(--close-widget-color)`;
+                        }
+                    });
+                    parent.appendChild(button);
+                },
+                reset: function() {},
+                ondata: function() {}
+            },
             "meta.recordandreplay": {
                 init: function (parent, state) {
                     state.historyBuffer = [];
@@ -330,30 +348,40 @@
             "buildhistory.profile": {
                 init: function (parent, state, config, box) {
                     var title = document.createElement("h2");
-                    title.setAttribute("style", 'margin:0');
+                    title.setAttribute("style", 'margin:0;grid-area: 1/2/1/3;');
                     var image = document.createElement("img");
-                    image.setAttribute("style", 'margin-right:0.25em;border-radius:2em;width:4em;height:4em');
-                    1
+                    image.setAttribute("style", 'margin-right:0.75em;border-radius:2em;width:4em;height:4em;grid-area: 1/1/3/2;');
+                    var hash = document.createElement("span");
+                    hash.setAttribute("style",'grid-area: 2/2/2/3;');
+                    
                     var toprow = document.createElement("div");
-                    toprow.setAttribute("style", 'display:flex;align-items:center');
+                    toprow.setAttribute("style", 'display:grid;grid-template-columns:min-content;');
 
                     toprow.appendChild(image);
                     toprow.appendChild(title);
+                    toprow.appendChild(hash);
 
                     var description = document.createElement("p");
 
                     parent.appendChild(toprow);
                     parent.appendChild(description);
-
-                    var xhr = new XMLHttpRequest();
-                    xhr.onload = function () {
-                        var buildHistory = JSON.parse(xhr.responseText);
-                        title.textContent = buildHistory.w3w;
+                    
+                    function addBuildHistory(buildHistory) {
+                        title.textContent = buildHistory.name;
                         image.src = buildHistory.img;
-                        description.textContent = buildHistory.hash;
+                        description.textContent = buildHistory.w3w + ". " + buildHistory.phrase;    
+                        hash.textContent = buildHistory.hash.substring(0,9);
                     }
-                    xhr.open("GET", "/build-history");
-                    xhr.send();
+                    if(configGlobals.buildHistoryInfo) {
+                        addBuildHistory(configGlobals.buildHistoryInfo);
+                    } else {
+                        var xhr = new XMLHttpRequest();
+                        xhr.onload = function() {
+                            addBuildHistory(JSON.parse(xhr.responseText));
+                        }
+                        xhr.open("GET", "/build-history");
+                        xhr.send();
+                    }
                 },
                 reset: function () { },
                 ondata: function (data, parent, state, config) {
@@ -447,7 +475,7 @@
                             "Send all data": "auaus",
                             "Send simplified program outline": "auaubs"
                         };
-                        if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount]);
+                        if (commands[config.dataTransferAmount]) sendCommand(commands[config.dataTransferAmount], configGlobals.streamID);
                     }
                 },
                 reset: function () { },
@@ -456,6 +484,26 @@
                         name: "dataTransferAmount",
                         type: "select",
                         value: ["Don't send data", "Send all data", "Send simplified program outline"]
+                    }
+                ]
+            },
+            "meta.datarateconfig": {
+                init: function () {
+
+                },
+                ondata: function (data, parent, state, config) {
+                    //only send a request when it changes
+                    if (config.sendsPerSecond != configGlobals.sendsPerSecond) {
+                        configGlobals.sendsPerSecond = config.sendsPerSecond;
+                        sendCommand("sps", configGlobals.streamID, config.sendsPerSecond);
+                    }
+                },
+                reset: function () { },
+                config: [
+                    {
+                        name: "sendsPerSecond",
+                        type: "number",
+                        default: 30
                     }
                 ]
             },
@@ -583,9 +631,15 @@
                     if (state.fill) state.fill.setAttribute("d", "");
                 },
                 ondata: function (data, parent, state, config) {
+                    var num = data.fields[config.field];
+
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
                     state.datapoints.push({
                         x: data.time,
-                        y: data.fields[config.field]
+                        y: num
                     });
 
                     var dataDisplayed = sliceData(state.datapoints, data.time - config.xScaleSeconds * 1000);
@@ -633,6 +687,11 @@
                         type: "number",
                         default: 0
                     },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
+                    }
 
                 ]
             },
@@ -658,13 +717,17 @@
 
                     var num = data.fields[config.field];
 
-                    var numRounded = (Math.round(num / config.base10Precision) * config.base10Precision).toString();
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
+                    var numRounded = config.base10Precision ? (Math.round(num / config.base10Precision) * config.base10Precision).toString() : num.toString();
 
                     var greaterPart = numRounded.split(".")[0];
                     var lesserPart = numRounded.split(".")[1];
                     //if there's a decimal part...
                     if (greaterPart != numRounded) {
-                        var decimalPartRoundingLength = (config.base10Precision.toString().split(".")[1] || "").length;
+                        var decimalPartRoundingLength = config.base10Precision ? (config.base10Precision.toString().split(".")[1] || "").length : lesserPart.length;
                         numRounded = greaterPart + "." + lesserPart.substring(0, decimalPartRoundingLength);
                     }
 
@@ -681,6 +744,11 @@
                         name: "label",
                         type: "text",
                         default: ""
+                    },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
                     },
                     {
                         name: "base10Precision",
@@ -719,15 +787,19 @@
                 ondata: function (data, parent, state, config) {
                     var num = data.fields[config.field] || 0;
 
+                    try {
+                        num = eval("(x=>" + config.formula + ")")(num);
+                    } catch(e) {}
+
                     if (state.lastNum === undefined) state.lastNum = num;
 
-                    var numRounded = (Math.round(num / config.base10Precision) * config.base10Precision).toString();
+                    var numRounded =config.base10Precision ? (Math.round(num / config.base10Precision) * config.base10Precision).toString() : num.toString();
 
                     var greaterPart = numRounded.split(".")[0];
                     var lesserPart = numRounded.split(".")[1];
                     //if there's a decimal part...
                     if (greaterPart != numRounded) {
-                        var decimalPartRoundingLength = (config.base10Precision.toString().split(".")[1] || "").length;
+                        var decimalPartRoundingLength = config.base10Precision ? (config.base10Precision.toString().split(".")[1] || "").length : lesserPart.length;
                         numRounded = greaterPart + "." + lesserPart.substring(0, decimalPartRoundingLength);
                     }
 
@@ -757,6 +829,11 @@
                         name: "label",
                         type: "text",
                         default: ""
+                    },
+                    {
+                        name: "formula",
+                        type: "text",
+                        default: "x"
                     },
                     {
                         name: "base10Precision",
@@ -1573,8 +1650,14 @@
                 console.error(data);
                 console.error(e);
             }
+            //if it's a streamid setter, do that first
+            if(dataObject.streamID) {
+                Object.assign(configGlobals, dataObject);
+                return;
+            }
+
             //make autoauto variables normal, accessible fields. It's just easier.
-            Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
+            if(dataObject.fields) Object.assign(dataObject.fields, dataObject.autoautoVariables || {});
 
             if (shouldDispatchData) dispatchData(dataObject);
         }

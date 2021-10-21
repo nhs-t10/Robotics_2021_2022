@@ -87,10 +87,10 @@ try {
         .map(x=>x.name + "," + x.time + "," + x.w3w) //transform to CSV
         .join("\n") //join CSV rows together
 
-    updateTemplate(familyLine, time, name, history, buildHash, w3w, pngFile, familyLine.buildCount);
+    updateTemplate(familyLine, time, name, history, buildHash, w3w, pngFile, familyLine.buildCount, phrase);
 })();
 
-function updateTemplate(familyLine, time, name, history, hash, phrase, pngFile, buildNumber) {
+function updateTemplate(familyLine, time, name, history, hash, phrase, pngFile, buildNumber, phraseLong) {
     var template = fs.readFileSync(path.join(__dirname, "not_BuildHistory.notjava")).toString();
     fs.writeFileSync(path.join(__dirname, "BuildHistory.java"), template
                                 .replace("BUILDER_BROWSER_FINGERPRINT", familyLine.browser)
@@ -100,6 +100,7 @@ function updateTemplate(familyLine, time, name, history, hash, phrase, pngFile, 
                                 .replace("BUILD_HISTORY", JSON.stringify(history).slice(1,-1))
                                 .replace("BUILD_HASH", hash)
                                 .replace("BUILD_PHRASE", phrase)
+                                .replace("BUILD_PHRASE_LONG", phraseLong)
                                 .replace("BUILD_HASH_IMAGE", pngFile)
                                 .replace("BUILD_COUNT", buildNumber)
                             )

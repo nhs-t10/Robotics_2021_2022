@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -54,16 +55,15 @@ public class ExampleTeleop extends OpMode {
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(
-                new CRServo[] {}, new String[] {},
-                new Servo[] {}, new String[] {},
-                new DcMotor[] {}, new String[] {});
+                hardwareMap, new String[] {}, new String[] {}, new String[] {}
+        );
 
         input = new InputManager(gamepad1, gamepad2);
 
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new JoystickNode("left_stick_x"),
+                        new ScaleNode(-1, new JoystickNode("left_stick_x")),
                         new JoystickNode("right_stick_x")
                 )
         );
@@ -87,20 +87,6 @@ public class ExampleTeleop extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("PrecisionDriving") == true && precision == false){
-            driver.downScale(0.5f);
-            precision = true;
-        }
-        else if (input.getBool("PrecisionDriving") == true && precision == true){
-            precision = true;
-        }
-        else if (input.getBool("PrecisionDriving") == false && precision == true){
-            driver.upScale(0.5f);
-            precision = false;
-        }
-        else {
-            precision = false;
-        }
         telemetry.update();
     }
 
