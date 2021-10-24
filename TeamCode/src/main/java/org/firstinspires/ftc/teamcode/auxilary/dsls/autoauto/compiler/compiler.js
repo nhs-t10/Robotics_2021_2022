@@ -61,12 +61,10 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
 
-    console.log("frontmatter : " + JSON.stringify(frontMatter.frontMatter));
-
     var javaStringFileSource = frontMatter.stripped;
 
     try {
-        var parsedModel = aaParser.parse(fileSource);
+        var parsedModel = aaParser.parse(uncommentedFileSource);
 
         var javaCreationCode = astJavaify(parsedModel);
 
