@@ -31,7 +31,7 @@ module.exports = function(buildNumber, directory, ignores) {
     addHexPixels(hashDelta);
 
     
-    var matrix = pixelsToMatrix(normalizeBrightness(pixels));
+    var matrix = pixelsToMatrix(pixels);
     
     if(matrix.length == 0) return oldHash.p;
     
@@ -50,15 +50,21 @@ module.exports = function(buildNumber, directory, ignores) {
 function normalizeHex(hex) {
     var digits = hex.split("").map(x=>+('0x'+x));
     
+    //make sure there's an even amount of digits so it'll evenly fit into colours
+    if(digits.length % 2) digits.push(0);
+    
+    //find the maximum colour amount
     var max = 0;
-    for(var i = 0; i < digits; i++) {
-        max = Math.max(max, digits[i]);
+    for(var i = 0; i < digits.length - 1; i++) {
+        var digitlen = digits[i]*16 + digits[i + 1];
+        max = Math.max(max, digitlen);
     }
     
     var result = "";
     
-    for(var i = 0; i < digits.length; i++) {
-        result += Math.round((digits[i] / max) * 15).toString(16);
+    for(var i = 0; i < digits.length - 1; i++) {
+        var digitlen = digits[i]*16 + digits[i + 1];
+        result += Math.round((digitlen / max) * 255).toString(16);
     }
     
     return result;
@@ -78,61 +84,6 @@ function hexDiff(a, b) {
         if(delta != 0) res += Math.abs(delta).toString(16);
     }
     return res;
-}
-
-function normalizeBrightness(pixels) {
-    
-    var greatestBrightness = 0;
-    for(var i = 0; i < pixels.length; i++) {
-        var brightness = getPixelBrightness(pixels[i]);
-        greatestBrightness = Math.max(greatestBrightness, brightness);
-    }
-    var normalizedPixels = [];
-    
-    //sanity checks!
-    greatestBrightness = Math.min(greatestBrightness, 1);
-    
-    //don't normalize up to 255, bc that's white. 
-    //128 is a pure hue; do that instead
-    for(var i = 0; i < pixels.length; i++) {
-        var pixel = pixels[i];
-        
-        var brightness = getPixelBrightness(brightness);
-        var brightnessFactor = (brightness / greatestBrightness);
-        
-        var normPix = setBrightnessOfPixel(pixel, brightnessFactor);
-        
-        normalizedPixels.push(normPix);
-    }
-    return normalizedPixels;
-}
-
-function setBrightnessOfPixel(pixel, brightness) {
-    var currentBrightness = getPixelBrightness(pixel);
-    
-    var brightDiff = brightness - currentBrightness;
-    
-    var percentagePixel = [pixel[0] / 0xFF, pixel[1] / 0xFF, pixel[2] / 0xFF];
-    var increaseCoef = 1;
-    if(brightDiff > 0) {
-        var min = Math.min(percentagePixel[0], percentagePixel[1], percentagePixel[2]);
-        increaseCoef = Math.min(1 - min, brightDiff) / (1 - min);
-    } else {
-        var max = Math.max(percentagePixel[0], percentagePixel[1], percentagePixel[2]);
-        increaseCoef = -Math.max(max, 0) / max;
-    }
-    
-    var brightenedPercentages = percentagePixel.map(x=>x + ((1 - x) * increaseCoef));
-    var roundedPixel = brightenedPercentages.map(x=> Math.max(0, Math.min(255, Math.round(x*0xFF))));
-    
-    return brightenedPercentages;
-}
-
-function getPixelBrightness(pixel) {
-    var max = Math.max(pixel[0], pixel[1], pixel[2]);
-    var min = Math.min(pixel[0], pixel[1], pixel[2]);
-    
-    return ((max + min) / 2) / 0xFF;
 }
 
 function pixelsToMatrix(pixels) {

@@ -557,7 +557,87 @@
                     state.lastScrolledToBottom = scrolledToBottom;
                 }
             },
+            "chart.bar": {
+                init: function(parent, state, config, box) {
+                    //use object.assign to avoid mutation of original box
+                    state.box = {};
+                    Object.assign(state.box, box);
 
+                    state.datapoints = [];
+
+                    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.classList.add("widget--line-chart");
+
+                    svg.setAttribute("height", box.height);
+                    svg.setAttribute("width", box.width);
+
+                    //scale up for a crisper view
+                    state.box.height *= 2 * gridSize;
+                    state.box.width *= 2 * gridSize;
+
+                    svg.setAttribute("viewBox", `0 0 ${state.box.width} ${state.box.height}`);
+                    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+                    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.classList.add("widget--line-chart--stroke-line");
+
+                    var fillPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    fillPath.classList.add("widget--line-chart--fill-line");
+
+                    //caption lines
+                    for (var i = 0; i <= 4; i++) {
+                        var captionLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                        captionLine.classList.add("widget--line-chart--caption-line");
+                        captionLine.setAttribute("d", "M0," + (state.box.height * i / 4) + "H" + state.box.width);
+                        svg.appendChild(captionLine);
+                    }
+
+                    state.captions = [];
+                    //captions themselves. They go after so that they'll overlay the lines.
+                    for (var i = 0; i <= 4; i++) {
+                        //use IEFE so that `i` is preserved in each
+                        (function (i) {
+                            var caption = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                            caption.classList.add("widget--line-chart--caption");
+                            caption.setAttribute("x", 0);
+                            caption.setAttribute("y", (state.box.height * i / 4) - 6);
+
+
+                            state.captions.push(function (max, min) {
+                                var range = max - min;
+                                caption.textContent = (min + (range * (1 - i / 4))).toString().substring(0, 5);
+                            });
+
+                            svg.appendChild(caption);
+                        })(i);
+                    }
+
+                    svg.appendChild(fillPath);
+                    svg.appendChild(path);
+
+
+                    state.path = path;
+                    state.fill = fillPath;
+
+                    parent.appendChild(svg);
+                    parent.classList.add("nopadding");
+                    parent.classList.add("nooverflow");
+                },
+                reset: function(parent, state) {
+                    
+                },
+                ondata: function(data, parent, state, config) {
+                    
+                }, 
+                config: [
+                    {
+                        name: "field",
+                        type: "select",
+                        value: "field[]"
+                    }
+                ]
+            },
             "chart.line": {
                 init: function (parent, state, config, box) {
                     //use object.assign to avoid mutation of original box
@@ -569,8 +649,8 @@
                     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                     svg.classList.add("widget--line-chart");
 
-                    svg.setAttribute("height", box.height * gridSize);
-                    svg.setAttribute("width", box.width * gridSize);
+                    svg.setAttribute("height", box.height);
+                    svg.setAttribute("width", box.width);
 
                     //scale up for a crisper view
                     state.box.height *= 2 * gridSize;
@@ -1501,6 +1581,10 @@
                             lbl.appendChild(
                                 createSelectControl(widgetsReg[id].config, configOption.name, fields, widgetsReg[id])
                             );
+                        } else if(configOption.value == "field[]") {
+                            lbl.appendChild(
+                                createMultiselectControl(widgetsReg[id].config, configOption.name, fields, widgetsReg[id])
+                            );
                         } else {
                             lbl.appendChild(
                                 createSelectControl(widgetsReg[id].config, configOption.name, configOption.value, widgetsReg[id])
@@ -1538,6 +1622,34 @@
             }
             select.addEventListener("change", function () {
                 config[key] = options[select.selectedIndex];
+                saveItemChanges(widget);
+            });
+            return select;
+        }
+        
+        function createMultiselectControl(config, key, options, widget) {
+            var select = document.createElement("select");
+            select.multiple = true;
+
+            if (config[key] === undefined) config[key] = [options[0]];
+
+            options = options.map(x => x + "").sort();
+            
+            var optElems = [];
+
+            for (var i = 0; i < options.length; i++) {
+                var opt = document.createElement("option");
+                optElems.push(opt);
+                if (config[key].includes(options[i])) opt.setAttribute("selected", "true");
+                opt.textContent = options[i];
+                select.appendChild(opt);
+            }
+            select.addEventListener("change", function () {
+                var configArray = [];
+                for(var i = 0; i < optElems.length; i++) {
+                    if(optElems[i].selected) configArray.push(options[i]);
+                }
+                config[key] = configArray;
                 saveItemChanges(widget);
             });
             return select;
@@ -1798,7 +1910,8 @@
             --sidebar-lightbox: #1B1D22cc;
             --data-green: #10BC8B;
             --data-red: #e72f2f;
-            --graph-label: #3E4247;
+            --graph-label: #767a80;
+            --graph-line: #3E4247;
         }
 
         body.light-theme {
@@ -1812,7 +1925,8 @@
             --sidebar-lightbox: #98A0AEcc;
             --data-green: #007a58;
             --data-red: #a50909;
-            --graph-label: #a8a8a8;
+            --graph-label: #5f5d5d;
+            --graph-line: #a8a8a8;
         }
 
         .error-banner {
@@ -2078,7 +2192,7 @@
         }
 
         .widget--line-chart--caption-line {
-            stroke: var(--graph-label);
+            stroke: var(--graph-line);
             stroke-width: 0.25em;
             stroke-linecap: round;
         }
