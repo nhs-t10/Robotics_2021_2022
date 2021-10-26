@@ -14,7 +14,7 @@ public class StreamHandler {
     private final PrintWriter writer;
     private final TelemetryManager dataSource;
     private final Socket socket;
-    private String streamID;
+    private volatile String streamID;
 
     public int programJsonSendingFlag = 2;
     public float sendPerSecond = ControlCodes.STREAM_SENDS_PERSEC;
@@ -28,26 +28,24 @@ public class StreamHandler {
     public void start() {
         writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                 + "Content-Type: " + "text/plain; charset=utf-8" + HTTP_LINE_SEPARATOR
+                + "Transfer Encoding: chunked" + HTTP_LINE_SEPARATOR
                 + HTTP_LINE_SEPARATOR);
 
-        writer.print("{\"streamID\": \"" + streamID
-                + "\",\"buildHistoryInfo\": " + BuildHistory.getJSON()
+        printChunk("{\"streamID\": \"" + streamID + "\""
                 + ",\"sendsPerSecond\": " + sendPerSecond
                 + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
-        writer.flush();
 
         long streamStartedAt = System.currentTimeMillis();
         while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
             try {
                 if (dataSource.hasNewData()) {
                     dataSource.autoauto.setProgramJsonSendingFlag(programJsonSendingFlag);
-                    writer.print(dataSource.readData());
+                    printChunk(dataSource.readData());
                 }
                 else {
-                    writer.print(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED);
+                    printChunk(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED);
                 }
 
-                writer.print("\n");
                 writer.flush();
 
                 //block until the next send
@@ -58,19 +56,30 @@ public class StreamHandler {
                 StringBuilder r = new StringBuilder(msg == null ? "<no message>" : msg);
                 for(StackTraceElement s : e.getStackTrace()) r.append("\n").append(s.toString());
 
-                writer.print("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");
-                writer.print("\n");
+                printChunk("{\"error\":" + PaulMath.JSONify(r.toString()) + "}");
                 writer.flush();
             }
         }
         if(!FeatureManager.isOpModeRunning) {
-            writer.print(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
+            printChunk(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
         } else {
-            writer.print(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
+            printChunk(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
         }
+        printChunk("");
+        writer.flush();
     }
 
     public void setStreamID(String streamID) {
         this.streamID = streamID;
+    }
+
+    public void printChunk(String str) {
+        int bytes = str.getBytes().length;
+        String hexBytes = Integer.toHexString(bytes).toUpperCase();
+        writer.print(hexBytes + HTTP_LINE_SEPARATOR + str + HTTP_LINE_SEPARATOR);
+    }
+
+    public void waitForStreamID() {
+        while(streamID == null);
     }
 }

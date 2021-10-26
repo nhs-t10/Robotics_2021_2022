@@ -51,8 +51,9 @@ public class RequestHandlerThread extends Thread {
                     streamID = genStreamID();
                     streamRegistry.put(streamID, stream);
                     stream.setStreamID(streamID);
-                    stream.start();
                 }
+                stream.waitForStreamID();
+                stream.start();
             } else if(path.equals("/")) {
                 String file = ServerFiles.indexDotHtml;
                     writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR

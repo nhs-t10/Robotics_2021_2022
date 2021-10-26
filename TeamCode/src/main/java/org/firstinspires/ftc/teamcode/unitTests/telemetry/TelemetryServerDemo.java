@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class TelemetryManagerIntegratedServerDemo {
+public class TelemetryServerDemo {
     @Test
     public void test() {
         //don't run this when it's under all tests
@@ -44,6 +44,14 @@ public class TelemetryManagerIntegratedServerDemo {
 
         while(System.currentTimeMillis() - start < TEST_TIME_MS) {
             telemetry.addData("foo", Math.random() * 3);
+
+            telemetry.addData("fl", Math.random() * 2 - 1);
+            telemetry.addData("bl", Math.random() * 2 - 1);
+            telemetry.addData("fr", Math.random() * 2 - 1);
+            telemetry.addData("br", Math.random() * 2 - 1);
+
+            telemetry.addData("str", "fe");
+
             telemetry.update();
         }
 
