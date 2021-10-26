@@ -7,7 +7,7 @@ var parserTools = require("./parser-tools.js");
 
 var GITIGNORED = ["*__autoauto.java"];
 
-var DEFAULT_SERVOS = ["wobbleArmRight","wobbleArmLeft" , "wobbleGrabRight","wobbleGrabLeft", "shooterStop", "shooterArm"];
+var DEFAULT_SERVOS = [];
 var DEFAULT_CRSERVOS = [];
 
 var directory = __dirname.split(path.sep);
@@ -61,12 +61,10 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
 
-    console.log("frontmatter : " + JSON.stringify(frontMatter.frontMatter));
-
     var javaStringFileSource = frontMatter.stripped;
 
     try {
-        var parsedModel = aaParser.parse(fileSource);
+        var parsedModel = aaParser.parse(uncommentedFileSource);
 
         var javaCreationCode = astJavaify(parsedModel);
 

@@ -14,7 +14,7 @@ public class UpdateFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .InputManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No InputManager; please define one in template.notjava");
         if(args.length == 0) {manager.update(); return new AutoautoUndefined();}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No update with 0 args");
     }
 }

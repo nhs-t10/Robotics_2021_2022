@@ -247,7 +247,7 @@ OPEN_SQUARE_BRACKET =
 CLOSE_SQUARE_BRACKET =
     "]"
 IDENTIFIER =
-    l:LETTER+ 
+    l:(LETTER / DIGIT)+
     &{
     var name = l.join("");
     var reserved = ["if", "goto", "skip", "let", "next"];

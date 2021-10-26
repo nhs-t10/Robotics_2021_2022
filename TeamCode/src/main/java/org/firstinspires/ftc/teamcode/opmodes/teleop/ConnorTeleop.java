@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
 @TeleOp
-public class TestTeleop extends OpMode {
+public class ConnorTeleop extends OpMode {
     private MovementManager driver;
     private ManipulationManager hands;
     private InputManager input;
@@ -33,18 +33,18 @@ public class TestTeleop extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         telemetry = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
 
-//
-//        DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
-//        DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
-//        DcMotor br = hardwareMap.get(DcMotor.class, "br");
-//        DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
-        DcMotor spinnerOne = hardwareMap.get(DcMotor.class, "spinnerOne");
-        DcMotor spinnerTwo = hardwareMap.get(DcMotor.class, "spinnerTwo");
 
-//        driver = new MovementManager(fl, fr, br, bl);
-//        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
+        DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
+        DcMotor br = hardwareMap.get(DcMotor.class, "br");
+        DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
+        DcMotor claw = hardwareMap.get(DcMotor.class, "claw");
 
-        hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {spinnerOne, spinnerTwo}, new String[] {"spinnerOne", "spinnerTwo"});
+
+        driver = new MovementManager(fl, fr, br, bl);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {claw}, new String[] {"claw"});
 
         input = new InputManager(gamepad1, gamepad2);
 
@@ -55,14 +55,12 @@ public class TestTeleop extends OpMode {
                         new JoystickNode("right_stick_x")
                 )
         );
-
-        input.registerInput("Intake",
-                new ButtonNode("x")
-        );
-
         input.registerInput("PrecisionDriving",
                 new ButtonNode("b")
         );
+        input.registerInput("ClawMove",
+                new ButtonNode("a")
+                );
         input.registerInput("taunts",
                 new MultiInputNode(
                         new ButtonNode("dpad_up"),
@@ -71,21 +69,35 @@ public class TestTeleop extends OpMode {
                         new ButtonNode("dpad_down")
                 )
         );
+
     }
 
     @Override
     public void loop() {
         input.update();
-//        driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("Intake") == true){
-            hands.setMotorPower("spinnerOne", 1);
-            hands.setMotorPower("spinnerTwo", 1);
-        } else {
-            hands.setMotorPower("spinnerOne", 0);
-            hands.setMotorPower("spinnerTwo", 0);
+        driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        if (input.getBool("PrecisionDriving") == true && precision == false){
+            driver.downScale(0.5f);
+            precision = true;
+        }
+        else if (input.getBool("PrecisionDriving") == true && precision == true){
+            precision = true;
+        }
+        else if (input.getBool("PrecisionDriving") == false && precision == true){
+            driver.upScale(0.5f);
+            precision = false;
+        }
+        else {
+            precision = false;
+        }
+        if (input.getBool("ClawMove") == true) {
+            hands.setMotorPower("claw", 1.0);
+        }
+        else {
+            hands.setMotorPower("claw", 0.0);
         }
         telemetry.update();
-    }
+        }
 
     public void stop() {
         FeatureManager.setIsOpModeRunning(false);

@@ -84,7 +84,7 @@ public abstract class PaulMath extends FeatureManager {
         //This makes sure that no value is greater than 1 by dividing all of them by the maximum
         float highest = highestValue(sum);
         if (highest > 1) {
-            normalizeArray(sum);
+            sum = normalizeArray(sum);
         }
         return sum;
     }

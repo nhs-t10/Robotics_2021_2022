@@ -14,7 +14,7 @@ public class SetMsTransmissionIntervalFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .TelemetryManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No TelemetryManager; please define one in template.notjava");
         if(args.length == 1) {if(args[0] instanceof AutoautoNumericValue) {manager.setMsTransmissionInterval((int)((AutoautoNumericValue)args[0]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No setMsTransmissionInterval with 1 args");
     }
 }

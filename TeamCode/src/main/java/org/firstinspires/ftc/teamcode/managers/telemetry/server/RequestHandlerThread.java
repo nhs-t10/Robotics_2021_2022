@@ -76,7 +76,7 @@ public class RequestHandlerThread extends Thread {
             } else if(path.startsWith("/buildimgs")) {
                 try (InputStream file = ServerFiles.getAssetStream(path)) {
                     if (file == null) {
-                        writer.print(HttpStatusCodeReplies.Not_Found);
+                        writer.print(HttpStatusCodeReplies.Not_Found("buildimgs not found"));
                     } else {
                         writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                                 + "Content-Type: " + "image/png" + HTTP_LINE_SEPARATOR

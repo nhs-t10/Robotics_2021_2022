@@ -2470,10 +2470,16 @@ module.exports = /*
       s0 = peg$currPos;
       s1 = [];
       s2 = peg$parseLETTER();
+      if (s2 === peg$FAILED) {
+        s2 = peg$parseDIGIT();
+      }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
           s2 = peg$parseLETTER();
+          if (s2 === peg$FAILED) {
+            s2 = peg$parseDIGIT();
+          }
         }
       } else {
         s1 = peg$FAILED;

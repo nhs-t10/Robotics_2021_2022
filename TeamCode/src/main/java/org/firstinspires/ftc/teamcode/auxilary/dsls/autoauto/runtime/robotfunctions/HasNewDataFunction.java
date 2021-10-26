@@ -14,7 +14,7 @@ public class HasNewDataFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .TelemetryManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No TelemetryManager; please define one in template.notjava");
         if(args.length == 0) {return new AutoautoBooleanValue(manager.hasNewData());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No hasNewData with 0 args");
     }
 }

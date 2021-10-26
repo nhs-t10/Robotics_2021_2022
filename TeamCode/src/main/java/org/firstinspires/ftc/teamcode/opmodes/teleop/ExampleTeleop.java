@@ -106,7 +106,7 @@ public class ExampleTeleop extends OpMode {
         this.start();
         this.init();
         this.init_loop();
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < 100; i++) {
             this.time = (System.currentTimeMillis() - startTime) * 0.001;
             this.loop();
         }

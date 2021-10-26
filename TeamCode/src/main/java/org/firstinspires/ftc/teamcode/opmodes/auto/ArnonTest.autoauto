@@ -4,7 +4,7 @@
 #sampling:
     let value = computerVision(), next;
     driveRaw(1, 1, 1, 1), after 100ticks driveRaw(0,0,0,0), next;
-    if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto thirdPosition
+    if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto Position3
 
 #firstPosition:
     setMotorPower("deposit", 1), after 100ticks setMotorPower("deposit", 0), next;
@@ -16,7 +16,7 @@
     depositFrieght(), after 3s next;
     goto finalMovement
 
-#thirdPosition:
+#Position3:
     setMotorPower("deposit", 1), after 300ticks setMotorPower("deposit", 0), next;
     depositFrieght(), after 3s next;
     goto finalMovement

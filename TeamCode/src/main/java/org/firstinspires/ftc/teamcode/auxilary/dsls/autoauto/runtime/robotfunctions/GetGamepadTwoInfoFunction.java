@@ -14,7 +14,7 @@ public class GetGamepadTwoInfoFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .TelemetryManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No TelemetryManager; please define one in template.notjava");
         if(args.length == 0) {return new AutoautoString(manager.getGamepad2Info());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getGamepad2Info with 0 args");
     }
 }
