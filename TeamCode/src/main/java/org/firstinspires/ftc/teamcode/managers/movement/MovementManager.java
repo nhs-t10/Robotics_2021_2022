@@ -72,10 +72,11 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveOmniExponential(float[] powers) {
+        float exponentialScalar = FeatureManager.getRobotConfiguration().exponentialScalar;
         float[] sum = PaulMath.omniCalc(
-                (float) Math.pow(powers[0], EXPONENTIAL_SCALAR),
-                (float) Math.pow(powers[1], EXPONENTIAL_SCALAR),
-                (float) Math.pow(powers[2], EXPONENTIAL_SCALAR));
+                (float) Math.pow(powers[0], exponentialScalar),
+                (float) Math.pow(powers[1], exponentialScalar),
+                (float) Math.pow(powers[2], exponentialScalar));
         driveRaw(sum[0], sum[1], sum[2], sum[3]);
     }
     public DcMotor[] getMotor(){

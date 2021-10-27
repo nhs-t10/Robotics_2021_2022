@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary;
 
 import static java.lang.Math.PI;
 
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -96,8 +97,9 @@ public abstract class PaulMath extends FeatureManager {
     }
 
     public static int encoderDistance(double distance) {
-        double ROTATIONS = distance / CIRCUMFERENCE;
-        int counts = (int) ((ENCODER_CPR * ROTATIONS * GEAR_RATIO) / SLIP);
+        RobotConfiguration config = FeatureManager.getRobotConfiguration();
+        double ROTATIONS = distance / config.wheelCircumference;
+        int counts = (int) ((config.encoderTicksPerRotation * ROTATIONS * config.gearRatio) / config.slip);
         return counts;
     }
 

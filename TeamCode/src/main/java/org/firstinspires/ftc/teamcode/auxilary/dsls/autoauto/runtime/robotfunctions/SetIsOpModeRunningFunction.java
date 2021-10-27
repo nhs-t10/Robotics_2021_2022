@@ -14,7 +14,7 @@ public class SetIsOpModeRunningFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .FeatureManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No FeatureManager; please define one in template.notjava");
         if(args.length == 1) {if(args[0] instanceof AutoautoBooleanValue) {manager.setIsOpModeRunning(((AutoautoBooleanValue)args[0]).getBoolean()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No setIsOpModeRunning with 1 args");
     }
 }

@@ -14,7 +14,7 @@ public class DriveRawFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .MovementManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No MovementManager; please define one in template.notjava");
         if(args.length == 4) {if(args[0] instanceof AutoautoNumericValue&&args[1] instanceof AutoautoNumericValue&&args[2] instanceof AutoautoNumericValue&&args[3] instanceof AutoautoNumericValue) {manager.driveRaw(((AutoautoNumericValue)args[0]).getFloat(),((AutoautoNumericValue)args[1]).getFloat(),((AutoautoNumericValue)args[2]).getFloat(),((AutoautoNumericValue)args[3]).getFloat()); return new AutoautoUndefined();}}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No driveRaw with 4 args");
     }
 }

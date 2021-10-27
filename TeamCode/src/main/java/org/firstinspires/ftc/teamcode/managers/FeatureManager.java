@@ -10,20 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FeatureManager {
-
-    public final static float SPEED = 0.6f;
-    public final static int TICK_PER_ROT = 1680;
-
-    public final static float P = 0.03f;
-    public final static double ENCODER_CPR = 1680;
-    public final static double GEAR_RATIO = 1;
-    public final static double WHEEL_DIAMETER = 4;
-    public final static double SLIP = 0.7;
-    public final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-    public final static float EXPONENTIAL_SCALAR = 3f;
-
-    public final static int INPUT_DOUBLECLICK_TIME = 400;
-
     public static final Logger logger = new Logger();
 
     public static boolean debug = false;
@@ -125,8 +111,11 @@ public class FeatureManager {
         }
     }
 
-    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,1);
-    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1);
+    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,1,
+            0.03f, 1680, 1, 4, 0.7, 3f);
+
+    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1,
+            0.03f, 1680, 1, 4, 0.7, 3f);
     public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
 
 
@@ -167,11 +156,26 @@ public class FeatureManager {
         public float blCoef;
         public float brCoef;
 
-        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef) {
+        public float pidPCoefficient;
+        public double encoderTicksPerRotation;
+        public double gearRatio;
+        public double wheelDiameter;
+        public double slip;
+        public double wheelCircumference;
+        public float exponentialScalar;
+
+        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameter, double slip, float exponentialScalar) {
             this.flCoef = flCoef;
             this.frCoef = frCoef;
             this.blCoef = blCoef;
             this.brCoef = brCoef;
+            this.pidPCoefficient = pidPCoefficient;
+            this.encoderTicksPerRotation = encoderTicksPerRotation;
+            this.gearRatio = gearRatio;
+            this.wheelDiameter = wheelDiameter;
+            this.slip = slip;
+            this.wheelCircumference = Math.PI * wheelDiameter;
+            this.exponentialScalar = exponentialScalar;
         }
     }
 }

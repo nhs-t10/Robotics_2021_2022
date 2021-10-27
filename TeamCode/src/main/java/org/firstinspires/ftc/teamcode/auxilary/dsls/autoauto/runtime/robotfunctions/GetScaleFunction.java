@@ -14,7 +14,7 @@ public class GetScaleFunction extends NativeRobotFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(manager == null) throw new ManagerSetupException("No .MovementManager; please define one in template.notjava");
+        if(manager == null) throw new ManagerSetupException("No MovementManager; please define one in template.notjava");
         if(args.length == 0) {return new AutoautoNumericValue(manager.getScale());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getScale with 0 args");
     }
 }
