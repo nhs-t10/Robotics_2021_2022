@@ -29,7 +29,8 @@
 //    goto parking
 
 #duckTime:
-    driveOmni(0,1,0), after 2000ticks stopDrive(), next;
+    let distance = rotsToTicks(metersToRots(2)), let distance2 = rotsToTicks(metersToRots(0.5)), next;
+    driveOmni(0,1,0), after 200hticks stopDrive(), next;
     spinner(), after 3s stopSpin(), next;
     goto parking
 

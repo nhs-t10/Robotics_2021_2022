@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary;
 
+import static java.lang.Math.PI;
+
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -55,7 +57,7 @@ public abstract class PaulMath extends FeatureManager {
         double radius = Math.sqrt((x*x) + (y*y));
         double angle = Math.atan2(y, x);
 
-        return new float[] {(float)radius, (float)(angle * 180 / Math.PI)};
+        return new float[] {(float)radius, (float)(angle * 180 / PI)};
     }
 
     public static float[] polarToCartesian(float angle, float magnitude) {
@@ -268,5 +270,15 @@ public abstract class PaulMath extends FeatureManager {
 
     public static boolean isJSONable(Object s) {
         return s == null || s instanceof Number || s instanceof Boolean || s instanceof String || s instanceof Character;
+    }
+
+    public static double rotsToTicks(double rotations){
+        return rotations*28;
+    }
+    public static double metersToRots(double meters){
+        return meters*0.1*PI;
+    }
+    public static double metersToTicks(double meters){
+        return meters*2.8*PI;
     }
 }

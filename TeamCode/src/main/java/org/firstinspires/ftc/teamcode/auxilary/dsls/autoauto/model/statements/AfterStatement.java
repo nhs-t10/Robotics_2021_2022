@@ -51,13 +51,14 @@ public class AfterStatement extends Statement {
     @Override
     public void stepInit() {
         this.stepStartTime = System.currentTimeMillis();
-        waitUnits = wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks") || wait.unit.equals("degs");
+        waitUnits = wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks") || wait.unit.equals("degs") || wait.unit.equals("meters") || wait.unit.equals("hmeters") || wait.unit.equals("vmeters");
         if(waitUnits) {
             getTicks = (AutoautoCallableValue) scope.get(
                     wait.unit.equals("ticks") ? "getTicks" :
                             wait.unit.equals("hticks") ? "getHorizontalTicks" :
                                     wait.unit.equals("vticks") ? "getVerticalTicks" :
-                                            wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
+                                            wait.unit.equals("meters") ? "getMeters" :
+                                                wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
