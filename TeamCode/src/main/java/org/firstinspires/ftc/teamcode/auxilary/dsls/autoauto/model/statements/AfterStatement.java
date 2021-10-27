@@ -28,7 +28,7 @@ public class AfterStatement extends Statement {
     }
 
     AutoautoCallableValue getTicks;
-    boolean waitUnits;
+    boolean isUnitWithMethod;
 
     @NotNull
     public String toString() {
@@ -48,25 +48,42 @@ public class AfterStatement extends Statement {
         return c;
     }
 
+    String[][] unitMethodMapping = new String[][] {
+            {"ticks", "getTicks"},
+            {"hticks", "getHorizontalTicks"},
+            {"vticks", "getVerticalTicks"},
+            {"meters", "getMeters"},
+            {"hmeters", "getHorizontalMeters"},
+            {"vmeters", "getVerticalMeters"},
+            {"degs", "getThirdAngleOrientation"},
+    };
+
+    private boolean unitExistsInMethodMapping(String unit) {
+        for(String[] s : unitMethodMapping) {
+            if(s[0].equals(unit)) return true;
+        }
+        return false;
+    }
+    private String getUnitMethodFromMapping(String unit) {
+        for(String[] s : unitMethodMapping) {
+            if(s[0].equals(unit)) return s[1];
+        }
+        throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
+    }
+
     @Override
     public void stepInit() {
+
         this.stepStartTime = System.currentTimeMillis();
-        waitUnits = wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks") || wait.unit.equals("degs") || wait.unit.equals("meters") || wait.unit.equals("hmeters") || wait.unit.equals("vmeters");
-        if(waitUnits) {
-            getTicks = (AutoautoCallableValue) scope.get(
-                    wait.unit.equals("ticks") ? "getTicks" :
-                            wait.unit.equals("hticks") ? "getHorizontalTicks" :
-                                    wait.unit.equals("vticks") ? "getVerticalTicks" :
-                                            wait.unit.equals("meters") ? "getMeters" :
-                                                wait.unit.equals("hmeters") ? "getHorizontalMeters" :
-                                                    wait.unit.equals("vmeters") ? "getVerticalMeters" :
-                                                        wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
+        isUnitWithMethod = unitExistsInMethodMapping(wait.unit);
+        if(isUnitWithMethod) {
+            getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
 
     public void loop() {
-        if(waitUnits) {
+        if(isUnitWithMethod) {
             float tarTicks = wait.baseAmount;
             float ticksReferPoint = stepStartTick;
             float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
