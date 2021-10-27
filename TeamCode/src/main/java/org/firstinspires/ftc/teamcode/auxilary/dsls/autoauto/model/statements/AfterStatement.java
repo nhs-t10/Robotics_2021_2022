@@ -58,7 +58,9 @@ public class AfterStatement extends Statement {
                             wait.unit.equals("hticks") ? "getHorizontalTicks" :
                                     wait.unit.equals("vticks") ? "getVerticalTicks" :
                                             wait.unit.equals("meters") ? "getMeters" :
-                                                wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
+                                                wait.unit.equals("hmeters") ? "getHorizontalMeters" :
+                                                    wait.unit.equals("vmeters") ? "getVerticalMeters" :
+                                                        wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }

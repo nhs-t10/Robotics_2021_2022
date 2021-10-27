@@ -176,4 +176,14 @@ public class MovementManager extends FeatureManager {
     public int getHorizontalTicks() { return frontRight.getCurrentPosition(); }
     public int getVerticalTicks() { return  backLeft.getCurrentPosition(); }
 
+    public int getMeters(){
+        return (int)(getTicks()/(2.8*Math.PI));
+    }
+    public int getHorizontalMeters(){
+        return (int)(getHorizontalTicks()/(2.8*Math.PI));
+    }
+    public int getVerticalMeters(){
+        return (int)(getVerticalTicks()/(2.8*Math.PI));
+    }
+
 }
