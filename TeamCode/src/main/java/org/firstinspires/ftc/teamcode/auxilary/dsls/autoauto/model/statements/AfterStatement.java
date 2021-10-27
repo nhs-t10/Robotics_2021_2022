@@ -28,7 +28,7 @@ public class AfterStatement extends Statement {
     }
 
     AutoautoCallableValue getTicks;
-    boolean isUnitWithMethod;
+    boolean isDistanceUnit;
 
     @NotNull
     public String toString() {
@@ -75,15 +75,15 @@ public class AfterStatement extends Statement {
     public void stepInit() {
 
         this.stepStartTime = System.currentTimeMillis();
-        isUnitWithMethod = unitExistsInMethodMapping(wait.unit);
-        if(isUnitWithMethod) {
+        isDistanceUnit = unitExistsInMethodMapping(wait.unit);
+        if(isDistanceUnit) {
             getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
 
     public void loop() {
-        if(isUnitWithMethod) {
+        if(isDistanceUnit) {
             float tarTicks = wait.baseAmount;
             float ticksReferPoint = stepStartTick;
             float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
