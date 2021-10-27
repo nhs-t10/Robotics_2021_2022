@@ -116,6 +116,7 @@ public class FeatureManager {
 
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1,
             0.03f, 1680, 1, 4, 0.7, 3f);
+
     public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
 
 
@@ -159,12 +160,12 @@ public class FeatureManager {
         public float pidPCoefficient;
         public double encoderTicksPerRotation;
         public double gearRatio;
-        public double wheelDiameter;
+        public double wheelDiameterCm;
         public double slip;
         public double wheelCircumference;
         public float exponentialScalar;
 
-        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameter, double slip, float exponentialScalar) {
+        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
             this.flCoef = flCoef;
             this.frCoef = frCoef;
             this.blCoef = blCoef;
@@ -172,9 +173,9 @@ public class FeatureManager {
             this.pidPCoefficient = pidPCoefficient;
             this.encoderTicksPerRotation = encoderTicksPerRotation;
             this.gearRatio = gearRatio;
-            this.wheelDiameter = wheelDiameter;
+            this.wheelDiameterCm = wheelDiameterCm;
             this.slip = slip;
-            this.wheelCircumference = Math.PI * wheelDiameter;
+            this.wheelCircumference = Math.PI * wheelDiameterCm;
             this.exponentialScalar = exponentialScalar;
         }
     }
