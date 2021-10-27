@@ -49,10 +49,11 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveRaw(float fl, float fr, float br, float bl) {
-        frontLeft.setPower(fl);
-        frontRight.setPower(fr);
-        backRight.setPower(br);
-        backLeft.setPower(bl);
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+        frontLeft.setPower(fl * configuration.flCoef);
+        frontRight.setPower(fr * configuration.frCoef);
+        backRight.setPower(br * configuration.brCoef);
+        backLeft.setPower(bl * configuration.blCoef);
     }
 
     public void stopDrive() {

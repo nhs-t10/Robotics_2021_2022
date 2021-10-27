@@ -81,6 +81,8 @@ public class ExampleTeleop extends OpMode {
         input.registerInput("turnAround",
             new ButtonNode("right_stick_button")
         );
+
+        telemetry.addData("fl power", fl.getPower());
     }
 
     @Override

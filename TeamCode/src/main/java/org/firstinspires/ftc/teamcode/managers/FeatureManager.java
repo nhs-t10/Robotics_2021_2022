@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FeatureManager {
@@ -120,6 +122,56 @@ public class FeatureManager {
         public void logToPhone(String l) {
             if(usesFallback) fallbackBackend.println(l);
             else backend.add(l);
+        }
+    }
+
+    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,1);
+    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1);
+    public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
+
+
+    private static RobotConfiguration cachedConfiguration;
+
+    public static RobotConfiguration getRobotConfiguration() {
+        //if it's been cached, don't bother re-loading everything. Just return the cache.
+        if(cachedConfiguration != null) return cachedConfiguration;
+
+        ArrayList<String> lines = (new FileSaver(RobotConfiguration.fileName)).readLines();
+
+        //if the file doesn't exist, return the default. This doesn't adjust the cache, so if there's a later edit, it'll be loaded.
+        if(lines.size() == 0) return defaultConfiguration;
+
+        String fileContent = lines.get(0);
+
+        switch (fileContent) {
+            case RobotConfiguration.bigBoyFileContent:
+                cachedConfiguration = bigBoyConfiguration;
+                break;
+            case RobotConfiguration.littleBoyFileContent:
+                cachedConfiguration = littleBoyConfiguration;
+                break;
+            default:
+                cachedConfiguration = defaultConfiguration;
+                break;
+        }
+        return cachedConfiguration;
+    }
+
+    public static class RobotConfiguration {
+        public final static String fileName = "configuration";
+        public final static String bigBoyFileContent = "bigBoy";
+        public final static String littleBoyFileContent = "littleBoy";
+
+        public float flCoef;
+        public float frCoef;
+        public float blCoef;
+        public float brCoef;
+
+        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef) {
+            this.flCoef = flCoef;
+            this.frCoef = frCoef;
+            this.blCoef = blCoef;
+            this.brCoef = brCoef;
         }
     }
 }

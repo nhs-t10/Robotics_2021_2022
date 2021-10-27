@@ -28,10 +28,8 @@ public class BigBoyWriter extends OpMode {
 
     @Override
     public void init() {
-        FileSaver bigBoyConfiguration = new FileSaver("configuration");
-        bigBoyConfiguration.overwriteFile(
-                "BigBoy"
-        );
+        FileSaver bigBoyConfiguration = new FileSaver(FeatureManager.RobotConfiguration.fileName);
+        bigBoyConfiguration.overwriteFile(FeatureManager.RobotConfiguration.bigBoyFileContent);
     }
 
     @Override
