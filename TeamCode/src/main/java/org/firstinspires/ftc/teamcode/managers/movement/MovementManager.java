@@ -122,7 +122,7 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveVertical(float power, float distance) {
-        int ticks = PaulMath.encoderDistance(distance);
+        int ticks = PaulMath.encoderDistanceCm(distance);
         setTargetPositions(ticks, ticks, ticks, ticks);
         runToPosition();
         while(
@@ -156,7 +156,7 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveWithVertical(float power, float distance) {
-        int ticks = PaulMath.encoderDistance(distance);
+        int ticks = PaulMath.encoderDistanceCm(distance);
         setTargetPositions(ticks, ticks, ticks, ticks);
         runUsingEncoders();
         if(Math.abs(frontLeft.getCurrentPosition()) < Math.abs(frontLeft.getTargetPosition()) &&

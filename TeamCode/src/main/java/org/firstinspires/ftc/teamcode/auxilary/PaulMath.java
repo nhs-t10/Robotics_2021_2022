@@ -96,11 +96,15 @@ public abstract class PaulMath extends FeatureManager {
         return Math.round(input / place) * place;
     }
 
-    public static int encoderDistance(double distance) {
+    /**
+     * Converts a number of ticks to centimeters
+     * @param distance Number of ticks
+     * @return Centimeters covered by the robot in the given number of ticks
+     */
+    public static int encoderDistanceCm(double distance) {
         RobotConfiguration config = FeatureManager.getRobotConfiguration();
-        double ROTATIONS = distance / config.wheelCircumference;
-        int counts = (int) ((config.encoderTicksPerRotation * ROTATIONS * config.gearRatio) / config.slip);
-        return counts;
+        double rotations = distance / config.encoderTicksPerRotation;
+        return (int) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
     }
 
     public static float delta(float one, float two) {
