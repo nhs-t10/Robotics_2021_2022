@@ -28,7 +28,7 @@ public class AfterStatement extends Statement {
     }
 
     AutoautoCallableValue getTicks;
-    boolean waitUnits;
+    boolean isDistanceUnit;
 
     @NotNull
     public String toString() {
@@ -48,22 +48,42 @@ public class AfterStatement extends Statement {
         return c;
     }
 
+    String[][] unitMethodMapping = new String[][] {
+            {"ticks", "getTicks"},
+            {"hticks", "getHorizontalTicks"},
+            {"vticks", "getVerticalTicks"},
+            {"meters", "getMeters"},
+            {"hmeters", "getHorizontalMeters"},
+            {"vmeters", "getVerticalMeters"},
+            {"degs", "getThirdAngleOrientation"},
+    };
+
+    private boolean unitExistsInMethodMapping(String unit) {
+        for(String[] s : unitMethodMapping) {
+            if(s[0].equals(unit)) return true;
+        }
+        return false;
+    }
+    private String getUnitMethodFromMapping(String unit) {
+        for(String[] s : unitMethodMapping) {
+            if(s[0].equals(unit)) return s[1];
+        }
+        throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
+    }
+
     @Override
     public void stepInit() {
+
         this.stepStartTime = System.currentTimeMillis();
-        waitUnits = wait.unit.equals("ticks") || wait.unit.equals("hticks") || wait.unit.equals("vticks") || wait.unit.equals("degs");
-        if(waitUnits) {
-            getTicks = (AutoautoCallableValue) scope.get(
-                    wait.unit.equals("ticks") ? "getTicks" :
-                            wait.unit.equals("hticks") ? "getHorizontalTicks" :
-                                    wait.unit.equals("vticks") ? "getVerticalTicks" :
-                                            wait.unit.equals("degs") ? "getThirdAngleOrientation" : "ERROR BAD BAD UNIT");
+        isDistanceUnit = unitExistsInMethodMapping(wait.unit);
+        if(isDistanceUnit) {
+            getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
         }
     }
 
     public void loop() {
-        if(waitUnits) {
+        if(isDistanceUnit) {
             float tarTicks = wait.baseAmount;
             float ticksReferPoint = stepStartTick;
             float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();

@@ -26,7 +26,7 @@ public class AutoautoRuntime {
         }
     }
 
-    public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) throws ManagerSetupException {
+    public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) {
         MovementManager drive = null;
         ManipulationManager manip = null;
         SensorManager sense = null;
@@ -39,7 +39,7 @@ public class AutoautoRuntime {
             if(f instanceof TelemetryManager) telemetry = (TelemetryManager) f;
         }
 
-        if(drive == null || manip == null || sense == null || telemetry == null) throw new IllegalArgumentException("Managers must contain at least one of each type.");
+        if(drive == null || manip == null || sense == null || telemetry == null) throw new ManagerSetupException("Managers must contain at least one of each type.");
         this.managers = managers;
         setProgram(program);
     }
@@ -49,29 +49,28 @@ public class AutoautoRuntime {
     }
 
     public String getCurrentStatepath() {
-        return ((AutoautoString)(globalScope.get(AutoautoSystemVariableNames.STATEPATH_NAME))).getString();
+        return globalScope.get(AutoautoSystemVariableNames.STATEPATH_NAME).getString();
     }
 
     public void loop() {
         this.program.loop();
     }
 
-    public void setProgram(AutoautoProgram program) throws ManagerSetupException {
-        if(program != null) {
+    public void setProgram(AutoautoProgram program) {
+        if(program == null) throw new IllegalStateException("Program may not be null");
 
-            this.globalScope = new AutoautoRuntimeVariableScope();
-            globalScope.initSugarVariables();
-            globalScope.initBuiltinFunctions(this);
+        this.globalScope = new AutoautoRuntimeVariableScope();
+        globalScope.initSugarVariables();
+        globalScope.initBuiltinFunctions(this);
 
-            this.program = program;
-            this.program.setScope(globalScope);
+        this.program = program;
+        this.program.setScope(globalScope);
 
-            RobotFunctionLoader.loadFunctions(globalScope, managers);
+        RobotFunctionLoader.loadFunctions(globalScope, managers);
 
-            ManagerDeviceScanner.scan(globalScope, managers);
+        ManagerDeviceScanner.scan(globalScope, managers);
 
-            this.program.init();
-            this.program.stepInit();
-        }
+        this.program.init();
+        this.program.stepInit();
     }
 }

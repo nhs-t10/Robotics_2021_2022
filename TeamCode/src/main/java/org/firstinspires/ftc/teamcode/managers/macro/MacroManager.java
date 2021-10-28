@@ -19,8 +19,27 @@ public class MacroManager extends FeatureManager {
     private MacroRunnerThread runner;
 
     public MacroManager(FeatureManager... managers) {
+        FeatureManager[] managersIncludingSelf = addSelfToManagersIfRequired(managers);
+
         this.macros = new HashMap<>();
-        this.managers = managers;
+        this.managers = managersIncludingSelf;
+    }
+
+    private FeatureManager[] addSelfToManagersIfRequired(FeatureManager[] managers) {
+        FeatureManager[] managersIncludingSelf = new FeatureManager[managers.length + 1];
+
+        boolean managersArrayHasMacroManager = false;
+        for(int i = 0; i < managers.length; i++) {
+            managersIncludingSelf[i] = managers[i];
+            if(managers[i] instanceof MacroManager) managersArrayHasMacroManager = true;
+        }
+        if(!managersArrayHasMacroManager) {
+            managersIncludingSelf[managers.length] = this;
+        } else {
+            //fill it in to ensure no nullreferencerrors. This will be filtered later, so we don't have to worry about duplicates
+            managersIncludingSelf[managers.length] = managersIncludingSelf[managers.length - 1];
+        }
+        return managersIncludingSelf;
     }
 
     public void registerMacro(String name, Macro macro) {
@@ -37,15 +56,13 @@ public class MacroManager extends FeatureManager {
             macro.start(managers);
             runner = new MacroRunnerThread(macro);
 
-            (new Thread(runner)).start();
+            runner.start();
         }
     }
     public void stopMacro() {
-        if(isMacroRunning()) {
             runningMacro = null;
-            runner.stop();
+            if(runner != null) runner.stopMacro();
             runner = null;
-        }
     }
     public boolean isMacroRunning() {
         return runningMacro != null;

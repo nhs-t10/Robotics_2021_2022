@@ -51,7 +51,7 @@ import java.util.HashMap;
 
 @SuppressWarnings("WrongPackageStatement")
 public class template extends AutoautoMacro {
-    public static AutoautoProgram program = generateProgram();
+    public AutoautoProgram program = generateProgram();
 
     public static void sL(AutoautoProgramElement e, Location l) {
         e.setLocation(l);
@@ -59,7 +59,7 @@ public class template extends AutoautoMacro {
 
     /*USER_DEFINED_FUNCTIONS*/
 
-    public static AutoautoProgram generateProgram() {
+    public AutoautoProgram generateProgram() {
 /*JAVA_CREATION_CODE*/
     }
 }

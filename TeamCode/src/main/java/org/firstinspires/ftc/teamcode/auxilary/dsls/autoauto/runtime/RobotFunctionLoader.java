@@ -64,6 +64,9 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getTicks", new GetTicksFunction(manMovement));
             scope.put("getHorizontalTicks", new GetHorizontalTicksFunction(manMovement));
             scope.put("getVerticalTicks", new GetVerticalTicksFunction(manMovement));
+            scope.put("getMeters", new GetMetersFunction(manMovement));
+            scope.put("getHorizontalMeters", new GetHorizontalMetersFunction(manMovement));
+            scope.put("getVerticalMeters", new GetVerticalMetersFunction(manMovement));
             
             scope.put("updateSensorManager", new UpdateSensorManagerFunction(manSensor));
             scope.put("getColorInteger", new GetColorIntegerFunction(manSensor));

@@ -49,10 +49,11 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveRaw(float fl, float fr, float br, float bl) {
-        frontLeft.setPower(fl);
-        frontRight.setPower(fr);
-        backRight.setPower(br);
-        backLeft.setPower(bl);
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+        frontLeft.setPower(fl * configuration.flCoef);
+        frontRight.setPower(fr * configuration.frCoef);
+        backRight.setPower(br * configuration.brCoef);
+        backLeft.setPower(bl * configuration.blCoef);
     }
 
     public void stopDrive() {
@@ -71,10 +72,11 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveOmniExponential(float[] powers) {
+        float exponentialScalar = FeatureManager.getRobotConfiguration().exponentialScalar;
         float[] sum = PaulMath.omniCalc(
-                (float) Math.pow(powers[0], EXPONENTIAL_SCALAR),
-                (float) Math.pow(powers[1], EXPONENTIAL_SCALAR),
-                (float) Math.pow(powers[2], EXPONENTIAL_SCALAR));
+                (float) Math.pow(powers[0], exponentialScalar),
+                (float) Math.pow(powers[1], exponentialScalar),
+                (float) Math.pow(powers[2], exponentialScalar));
         driveRaw(sum[0], sum[1], sum[2], sum[3]);
     }
     public DcMotor[] getMotor(){
@@ -120,7 +122,7 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveVertical(float power, float distance) {
-        int ticks = PaulMath.encoderDistance(distance);
+        int ticks = PaulMath.encoderDistanceCm(distance);
         setTargetPositions(ticks, ticks, ticks, ticks);
         runToPosition();
         while(
@@ -154,7 +156,7 @@ public class MovementManager extends FeatureManager {
     }
 
     public void driveWithVertical(float power, float distance) {
-        int ticks = PaulMath.encoderDistance(distance);
+        int ticks = PaulMath.encoderDistanceCm(distance);
         setTargetPositions(ticks, ticks, ticks, ticks);
         runUsingEncoders();
         if(Math.abs(frontLeft.getCurrentPosition()) < Math.abs(frontLeft.getTargetPosition()) &&
@@ -175,5 +177,15 @@ public class MovementManager extends FeatureManager {
     }
     public int getHorizontalTicks() { return frontRight.getCurrentPosition(); }
     public int getVerticalTicks() { return  backLeft.getCurrentPosition(); }
+
+    public float getMeters(){
+        return (float)(getTicks()/(2.8*Math.PI));
+    }
+    public float getHorizontalMeters(){
+        return (float)(getHorizontalTicks()/(2.8*Math.PI));
+    }
+    public float getVerticalMeters(){
+        return (float)(getVerticalTicks()/(2.8*Math.PI));
+    }
 
 }

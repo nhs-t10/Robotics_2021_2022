@@ -3,25 +3,13 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FeatureManager {
-
-    public final static float SPEED = 0.6f;
-    public final static int TICK_PER_ROT = 1680;
-
-    public final static float P = 0.03f;
-    public final static double ENCODER_CPR = 1680;
-    public final static double GEAR_RATIO = 1;
-    public final static double WHEEL_DIAMETER = 4;
-    public final static double SLIP = 0.7;
-    public final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-    public final static float EXPONENTIAL_SCALAR = 3f;
-
-    public final static int INPUT_DOUBLECLICK_TIME = 400;
-
     public static final Logger logger = new Logger();
 
     public static boolean debug = false;
@@ -120,6 +108,93 @@ public class FeatureManager {
         public void logToPhone(String l) {
             if(usesFallback) fallbackBackend.println(l);
             else backend.add(l);
+        }
+    }
+
+    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,1,
+            0.03f, 1680, 1, 4, 0.7, 3f);
+
+    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1,
+            0.03f, 1680, 1, 4, 0.7, 3f);
+
+    public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
+
+
+    private static RobotConfiguration cachedConfiguration;
+
+    public static RobotConfiguration getRobotConfiguration() {
+        //if it's been cached, don't bother re-loading everything. Just return the cache.
+        if(cachedConfiguration != null) return cachedConfiguration;
+
+        ArrayList<String> lines = (new FileSaver(RobotConfiguration.fileName)).readLines();
+
+        //if the file doesn't exist, return the default. This doesn't adjust the cache, so if there's a later edit, it'll be loaded.
+        if(lines.size() == 0) return defaultConfiguration;
+
+        String fileContent = lines.get(0);
+
+        switch (fileContent) {
+            case RobotConfiguration.bigBoyFileContent:
+                cachedConfiguration = bigBoyConfiguration;
+                break;
+            case RobotConfiguration.littleBoyFileContent:
+                cachedConfiguration = littleBoyConfiguration;
+                break;
+            default:
+                cachedConfiguration = defaultConfiguration;
+                break;
+        }
+        return cachedConfiguration;
+    }
+
+    public static class RobotConfiguration {
+        public final static String fileName = "configuration";
+        public final static String bigBoyFileContent = "bigBoy";
+        public final static String littleBoyFileContent = "littleBoy";
+
+        public float flCoef;
+        public float frCoef;
+        public float blCoef;
+        public float brCoef;
+
+        /**
+         * The `p` coefficient of a PID controller. This should not be used, since we want to be able to use different coefficients in different situations.
+         */
+        @Deprecated
+        public float pidPCoefficient;
+        /**
+         * How many "ticks" quantify a rotation of the motor.
+         */
+        public double encoderTicksPerRotation;
+        /**
+         * The gear ratio of the main drive motors.
+         */
+        public double gearRatio;
+        /**
+         * The diameter of the main drive wheels, in centimeters
+         */
+        public double wheelDiameterCm;
+        /**
+         * A coefficient indicating how much sliding we can expect of the wheels. 1 is perfect traction; 0 is no traction at all.
+         */
+        public double slip;
+        /**
+         * The circumference of the main drive wheels, in centimeters
+         */
+        public double wheelCircumference;
+        public float exponentialScalar;
+
+        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
+            this.flCoef = flCoef;
+            this.frCoef = frCoef;
+            this.blCoef = blCoef;
+            this.brCoef = brCoef;
+            this.encoderTicksPerRotation = encoderTicksPerRotation;
+            this.gearRatio = gearRatio;
+            this.wheelDiameterCm = wheelDiameterCm;
+            this.slip = slip;
+            this.wheelCircumference = Math.PI * wheelDiameterCm;
+            this.exponentialScalar = exponentialScalar;
         }
     }
 }

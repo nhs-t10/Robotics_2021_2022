@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary;
 
+import static java.lang.Math.PI;
+
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -55,7 +58,7 @@ public abstract class PaulMath extends FeatureManager {
         double radius = Math.sqrt((x*x) + (y*y));
         double angle = Math.atan2(y, x);
 
-        return new float[] {(float)radius, (float)(angle * 180 / Math.PI)};
+        return new float[] {(float)radius, (float)(angle * 180 / PI)};
     }
 
     public static float[] polarToCartesian(float angle, float magnitude) {
@@ -93,10 +96,15 @@ public abstract class PaulMath extends FeatureManager {
         return Math.round(input / place) * place;
     }
 
-    public static int encoderDistance(double distance) {
-        double ROTATIONS = distance / CIRCUMFERENCE;
-        int counts = (int) ((ENCODER_CPR * ROTATIONS * GEAR_RATIO) / SLIP);
-        return counts;
+    /**
+     * Converts a number of ticks to centimeters
+     * @param distance Number of ticks
+     * @return Centimeters covered by the robot in the given number of ticks
+     */
+    public static int encoderDistanceCm(double distance) {
+        RobotConfiguration config = FeatureManager.getRobotConfiguration();
+        double rotations = distance / config.encoderTicksPerRotation;
+        return (int) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
     }
 
     public static float delta(float one, float two) {
@@ -268,5 +276,15 @@ public abstract class PaulMath extends FeatureManager {
 
     public static boolean isJSONable(Object s) {
         return s == null || s instanceof Number || s instanceof Boolean || s instanceof String || s instanceof Character;
+    }
+
+    public static double rotsToTicks(double rotations){
+        return rotations*28;
+    }
+    public static double metersToRots(double meters){
+        return meters*0.1*PI;
+    }
+    public static double metersToTicks(double meters){
+        return meters*2.8*PI;
     }
 }

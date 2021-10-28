@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.managers.macro;
 
-public class MacroRunnerThread implements Runnable {
+import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+
+public class MacroRunnerThread extends Thread {
     Macro macro;
     boolean running = true;
 
@@ -15,7 +17,7 @@ public class MacroRunnerThread implements Runnable {
         }
     }
 
-    public void stop() {
+    public void stopMacro() {
         running = false;
         macro.stop();
     }

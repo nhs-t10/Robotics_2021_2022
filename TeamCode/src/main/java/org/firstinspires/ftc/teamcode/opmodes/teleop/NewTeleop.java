@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
@@ -26,6 +27,7 @@ public class NewTeleop extends OpMode {
     private ManipulationManager hands;
     private InputManager input;
     private boolean precision = false;
+    FileSaver Configuration = new FileSaver("configuration");
 
     boolean dashing;
 
@@ -50,7 +52,12 @@ public class NewTeleop extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
 
         driver = new MovementManager(fl, fr, br, bl);
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        if(Configuration.readLines().get(0) == "SmallBoy") {
+            fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if(Configuration.readLines().get(0) == "BigBoy") {
+            fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
         DcMotor turn = hardwareMap.get(DcMotor.class, "turn");
 

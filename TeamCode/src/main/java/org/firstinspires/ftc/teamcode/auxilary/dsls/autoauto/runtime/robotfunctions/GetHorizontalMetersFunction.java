@@ -5,16 +5,16 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobot
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
-public class StopDriveFunction extends NativeRobotFunction {
+public class GetHorizontalMetersFunction extends NativeRobotFunction {
     private org.firstinspires.ftc.teamcode.managers.movement.MovementManager manager;
 
-    public StopDriveFunction(FeatureManager manager) {
+    public GetHorizontalMetersFunction(FeatureManager manager) {
         this.manager = (org.firstinspires.ftc.teamcode.managers.movement.MovementManager)manager;
     }
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         if(manager == null) throw new ManagerSetupException("No MovementManager; please define one in template.notjava");
-        if(args.length == 0) {manager.stopDrive(); return new AutoautoUndefined();}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No stopDrive with 0 args");
+        if(args.length == 0) {return new AutoautoNumericValue(manager.getHorizontalMeters());}throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No getHorizontalMeters with 0 args");
     }
 }
