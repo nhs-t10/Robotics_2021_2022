@@ -65,7 +65,7 @@ public class ExampleTeleopCarousel extends OpMode {
                         new JoystickNode("right_stick_x")
                 )
         );
-        input.registerInput("PrecisionDriving",
+        input.registerInput("precisionDriving",
                 new ButtonNode("b")
         );
         input.registerInput("Carousel",
@@ -94,21 +94,24 @@ public class ExampleTeleopCarousel extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("PrecisionDriving") == true && precision == false){
+        if (input.getBool("precisionDriving") == true && precision == false){
             driver.downScale(0.5f);
             precision = true;
         }
-        else if (input.getBool("PrecisionDriving") == true && precision == true){
+        else if (input.getBool("precisionDriving") == true && precision == true){
             precision = true;
         }
-        else if (input.getBool("PrecisionDriving") == false && precision == true){
+        else if (input.getBool("precisionDriving") == false && precision == true){
             driver.upScale(0.5f);
             precision = false;
         }
         else {
             precision = false;
         }
-        hands.setMotorPower("Carousel", input.getFloat("Carousel")*0.25);
+        hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
+        if (input.getBool("turnAround") == true) {
+            driver.driveOmni(0,0,1);
+        }
         telemetry.update();
     }
 

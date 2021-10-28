@@ -30,10 +30,10 @@ public class MovementManager extends FeatureManager {
         this.backRight = br;
         this.backLeft = bl;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public MovementManager(DcMotor fl, DcMotor fr, DcMotor br, DcMotor bl, ElapsedTime timer) {
         this.frontLeft = fl;
@@ -42,18 +42,23 @@ public class MovementManager extends FeatureManager {
         this.backLeft = bl;
         this.timer = timer;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void driveRaw(float fl, float fr, float br, float bl) {
+        frontLeft.setPower(fl);
+        frontRight.setPower(fr);
+        backRight.setPower(br);
+        backLeft.setPower(bl);
+
+    }
+
+    public void driveBlue(float fl, float fr, float br, float bl) {
         RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
-        frontLeft.setPower(fl * configuration.flCoef);
-        frontRight.setPower(fr * configuration.frCoef);
-        backRight.setPower(br * configuration.brCoef);
-        backLeft.setPower(bl * configuration.blCoef);
+        driveRaw(fl * configuration.flCoef, fr * configuration.frCoef, br * configuration.brCoef, bl * configuration.blCoef);
     }
 
     public void stopDrive() {
@@ -65,8 +70,9 @@ public class MovementManager extends FeatureManager {
 
     public void driveOmni(float[] powers) {
         float[] sum = PaulMath.omniCalc(powers[0]*scale, powers[1]*scale, powers[2] * scale);
-        driveRaw(sum[0], sum[1], sum[2], sum[3]);
+        driveBlue(sum[0], sum[1], sum[2], sum[3]);
     }
+
     public void driveOmni(float v, float h, float r) {
         driveOmni(new float[] {v, h, r});
     }
@@ -179,13 +185,13 @@ public class MovementManager extends FeatureManager {
     public int getVerticalTicks() { return  backLeft.getCurrentPosition(); }
 
     public float getMeters(){
-        return (float)(getTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getTicks()) / 100f);
     }
     public float getHorizontalMeters(){
-        return (float)(getHorizontalTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getHorizontalTicks()) / 100f);
     }
     public float getVerticalMeters(){
-        return (float)(getVerticalTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getVerticalTicks()) / 100f);
     }
 
 }
