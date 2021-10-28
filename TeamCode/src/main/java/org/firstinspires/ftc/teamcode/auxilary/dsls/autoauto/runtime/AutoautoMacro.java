@@ -5,38 +5,30 @@ import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.macro.Macro;
 
 public abstract class AutoautoMacro extends Macro {
-    public static AutoautoProgram program;
+    public AutoautoProgram program;
 
     private AutoautoRuntime runtime = null;
     private boolean forceStop;
 
+    public abstract AutoautoProgram generateProgram();
+
     @Override
     public final void start(FeatureManager... managers) {
+        program = generateProgram();
         if(runtime == null) {
-            try {
                 runtime = new AutoautoRuntime(program, managers);
-            } catch (ManagerSetupException e) {
-                FeatureManager.logger.log(e.toString());
-            }
         } else {
-            try {
-                runtime.setProgram(program);
-            } catch (ManagerSetupException e) {
-                e.printStackTrace();
-            }
+            runtime.setProgram(program);
         }
         
     }
 
     @Override
     public final void loop() {
-        if(!forceStop && runtime.getCurrentStatepath().equals("end")) {
-            if(runtime != null) runtime.loop();
-        }
+        runtime.loop();
     }
 
     @Override
-    public void stop() {
-        forceStop = true;
+    public final void stop() {
     }
 }

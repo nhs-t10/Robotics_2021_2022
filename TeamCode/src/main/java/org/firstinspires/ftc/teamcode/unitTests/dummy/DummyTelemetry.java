@@ -128,13 +128,21 @@ public class DummyTelemetry implements Telemetry {
 
     }
 
+    private DummyLog log = new DummyLog();
     @Override
-    public Log log() {
-        return new DummyLog();
+    public DummyLog log() {
+        return log;
     }
-    private static class DummyLog implements Telemetry.Log {
+    public static class DummyLog implements Telemetry.Log {
+
+        public String logText;
 
         private DummyLog() {
+            this.logText = "";
+        }
+
+        public String getLogText() {
+            return logText;
         }
 
         @Override
@@ -158,6 +166,7 @@ public class DummyTelemetry implements Telemetry {
 
         @Override
         public void add(String entry) {
+            logText += entry + "\n";
             System.out.println(entry);
         }
 
