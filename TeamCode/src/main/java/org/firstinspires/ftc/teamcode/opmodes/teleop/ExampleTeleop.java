@@ -58,17 +58,21 @@ public class ExampleTeleop extends OpMode {
                 hardwareMap, new String[] {}, new String[] {}, new String[] {}
         );
 
+
         input = new InputManager(gamepad1, gamepad2);
 
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new ScaleNode(-1, new JoystickNode("left_stick_x")),
+                        new JoystickNode("left_stick_x"),
                         new JoystickNode("right_stick_x")
                 )
         );
         input.registerInput("PrecisionDriving",
                 new ButtonNode("b")
+        );
+        input.registerInput("Carousel",
+                new ButtonNode("y")
         );
         input.registerInput("taunts",
                 new MultiInputNode(
@@ -87,6 +91,20 @@ public class ExampleTeleop extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        if (input.getBool("PrecisionDriving") == true && precision == false){
+            driver.downScale(0.5f);
+            precision = true;
+        }
+        else if (input.getBool("PrecisionDriving") == true && precision == true){
+            precision = true;
+        }
+        else if (input.getBool("PrecisionDriving") == false && precision == true){
+            driver.upScale(0.5f);
+            precision = false;
+        }
+        else {
+            precision = false;
+        }
         telemetry.update();
     }
 
