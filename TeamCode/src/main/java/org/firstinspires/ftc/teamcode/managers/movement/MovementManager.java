@@ -184,13 +184,13 @@ public class MovementManager extends FeatureManager {
     public int getVerticalTicks() { return  backLeft.getCurrentPosition(); }
 
     public float getMeters(){
-        return (float)(getTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getTicks()) / 100f);
     }
     public float getHorizontalMeters(){
-        return (float)(getHorizontalTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getHorizontalTicks()) / 100f);
     }
     public float getVerticalMeters(){
-        return (float)(getVerticalTicks()/(2.8*Math.PI));
+        return (PaulMath.encoderDistanceCm(getVerticalTicks()) / 100f);
     }
 
 }
