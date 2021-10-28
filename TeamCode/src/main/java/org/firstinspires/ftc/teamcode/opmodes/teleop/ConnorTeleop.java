@@ -42,7 +42,6 @@ public class ConnorTeleop extends OpMode {
 
 
         driver = new MovementManager(fl, fr, br, bl);
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(new CRServo[] {}, new String[] {}, new Servo[] {}, new String[] {}, new DcMotor[] {claw}, new String[] {"claw"});
 

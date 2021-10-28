@@ -52,12 +52,7 @@ public class NewTeleop extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
 
         driver = new MovementManager(fl, fr, br, bl);
-        if(Configuration.readLines().get(0) == "SmallBoy") {
-            fl.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-        if(Configuration.readLines().get(0) == "BigBoy") {
-            fl.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
+
 
         DcMotor turn = hardwareMap.get(DcMotor.class, "turn");
 

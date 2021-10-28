@@ -52,7 +52,6 @@ public class ExampleTeleop extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
 
         driver = new MovementManager(fl, fr, br, bl);
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(
                 hardwareMap, new String[] {}, new String[] {}, new String[] {}
