@@ -114,7 +114,7 @@ public class FeatureManager {
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,1,
             0.03f, 1680, 1, 4, 0.7, 3f);
 
-    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,1,1,
+    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(-1,1,-1,1,
             0.03f, 1680, 1, 4, 0.7, 3f);
 
     public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
