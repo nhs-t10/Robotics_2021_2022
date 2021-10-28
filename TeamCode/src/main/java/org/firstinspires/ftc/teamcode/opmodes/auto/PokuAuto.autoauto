@@ -29,8 +29,14 @@
 //    goto parking
 
 #duckTime:
-    driveOmni(0,1,0), after 3hmeters stopDrive(), next;
+    driveOmni(0,-1,0), after 3hmeters stopDrive(), next;
     spinner(), after 3s stopSpin(), next;
+    goto placeIt
+
+#placeIt:
+    driveOmni(0,1,0), after 1.5hmeters driveOmni(1,0,0), after 1meters next;
+    depositFrieght(), after 3s next;
+    driveOmni(0,1,0), after 1hmeters driveOmni(1,0,0), after 0.5meters driveOmni(0,1,0), after 5hmeters next;
     goto parking
 
 #parking:
