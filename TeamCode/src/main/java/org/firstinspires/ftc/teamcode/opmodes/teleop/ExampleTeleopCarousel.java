@@ -60,7 +60,10 @@ public class ExampleTeleopCarousel extends OpMode {
         fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(
-                hardwareMap, new String[] {}, new String[] {}, new String[] {"Carousel"}
+                hardwareMap,
+                new String[] {},
+                new String[] {},
+                new String[] {"Carousel"}
         );
 
 
