@@ -1,0 +1,6 @@
+#init:
+goto TurnAround
+
+#TurnAround:
+ driveRaw (1,-1,1,-1), after 1s next;
+ stopMacro()

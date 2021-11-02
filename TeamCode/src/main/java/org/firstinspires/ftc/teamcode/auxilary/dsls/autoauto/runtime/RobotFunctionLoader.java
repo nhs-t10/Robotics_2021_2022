@@ -49,6 +49,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("closeMotors", new CloseMotorsFunction(manManipulation));
             
             scope.put("driveRaw", new DriveRawFunction(manMovement));
+            scope.put("driveBlue", new DriveBlueFunction(manMovement));
             scope.put("stopDrive", new StopDriveFunction(manMovement));
             scope.put("driveOmni", new DriveOmniFunction(manMovement));
             scope.put("resetEncodersMovementManager", new ResetEncodersMovementManagerFunction(manMovement));
