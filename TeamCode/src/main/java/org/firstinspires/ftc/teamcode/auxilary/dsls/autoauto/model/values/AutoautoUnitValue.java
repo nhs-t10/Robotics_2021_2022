@@ -67,17 +67,6 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
             this.baseAmount *= 24 * 60 * 60 * 1000;
             unitType = UnitType.TIME;
         }
-
-        if(unit.startsWith("ticks")) {
-            this.baseAmount *= 1;
-            unitType = UnitType.DISTANCE;
-        } else if(unit.startsWith("rots")) {
-            this.baseAmount *= 135;
-            unitType = UnitType.DISTANCE;
-        } else if((unit.charAt(0) == 'h' || unit.charAt(0) == 'v') && unit.substring(1).startsWith("ticks")) {
-            this.baseAmount *= 1;
-            unitType = UnitType.DISTANCE;
-        }
     }
 
     public String getString() {

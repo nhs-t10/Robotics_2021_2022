@@ -32,6 +32,7 @@ public class StreamHandler {
                 + HTTP_LINE_SEPARATOR);
 
         printChunk("{\"streamID\": \"" + streamID + "\""
+                + ",\"autoautoProgram\": " + dataSource.autoauto.getProgramJson()
                 + ",\"sendsPerSecond\": " + sendPerSecond
                 + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
 

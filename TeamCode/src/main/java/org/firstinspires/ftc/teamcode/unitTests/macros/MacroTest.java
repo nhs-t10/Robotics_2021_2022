@@ -39,6 +39,8 @@ public class MacroTest {
         InputManager input = new InputManager(new DummyGamepad(), new DummyGamepad());
 
         MacroManager macroManager = new MacroManager(sensor, driver, telemetry, hands, imu, input);
+
+
         macroManager.registerMacro("test", new Testmacro__macro_autoauto());
 
         macroManager.runMacro("test");

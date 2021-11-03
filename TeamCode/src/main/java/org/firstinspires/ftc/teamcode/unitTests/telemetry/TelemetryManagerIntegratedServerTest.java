@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class TelemetryManagerIntegratedServerTest {
+public class    TelemetryManagerIntegratedServerTest {
     @Test
     public void test() throws IOException {
 
