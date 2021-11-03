@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FileSaver {
+    private String filePathname;
     private Context context;
     public String fileName;
 
@@ -23,6 +24,7 @@ public class FileSaver {
             this.context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
         } catch (Throwable ignored) {}
         this.fileName = _fileName;
+        this.filePathname = context.getExternalFilesDir(null).getPath() + "/" + fileName;
     }
 
     public ArrayList<String> readLines() {
@@ -32,7 +34,7 @@ public class FileSaver {
         ArrayList<String> keyframes = new ArrayList<String>();
 
         try {
-            textFile = new BufferedReader(new InputStreamReader(new FileInputStream(context.getCacheDir().getPath() + "/" + fileName)));
+            textFile = new BufferedReader(new InputStreamReader(new FileInputStream(filePathname)));
             BufferedReader br = new BufferedReader(textFile);
 
             while ((thisLine = br.readLine()) != null) {
@@ -45,13 +47,13 @@ public class FileSaver {
     }
 
     public void deleteFile() {
-        File file = new File(context.getCacheDir().getPath() + "/" + fileName);
+        File file = new File(filePathname);
         file.delete();
     }
 
     public void overwriteFile(String newContent) {
         try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(context.getExternalFilesDir(null).getPath() + "/" + fileName));
+            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname));
             output.write(newContent);
             output.close();
         } catch (Throwable e) {
@@ -61,7 +63,7 @@ public class FileSaver {
 
     public void appendLine(String line) {
         try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(context.getExternalFilesDir(null).getPath() + "/" + fileName, true));
+            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname, true));
             output.newLine();
             output.write(line);
             output.close();
