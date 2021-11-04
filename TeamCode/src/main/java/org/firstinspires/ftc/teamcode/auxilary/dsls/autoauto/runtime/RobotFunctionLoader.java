@@ -45,6 +45,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("setServoPower", new SetServoPowerFunction(manManipulation));
             scope.put("setMotorPower", new SetMotorPowerFunction(manManipulation));
             scope.put("getMotorPower", new GetMotorPowerFunction(manManipulation));
+            scope.put("getMotorPosition", new GetMotorPositionFunction(manManipulation));
             scope.put("getServoPower", new GetServoPowerFunction(manManipulation));
             scope.put("getServoPosition", new GetServoPositionFunction(manManipulation));
             scope.put("resetEncoders", new ResetEncodersFunction(manManipulation));
