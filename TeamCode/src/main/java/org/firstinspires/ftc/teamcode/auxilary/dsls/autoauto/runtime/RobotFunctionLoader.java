@@ -13,6 +13,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             org.firstinspires.ftc.teamcode.managers.macro.MacroManager manMacro = null;
             org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manManipulation = null;
             org.firstinspires.ftc.teamcode.managers.movement.MovementManager manMovement = null;
+            org.firstinspires.ftc.teamcode.managers.nate.NateManager manNate = null;
             org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manSensor = null;
             org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager manTelemetry = null;
             for(FeatureManager f : managers) {
@@ -22,10 +23,12 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.macro.MacroManager) manMacro = (org.firstinspires.ftc.teamcode.managers.macro.MacroManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager) manManipulation = (org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.movement.MovementManager) manMovement = (org.firstinspires.ftc.teamcode.managers.movement.MovementManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.nate.NateManager) manNate = (org.firstinspires.ftc.teamcode.managers.nate.NateManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.sensor.SensorManager) manSensor = (org.firstinspires.ftc.teamcode.managers.sensor.SensorManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager) manTelemetry = (org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager)f;
             }
             scope.put("setIsOpModeRunning", new SetIsOpModeRunningFunction(manFeature));
+            scope.put("getRobotName", new GetRobotNameFunction(manFeature));
             
             scope.put("getThirdAngleOrientation", new GetThirdAngleOrientationFunction(manImu));
             
@@ -51,7 +54,6 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("driveRaw", new DriveRawFunction(manMovement));
             scope.put("driveBlue", new DriveBlueFunction(manMovement));
             scope.put("stopDrive", new StopDriveFunction(manMovement));
-            scope.put("driveOmni", new DriveOmniFunction(manMovement));
             scope.put("resetEncodersMovementManager", new ResetEncodersMovementManagerFunction(manMovement));
             scope.put("runToPosition", new RunToPositionFunction(manMovement));
             scope.put("runUsingEncodersMovementManager", new RunUsingEncodersMovementManagerFunction(manMovement));
@@ -68,6 +70,9 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getMeters", new GetMetersFunction(manMovement));
             scope.put("getHorizontalMeters", new GetHorizontalMetersFunction(manMovement));
             scope.put("getVerticalMeters", new GetVerticalMetersFunction(manMovement));
+            
+            scope.put("foldOut", new FoldOutFunction(manNate));
+            scope.put("homing", new HomingFunction(manNate));
             
             scope.put("updateSensorManager", new UpdateSensorManagerFunction(manSensor));
             scope.put("getColorInteger", new GetColorIntegerFunction(manSensor));

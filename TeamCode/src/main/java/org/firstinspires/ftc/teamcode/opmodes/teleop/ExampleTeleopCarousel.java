@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.__compiledautoauto.SpinTaunt__macro_autoauto;
 import org.firstinspires.ftc.teamcode.__compiledautoauto.Testmacro__macro_autoauto;
+import org.firstinspires.ftc.teamcode.__compiledautoauto.TurnAround__macro_autoauto;
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -14,6 +16,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
+import org.firstinspires.ftc.teamcode.managers.macro.MacroRunnerThread;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
@@ -31,6 +34,7 @@ public class ExampleTeleopCarousel extends OpMode {
     private InputManager input;
     private SensorManager sensor;
     private ImuManager imu;
+    private MacroManager macroManager;
     private boolean precision = false;
 
     boolean dashing;
@@ -44,12 +48,12 @@ public class ExampleTeleopCarousel extends OpMode {
 
     @Override
     public void init() {
-        /* Phone is labelled as Not Ready For Use */
+        // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
         telemetry = telemetryManager;
 
-        ImuManager imu = new ImuManager(new DummyImu());
+        ImuManager imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -57,7 +61,6 @@ public class ExampleTeleopCarousel extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
 
         driver = new MovementManager(fl, fr, br, bl);
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hands = new ManipulationManager(
                 hardwareMap,
@@ -71,8 +74,8 @@ public class ExampleTeleopCarousel extends OpMode {
 
         input.registerInput("drivingControls",
                 new MultiInputNode(
-                        new JoystickNode("left_stick_y"),
                         new JoystickNode("left_stick_x"),
+                        new JoystickNode("left_stick_y"),
                         new JoystickNode("right_stick_x")
                 )
         );
@@ -82,49 +85,58 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("Carousel",
                 new ButtonNode("y")
         );
-        input.registerInput("taunts",
-                new MultiInputNode(
-                        new ButtonNode("dpad_up"),
-                        new ButtonNode("dpad_left"),
-                        new ButtonNode("dpad_right"),
-                        new ButtonNode("dpad_down")
-                )
+        input.registerInput("spin",
+                        new ButtonNode("dpad_up")
+        );
+        input.registerInput("Taunt1",
+                        new ButtonNode("dpad_left")
+        );
+        input.registerInput("Taunt2",
+                new ButtonNode("dpad_right")
+        );
+        input.registerInput("Taunt3",
+                new ButtonNode("dpad_down")
         );
         input.registerInput("turnAround",
             new ButtonNode("right_stick_button")
         );
 
-        MacroManager macroManager = new MacroManager(sensor, driver, telemetryManager, hands, imu, input);
-        // macroManager.registerMacro("TurnAround", new TurnAround__macro_autoauto());
+        macroManager = new MacroManager(sensor, driver, telemetryManager, hands, imu, input);
+        macroManager.registerMacro("TurnAround", new TurnAround__macro_autoauto());
+        macroManager.registerMacro("SpinTaunt", new SpinTaunt__macro_autoauto());
     }
 
     @Override
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("precisionDriving") == true && precision == false){
-            driver.downScale(0.5f);
-            precision = true;
-        }
-        else if (input.getBool("precisionDriving") == true && precision == true){
-            precision = true;
-        }
-        else if (input.getBool("precisionDriving") == false && precision == true){
-            driver.upScale(0.5f);
-            precision = false;
-        }
-        else {
-            precision = false;
-        }
+//        if (input.getBool("precisionDriving") == true && precision == false){
+//            driver.downScale(0.5f);
+//            precision = true;
+//        }
+//        else if (input.getBool("precisionDriving") == true && precision == true){
+//            precision = true;
+//        }
+//        else if (input.getBool("precisionDriving") == false && precision == true){
+//            driver.upScale(0.5f);
+//            precision = false;
+//        }
+//        else {
+//            precision = false;
+//        }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("turnAround") == true) {
-
+            macroManager.runMacro("TurnAround");
+        }
+        if (input.getBool("spin") ==true) {
+            macroManager.runMacro("SpinTaunt");
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
         telemetry.addData("BL Power", driver.backRight.getPower());
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
+        telemetry.addData("WhichBoy", FeatureManager.getRobotName());
         telemetry.update();
     }
 
