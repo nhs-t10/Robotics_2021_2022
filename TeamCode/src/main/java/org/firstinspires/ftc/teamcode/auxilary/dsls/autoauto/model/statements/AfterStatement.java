@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
+    //Attributes
     AutoautoUnitValue wait;
     Statement action;
 
@@ -18,6 +19,7 @@ public class AfterStatement extends Statement {
     private long stepStartTime = 0;
     private float stepStartTick;
 
+    //Constructors
     public static AfterStatement W (AutoautoUnitValue wait, Statement action) {
         return new AfterStatement(wait, action);
     }
@@ -49,33 +51,41 @@ public class AfterStatement extends Statement {
     }
 
     String[][] unitMethodMapping = new String[][] {
-            {"ticks", "getTicks"},
-            {"hticks", "getHorizontalTicks"},
-            {"vticks", "getVerticalTicks"},
-            {"meters", "getMeters"},
-            {"hmeters", "getHorizontalMeters"},
-            {"vmeters", "getVerticalMeters"},
-            {"degs", "getThirdAngleOrientation"},
+            {"Dticks", "getTicks"},
+            {"Dhticks", "getHorizontalTicks"},
+            {"Dvticks", "getVerticalTicks"},
+            {"Dmeters", "getMeters"},
+            {"Dhmeters", "getHorizontalMeters"},
+            {"Dvmeters", "getVerticalMeters"},
+            {"Ddegs", "getThirdAngleOrientation"},
     };
 
     private boolean unitExistsInMethodMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[0].equals(unit)) return true;
+            if(s[0].substring(1).equals(unit)) return true;
         }
         return false;
     }
     private String getUnitMethodFromMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[0].equals(unit)) return s[1];
+            if(s[0].substring(1).equals(unit)) return s[1];
         }
         throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
+    }
+    private boolean checkUnitIsDistance(String unit) {
+        for(String[] s : unitMethodMapping) {
+            if(s[0].substring(1).equals(unit)){
+                return s[0].substring(0,1).equals("D");
+            }
+        }
+        return false;
     }
 
     @Override
     public void stepInit() {
 
         this.stepStartTime = System.currentTimeMillis();
-        isDistanceUnit = unitExistsInMethodMapping(wait.unit);
+        isDistanceUnit = unitExistsInMethodMapping(wait.unit) && getUnitMethodFromMapping(wait.unit).substring(0,1).equals("D");
         if(isDistanceUnit) {
             getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
             this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
