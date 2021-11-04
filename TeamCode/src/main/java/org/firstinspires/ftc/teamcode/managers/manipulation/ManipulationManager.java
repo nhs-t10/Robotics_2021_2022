@@ -99,6 +99,12 @@ public class ManipulationManager extends FeatureManager {
         return motors[i].getPower();
     }
 
+    public double getMotorPosition(String name) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered");
+        return motors[index].getCurrentPosition();
+    }
+
     public double getServoPower(String name) {
         int index = (Arrays.asList(crservoNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("CRServo " + name + " does not exist or is not registered");
@@ -116,6 +122,12 @@ public class ManipulationManager extends FeatureManager {
 
     public void setMotorModes(DcMotor.RunMode mode) {
         for(DcMotor motor : motors) motor.setMode(mode);
+    }
+
+    public void setMotorMode(String name, DcMotor.RunMode mode) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered");
+        motors[index].setMode(mode);
     }
 
     public void resetEncoders() {
