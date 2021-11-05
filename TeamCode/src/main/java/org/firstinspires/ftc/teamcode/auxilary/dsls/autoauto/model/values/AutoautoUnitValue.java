@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 public class AutoautoUnitValue extends AutoautoNumericValue {
+    //Attributes
     Location location;
     AutoautoRuntimeVariableScope scope;
     @Override
@@ -34,6 +35,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
     public long baseAmount;
     public String unit;
 
+    //Constructors
     public static AutoautoUnitValue E(long baseAmount, String unit) {
         return new AutoautoUnitValue(baseAmount, unit);
     }
@@ -69,6 +71,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         }
     }
 
+    //Methods
     public String getString() {
         return this.baseAmount +
                 ((unitType == UnitType.TIME) ? "ms" : "ticks");

@@ -70,15 +70,15 @@ public abstract class PaulMath extends FeatureManager {
     }
 
     public static float[] omniCalc(float verticalPower, float horizontalPower, float rotationalPower) {
-        float h = Range.clip(horizontalPower, -1, 1);
         float v = Range.clip(verticalPower, -1, 1);
+        float h = Range.clip(horizontalPower, -1, 1);
         float r = Range.clip(rotationalPower, -1, 1);
 
         // Motor powers of fl, fr, br, bl
         // Motor powers used to be 0.4f for all motors other than fl
         float[] vertical = {-v, -v, -v, -v};
-        float[] horizontal = {h, -h, h, -h};
-        float[] rotational = {r, -r, -r, r};
+        float[] horizontal = {-h, h, -h, h};
+        float[] rotational = {-r, r, r, -r};
 
         float[] sum = new float[4];
         for (int i = 0; i < 4; i++) {

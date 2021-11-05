@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.auxilary;
 import android.app.Application;
 import android.content.Context;
 
+import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,7 +43,8 @@ public class FileSaver {
                 keyframes.add(thisLine);
             }
         } catch (Throwable e) {
-            //e.printStackTrace();
+            FeatureManager.logger.log(e.toString());
+            for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
         }
         return keyframes;
     }
@@ -57,7 +60,8 @@ public class FileSaver {
             output.write(newContent);
             output.close();
         } catch (Throwable e) {
-            //e.printStackTrace
+            FeatureManager.logger.log(e.toString());
+            for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
         }
     }
 
@@ -68,7 +72,8 @@ public class FileSaver {
             output.write(line);
             output.close();
         } catch (Throwable e) {
-            //e.printStackTrace
+            FeatureManager.logger.log(e.toString());
+            for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
         }
     }
 

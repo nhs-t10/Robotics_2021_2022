@@ -2,5 +2,5 @@
 goto TurnAround
 
 #TurnAround:
- driveRaw (1,-1,1,-1), after 1s next;
+ driveRaw (1,-1,1,-1), after 180degs next;
  stopMacro()
