@@ -4,10 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
+import org.firstinspires.ftc.teamcode.managers.FeatureManager.RobotConfiguration.OmniCalcComponents;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static org.firstinspires.ftc.teamcode.managers.FeatureManager.RobotConfiguration.WheelCoefficients.W;
 
 public class FeatureManager {
     public static final Logger logger = new Logger();
@@ -111,10 +114,22 @@ public class FeatureManager {
         }
     }
 
-    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(0.75f,0.75f,0.75f,-0.75f,
+    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
+            W(0.75f,0.75f,0.75f,-0.75f),
+            new OmniCalcComponents(
+                W(-1f,1f,1f,-1f), //Horizontal omniCalc components
+                W(-1f,-1f,-1f,-1f), //Vertical omniCalc components
+                W(-1f, 1f, -1f, 1f) //Rotational omniCalc components
+            ),
             0.03f, 1680, 1, 8.9, 0.7, 3f);
 
-    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,-1,-1,
+    public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
+            W(1, 1, -1, -1),
+            new OmniCalcComponents(
+                    W(-1f,1f,1f,-1f), //Horizontal omniCalc components
+                    W(-1f,-1f,-1f,-1f), //Vertical omniCalc components
+                    W(-1f, 1f, -1f, 1f) //Rotational omniCalc components
+            ),
             0.03f, 1680, 1, 4, 0.7, 3f);
 
     public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
@@ -170,10 +185,9 @@ public class FeatureManager {
         public final static String bigBoyFileContent = "bigBoy";
         public final static String littleBoyFileContent = "littleBoy";
 
-        public float flCoef;
-        public float frCoef;
-        public float blCoef;
-        public float brCoef;
+        public WheelCoefficients motorCoefficients;
+
+        public OmniCalcComponents omniComponents;
 
         /**
          * The `p` coefficient of a PID controller. This should not be used, since we want to be able to use different coefficients in different situations.
@@ -202,11 +216,33 @@ public class FeatureManager {
         public double wheelCircumference;
         public float exponentialScalar;
 
-        public RobotConfiguration(float flCoef, float frCoef, float blCoef, float brCoef, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
-            this.flCoef = flCoef;
-            this.frCoef = frCoef;
-            this.blCoef = blCoef;
-            this.brCoef = brCoef;
+        public static class OmniCalcComponents {
+            public WheelCoefficients hor, ver, rot;
+
+            public OmniCalcComponents(WheelCoefficients hor, WheelCoefficients ver, WheelCoefficients rot) {
+                this.hor = hor;
+                this.ver = ver;
+                this.rot = rot;
+            }
+        }
+
+        public static class WheelCoefficients {
+            public static WheelCoefficients W(float fl, float fr, float bl, float br) {
+                return new WheelCoefficients(fl, fr, bl, br);
+            }
+            public float fl, fr, bl, br;
+
+            public WheelCoefficients(float fl, float fr, float bl, float br) {
+                this.fl = fl;
+                this.fr = fr;
+                this.bl = bl;
+                this.br = br;
+            }
+        }
+
+        public RobotConfiguration(WheelCoefficients motorCoefficients, OmniCalcComponents omniComponents, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
+            this.motorCoefficients = motorCoefficients;
+            this.omniComponents = omniComponents;
             this.encoderTicksPerRotation = encoderTicksPerRotation;
             this.gearRatio = gearRatio;
             this.wheelDiameterCm = wheelDiameterCm;

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.auxilary;
 
 import static java.lang.Math.PI;
 
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.managers.FeatureManager;
@@ -74,11 +73,23 @@ public abstract class PaulMath extends FeatureManager {
         float h = Range.clip(horizontalPower, -1, 1);
         float r = Range.clip(rotationalPower, -1, 1);
 
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+
         // Motor powers of fl, fr, br, bl
-        // Motor powers used to be 0.4f for all motors other than fl
-        float[] vertical = {-v, -v, -v, -v};
-        float[] horizontal = {-h, h, -h, h};
-        float[] rotational = {-r, r, r, -r};
+        float[] vertical = {configuration.omniComponents.ver.fl * v,
+                            configuration.omniComponents.ver.fr * v,
+                            configuration.omniComponents.ver.br * v,
+                            configuration.omniComponents.ver.bl * v};
+
+        float[] horizontal = {configuration.omniComponents.hor.fl * h,
+                            configuration.omniComponents.hor.fr * h,
+                            configuration.omniComponents.hor.br * h,
+                            configuration.omniComponents.hor.bl * h};
+
+        float[] rotational = {configuration.omniComponents.rot.fl * r,
+                            configuration.omniComponents.rot.fr * r,
+                            configuration.omniComponents.rot.br * r,
+                            configuration.omniComponents.rot.bl * r};
 
         float[] sum = new float[4];
         for (int i = 0; i < 4; i++) {

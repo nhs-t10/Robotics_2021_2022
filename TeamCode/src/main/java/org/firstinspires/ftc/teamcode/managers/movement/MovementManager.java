@@ -58,7 +58,10 @@ public class MovementManager extends FeatureManager {
 
     public void driveBlue(float fl, float fr, float br, float bl) {
         RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
-        driveRaw(fl * configuration.flCoef, fr * configuration.frCoef, br * configuration.brCoef, bl * configuration.blCoef);
+        driveRaw(fl * configuration.motorCoefficients.fl,
+                fr * configuration.motorCoefficients.fr,
+                br * configuration.motorCoefficients.br,
+                bl * configuration.motorCoefficients.bl);
     }
 
     public void stopDrive() {
