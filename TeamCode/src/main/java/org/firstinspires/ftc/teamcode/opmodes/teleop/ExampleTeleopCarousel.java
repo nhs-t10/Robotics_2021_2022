@@ -53,8 +53,6 @@ public class ExampleTeleopCarousel extends OpMode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
         telemetry = telemetryManager;
 
-        ImuManager imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
-
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
@@ -74,9 +72,9 @@ public class ExampleTeleopCarousel extends OpMode {
 
         input.registerInput("drivingControls",
                 new MultiInputNode(
-                        new JoystickNode("left_stick_x"),
                         new JoystickNode("left_stick_y"),
-                        new JoystickNode("right_stick_x")
+                        new ScaleNode(new JoystickNode("right_stick_x"), -1),
+                        new ScaleNode(new JoystickNode("left_stick_x"), -1)
                 )
         );
         input.registerInput("precisionDriving",
@@ -100,36 +98,30 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("turnAround",
             new ButtonNode("right_stick_button")
         );
-
-        macroManager = new MacroManager(sensor, driver, telemetryManager, hands, imu, input);
-        macroManager.registerMacro("TurnAround", new TurnAround__macro_autoauto());
-        macroManager.registerMacro("SpinTaunt", new SpinTaunt__macro_autoauto());
     }
 
     @Override
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-//        if (input.getBool("precisionDriving") == true && precision == false){
-//            driver.downScale(0.5f);
-//            precision = true;
-//        }
-//        else if (input.getBool("precisionDriving") == true && precision == true){
-//            precision = true;
-//        }
-//        else if (input.getBool("precisionDriving") == false && precision == true){
-//            driver.upScale(0.5f);
-//            precision = false;
-//        }
-//        else {
-//            precision = false;
-//        }
+/*        if (input.getBool("precisionDriving") == true && precision == false){
+            driver.downScale(0.5f);
+            precision = true;
+        }
+        else if (input.getBool("precisionDriving") == true && precision == true){
+            precision = true;
+        }
+        else if (input.getBool("precisionDriving") == false && precision == true){
+            driver.upScale(0.5f);
+            precision = false;
+        }
+        else {
+            precision = false;
+       }*/
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("turnAround") == true) {
-            macroManager.runMacro("TurnAround");
         }
         if (input.getBool("spin") ==true) {
-            macroManager.runMacro("SpinTaunt");
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
