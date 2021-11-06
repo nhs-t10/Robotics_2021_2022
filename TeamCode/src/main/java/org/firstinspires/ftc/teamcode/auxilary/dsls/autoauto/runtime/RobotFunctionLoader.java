@@ -55,6 +55,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("driveRaw", new DriveRawFunction(manMovement));
             scope.put("driveBlue", new DriveBlueFunction(manMovement));
             scope.put("stopDrive", new StopDriveFunction(manMovement));
+            scope.put("driveOmni", new DriveOmniFunction(manMovement));
             scope.put("resetEncodersMovementManager", new ResetEncodersMovementManagerFunction(manMovement));
             scope.put("runToPosition", new RunToPositionFunction(manMovement));
             scope.put("runUsingEncodersMovementManager", new RunUsingEncodersMovementManagerFunction(manMovement));

@@ -115,7 +115,7 @@ public class FeatureManager {
     }
 
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
-            W(0.75f,0.75f,0.75f,-0.75f),
+            W(1,1,1,-1),
             new OmniCalcComponents(
                 W(-1f,1f,1f,-1f), //Horizontal omniCalc components
                 W(-1f,-1f,-1f,-1f), //Vertical omniCalc components
@@ -132,7 +132,7 @@ public class FeatureManager {
             ),
             0.03f, 1680, 1, 4, 0.7, 3f);
 
-    public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
+    public static final RobotConfiguration defaultConfiguration = bigBoyConfiguration;
 
 
     private static RobotConfiguration cachedConfiguration;

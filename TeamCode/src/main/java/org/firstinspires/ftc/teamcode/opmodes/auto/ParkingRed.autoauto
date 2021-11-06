@@ -1,0 +1,8 @@
+#init:
+    goto EnterWarehouse
+
+#EnterWarehouse:
+    driveOmni(0,0,0.6), after 3s goto Parking
+
+#parking:
+    driveOmni(0,0,0)

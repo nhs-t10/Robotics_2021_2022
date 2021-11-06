@@ -15,7 +15,7 @@ public class MovementManager extends FeatureManager {
     public DcMotor backRight;
     private ElapsedTime timer;
 
-    private static float scale = 1.0f;
+    private static float scale = 0.6f;
 
     /**
      * Create a MovementManager with four motors.
@@ -75,10 +75,10 @@ public class MovementManager extends FeatureManager {
         float[] sum = PaulMath.omniCalc(powers[0]*scale, powers[1]*scale, powers[2] * scale);
         driveBlue(sum[0], sum[1], sum[2], sum[3]);
     }
-//
-//    public void driveOmni(float v, float h, float r) {
-//        driveOmni(new float[] {v, h, r});
-//    }
+
+    public void driveOmni(float v, float h, float r) {
+        driveOmni(new float[] {v, h, r});
+    }
 
     public void driveOmniExponential(float[] powers) {
         float exponentialScalar = FeatureManager.getRobotConfiguration().exponentialScalar;
