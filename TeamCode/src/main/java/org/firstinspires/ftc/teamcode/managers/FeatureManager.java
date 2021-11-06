@@ -111,7 +111,7 @@ public class FeatureManager {
         }
     }
 
-    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(0.75f,0.75f,0.75f,-0.75f,
+    public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(1,1,1,-1,
             0.03f, 1680, 1, 8.9, 0.7, 3f);
 
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(1,1,-1,-1,

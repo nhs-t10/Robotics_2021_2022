@@ -88,6 +88,7 @@ public abstract class PaulMath extends FeatureManager {
         float highest = highestValue(sum);
         if (highest > 1) {
             sum = normalizeArray(sum);
+            return sum;
         }
         return sum;
     }

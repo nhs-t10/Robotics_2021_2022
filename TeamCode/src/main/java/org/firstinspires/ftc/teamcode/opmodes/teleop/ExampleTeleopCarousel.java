@@ -27,6 +27,8 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyImu;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 @TeleOp
 public class ExampleTeleopCarousel extends OpMode {
     private MovementManager driver;
@@ -36,15 +38,12 @@ public class ExampleTeleopCarousel extends OpMode {
     private ImuManager imu;
     private MacroManager macroManager;
     private boolean precision = false;
-
-    boolean dashing;
-
+    private boolean dashing = false;
 
     public DcMotor NewMotor(DcMotor motor, String name) {
         motor = hardwareMap.get(DcMotor.class, name);
         return motor;
     }
-
 
     @Override
     public void init() {
@@ -52,6 +51,8 @@ public class ExampleTeleopCarousel extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
         telemetry = telemetryManager;
+
+//        imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -67,7 +68,6 @@ public class ExampleTeleopCarousel extends OpMode {
                 new String[] {"Carousel"}
         );
 
-
         input = new InputManager(gamepad1, gamepad2);
 
         input.registerInput("drivingControls",
@@ -80,20 +80,23 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("precisionDriving",
                 new ButtonNode("b")
         );
+        input.registerInput("dashing",
+                new ButtonNode("x")
+        );
         input.registerInput("Carousel",
                 new ButtonNode("y")
         );
         input.registerInput("spin",
-                        new ButtonNode("dpad_up")
+                        new ButtonNode("dpadup")
         );
-        input.registerInput("Taunt1",
-                        new ButtonNode("dpad_left")
+        input.registerInput("taunt1",
+                        new ButtonNode("dpadleft")
         );
-        input.registerInput("Taunt2",
-                new ButtonNode("dpad_right")
+        input.registerInput("taunt2",
+                new ButtonNode("dpadright")
         );
-        input.registerInput("Taunt3",
-                new ButtonNode("dpad_down")
+        input.registerInput("taunt3",
+                new ButtonNode("dpaddown")
         );
         input.registerInput("turnAround",
             new ButtonNode("right_stick_button")
@@ -104,7 +107,7 @@ public class ExampleTeleopCarousel extends OpMode {
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-/*        if (input.getBool("precisionDriving") == true && precision == false){
+        if (input.getBool("precisionDriving") == true && precision == false){
             driver.downScale(0.5f);
             precision = true;
         }
@@ -117,7 +120,22 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         else {
             precision = false;
-       }*/
+        }
+
+        if (input.getBool("dashing") == true && dashing == false){
+            driver.upScale(0.4f);
+            dashing = true;
+        }
+        else if (input.getBool("precisionDriving") == true && dashing == true){
+            dashing = true;
+        }
+        else if (input.getBool("precisionDriving") == false && dashing == true){
+            driver.downScale(0.4f);
+            dashing = false;
+        }
+        else {
+            dashing = false;
+        }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("turnAround") == true) {
         }
@@ -129,6 +147,7 @@ public class ExampleTeleopCarousel extends OpMode {
         telemetry.addData("BL Power", driver.backRight.getPower());
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
+        telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.update();
     }
 
