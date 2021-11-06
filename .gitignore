@@ -98,3 +98,6 @@ lint/tmp/
 last-build-pixels.json
 .idea/misc.xml
 *.xml
+
+# liable to become very big very fast
+*.hprof
