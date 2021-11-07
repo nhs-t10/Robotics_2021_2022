@@ -122,9 +122,11 @@ function average(pixels) {
     var total = [0, 0, 0];
     for(var i = 0; i < pixels.length; i++) {
         for(var j = 0; j < pixels[i].length; j++) {
-            total[0] += pixels[i][j][0];
-            total[1] += pixels[i][j][1];
-            total[2] += pixels[i][j][2];
+            if(pixels[i][j]) {
+                total[0] += pixels[i][j][0];
+                total[1] += pixels[i][j][1];
+                total[2] += pixels[i][j][2];
+            }
         }
     }
     var pixelCount = pixels.length * pixels[0].length;
