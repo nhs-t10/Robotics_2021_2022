@@ -43,8 +43,6 @@ public class DummyHardwareMap extends HardwareMap {
         super(null); //`super(new DummyContext());` won't work bc tests remove the context class
     }
 
-    public Context appContext = new DummyContext();
-
     @Override
     public <T> T get(Class<? extends T> classOrInterface, String deviceName) {
         switch(classOrInterface.getSimpleName()) {

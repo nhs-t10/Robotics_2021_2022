@@ -1,9 +1,23 @@
 
+var pixelsToStripes = geometryGrapher((x,y,pixels) => x + y);
+var pixelsToStripesDown = geometryGrapher((x,y,pixels) => y - x);
+var pixelsToRadialSymmetry = geometryGrapher((x,y,pixels) => y * x);
+var pixelsToExponential = geometryGrapher((x,y,pixels) => Math.pow(y, x));
+var pixelsToBitwisey = geometryGrapher((x,y,pixels) => y | x);
+var pixelsToHorizontal = geometryGrapher((x,y,pixels) => x);
+var pixelsToVertical = geometryGrapher((x,y,pixels) => y);
+var pixelsToCircularIThink = geometryGrapher((x,y,pixels) => Math.sqrt(x*x + y*y));
+
 var strategies = [
     pixelsToMatrix,
     pixelsToStripes,
     pixelsToRadialSymmetry,
-    pixelsToNotSureWhatThisDoesButItsProbablyGood
+    pixelsToExponential,
+    pixelsToStripesDown,
+    pixelsToBitwisey,
+    pixelsToHorizontal,
+    pixelsToVertical,
+    pixelsToCircularIThink
 ]
 
 module.exports = randomStrategy;
@@ -20,56 +34,26 @@ function selectRandomStrategy() {
     return strategies[Math.floor(Math.random() * strategies.length)];
 }
 
-function pixelsToStripes(pixels) {
-    var direction = Math.random() > 0.5 ? 1 : -1;
-    
-    var width = pixels.length;
-    var height = pixels.length;
-    
-    var result = [];
-    
-    for(var i = 0; i < height; i++) {
-        var row = [];
-        for(var j = 0; j < width; j++) {
-            row.push(pixels[(i + direction*j) % pixels.length]);
+function geometryGrapher(geoCb) {
+    return function (pixels) {        
+        var width = pixels.length;
+        var height = pixels.length;
+        
+        var result = [];
+        
+        for(var i = 0; i < height; i++) {
+            var row = [];
+            for(var j = 0; j < width; j++) {
+                var pixIndex = geoCb(j, i, pixels);
+                pixIndex = Math.floor(Math.abs(pixIndex) % pixels.length);
+                
+                row.push(pixels[pixIndex] || pixels[0]);
+            }
+            result.push(row);
         }
-        result.push(row);
+        return result;
     }
-    return result;
 }
-
-function pixelsToRadialSymmetry(pixels) {
-    var width = pixels.length;
-    var height = pixels.length;
-    
-    var result = [];
-    
-    for(var i = 0; i < height; i++) {
-        var row = [];
-        for(var j = 0; j < width; j++) {
-            row.push(pixels[((i+1) * (j+1)) % pixels.length]);
-        }
-        result.push(row);
-    }
-    return result;
-}
-
-function pixelsToNotSureWhatThisDoesButItsProbablyGood(pixels) {
-    var width = pixels.length;
-    var height = pixels.length;
-    
-    var result = [];
-    
-    for(var i = 0; i < height; i++) {
-        var row = [];
-        for(var j = 0; j < width; j++) {
-            row.push(pixels[Math.pow(i, j) % pixels.length]);
-        }
-        result.push(row);
-    }
-    return result;
-}
-
 
 function pixelsToMatrix(pixels) {
     var width = Math.ceil(Math.sqrt(pixels.length));

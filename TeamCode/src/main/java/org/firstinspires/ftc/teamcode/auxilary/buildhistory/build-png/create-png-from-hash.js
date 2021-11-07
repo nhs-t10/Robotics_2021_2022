@@ -41,7 +41,7 @@ function makeSureMatrixIsSquare(matrix) {
         if(matrix[i].length != width) throw "Non-rectangular matrix!";
         
         for(var j = 0; j < width; j++) {
-            if(matrix[i][j].length != 3) throw "Non-pixel matrix element! " + matrix[i][j];
+            if(matrix[i][j] == undefined || matrix[i][j].length != 3) throw "Non-pixel matrix element! " + matrix[i][j];
         }
     }
 }
