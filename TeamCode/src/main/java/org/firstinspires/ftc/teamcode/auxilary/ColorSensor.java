@@ -74,7 +74,7 @@ public class ColorSensor extends Sensor {
 
     //Test if we're seeing gold
     public boolean isSpecial2() {
-        return PaulMath.delta(46 / 360, hsvValues[0]) < 0.075f && PaulMath.delta(0.27f, hsvValues[1]) < 0.075f && PaulMath.delta(0.23f, hsvValues[2]) < 0.075f;
+        return PaulMath.delta(46 / 360f, hsvValues[0]) < 0.075f && PaulMath.delta(0.27f, hsvValues[1]) < 0.075f && PaulMath.delta(0.23f, hsvValues[2]) < 0.075f;
     }
 
     @Override

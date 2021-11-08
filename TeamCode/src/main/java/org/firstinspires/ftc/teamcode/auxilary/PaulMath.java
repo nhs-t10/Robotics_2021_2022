@@ -188,12 +188,8 @@ public abstract class PaulMath extends FeatureManager {
 
         float difference = (targetBased360 - currentBased360);
 
-        if(FeatureManager.debug) FeatureManager.logger.log("diffraw " + difference);
-
         if(difference > 180) difference += -360;
         else if(difference < -180) difference += 360;
-
-        if(FeatureManager.debug) FeatureManager.logger.log("diffadded " + difference);
 
         if (Math.abs(difference) > 1) {
             //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
@@ -214,10 +210,8 @@ public abstract class PaulMath extends FeatureManager {
     public static float generalProportionalPID(float currentValue, float expectedValue, float Kp) {
         float difference = (expectedValue - currentValue);
 
-        if(FeatureManager.debug) FeatureManager.logger.log("diffraw " + difference);
-
-            //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
-            return Kp * difference;
+        //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
+        return Kp * difference;
     }
 
     /**

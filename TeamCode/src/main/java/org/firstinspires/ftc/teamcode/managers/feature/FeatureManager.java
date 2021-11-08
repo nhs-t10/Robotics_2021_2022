@@ -16,15 +16,7 @@ import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration
 public class FeatureManager {
     public static final Logger logger = new Logger();
 
-    public static boolean debug = false;
-
     public static boolean isOpModeRunning = false;
-
-    public static OpModeManager opModeManager;
-
-    public static void setOpModeManager(OpModeManager o) {
-        opModeManager = o;
-    }
 
     public static void setIsOpModeRunning(boolean b) {
         isOpModeRunning = b;
