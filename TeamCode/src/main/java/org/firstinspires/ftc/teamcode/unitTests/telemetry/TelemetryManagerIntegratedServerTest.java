@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.BodyParser;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.ControlCodes;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
-import org.firstinspires.ftc.teamcode.managers.telemetry.server.ServerFiles;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
@@ -16,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;

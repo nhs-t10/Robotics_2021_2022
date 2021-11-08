@@ -1,16 +1,20 @@
-package org.firstinspires.ftc.teamcode.managers;
+package org.firstinspires.ftc.teamcode.managers.feature;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager.RobotConfiguration.OmniCalcComponents;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.OmniCalcComponents;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.firstinspires.ftc.teamcode.managers.FeatureManager.RobotConfiguration.WheelCoefficients.W;
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.W;
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.hor;
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.rot;
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.ver;
 
 public class FeatureManager {
     public static final Logger logger = new Logger();
@@ -117,18 +121,18 @@ public class FeatureManager {
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
             W(1,1,1,-1),
             new OmniCalcComponents(
-                W(-1f,1f,1f,-1f), //Horizontal omniCalc components
-                W(-1f,-1f,-1f,-1f), //Vertical omniCalc components
-                W(-1f, 1f, -1f, 1f) //Rotational omniCalc components
+                hor   (-1f,1f,1f,-1f),
+                ver   (-1f,-1f,-1f,-1f),
+                rot   (-1f, 1f, -1f, 1f)
             ),
             0.03f, 1680, 1, 8.9, 0.7, 3f);
 
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
             W(1, 1, -1, -1),
             new OmniCalcComponents(
-                    W(-1f,1f,1f,-1f), //Horizontal omniCalc components
-                    W(-1f,-1f,-1f,-1f), //Vertical omniCalc components
-                    W(-1f, 1f, -1f, 1f) //Rotational omniCalc components
+                hor   (-1f,1f,1f,-1f),
+                ver   (-1f,-1f,-1f,-1f),
+                rot   (-1f, 1f, -1f, 1f)
             ),
             0.03f, 1680, 1, 4, 0.7, 3f);
 
@@ -178,77 +182,5 @@ public class FeatureManager {
                 break;
         }
         return cachedConfiguration;
-    }
-
-    public static class RobotConfiguration {
-        public final static String fileName = "configuration";
-        public final static String bigBoyFileContent = "bigBoy";
-        public final static String littleBoyFileContent = "littleBoy";
-
-        public WheelCoefficients motorCoefficients;
-
-        public OmniCalcComponents omniComponents;
-
-        /**
-         * The `p` coefficient of a PID controller. This should not be used, since we want to be able to use different coefficients in different situations.
-         */
-        @Deprecated
-        public float pidPCoefficient;
-        /**
-         * How many "ticks" quantify a rotation of the motor.
-         */
-        public double encoderTicksPerRotation;
-        /**
-         * The gear ratio of the main drive motors.
-         */
-        public double gearRatio;
-        /**
-         * The diameter of the main drive wheels, in centimeters
-         */
-        public double wheelDiameterCm;
-        /**
-         * A coefficient indicating how much sliding we can expect of the wheels. 1 is perfect traction; 0 is no traction at all.
-         */
-        public double slip;
-        /**
-         * The circumference of the main drive wheels, in centimeters
-         */
-        public double wheelCircumference;
-        public float exponentialScalar;
-
-        public static class OmniCalcComponents {
-            public WheelCoefficients hor, ver, rot;
-
-            public OmniCalcComponents(WheelCoefficients hor, WheelCoefficients ver, WheelCoefficients rot) {
-                this.hor = hor;
-                this.ver = ver;
-                this.rot = rot;
-            }
-        }
-
-        public static class WheelCoefficients {
-            public static WheelCoefficients W(float fl, float fr, float bl, float br) {
-                return new WheelCoefficients(fl, fr, bl, br);
-            }
-            public float fl, fr, bl, br;
-
-            public WheelCoefficients(float fl, float fr, float bl, float br) {
-                this.fl = fl;
-                this.fr = fr;
-                this.bl = bl;
-                this.br = br;
-            }
-        }
-
-        public RobotConfiguration(WheelCoefficients motorCoefficients, OmniCalcComponents omniComponents, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
-            this.motorCoefficients = motorCoefficients;
-            this.omniComponents = omniComponents;
-            this.encoderTicksPerRotation = encoderTicksPerRotation;
-            this.gearRatio = gearRatio;
-            this.wheelDiameterCm = wheelDiameterCm;
-            this.slip = slip;
-            this.wheelCircumference = Math.PI * wheelDiameterCm;
-            this.exponentialScalar = exponentialScalar;
-        }
     }
 }

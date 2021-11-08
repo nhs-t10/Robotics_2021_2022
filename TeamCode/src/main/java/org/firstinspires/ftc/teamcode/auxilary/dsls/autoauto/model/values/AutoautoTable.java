@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 import java.util.HashMap;
 

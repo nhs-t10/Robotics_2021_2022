@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class URIEncoding {
     public static String decode(String str) {

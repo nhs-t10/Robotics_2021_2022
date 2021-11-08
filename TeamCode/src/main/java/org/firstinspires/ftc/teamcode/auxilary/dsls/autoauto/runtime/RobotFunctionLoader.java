@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
-    import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+    import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
     import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions.*;
     import java.util.ArrayList;
     
     public class RobotFunctionLoader {
     
         public static void loadFunctions(AutoautoRuntimeVariableScope scope, FeatureManager... managers) {
-            org.firstinspires.ftc.teamcode.managers.FeatureManager manFeature = null;
+            org.firstinspires.ftc.teamcode.managers.feature.FeatureManager manFeature = null;
             org.firstinspires.ftc.teamcode.managers.imu.ImuManager manImu = null;
             org.firstinspires.ftc.teamcode.managers.input.InputManager manInput = null;
             org.firstinspires.ftc.teamcode.managers.macro.MacroManager manMacro = null;
@@ -17,7 +17,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             org.firstinspires.ftc.teamcode.managers.sensor.SensorManager manSensor = null;
             org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager manTelemetry = null;
             for(FeatureManager f : managers) {
-                if(f instanceof org.firstinspires.ftc.teamcode.managers.FeatureManager) manFeature = (org.firstinspires.ftc.teamcode.managers.FeatureManager)f;
+                if(f instanceof org.firstinspires.ftc.teamcode.managers.feature.FeatureManager) manFeature = (org.firstinspires.ftc.teamcode.managers.feature.FeatureManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.imu.ImuManager) manImu = (org.firstinspires.ftc.teamcode.managers.imu.ImuManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.input.InputManager) manInput = (org.firstinspires.ftc.teamcode.managers.input.InputManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.macro.MacroManager) manMacro = (org.firstinspires.ftc.teamcode.managers.macro.MacroManager)f;

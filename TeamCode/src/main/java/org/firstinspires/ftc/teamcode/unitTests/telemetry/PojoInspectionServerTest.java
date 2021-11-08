@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.ControlCodes;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
-import org.hamcrest.core.StringContains;
 import org.junit.Test;
 
 import java.io.BufferedReader;

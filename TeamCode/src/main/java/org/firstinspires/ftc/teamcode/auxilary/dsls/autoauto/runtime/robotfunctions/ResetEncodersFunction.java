@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunct
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class ResetEncodersFunction extends NativeRobotFunction {
     private org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager manager;

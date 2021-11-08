@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 public class DefunFunction extends NativeFunction {
     public String name = "defun";

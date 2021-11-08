@@ -4,7 +4,8 @@ import static java.lang.Math.PI;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.macro.Macro;
 
 public abstract class AutoautoMacro extends Macro {

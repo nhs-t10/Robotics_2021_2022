@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.managers.macro;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.HashMap;
-
-import javax.crypto.Mac;
 
 /**
  * Manages autoauto-based macros

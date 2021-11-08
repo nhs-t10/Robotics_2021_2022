@@ -1,12 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field;
 
-import com.qualcomm.robotcore.robocol.RobocolParsable;
-
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

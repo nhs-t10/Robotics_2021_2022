@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunct
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetupException;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class GetRobotNameFunction extends NativeRobotFunction {
-    private org.firstinspires.ftc.teamcode.managers.FeatureManager manager;
+    private org.firstinspires.ftc.teamcode.managers.feature.FeatureManager manager;
 
     public GetRobotNameFunction(FeatureManager manager) {
-        this.manager = (org.firstinspires.ftc.teamcode.managers.FeatureManager)manager;
+        this.manager = (org.firstinspires.ftc.teamcode.managers.feature.FeatureManager)manager;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.field;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 
 import java.lang.reflect.Field;
 

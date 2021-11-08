@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 

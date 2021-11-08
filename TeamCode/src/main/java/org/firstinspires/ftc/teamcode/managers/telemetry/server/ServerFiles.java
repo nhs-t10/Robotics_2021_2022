@@ -4,15 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
 
 public class ServerFiles {
     public static String indexDotHtml;

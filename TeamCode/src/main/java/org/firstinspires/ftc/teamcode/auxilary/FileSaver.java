@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.auxilary;
 import android.app.Application;
 import android.content.Context;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FileSaver {
     private String filePathname;
