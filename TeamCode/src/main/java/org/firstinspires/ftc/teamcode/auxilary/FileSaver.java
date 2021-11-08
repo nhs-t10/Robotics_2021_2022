@@ -31,20 +31,34 @@ public class FileSaver {
 
         String thisLine;
         BufferedReader textFile;
-        ArrayList<String> keyframes = new ArrayList<String>();
+        ArrayList<String> lines = new ArrayList<String>();
 
-        try {
-            textFile = new BufferedReader(new InputStreamReader(new FileInputStream(filePathname)));
-            BufferedReader br = new BufferedReader(textFile);
+        try (BufferedReader br = new BufferedReader(new BufferedReader(new InputStreamReader(new FileInputStream(filePathname))))) {
 
             while ((thisLine = br.readLine()) != null) {
-                keyframes.add(thisLine);
+                lines.add(thisLine);
             }
         } catch (Throwable e) {
             FeatureManager.logger.log(e.toString());
             for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
         }
-        return keyframes;
+        return lines;
+    }
+
+    public String readContent() {
+
+        StringBuilder result = new StringBuilder();
+
+        try(BufferedReader textFile = new BufferedReader(new InputStreamReader(new FileInputStream(filePathname)))) {
+            int nextChar;
+            while ((nextChar = textFile.read()) != -1) {
+                result.append((char)nextChar);
+            }
+        } catch (Throwable e) {
+            FeatureManager.logger.log(e.toString());
+            for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
+        }
+        return result.toString();
     }
 
     public void deleteFile() {

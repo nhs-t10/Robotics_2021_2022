@@ -9,13 +9,13 @@ public class WheelCoefficients {
     public static WheelCoefficients W(float fl, float fr, float bl, float br) {
         return new WheelCoefficients(fl, fr, bl, br);
     }
-    public static WheelCoefficients hor(float fl, float fr, float bl, float br) {
+    public static WheelCoefficients horizontal(float fl, float fr, float bl, float br) {
         return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_HOR);
     }
-    public static WheelCoefficients rot(float fl, float fr, float bl, float br) {
+    public static WheelCoefficients rotational(float fl, float fr, float bl, float br) {
         return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_ROT);
     }
-    public static WheelCoefficients ver(float fl, float fr, float bl, float br) {
+    public static WheelCoefficients vertical(float fl, float fr, float bl, float br) {
         return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_VER);
     }
 
