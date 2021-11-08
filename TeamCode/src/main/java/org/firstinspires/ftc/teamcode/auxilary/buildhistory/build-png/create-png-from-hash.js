@@ -13,11 +13,11 @@ var PHI = 1.61803399;
 var cacheFile = path.join(__dirname, "last-build-pixels.json");
 if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"}));
 
-module.exports = function(buildNumber, hash) {
+module.exports = function(buildNumber, hash, pixelStrategySeed) {
     var pixels = getHexPixels(hash);
     var normalizedPixels = normalizePixels(pixels);
 
-    var matrix = pixelsToMatrix(normalizedPixels);
+    var matrix = pixelsToMatrix(normalizedPixels, pixelStrategySeed);
     
     if(matrix.length == 0) return null;
     
@@ -27,8 +27,16 @@ module.exports = function(buildNumber, hash) {
         console.warn(e);
         return null;
     }
+
+    var naturalMatrixWidth = matrix[0].length;
+    var renderedWidth = naturalMatrixWidth;
+
+    if(naturalMatrixWidth > 1024) renderedWidth = 1024;
+    if(naturalMatrixWidth < 128) renderedWidth = 128;
     
-    var png = new PngFile(matrix, 128);
+    console.log(naturalMatrixWidth, renderedWidth);
+    
+    var png = new PngFile(matrix, renderedWidth);
     
     var nonzeroBuildAddress = savePng(buildNumber, png.toBuffer());
     

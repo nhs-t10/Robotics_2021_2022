@@ -1,37 +1,46 @@
-
-var pixelsToStripes = geometryGrapher((x,y,pixels) => x + y);
-var pixelsToStripesDown = geometryGrapher((x,y,pixels) => y - x);
-var pixelsToRadialSymmetry = geometryGrapher((x,y,pixels) => y * x);
-var pixelsToExponential = geometryGrapher((x,y,pixels) => Math.pow(y, x));
-var pixelsToBitwisey = geometryGrapher((x,y,pixels) => y | x);
-var pixelsToHorizontal = geometryGrapher((x,y,pixels) => x);
-var pixelsToVertical = geometryGrapher((x,y,pixels) => y);
-var pixelsToCircularIThink = geometryGrapher((x,y,pixels) => Math.sqrt(x*x + y*y));
-
 var strategies = [
     pixelsToMatrix,
-    pixelsToStripes,
-    pixelsToRadialSymmetry,
-    pixelsToExponential,
-    pixelsToStripesDown,
-    pixelsToBitwisey,
-    pixelsToHorizontal,
-    pixelsToVertical,
-    pixelsToCircularIThink
+    geometryGrapher((x,y,pixels) => x + y),
+    geometryGrapher((x,y,pixels) => y - x),
+    geometryGrapher((x,y,pixels) => Math.max(y * x, y, x)),
+    geometryGrapher((x,y,pixels) => x),
+    geometryGrapher((x,y,pixels) => y),
+    geometryGrapher((x,y,pixels) => Math.sqrt(x*x + y*y)),
+    geometryGrapher((x,y,pixels) => pixels.length * (Math.sin(x) + Math.sin(y))),
+    geometryGrapher((x,y,pixels) => (Math.atan2(x - pixels.length/2, y - pixels.length/2) / (Math.PI)) * pixels.length ),
+];
+
+var largeStrategies = [
+    geometryGrapher((x,y,pixels) => y | x),
+    geometryGrapher((x,y,pixels) => y & x),
+    geometryGrapher((x,y,pixels) => y ^ x),
+    geometryGrapher((x,y,pixels) => y / x),
+    geometryGrapher((x,y,pixels) => x / y),
+    geometryGrapher((x,y,pixels) => y % x),
+    geometryGrapher((x,y,pixels) => x % y),
+    geometryGrapher((x,y,pixels) => (Math.atan2(x + pixels.length/2, y + pixels.length/2) / (Math.PI)) * pixels.length ),
 ]
 
 module.exports = randomStrategy;
 
-function randomStrategy(pixels) {
-    var matrix = selectRandomStrategy(pixels)(pixels);
+function randomStrategy(pixels, strategySeed) {
+    
+    var matrix = selectRandomStrategy(strategySeed, pixels.length)(pixels);
     
     //santiy check to make sure it's always a matrix, even when there's no delta
     if(!matrix) return [];
     else return matrix;
 }
 
-function selectRandomStrategy() {
-    return strategies[Math.floor(Math.random() * strategies.length)];
+function selectRandomStrategy(seed, pixels) {
+    var allowedStrategies = largeStrategies;
+    
+    if(pixels.length <= 25) allowedStrategies = strategies.concat(largeStrategies);
+
+    if(seed === undefined) seed = Math.random() * allowedStrategies.length;
+    var seedIndex = Math.floor(seed % allowedStrategies.length)
+
+    return allowedStrategies[seedIndex];
 }
 
 function geometryGrapher(geoCb) {
