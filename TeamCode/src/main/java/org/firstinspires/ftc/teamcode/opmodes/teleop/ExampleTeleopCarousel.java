@@ -67,8 +67,8 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new ScaleNode(new JoystickNode("right_stick_x"), -1),
-                        new ScaleNode(new JoystickNode("left_stick_x"), -1)
+                        new JoystickNode("left_stick_x"),
+                        new JoystickNode("right_stick_x")
                 )
         );
         input.registerInput("precisionDriving",
