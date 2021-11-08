@@ -9,9 +9,9 @@ public class OmniCalcComponents {
         //assemble into an array for directive-checking
         WheelCoefficients[] coefs = new WheelCoefficients[] {h, v, r};
 
-        //fail-safe: if non-directive'd coefs are given, then it'll use HVR to enter them by order.
-        this.hor = coefs[0];
-        this.ver = coefs[1];
+        //fail-safe: if non-directive'd coefs are given, then it'll use VHR to enter them by order.
+        this.ver = coefs[0];
+        this.hor = coefs[1];
         this.rot = coefs[2];
 
         for(WheelCoefficients c : coefs) {
