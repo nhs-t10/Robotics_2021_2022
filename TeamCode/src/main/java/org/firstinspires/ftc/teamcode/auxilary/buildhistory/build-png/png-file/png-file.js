@@ -76,7 +76,7 @@ module.exports = function PngFile(_pixels, width) {
                     else if(filterType == 4) predicted = paeth(predictedBytes.a, predictedBytes.b, predictedBytes.c);
 
                     var delta = pixels[i][j][k] - predicted;
-                    var byteDelta = (delta + 256) % 256;
+                    var byteDelta = (delta + bitDepthMax) % bitDepthMax;
                     line.push(byteDelta);
                 }
             }

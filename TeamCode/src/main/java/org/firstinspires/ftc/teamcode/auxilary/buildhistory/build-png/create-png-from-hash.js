@@ -71,7 +71,7 @@ function normalizePixels(pixels) {
     
     var scaledPixels = hsvPixels.map((x,i,a)=>[
         nextPhiHue(x[0], a[i - 1], a[i - 2]),
-        0.5 + (x[1] - 0.5) / 2,
+        0.25 + (Math.sqrt(x[1]) * (1 / 0.75)),
         1 - scaledBrightnesses[i]]);
     
     var rgbScaled = scaledPixels.map(x=>HSVtoRGB(x[0], x[1], x[2]));
@@ -181,9 +181,11 @@ function HSVtoRGB(h, s, v) {
 }
 
 function pixelToHex(pixel) {
-    console.log(pixel);
     var hex = pixel.map(x=>{
-        var s = Math.round(x).toString(16);
+        var normAmount = (x + 256) % 256;
+        
+        var s = Math.round(normAmount).toString(16);
+        
         if(s.length < 2) return "0" + s;
         else return s.substring(0,2);
     }).join("");
