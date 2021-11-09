@@ -7,7 +7,7 @@ var makePhoto = require("./create-png-from-hash.js");
 
 var now = new Date().toISOString().replace(/[^\d-]/g, "-")
 
-var randomPixels = "b8336ac490d1acacdeabdafcf9f7f1"; //createRandomHash();
+var randomPixels = createRandomHash();
 
 for(var i = 0; i < 18; i++) {
     makePhoto("test-" + now + "-" + i, randomPixels, i);

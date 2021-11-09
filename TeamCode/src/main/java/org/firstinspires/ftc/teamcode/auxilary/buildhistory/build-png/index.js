@@ -9,12 +9,16 @@ var deltaHashDirectory = require("./delta-hash-directory.js");
 
 module.exports = function(buildNumber, directory, ignored) {
     var hexHash = deltaHashDirectory(directory, ignored);
-    var nonzeroBuildAddress = pngFromHash(buildNumber, hexHash.diff) || hexHash.oldHash.p;
+    var nonzeroBuildAddress = pngFromHash(buildNumber, hexHash.diff) || {address: hexHash.oldHash.p, colors: ""};
 
     fs.writeFileSync(cacheFile, JSON.stringify({
         c: hexHash.hash,
-        p: nonzeroBuildAddress
+        p: nonzeroBuildAddress.address
     }));   
     
-    return nonzeroBuildAddress;
+    return {
+        imageAddress: nonzeroBuildAddress.address,
+        colors: nonzeroBuildAddress.colors,
+        perceptualDiff: hexHash.diff
+    };
 }

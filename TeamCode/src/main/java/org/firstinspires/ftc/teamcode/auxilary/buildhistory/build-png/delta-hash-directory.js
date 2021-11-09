@@ -66,8 +66,16 @@ function hexDiff(a, b) {
         var digit = +('0x' + a[i]);
         
         var delta = digit - counterNumber;
-        
-        if(delta != 0) res += Math.abs(delta).toString(16);
+
+        if(delta != 0) {
+            //convert a negative delta to an unsigned 16-bit delta
+            while(delta < 0) delta += 0xff_ff;
+            if(delta >= 0xff_ff) delta %= 0xff_ff;
+
+            var hexString = (delta & 0xff).toString(16);
+
+            res += hexString;
+        }
     }
     return res;
 }

@@ -40,7 +40,10 @@ module.exports = function(buildNumber, hash, pixelStrategySeed) {
     
     var nonzeroBuildAddress = savePng(buildNumber, png.toBuffer());
     
-    return nonzeroBuildAddress;
+    return {
+        address: nonzeroBuildAddress,
+        colors: normalizedPixels.map(x=>pixelToHex(x)).join(",")
+    };
 };
 
 function makeSureMatrixIsSquare(matrix) {
@@ -175,4 +178,15 @@ function HSVtoRGB(h, s, v) {
         Math.round(g * 255),
         Math.round(b * 255)
     ];
+}
+
+function pixelToHex(pixel) {
+    console.log(pixel);
+    var hex = pixel.map(x=>{
+        var s = Math.round(x).toString(16);
+        if(s.length < 2) return "0" + s;
+        else return s.substring(0,2);
+    }).join("");
+
+    return "#" + hex;
 }
