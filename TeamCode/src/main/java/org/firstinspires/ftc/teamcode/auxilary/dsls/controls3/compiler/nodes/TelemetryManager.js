@@ -1,7 +1,7 @@
 module.exports = function(ast, inputs, myName, genNonce, javaImports, methodSources, globals, genNonceGlobal, inits) {
 
     javaImports.push("org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager");
-    javaImports.push("org.firstinspires.ftc.teamcode.managers.FeatureManager");
+    javaImports.push("org.firstinspires.ftc.teamcode.managers.feature.FeatureManager");
 
     inits.push("FeatureManager.setIsOpModeRunning(true);");
     inits.push("telemetry = new TelemetryManager(telemetry, this);");

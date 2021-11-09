@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.FunctionCall;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class FunctionCallStatement extends Statement {

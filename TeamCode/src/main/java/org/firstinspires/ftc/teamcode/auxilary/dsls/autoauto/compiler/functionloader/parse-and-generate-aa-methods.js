@@ -11,7 +11,14 @@ var astTools = require("./javaparser/ast-tools.js");
 var processTemplate = require("./template-render.js");
 
 module.exports = function(javaSource, preexistingNames) {
-    var ast = parser.parse(javaSource);
+    try {
+        var ast = parser.parse(javaSource);
+    } catch(e) {
+        var classDeclarationIndex = javaSource.indexOf("public class");
+        var classDeclarationIndexEnd = javaSource.indexOf("\n", classDeclarationIndex)
+        throw "Error parsing java source code! Make sure that it's correct: " + javaSource.substring(classDeclarationIndex,classDeclarationIndexEnd);
+    }
+
     var primaryType = ast.types.find(x=>x.modifiers.find(y=>y.keyword == "public"));
     if(!primaryType) throw "No public type in manager!";
     

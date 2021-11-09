@@ -76,7 +76,7 @@ module.exports = function PngFile(_pixels, width) {
                     else if(filterType == 4) predicted = paeth(predictedBytes.a, predictedBytes.b, predictedBytes.c);
 
                     var delta = pixels[i][j][k] - predicted;
-                    var byteDelta = (delta + 256) % 256;
+                    var byteDelta = (delta + bitDepthMax) % bitDepthMax;
                     line.push(byteDelta);
                 }
             }
@@ -122,9 +122,11 @@ function average(pixels) {
     var total = [0, 0, 0];
     for(var i = 0; i < pixels.length; i++) {
         for(var j = 0; j < pixels[i].length; j++) {
-            total[0] += pixels[i][j][0];
-            total[1] += pixels[i][j][1];
-            total[2] += pixels[i][j][2];
+            if(pixels[i][j]) {
+                total[0] += pixels[i][j][0];
+                total[1] += pixels[i][j][1];
+                total[2] += pixels[i][j][2];
+            }
         }
     }
     var pixelCount = pixels.length * pixels[0].length;

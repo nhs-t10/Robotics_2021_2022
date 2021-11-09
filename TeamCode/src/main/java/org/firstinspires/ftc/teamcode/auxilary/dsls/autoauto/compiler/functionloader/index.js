@@ -85,7 +85,7 @@ function loadManagersFromFolder(folder) {
 
         if (subfile.isDirectory()) {
             results = results.concat(loadManagersFromFolder(path.resolve(folder, subfile.name)));
-        } else if (subfile.isFile() && subfile.name.endsWith("Manager.java")) {
+        } else if (subfile.isFile() && (subfile.name.endsWith("Manager.java") || subfile.name == "PaulMath.java")) {
             results.push(path.resolve(folder, subfile.name));
         }
     }

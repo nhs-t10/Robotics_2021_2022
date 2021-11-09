@@ -3,12 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.__compiledautoauto.SpinTaunt__macro_autoauto;
-import org.firstinspires.ftc.teamcode.__compiledautoauto.Testmacro__macro_autoauto;
-import org.firstinspires.ftc.teamcode.__compiledautoauto.TurnAround__macro_autoauto;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
@@ -16,14 +12,12 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
-import org.firstinspires.ftc.teamcode.managers.macro.MacroRunnerThread;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyImu;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
@@ -73,8 +67,8 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new ScaleNode(new JoystickNode("right_stick_x"), -1),
-                        new ScaleNode(new JoystickNode("left_stick_x"), -1)
+                        new JoystickNode("left_stick_x"),
+                        new JoystickNode("right_stick_x")
                 )
         );
         input.registerInput("precisionDriving",

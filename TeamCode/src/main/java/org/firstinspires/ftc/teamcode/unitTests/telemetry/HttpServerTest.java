@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.BodyParser;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Headers;

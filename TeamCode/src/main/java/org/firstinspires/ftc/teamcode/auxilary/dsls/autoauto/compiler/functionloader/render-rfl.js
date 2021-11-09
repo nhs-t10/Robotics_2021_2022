@@ -1,7 +1,7 @@
 module.exports = function(loadFunctionsSrc, margs) {
     return `package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
-    import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+    import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
     import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions.*;
     import java.util.ArrayList;
     

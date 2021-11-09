@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.unitTests.macros;
 
 import org.firstinspires.ftc.teamcode.__compiledautoauto.Testmacro__macro_autoauto;
 import org.firstinspires.ftc.teamcode.auxilary.Sensor;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;

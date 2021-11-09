@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.auxilary;
 import android.app.Application;
 import android.content.Context;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,11 +12,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FileSaver {
+    private String filePathname;
     private Context context;
     public String fileName;
 
@@ -25,36 +24,51 @@ public class FileSaver {
             this.context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
         } catch (Throwable ignored) {}
         this.fileName = _fileName;
+        this.filePathname = context.getExternalFilesDir(null).getPath() + "/" + fileName;
     }
 
     public ArrayList<String> readLines() {
 
         String thisLine;
         BufferedReader textFile;
-        ArrayList<String> keyframes = new ArrayList<String>();
+        ArrayList<String> lines = new ArrayList<String>();
 
-        try {
-            textFile = new BufferedReader(new InputStreamReader(new FileInputStream(context.getCacheDir().getPath() + "/" + fileName)));
-            BufferedReader br = new BufferedReader(textFile);
+        try (BufferedReader br = new BufferedReader(new BufferedReader(new InputStreamReader(new FileInputStream(filePathname))))) {
 
             while ((thisLine = br.readLine()) != null) {
-                keyframes.add(thisLine);
+                lines.add(thisLine);
             }
         } catch (Throwable e) {
             FeatureManager.logger.log(e.toString());
             for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
         }
-        return keyframes;
+        return lines;
+    }
+
+    public String readContent() {
+
+        StringBuilder result = new StringBuilder();
+
+        try(BufferedReader textFile = new BufferedReader(new InputStreamReader(new FileInputStream(filePathname)))) {
+            int nextChar;
+            while ((nextChar = textFile.read()) != -1) {
+                result.append((char)nextChar);
+            }
+        } catch (Throwable e) {
+            FeatureManager.logger.log(e.toString());
+            for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
+        }
+        return result.toString();
     }
 
     public void deleteFile() {
-        File file = new File(context.getCacheDir().getPath() + "/" + fileName);
+        File file = new File(filePathname);
         file.delete();
     }
 
     public void overwriteFile(String newContent) {
         try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(context.getExternalFilesDir(null).getPath() + "/" + fileName));
+            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname));
             output.write(newContent);
             output.close();
         } catch (Throwable e) {
@@ -65,7 +79,7 @@ public class FileSaver {
 
     public void appendLine(String line) {
         try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(context.getExternalFilesDir(null).getPath() + "/" + fileName, true));
+            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname, true));
             output.newLine();
             output.write(line);
             output.close();

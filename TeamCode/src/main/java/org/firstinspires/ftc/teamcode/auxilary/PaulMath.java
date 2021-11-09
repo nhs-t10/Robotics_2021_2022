@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.auxilary;
 
 import static java.lang.Math.PI;
 
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 import java.util.ArrayList;
 
@@ -74,11 +74,23 @@ public abstract class PaulMath extends FeatureManager {
         float h = Range.clip(horizontalPower, -1, 1);
         float r = Range.clip(rotationalPower, -1, 1);
 
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+
         // Motor powers of fl, fr, br, bl
-        // Motor powers used to be 0.4f for all motors other than fl
-        float[] vertical = {-v, -v, -v, -v};
-        float[] horizontal = {-h, h, -h, h};
-        float[] rotational = {-r, r, r, -r};
+        float[] vertical = {configuration.omniComponents.ver.fl * v,
+                            configuration.omniComponents.ver.fr * v,
+                            configuration.omniComponents.ver.br * v,
+                            configuration.omniComponents.ver.bl * v};
+
+        float[] horizontal = {configuration.omniComponents.hor.fl * h,
+                            configuration.omniComponents.hor.fr * h,
+                            configuration.omniComponents.hor.br * h,
+                            configuration.omniComponents.hor.bl * h};
+
+        float[] rotational = {configuration.omniComponents.rot.fl * r,
+                            configuration.omniComponents.rot.fr * r,
+                            configuration.omniComponents.rot.br * r,
+                            configuration.omniComponents.rot.bl * r};
 
         float[] sum = new float[4];
         for (int i = 0; i < 4; i++) {
@@ -176,12 +188,8 @@ public abstract class PaulMath extends FeatureManager {
 
         float difference = (targetBased360 - currentBased360);
 
-        if(FeatureManager.debug) FeatureManager.logger.log("diffraw " + difference);
-
         if(difference > 180) difference += -360;
         else if(difference < -180) difference += 360;
-
-        if(FeatureManager.debug) FeatureManager.logger.log("diffadded " + difference);
 
         if (Math.abs(difference) > 1) {
             //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
@@ -202,10 +210,8 @@ public abstract class PaulMath extends FeatureManager {
     public static float generalProportionalPID(float currentValue, float expectedValue, float Kp) {
         float difference = (expectedValue - currentValue);
 
-        if(FeatureManager.debug) FeatureManager.logger.log("diffraw " + difference);
-
-            //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
-            return Kp * difference;
+        //abs val then multiply by sign of difference; easier than two ifs for positive clip and negative clip
+        return Kp * difference;
     }
 
     /**

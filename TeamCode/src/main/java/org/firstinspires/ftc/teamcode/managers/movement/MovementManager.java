@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.managers.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 public class MovementManager extends FeatureManager {
 
@@ -58,7 +59,10 @@ public class MovementManager extends FeatureManager {
 
     public void driveBlue(float fl, float fr, float br, float bl) {
         RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
-        driveRaw(fl * configuration.flCoef, fr * configuration.frCoef, br * configuration.brCoef, bl * configuration.blCoef);
+        driveRaw(fl * configuration.motorCoefficients.fl,
+                fr * configuration.motorCoefficients.fr,
+                br * configuration.motorCoefficients.br,
+                bl * configuration.motorCoefficients.bl);
     }
 
     public void stopDrive() {
