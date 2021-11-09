@@ -37,7 +37,7 @@ function hashBuffer(buffer) {
     var buckets = [];
     
     //fill all the buckets with zeros
-    for(var i = 0; i <= 0xff; i++) buckets.push(0);
+    for(var i = 0; i < 128; i++) buckets.push(0);
     
     for(var i = 0; i < buffer.length; i++) {
         var item = buffer[i];
