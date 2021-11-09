@@ -1,29 +1,27 @@
 var strategies = [
     pixelsToMatrix,
-    geometryGrapher((x,y,pixels) => x + y),
-    geometryGrapher((x,y,pixels) => y - x),
-    geometryGrapher((x,y,pixels) => Math.max(y * x, y, x)),
-    geometryGrapher((x,y,pixels) => x),
-    geometryGrapher((x,y,pixels) => y),
-    geometryGrapher((x,y,pixels) => Math.sqrt(x*x + y*y)),
-    geometryGrapher((x,y,pixels) => pixels.length * (Math.sin(x) + Math.sin(y))),
-    geometryGrapher((x,y,pixels) => (Math.atan2(x - pixels.length/2, y - pixels.length/2) / (Math.PI)) * pixels.length ),
-];
-
-var largeStrategies = [
-    geometryGrapher((x,y,pixels) => y | x),
-    geometryGrapher((x,y,pixels) => y & x),
-    geometryGrapher((x,y,pixels) => y ^ x),
-    geometryGrapher((x,y,pixels) => y / x),
-    geometryGrapher((x,y,pixels) => x / y),
-    geometryGrapher((x,y,pixels) => y % x),
-    geometryGrapher((x,y,pixels) => x % y),
-    geometryGrapher((x,y,pixels) => (Math.atan2(x + pixels.length/2, y + pixels.length/2) / (Math.PI)) * pixels.length ),
+    geometryGrapher((x,y) => x + y),
+    geometryGrapher((x,y) => y - x),
+    geometryGrapher((x,y) => Math.max(y * x, y, x)),
+    geometryGrapher((x,y) => x),
+    geometryGrapher((x,y) => y),
+    geometryGrapher((x,y) => Math.sqrt(x*x + y*y)),
+    geometryGrapher((x,y,width) => width * Math.sin(x)),
+    geometryGrapher((x,y) => y | x),
+    geometryGrapher((x,y) => y & x),
+    geometryGrapher((x,y) => y ^ x),
+    geometryGrapher((x,y) => y % x),
+    geometryGrapher((x,y,width) => (y - width/2) % (x - width/2)),
+    geometryGrapher((x,y) => x % y),
+    geometryGrapher((x,y,width) => (Math.atan2(x + width/2, y + width/2) / (Math.PI)) * width ),
+    geometryGrapher((x,y,width) => (Math.atan2(x - width/2, y - width/2) / Math.PI) * width )
 ]
 
 module.exports = randomStrategy;
 
 function randomStrategy(pixels, strategySeed) {
+
+    if(pixels.length == 0) return [];
     
     var matrix = selectRandomStrategy(strategySeed, pixels.length)(pixels);
     
@@ -33,35 +31,64 @@ function randomStrategy(pixels, strategySeed) {
 }
 
 function selectRandomStrategy(seed, pixels) {
-    var allowedStrategies = largeStrategies;
-    
-    if(pixels.length <= 25) allowedStrategies = strategies.concat(largeStrategies);
+    if(seed === undefined) seed = Math.random() * strategies.length;
+    var seedIndex = Math.floor(seed % strategies.length)
 
-    if(seed === undefined) seed = Math.random() * allowedStrategies.length;
-    var seedIndex = Math.floor(seed % allowedStrategies.length)
-
-    return allowedStrategies[seedIndex];
+    return strategies[seedIndex];
 }
 
 function geometryGrapher(geoCb) {
-    return function (pixels) {        
-        var width = pixels.length;
-        var height = pixels.length;
-        
+    var possibleWidths = [0, 0, 0, 256, 512];
+    var selectedWidthKey = possibleWidths[Math.floor(Math.random() * possibleWidths.length)];
+
+    var supersample = 1 + Math.floor(Math.cbrt(Math.random()) * 5);
+    
+    return function (pixels) {
+        var width = selectedWidthKey || pixels.length;
+        var height = width;
+
         var result = [];
         
         for(var i = 0; i < height; i++) {
             var row = [];
             for(var j = 0; j < width; j++) {
-                var pixIndex = geoCb(j, i, pixels);
-                pixIndex = Math.floor(Math.abs(pixIndex) % pixels.length);
+                var scaledX = (j/width) * pixels.length * supersample;
+                var scaledY = (i/height) * pixels.length * supersample;
+
+                var pixIndex = geoCb(scaledX, scaledY, pixels.length * supersample) / supersample;
+
+                if(isNaN(pixIndex)) pixIndex = 0;
+                if(pixIndex == Infinity) pixIndex = pixels.length - 1;
+
+                var absPixIndex = Math.abs(pixIndex) % pixels.length;
+
+                var topPixel = pixels[Math.ceil(absPixIndex)] || pixels[pixels.length - 1];
+                var bottomPixel = pixels[Math.floor(absPixIndex)];
+
+                var pixelProportion = 1 - (absPixIndex - Math.floor(absPixIndex));
+
+                //debug time!
+                if(!topPixel || !bottomPixel) console.log(pixels.length, absPixIndex);
                 
-                row.push(pixels[pixIndex] || pixels[0]);
+                row.push(weightedAvgPixel(topPixel, bottomPixel, pixelProportion));
             }
             result.push(row);
         }
         return result;
     }
+}
+
+function weightedAvgPixel(pixel1, pixel2, proportion) {
+    if(!pixel1 && !pixel2) throw "Pixels are bad";
+
+    if(!pixel1) return pixel2;
+    if(!pixel2) return pixel1;
+
+    return [
+        pixel1[0] + (pixel2[0] - pixel1[0]) * proportion,
+        pixel1[1] + (pixel2[1] - pixel1[1]) * proportion,
+        pixel1[2] + (pixel2[2] - pixel1[2]) * proportion
+    ]
 }
 
 function pixelsToMatrix(pixels) {

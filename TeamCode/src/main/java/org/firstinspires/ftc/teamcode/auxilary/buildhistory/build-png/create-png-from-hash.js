@@ -14,6 +14,8 @@ var cacheFile = path.join(__dirname, "last-build-pixels.json");
 if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"}));
 
 module.exports = function(buildNumber, hash, pixelStrategySeed) {
+    console.log("percep hash: `" + hash + "`");
+
     var pixels = getHexPixels(hash);
     var normalizedPixels = normalizePixels(pixels);
 
@@ -33,8 +35,6 @@ module.exports = function(buildNumber, hash, pixelStrategySeed) {
 
     if(naturalMatrixWidth > 1024) renderedWidth = 1024;
     if(naturalMatrixWidth < 128) renderedWidth = 128;
-    
-    console.log(naturalMatrixWidth, renderedWidth);
     
     var png = new PngFile(matrix, renderedWidth);
     
