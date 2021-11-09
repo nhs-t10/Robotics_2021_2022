@@ -3,15 +3,22 @@ module.exports = {
     combineHashes: combineHashes
 }
 
+/**
+ * 
+ * @param {Buffer[]} hashes 
+ * @returns Buffer
+ */
 function combineHashes(hashes) {
     hashes = hashes.filter(x=>x!=null);
 
     if(hashes.length == 0) return hashBuffer(Buffer.from([]));
 
     var avg = [];
-    for(var i = 0; i < hashes[0].length; i++) {
+    for(var i = 0; i < hashes[0].length - 1; i+=2) {
         var cellTotal = 0;
-        for(var j = 0; j < hashes.length; j++) cellTotal += hashes[j][i];
+        for(var j = 0; j < hashes.length; j++) {
+            cellTotal += (hashes[j][i] << 8) | hashes[j][i + 1];
+        }
 
         if(cellTotal > 0xff_ff) cellTotal %= 0xff_ff;
 
@@ -48,8 +55,11 @@ function bufferFrom16BitNums(buckets) {
     
      //turn two-byte numbers into two one-bit numbers
      for(var i = 0; i < buckets.length; i ++) {
-         byteBuckets.push(buckets[i] >> 8);
-         byteBuckets.push(buckets[i] & 0b1111_1111);
+        var bucketVal = buckets[i];
+        if(bucketVal > 0xff_ff) bucketVal %= 0xff_ff;
+
+        byteBuckets.push(bucketVal >> 8);
+        byteBuckets.push(bucketVal & 0b1111_1111);
      }
      
      
