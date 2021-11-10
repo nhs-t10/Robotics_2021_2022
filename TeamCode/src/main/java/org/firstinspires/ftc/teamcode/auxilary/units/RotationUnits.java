@@ -3,53 +3,55 @@ package org.firstinspires.ftc.teamcode.auxilary.units;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class DistanceUnits {
+public class RotationUnits {
     public String name;
     public String[] abbreviations;
-    public double perMeter;
+    public double perCircle;
 
-    private DistanceUnits(String name, String abbr, double perMeter) {
-        this(name, new String[] {abbr}, perMeter);
+    private RotationUnits(String name, String abbr, double perCircle) {
+        this(name, new String[] {abbr}, perCircle);
     }
-    private DistanceUnits(String name, String[] abbreviations, double perMeter) {
+    private RotationUnits(String name, String[] abbreviations, double perCircle) {
         this.name = name;
         this.abbreviations = abbreviations;
-        this.perMeter = perMeter;
+        this.perCircle = perCircle;
     }
 
-    public final static DistanceUnits MM = new DistanceUnits("Millimeter", "mm", 1000);
-    public final static DistanceUnits M = new DistanceUnits("Meter", "m", 1);
-    public final static DistanceUnits NM = new DistanceUnits("Nanometer", "nm", 1e9);
-    public final static DistanceUnits CM = new DistanceUnits("Centimeter", "cm", 100);
-    public final static DistanceUnits IN = new DistanceUnits("Inch", "in", 39.3700787);
-    public final static DistanceUnits FT = new DistanceUnits("Foot", "ft", 3.2808399);
-    public final static DistanceUnits YD = new DistanceUnits("Yard", "yd", 1.0936133);
+    public final static RotationUnits DEG = new RotationUnits("Degree", new String[] {"deg", "degs"}, 360);
+    public final static RotationUnits RAD = new RotationUnits("Radian", new String[] {"rad", "rads"}, 2 * Math.PI);
+    public final static RotationUnits ROT = new RotationUnits("Radian", new String[] {"rot", "rots"}, 1);
+    public final static RotationUnits TURNY = new RotationUnits("Turny", "tn", 4);
+    public final static RotationUnits HALF_TURNY = new RotationUnits("Half-Turny", "hlftn", 8);
 
-    private static DistanceUnits[] unitarrcache;
+    public final static RotationUnits naturalRotationUnit = RotationUnits.DEG;
+
+    private static RotationUnits[] unitarrcache;
 
     //use reflection to find all the static timeunit fields and assemble them into an array
-    public static DistanceUnits[] getUnits() {
+    public static RotationUnits[] getUnits() {
         if(unitarrcache != null) return unitarrcache;
 
-        Field[] fields = DistanceUnits.class.getFields();
+        Field[] fields = RotationUnits.class.getFields();
 
-        ArrayList<DistanceUnits> units = new ArrayList<>();
+        ArrayList<RotationUnits> units = new ArrayList<>();
         for(Field f : fields) {
-            if(f.getType().equals(DistanceUnits.class)) {
+            String name = f.getName();
+            boolean nameIsUppercase = name.toUpperCase().equals(name);
+            if(nameIsUppercase && f.getType().equals(RotationUnits.class)) {
                 try {
-                    units.add((DistanceUnits) f.get(null));
+                    units.add((RotationUnits) f.get(null));
                 } catch(Exception ignored) { }
             }
         }
 
-        unitarrcache = units.toArray(new DistanceUnits[0]);
+        unitarrcache = units.toArray(new RotationUnits[0]);
         return unitarrcache;
     }
 
-    public static DistanceUnits forAbbreviation(String abbr) {
+    public static RotationUnits forAbbreviation(String abbr) {
         String singularName = singular(abbr);
 
-        for(DistanceUnits u : getUnits()) {
+        for(RotationUnits u : getUnits()) {
             if(u.name.equalsIgnoreCase(singularName)) return u;
             for(String a : u.abbreviations) {
                 if(a.equals(abbr)) return u;
@@ -64,7 +66,7 @@ public class DistanceUnits {
         else return abbr;
     }
 
-    public static long convertBetween(DistanceUnits unitFrom, DistanceUnits unitTo, float fromAmount) {
-        return (long) (fromAmount * (unitFrom.perMeter / unitTo.perMeter));
+    public static long convertBetween(RotationUnits unitFrom, RotationUnits unitTo, float fromAmount) {
+        return (long) (fromAmount * (unitFrom.perCircle / unitTo.perCircle));
     }
 }

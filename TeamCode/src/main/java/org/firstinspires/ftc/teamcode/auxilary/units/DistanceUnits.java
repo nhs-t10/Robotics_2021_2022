@@ -24,6 +24,15 @@ public class DistanceUnits {
     public final static DistanceUnits IN = new DistanceUnits("Inch", "in", 39.3700787);
     public final static DistanceUnits FT = new DistanceUnits("Foot", "ft", 3.2808399);
     public final static DistanceUnits YD = new DistanceUnits("Yard", "yd", 1.0936133);
+    public final static DistanceUnits FATHOM = new DistanceUnits("Fathom", "fathom", 1 / 1.8288);
+    public final static DistanceUnits KM = new DistanceUnits("Kilometer", "km", 1 / 1000.0);
+    public final static DistanceUnits MIL = new DistanceUnits("Mile", "mil", 1 / 1609.344);
+    public final static DistanceUnits AU = new DistanceUnits("Astronomical Unit", "au", 1 / 149597870700.0);
+    public final static DistanceUnits FBF = new DistanceUnits("Football Field", new String[] {"fbfield", "fbf"}, 1 / 109.36133);
+    public final static DistanceUnits FTCF = new DistanceUnits("FTC Field", new String[] {"ftcfield", "ftcf", "ftf"}, 1 / 5.4864);
+    public final static DistanceUnits RBTW = new DistanceUnits("Robot Width", new String[] {"rbtw", "rbw"}, 2.1872266);
+
+    public final static DistanceUnits naturalDistanceUnit = DistanceUnits.CM;
 
     private static DistanceUnits[] unitarrcache;
 
@@ -35,7 +44,9 @@ public class DistanceUnits {
 
         ArrayList<DistanceUnits> units = new ArrayList<>();
         for(Field f : fields) {
-            if(f.getType().equals(DistanceUnits.class)) {
+            String name = f.getName();
+            boolean nameIsUppercase = name.toUpperCase().equals(name);
+            if(nameIsUppercase && f.getType().equals(DistanceUnits.class)) {
                 try {
                     units.add((DistanceUnits) f.get(null));
                 } catch(Exception ignored) { }

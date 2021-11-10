@@ -72,6 +72,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getHorizontalTicks", new GetHorizontalTicksFunction(manMovement));
             scope.put("getVerticalTicks", new GetVerticalTicksFunction(manMovement));
             scope.put("getMeters", new GetMetersFunction(manMovement));
+            scope.put("getCentimeters", new GetCentimetersFunction(manMovement));
             scope.put("getHorizontalMeters", new GetHorizontalMetersFunction(manMovement));
             scope.put("getVerticalMeters", new GetVerticalMetersFunction(manMovement));
             

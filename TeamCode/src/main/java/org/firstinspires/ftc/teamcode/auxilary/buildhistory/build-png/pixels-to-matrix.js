@@ -31,7 +31,7 @@ function randomStrategy(pixels, strategySeed) {
 }
 
 function selectRandomStrategy(seed, pixelLength) {
-    var index = seededRandom(seed === undefined ? seed : pixelLength)() * strategies.length;
+    var index = seededRandom(pixelLength * 40)() * strategies.length;
     var seedIndex = Math.floor(index % strategies.length)
 
     return strategies[seedIndex];

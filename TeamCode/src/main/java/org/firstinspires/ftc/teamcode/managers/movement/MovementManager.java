@@ -191,6 +191,9 @@ public class MovementManager extends FeatureManager {
     public float getMeters(){
         return (PaulMath.encoderDistanceCm(getTicks()) / 100f);
     }
+    public float getCentimeters(){
+        return PaulMath.encoderDistanceCm(getTicks());
+    }
     public float getHorizontalMeters(){
         return (PaulMath.encoderDistanceCm(getHorizontalTicks()) / 100f);
     }

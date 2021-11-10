@@ -7,6 +7,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnits;
+import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnits;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -52,13 +54,9 @@ public class AfterStatement extends Statement {
     }
 
     String[][] unitMethodMapping = new String[][] {
-            {"D", "ticks", "getTicks"},
-            {"D", "hticks", "getHorizontalTicks"},
-            {"D", "vticks", "getVerticalTicks"},
-            {"D", "meters", "getMeters"},
-            {"D", "hmeters", "getHorizontalMeters"},
-            {"D", "vmeters", "getVerticalMeters"},
-            {"D", "degs", "getThirdAngleOrientation"},
+            {"D", DistanceUnits.naturalDistanceUnit.name, "getCentimeters"},
+            {"D", RotationUnits.naturalRotationUnit.name, "getThirdAngleOrientation"},
+            {"D", "ticks", "getTicks"}
     };
 
     private boolean unitExistsInMethodMapping(String unit) {
@@ -85,25 +83,33 @@ public class AfterStatement extends Statement {
     @Override
     public void stepInit() {
 
-        this.stepStartTime = System.currentTimeMillis();
-        isDistanceUnit = checkUnitIsDistance(wait.unit);
-        if(isDistanceUnit) {
-            getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
-            this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
-        } else {
-            throw new AutoautoNameException("Unknown unit " + wait.unit);
+        if(unitExistsInMethodMapping(wait.unit)) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+
+        switch (wait.unitType) {
+            case TIME:
+                this.stepStartTime = System.currentTimeMillis();
+                break;
+            case DISTANCE:
+            case ROTATION:
+                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
+                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+                break;
         }
     }
 
     public void loop() {
-        if(isDistanceUnit) {
-            float tarTicks = wait.baseAmount;
-            float ticksReferPoint = stepStartTick;
-            float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+        switch (wait.unitType) {
+            case TIME:
+                if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
+                break;
+            case DISTANCE:
+            case ROTATION:
+                float targetDifference = wait.baseAmount;
+                float referPoint = stepStartTick;
+                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
-            if(Math.abs(cTicks - ticksReferPoint) >= Math.abs(tarTicks)) action.loop();
-        } else {
-            if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
+                if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
+                break;
         }
     }
 

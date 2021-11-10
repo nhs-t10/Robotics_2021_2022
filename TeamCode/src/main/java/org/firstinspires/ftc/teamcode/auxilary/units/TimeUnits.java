@@ -24,6 +24,9 @@ public class TimeUnits {
     public final static TimeUnits HR = new TimeUnits("Hour", new String[] {"h", "hr"}, 1.0/(60.0*60.0));
     public final static TimeUnits D = new TimeUnits("Day", "d", 1.0/(60.0*60.0*24.0));
     public final static TimeUnits YR = new TimeUnits("Year", new String[] {"y", "yr"}, 1.0/(60.0*60.0*24.0*365.0));
+    public final static TimeUnits JIF = new TimeUnits("Jiffy", new String[] {"jif", "jiff", "jiffy"}, 100);
+
+    public final static TimeUnits naturalTimeUnit = TimeUnits.MS;
 
     private static TimeUnits[] unitarrcache;
 
@@ -35,7 +38,9 @@ public class TimeUnits {
 
         ArrayList<TimeUnits> units = new ArrayList<>();
         for(Field f : fields) {
-            if(f.getType().equals(TimeUnits.class)) {
+            String name = f.getName();
+            boolean nameIsUppercase = name.toUpperCase().equals(name);
+            if(nameIsUppercase && f.getType().equals(TimeUnits.class)) {
                 try {
                     units.add((TimeUnits) f.get(null));
                 } catch(Exception ignored) { }
