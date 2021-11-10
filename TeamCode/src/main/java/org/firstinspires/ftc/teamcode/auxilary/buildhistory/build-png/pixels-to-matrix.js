@@ -23,15 +23,15 @@ function randomStrategy(pixels, strategySeed) {
 
     if(pixels.length == 0) return [];
     
-    var matrix = selectRandomStrategy(strategySeed, pixels.length)(pixels);
+    var matrix = selectRandomStrategy(strategySeed, pixels)(pixels);
     
     //santiy check to make sure it's always a matrix, even when there's no delta
     if(!matrix) return [];
     else return matrix;
 }
 
-function selectRandomStrategy(seed, pixelLength) {
-    var index = seededRandom(pixelLength * 40)() * strategies.length;
+function selectRandomStrategy(seed, pixels) {
+    var index = seededRandom(pixels[0][1])() * strategies.length;
     var seedIndex = Math.floor(index % strategies.length)
 
     return strategies[seedIndex];

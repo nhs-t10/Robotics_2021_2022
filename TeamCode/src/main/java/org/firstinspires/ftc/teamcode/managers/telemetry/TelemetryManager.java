@@ -95,13 +95,13 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         return backend.addData(caption, value);
     }
 
-    public Item addData(String caption, Object[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, double[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, boolean[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, int[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, float[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, long[] val) { addData(caption, Arrays.toString(val); }
-    public Item addData(String caption, char[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, Object[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, double[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, boolean[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, int[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, float[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, long[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, char[] val) { return addData(caption, Arrays.toString(val)); }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {
