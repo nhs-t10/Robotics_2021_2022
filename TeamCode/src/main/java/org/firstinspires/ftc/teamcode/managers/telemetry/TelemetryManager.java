@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,6 +94,14 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         }
         return backend.addData(caption, value);
     }
+
+    public Item addData(String caption, Object[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, double[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, boolean[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, int[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, float[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, long[] val) { addData(caption, Arrays.toString(val); }
+    public Item addData(String caption, char[] val) { addData(caption, Arrays.toString(val); }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {
