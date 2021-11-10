@@ -1,3 +1,5 @@
+var crc = require("./png-file/crc");
+
 module.exports = {
     hash: hashBuffer,
     combineHashes: combineHashes
@@ -37,15 +39,16 @@ function hashBuffer(buffer) {
     var buckets = [];
     
     //fill all the buckets with zeros
-    for(var i = 0; i < 128; i++) buckets.push(0);
+    for(var i = 0; i < 256; i++) buckets.push(0);
     
-    for(var i = 0; i < buffer.length; i++) {
-        var item = buffer[i];
-        
-        if(buckets[item] !== undefined) buckets[item]++;
-        //an `if` is faster than using modulo every time
-        if(buckets[item] == 0xff_ff) buckets[item] = 0;
-    }
+    var dataCrc = crc(buffer);
+    var dataCrcLastByte = dataCrc[dataCrc.length - 1];
+    
+    var lenCode = (dataCrc[1] << 8) | dataCrc[2];
+    
+    if(lenCode >= 0xff_ff) lenCode %= 0xff_ff;
+    
+    if(buckets[dataCrcLastByte] !== undefined) buckets[dataCrcLastByte] = lenCode;
     
    return bufferFrom16BitNums(buckets);
 }

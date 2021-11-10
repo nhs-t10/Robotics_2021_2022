@@ -16,6 +16,8 @@ import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration
 public class FeatureManager {
     public static final Logger logger = new Logger();
 
+    public static final int DOUBLE_CLICK_TIME_MS = 300;
+
     public static boolean isOpModeRunning = false;
 
     public static void setIsOpModeRunning(boolean b) {

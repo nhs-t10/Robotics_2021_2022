@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnits;
+import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnits;
 
 public class AutoautoUnitValue extends AutoautoNumericValue {
     //Attributes
@@ -47,28 +49,22 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         super(baseAmount);
         this.baseAmount = baseAmount;
         this.unit = unit;
-        if(unit.startsWith("ticks") || unit.startsWith("rots") || ((unit.charAt(0) == 'h' || unit.charAt(0) == 'v') && unit.substring(1).startsWith("ticks"))) {
-            this.unitType = UnitType.DISTANCE;
-        } else {
+
+        TimeUnits timeUnit = TimeUnits.forAbbreviation(unit);
+        if(timeUnit != null) {
+            this.baseAmount = TimeUnits.convertBetween(timeUnit, TimeUnits.MS, baseAmount);
+            this.unit = "ms";
             this.unitType = UnitType.TIME;
+        } else {
+            DistanceUnits distanceUnit = DistanceUnits.forAbbreviation(unit);
+            if(distanceUnit != null) {
+                this.baseAmount = DistanceUnits.convertBetween(distanceUnit, DistanceUnits.CM, baseAmount);
+                this.unit = "cm";
+            }
+            this.unitType = UnitType.DISTANCE;
         }
 
-        if(unit.startsWith("ms")) {
-            this.baseAmount *= 1;
-            unitType = UnitType.TIME;
-        } else if(unit.startsWith("s")) {
-            this.baseAmount *= 1000;
-            unitType = UnitType.TIME;
-        } else if (unit.startsWith("m")) {
-            this.baseAmount *= 60 * 1000;
-            unitType = UnitType.TIME;
-        } else if(unit.startsWith("h")) {
-            this.baseAmount *= 60 * 60 * 1000;
-            unitType = UnitType.TIME;
-        } else if (unit.startsWith("d")) {
-            this.baseAmount *= 24 * 60 * 60 * 1000;
-            unitType = UnitType.TIME;
-        }
+        this.value = this.baseAmount;
     }
 
     //Methods

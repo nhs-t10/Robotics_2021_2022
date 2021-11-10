@@ -30,21 +30,24 @@ function randomStrategy(pixels, strategySeed) {
     else return matrix;
 }
 
-function selectRandomStrategy(seed, pixels) {
-    if(seed === undefined) seed = Math.random() * strategies.length;
-    var seedIndex = Math.floor(seed % strategies.length)
+function selectRandomStrategy(seed, pixelLength) {
+    var index = seededRandom(seed === undefined ? seed : pixelLength)() * strategies.length;
+    var seedIndex = Math.floor(index % strategies.length)
 
     return strategies[seedIndex];
 }
 
-function geometryGrapher(geoCb) {
-    var possibleWidths = [0, 0, 0, 256, 512];
-    var selectedWidthKey = possibleWidths[Math.floor(Math.random() * possibleWidths.length)];
-
-    var supersample = 1 + Math.floor(Math.cbrt(Math.random()) * 5);
-    
+function geometryGrapher(geoCb) {    
     return function (pixels) {
-        var width = selectedWidthKey || pixels.length;
+        var seed = pixels[0][0];
+        var random = seededRandom(seed);
+        
+        var supersample = 1 + Math.floor(Math.cbrt(random()) * 5);
+    
+        var possibleWidths = [x=>x, x=>x, x=>x, x=>supersample*x, x=>supersample*x, x=>512];
+        var selectedWidthKey = possibleWidths[Math.floor(random() * possibleWidths.length)];
+        
+        var width = selectedWidthKey(pixels.length);
         var height = width;
 
         var result = [];
@@ -106,4 +109,13 @@ function pixelsToMatrix(pixels) {
         rows.push(row);
     }
     return rows;
+}
+
+function seededRandom(seed) {
+    return function mulberry32random() {
+        var t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
 }

@@ -17,6 +17,10 @@ public class InputManagerNodeResult {
         this.childs = v;
     }
 
+    public InputManagerNodeResult(boolean result) {
+        this(result?1f:0f);
+    }
+
     public float[] getFloatArray() {
         if(this.childs == null) return new float[] {value};
 
