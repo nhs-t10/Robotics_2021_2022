@@ -15,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:7.0.3'
     }
 }
 
@@ -37,13 +37,6 @@ repositories {
     }
 }
 
-dependencies {
-    doc 'org.firstinspires.ftc:Hardware:6.2.0'
-    doc 'org.firstinspires.ftc:RobotCore:6.2.0'
-    doc 'org.firstinspires.ftc:FtcCommon:6.2.0'
-    doc 'org.firstinspires.ftc:OnBotJava:6.2.0'
-    doc 'org.firstinspires.ftc:Inspection:6.2.0'
-}
 
 task extractJavadoc {
     doLast {
@@ -67,3 +60,12 @@ task extractJavadoc {
     }
 }
 
+
+dependencies {
+    doc 'org.firstinspires.ftc:Hardware:6.2.0'
+    doc 'org.firstinspires.ftc:RobotCore:6.2.0'
+    doc 'org.firstinspires.ftc:FtcCommon:6.2.0'
+    doc 'org.firstinspires.ftc:OnBotJava:6.2.0'
+    doc 'org.firstinspires.ftc:Inspection:6.2.0'
+    doc 'org.openftc:easyopencv:1.5.0'
+}

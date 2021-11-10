@@ -75,6 +75,11 @@ task generateControls3Sources {
 
 
 android {
+
+
+    androidResources {
+        noCompress 'tflite'
+    }
     gradle.projectsEvaluated {
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
