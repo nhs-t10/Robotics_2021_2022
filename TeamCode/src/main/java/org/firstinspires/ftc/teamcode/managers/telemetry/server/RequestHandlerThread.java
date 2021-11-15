@@ -96,6 +96,8 @@ public class RequestHandlerThread extends Thread {
                         + "Content-Type: " + "application/json" + HTTP_LINE_SEPARATOR
                         + HTTP_LINE_SEPARATOR);
                 writer.print(BuildHistory.getJSON());
+            } else if(path.equals("/fallible-hardware-devices")) {
+                writer.print(FallableHardwareMapHttpFormatty.summarizeHardwareDevices(dataSource));
             } else {
                 writer.print(HttpStatusCodeReplies.Not_Found);
             }

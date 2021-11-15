@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class PaulMath extends FeatureManager {
 
@@ -278,7 +279,24 @@ public abstract class PaulMath extends FeatureManager {
     public static String JSONify(Object s) {
         if(s == null) return "null";
         else if(s instanceof Number || s instanceof Boolean) return s.toString();
+        else if(s.getClass().isArray()) return JSONifyArray(s);
         else return JSONify(s.toString());
+    }
+    private static String JSONifyArray(Object s) {
+        if(s instanceof double[]) return "[" + Arrays.toString((double[])s) + "]";
+        if(s instanceof boolean[]) return "[" + Arrays.toString((boolean[])s) + "]";
+        if(s instanceof int[]) return "[" + Arrays.toString((int[])s) + "]";
+        if(s instanceof float[]) return "[" + Arrays.toString((float[])s) + "]";
+        if(s instanceof long[]) return "[" + Arrays.toString((long[])s) + "]";
+        if(s instanceof char[]) return "[" + Arrays.toString((char[])s) + "]";
+
+        Object[] ar = (Object[])s;
+        StringBuilder str = new StringBuilder();
+        for(Object o : ar) {
+            str.append(",").append(JSONify(o));
+        }
+
+        return "[" + str.toString().substring(1) + "]";
     }
 
     public static boolean isJSONable(Object s) {
