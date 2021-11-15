@@ -3,13 +3,6 @@
     "cognomen": "Ansekalt",
     "builds": [
         {
-            "name": "Gustavo Ansekalt",
-            "time": "2021-10-27T18:06:31.173Z",
-            "buildHash": "9865f82b7d95e68d933213903fa48ed378a1ab168e5cf482b3299200c798a8e1",
-            "w3w": "demon certainty infamy",
-            "phrase": "Jacquemart etching. The gates of Prince Paradox.” “I recognize his graceful, though the Church. In one else could they need most wonderful play. It always remind us.” murmured with us that are you?"
-        },
-        {
             "name": "Armando Ansekalt",
             "time": "2021-10-27T18:07:22.971Z",
             "buildHash": "8ec86bf0f56dae0ebd1e75effede913b91e03f8597c033b16050081e256b879f",
@@ -773,8 +766,17 @@
             "phrase": "Thought and fringed lashes almost died instantaneously.” cried Lady Narborough kept for it.” I hear. Who the age that excellent musician, however, he exclaimed; but Innocent’. Our limbs throwing them lovelier for something.",
             "perceptualHash": "",
             "colors": ""
+        },
+        {
+            "name": "Jocelyn Ansekalt",
+            "time": "2021-11-15T16:19:12.328Z",
+            "buildHash": "a49c6d65d7cac404deb1092814bc559775218afb8d1081ed1395b7cbafd6b625",
+            "w3w": "doorway digress clearance",
+            "phrase": "Sybil’s own price of Treadley and stooping down, and each little orchard. The ugly and my child.” cried the loveliness and let you looked. And, remember, it will forgive them. His mother!",
+            "perceptualHash": "f3cfafb2f9fe",
+            "colors": "#854206,#037780"
         }
     ],
-    "buildCount": 1819,
-    "lastBuildTimeUnixMs": 1636992833584
+    "buildCount": 1820,
+    "lastBuildTimeUnixMs": 1636993153702
 }

@@ -22,7 +22,9 @@ public class FallableHardwareMapHttpFormatty {
                     "}";
             i++;
         }
-        return "{" + Arrays.toString(objectLines) + "}";
+        String json = "{" + Arrays.toString(objectLines) + "}";
+
+        return "HTTP/1.1 200 OK\r\nContent-Type:application/json\r\nContent-Length: " + json.getBytes().length + "\r\n\r\n" + json;
     }
     public static String summarizeHardwareDevices(TelemetryManager dataSource) {
         if(dataSource.fallibleHardwareMap == null) return HttpStatusCodeReplies.I_m_a_teapot("This opmode has no fallible hardware map. You can add one with `| BITMASKS.FALLIBLE_HARDWARE` in the TelemetryManager constructor.");
