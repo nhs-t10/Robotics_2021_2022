@@ -49,7 +49,7 @@ public class CommandHandler {
         if(dataSource.fallibleHardwareMap == null) return HttpStatusCodeReplies.I_m_a_teapot("This opmode has no fallible hardware map. You can add one with `| BITMASKS.FALLIBLE_HARDWARE` in the TelemetryManager constructor.");
 
         String deviceName = args[2], failTypeStr = args[3].toUpperCase().trim();
-        FailureType failureType = FailureType.NOT_FAILING;
+        FailureType failureType;
         try {
             failureType = FailureType.valueOf(failTypeStr);
         } catch(IllegalArgumentException e) {

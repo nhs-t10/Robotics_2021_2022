@@ -17,124 +17,173 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
         this.motor = motor;
         this.failureType = FailureType.NOT_FAILING;
     }
+
     @Override
     public MotorConfigurationType getMotorType() {
-        return motor.getMotorType();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return MotorConfigurationType.getUnspecifiedMotorType();
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getMotorType();
+        else return motor.getMotorType();
     }
 
     @Override
     public void setMotorType(MotorConfigurationType motorType) {
-        motor.setMotorType(motorType);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setMotorType(motorType);
     }
 
     @Override
     public DcMotorController getController() {
-        return motor.getController();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return motor.getController();
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getController();
+        else return motor.getController();
     }
 
     @Override
     public int getPortNumber() {
-        return motor.getPortNumber();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getPortNumber();
+        else return motor.getPortNumber();
     }
 
     @Override
     public void setZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {
-        motor.setZeroPowerBehavior(zeroPowerBehavior);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
     @Override
     public ZeroPowerBehavior getZeroPowerBehavior() {
-        return motor.getZeroPowerBehavior();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return motor.getZeroPowerBehavior();
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getZeroPowerBehavior();
+        else return motor.getZeroPowerBehavior();
     }
 
     @Override
     public void setPowerFloat() {
-        motor.setPowerFloat();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setPowerFloat();
     }
 
     @Override
     public boolean getPowerFloat() {
-        return motor.getPowerFloat();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return false;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getPowerFloat();
+        else return motor.getPowerFloat();
     }
 
     @Override
     public void setTargetPosition(int position) {
-        motor.setTargetPosition(position);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setTargetPosition(position);
     }
 
     @Override
     public int getTargetPosition() {
-        return motor.getTargetPosition();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getTargetPosition();
+        else return motor.getTargetPosition();
     }
 
     @Override
     public boolean isBusy() {
-        return motor.isBusy();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return false;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.isBusy();
+        else return motor.isBusy();
     }
 
     @Override
     public int getCurrentPosition() {
-        return motor.getCurrentPosition();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return 0;
+        else return motor.getCurrentPosition();
     }
 
     @Override
     public void setMode(RunMode mode) {
-        motor.setMode(mode);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setMode(mode);
     }
 
     @Override
     public RunMode getMode() {
-        return motor.getMode();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return RunMode.RUN_WITHOUT_ENCODER;
+        else if(failureType == FailureType.CONTROL_FAILURE) return RunMode.RUN_WITHOUT_ENCODER;
+        else return motor.getMode();
     }
 
     @Override
     public void setDirection(Direction direction) {
-        motor.setDirection(direction);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else motor.setDirection(direction);
     }
 
     @Override
     public Direction getDirection() {
-        return motor.getDirection();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return Direction.REVERSE;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getDirection();
+        else return motor.getDirection();
     }
 
     @Override
     public void setPower(double power) {
-        motor.setPower(power);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else motor.setPower(power);
     }
 
     @Override
     public double getPower() {
-        return motor.getPower();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0.0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getPower();
+        else return motor.getPower();
     }
 
     @Override
     public Manufacturer getManufacturer() {
-        return motor.getManufacturer();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return Manufacturer.Other;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getManufacturer();
+        else return motor.getManufacturer();
     }
 
     @Override
     public String getDeviceName() {
-        return motor.getDeviceName();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return "";
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getDeviceName();
+        else return motor.getDeviceName();
     }
 
     @Override
     public String getConnectionInfo() {
-        return motor.getConnectionInfo();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return "";
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getConnectionInfo();
+        else return motor.getConnectionInfo();
     }
 
     @Override
     public int getVersion() {
-        return motor.getVersion();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getVersion();
+        else return motor.getVersion();
     }
 
     @Override
     public void resetDeviceConfigurationForOpMode() {
-        motor.resetDeviceConfigurationForOpMode();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else motor.resetDeviceConfigurationForOpMode();
     }
 
     @Override
     public void close() {
-        motor.close();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else motor.close();
     }
 
     @Override

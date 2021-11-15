@@ -22,7 +22,7 @@ public class FallableHardwareMapHttpFormatty {
                     "}";
             i++;
         }
-        String json = "{" + Arrays.toString(objectLines) + "}";
+        String json = "{" + PaulMath.join(",",objectLines) + "}";
 
         return "HTTP/1.1 200 OK\r\nContent-Type:application/json\r\nContent-Length: " + json.getBytes().length + "\r\n\r\n" + json;
     }

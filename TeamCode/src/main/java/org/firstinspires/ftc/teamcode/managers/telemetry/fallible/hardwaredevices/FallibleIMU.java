@@ -52,7 +52,7 @@ public class FallibleIMU implements BNO055IMU, FallibleHardwareDevice {
     public Acceleration getLinearAcceleration() { return imu.getLinearAcceleration(); }
 
     @Override
-    public Acceleration getGravity() { return imu.getGravity(); }
+    public Acceleration getGravity() {  return imu.getGravity(); }
 
     @Override
     public Temperature getTemperature() { return imu.getTemperature(); }

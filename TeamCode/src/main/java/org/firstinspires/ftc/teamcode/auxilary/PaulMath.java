@@ -283,12 +283,12 @@ public abstract class PaulMath extends FeatureManager {
         else return JSONify(s.toString());
     }
     private static String JSONifyArray(Object s) {
-        if(s instanceof double[]) return "[" + Arrays.toString((double[])s) + "]";
-        if(s instanceof boolean[]) return "[" + Arrays.toString((boolean[])s) + "]";
-        if(s instanceof int[]) return "[" + Arrays.toString((int[])s) + "]";
-        if(s instanceof float[]) return "[" + Arrays.toString((float[])s) + "]";
-        if(s instanceof long[]) return "[" + Arrays.toString((long[])s) + "]";
-        if(s instanceof char[]) return "[" + Arrays.toString((char[])s) + "]";
+        if(s instanceof double[]) return Arrays.toString((double[])s);
+        if(s instanceof boolean[]) return Arrays.toString((boolean[])s);
+        if(s instanceof int[]) return Arrays.toString((int[])s);
+        if(s instanceof float[]) return Arrays.toString((float[])s);
+        if(s instanceof long[]) return Arrays.toString((long[])s);
+        if(s instanceof char[]) return Arrays.toString((char[])s);
 
         Object[] ar = (Object[])s;
         StringBuilder str = new StringBuilder();

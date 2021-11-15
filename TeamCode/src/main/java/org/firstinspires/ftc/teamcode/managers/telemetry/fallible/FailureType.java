@@ -5,6 +5,7 @@ public enum FailureType {
      * Turns off motors, servos, etc. Denies further control.
      */
     POWER_FAILURE,
+
     /**
      * Denies further control. Does NOT turn off motors or sensors. Be careful with this one.
      */
@@ -38,5 +39,10 @@ public enum FailureType {
     /**
      * Normal behavior.
      */
-    NOT_FAILING
+    NOT_FAILING,
+
+    /**
+     * Cause motor power to multiply by -1 once every 3-8s.
+     */
+    JERKING
 }
