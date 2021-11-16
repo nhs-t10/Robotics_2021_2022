@@ -16,11 +16,10 @@ public abstract class AutoautoMacro extends Macro {
     public final void start(FeatureManager... managers) {
         program = generateProgram();
         if(runtime == null) {
-                runtime = new AutoautoRuntime(program, managers);
+            runtime = new AutoautoRuntime(program, managers);
         } else {
             runtime.setProgram(program);
         }
-        
     }
 
     @Override

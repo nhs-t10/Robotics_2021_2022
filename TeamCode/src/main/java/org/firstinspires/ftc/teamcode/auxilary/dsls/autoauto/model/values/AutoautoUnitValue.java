@@ -4,10 +4,9 @@ import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
-import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnits;
-import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnits;
-import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnits;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class AutoautoUnitValue extends AutoautoNumericValue {
@@ -53,21 +52,21 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         this.baseAmount = baseAmount;
         this.unit = unit;
 
-        TimeUnits timeUnit = TimeUnits.forAbbreviation(unit);
-        DistanceUnits distanceUnit = DistanceUnits.forAbbreviation(unit);
-        RotationUnits rotationUnit = RotationUnits.forAbbreviation(unit);
+        TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
+        DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
+        RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
 
         if(timeUnit != null) {
-            this.baseAmount = TimeUnits.convertBetween(timeUnit, TimeUnits.naturalTimeUnit, baseAmount);
-            this.unit = TimeUnits.naturalTimeUnit.name;
+            this.baseAmount = (long)Math.round(TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount));
+            this.unit = TimeUnit.naturalTimeUnit.name;
             this.unitType = UnitType.TIME;
         } else if(distanceUnit != null) {
-            this.baseAmount = DistanceUnits.convertBetween(distanceUnit, DistanceUnits.naturalDistanceUnit, baseAmount);
-            this.unit = DistanceUnits.naturalDistanceUnit.name;
+            this.baseAmount = (long)Math.round(DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount));
+            this.unit = DistanceUnit.naturalDistanceUnit.name;
             this.unitType = UnitType.DISTANCE;
         } else if(rotationUnit != null) {
-            this.baseAmount = RotationUnits.convertBetween(rotationUnit, RotationUnits.naturalRotationUnit, baseAmount);
-            this.unit = RotationUnits.naturalRotationUnit.name;
+            this.baseAmount = (long)Math.round(RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount));
+            this.unit = RotationUnit.naturalRotationUnit.name;
             this.unitType = UnitType.ROTATION;
         } else {
             FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");

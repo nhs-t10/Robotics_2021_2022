@@ -6,9 +6,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
-import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnits;
-import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnits;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -54,8 +53,8 @@ public class AfterStatement extends Statement {
     }
 
     String[][] unitMethodMapping = new String[][] {
-            {"D", DistanceUnits.naturalDistanceUnit.name, "getCentimeters"},
-            {"D", RotationUnits.naturalRotationUnit.name, "getThirdAngleOrientation"},
+            {"D", DistanceUnit.naturalDistanceUnit.name, "getCentimeters"},
+            {"D", RotationUnit.naturalRotationUnit.name, "getThirdAngleOrientation"},
             {"D", "ticks", "getTicks"}
     };
 

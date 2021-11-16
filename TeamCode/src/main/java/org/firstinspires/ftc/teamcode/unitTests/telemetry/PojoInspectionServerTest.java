@@ -56,7 +56,7 @@ public class PojoInspectionServerTest {
 
         String dataLine = httpBodyReader.readLine();
         //keep reading until we get data
-        while(dataLine.equals(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED) || dataLine.startsWith("{\"streamID\"")) {
+        while(!isDataLine(dataLine)) {
             dataLine = httpBodyReader.readLine();
         }
 
@@ -95,5 +95,10 @@ public class PojoInspectionServerTest {
         public int testInt = 3;
         public float testFloat = 2.4f;
 
+    }
+
+    public static boolean isDataLine(String dataLine) {
+        return dataLine.length() > 0 && !Character.isDigit(dataLine.charAt(0)) &&
+                !(dataLine.equals(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED) || dataLine.startsWith("{\"streamID\""));
     }
 }

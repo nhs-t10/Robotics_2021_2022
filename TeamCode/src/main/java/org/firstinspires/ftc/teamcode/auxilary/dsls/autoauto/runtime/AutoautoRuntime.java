@@ -14,13 +14,7 @@ public class AutoautoRuntime {
     public AutoautoProgram program;
 
     public static AutoautoRuntime R(AutoautoProgram program, FeatureManager... managers) {
-
-        try {
-            return new AutoautoRuntime(program, managers);
-        } catch (ManagerSetupException e) {
-            FeatureManager.logger.log(e.toString());
-            return null;
-        }
+        return new AutoautoRuntime(program, managers);
     }
 
     public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) {
