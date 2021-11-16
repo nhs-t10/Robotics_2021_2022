@@ -9,8 +9,8 @@
     log("this is the test variable: " + theTestVariableToKeepTrackOfThings)
 #testStatepathFour:
     //this is just a demo of how driving can be done. It's doing nothing on purpose, since I am testing this at 9:06pm inside my (pretty small) room
-    driveRaw(0,0,0,0), after 2250ticks next;
-    driveRaw(0,0,0,0), after 500ticks next
+    driveRaw(0,0,0,0), after 225cm next;
+    driveRaw(0,0,0,0), after 50cm next
 
 //this is some cleanup. I took it from last year's code, since that still works for this year's :)
 #end:

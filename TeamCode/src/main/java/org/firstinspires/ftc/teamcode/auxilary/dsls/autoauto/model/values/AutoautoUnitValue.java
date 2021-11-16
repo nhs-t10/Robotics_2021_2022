@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class AutoautoUnitValue extends AutoautoNumericValue {
     //Attributes
@@ -29,7 +33,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         this.location = location;
     }
 
-    public static enum UnitType { TIME, DISTANCE };
+    public static enum UnitType { TIME, DISTANCE, ROTATION };
 
     public UnitType unitType;
     public long baseAmount;
@@ -47,28 +51,28 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         super(baseAmount);
         this.baseAmount = baseAmount;
         this.unit = unit;
-        if(unit.startsWith("ticks") || unit.startsWith("rots") || ((unit.charAt(0) == 'h' || unit.charAt(0) == 'v') && unit.substring(1).startsWith("ticks"))) {
-            this.unitType = UnitType.DISTANCE;
-        } else {
+
+        TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
+        DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
+        RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
+
+        if(timeUnit != null) {
+            this.baseAmount = (long)Math.round(TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount));
+            this.unit = TimeUnit.naturalTimeUnit.name;
             this.unitType = UnitType.TIME;
+        } else if(distanceUnit != null) {
+            this.baseAmount = (long)Math.round(DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount));
+            this.unit = DistanceUnit.naturalDistanceUnit.name;
+            this.unitType = UnitType.DISTANCE;
+        } else if(rotationUnit != null) {
+            this.baseAmount = (long)Math.round(RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount));
+            this.unit = RotationUnit.naturalRotationUnit.name;
+            this.unitType = UnitType.ROTATION;
+        } else {
+            FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
         }
 
-        if(unit.startsWith("ms")) {
-            this.baseAmount *= 1;
-            unitType = UnitType.TIME;
-        } else if(unit.startsWith("s")) {
-            this.baseAmount *= 1000;
-            unitType = UnitType.TIME;
-        } else if (unit.startsWith("m")) {
-            this.baseAmount *= 60 * 1000;
-            unitType = UnitType.TIME;
-        } else if(unit.startsWith("h")) {
-            this.baseAmount *= 60 * 60 * 1000;
-            unitType = UnitType.TIME;
-        } else if (unit.startsWith("d")) {
-            this.baseAmount *= 24 * 60 * 60 * 1000;
-            unitType = UnitType.TIME;
-        }
+        this.value = this.baseAmount;
     }
 
     //Methods

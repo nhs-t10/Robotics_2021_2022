@@ -8,9 +8,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FallibleHardwareMap;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         public static final int WEBSERVER = 1;
         public static final int BUILD_HISTORY = 1 << 1;
         public static final int POJO_MONITOR = 1 << 2;
+        public static final int FALLIBLE_HARDWARE = 1 << 3;
     }
 
     public OhNoJavaFieldMonitorAndExposer opmodeFieldMonitor;
@@ -29,6 +32,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     public AutoautoTelemetry autoauto;
     private Telemetry backend;
     private LogCatcher backendLog;
+
+    public FallibleHardwareMap fallibleHardwareMap;
 
     private Gamepad gamepad1;
     private Gamepad gamepad2;
@@ -64,6 +69,11 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
         if((config & BITMASKS.BUILD_HISTORY) != 0) BuildHistory.init();
 
+        if((config & BITMASKS.FALLIBLE_HARDWARE) != 0) {
+            fallibleHardwareMap = new FallibleHardwareMap(opMode.hardwareMap);
+            opMode.hardwareMap = fallibleHardwareMap;
+        }
+
         setGamepads(opmode.gamepad1, opmode.gamepad2);
     }
 
@@ -93,6 +103,14 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         }
         return backend.addData(caption, value);
     }
+
+    public Item addData(String caption, Object[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, double[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, boolean[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, int[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, float[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, long[] val) { return addData(caption, Arrays.toString(val)); }
+    public Item addData(String caption, char[] val) { return addData(caption, Arrays.toString(val)); }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {

@@ -6,6 +6,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -51,31 +53,27 @@ public class AfterStatement extends Statement {
     }
 
     String[][] unitMethodMapping = new String[][] {
-            {"Dticks", "getTicks"},
-            {"Dhticks", "getHorizontalTicks"},
-            {"Dvticks", "getVerticalTicks"},
-            {"Dmeters", "getMeters"},
-            {"Dhmeters", "getHorizontalMeters"},
-            {"Dvmeters", "getVerticalMeters"},
-            {"Ddegs", "getThirdAngleOrientation"},
+            {"D", DistanceUnit.naturalDistanceUnit.name, "getCentimeters"},
+            {"D", RotationUnit.naturalRotationUnit.name, "getThirdAngleOrientation"},
+            {"D", "ticks", "getTicks"}
     };
 
     private boolean unitExistsInMethodMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[0].substring(1).equals(unit)) return true;
+            if(s[1].equals(unit)) return true;
         }
         return false;
     }
     private String getUnitMethodFromMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[0].substring(1).equals(unit)) return s[1];
+            if(s[1].equals(unit)) return s[2];
         }
         throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
     }
     private boolean checkUnitIsDistance(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[0].substring(1).equals(unit)){
-                return s[0].substring(0,1).equals("D");
+            if(s[1].equals(unit)){
+                return s[0].equals("D");
             }
         }
         return false;
@@ -84,23 +82,33 @@ public class AfterStatement extends Statement {
     @Override
     public void stepInit() {
 
-        this.stepStartTime = System.currentTimeMillis();
-        isDistanceUnit = unitExistsInMethodMapping(wait.unit) && getUnitMethodFromMapping(wait.unit).substring(0,1).equals("D");
-        if(isDistanceUnit) {
-            getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
-            this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+        if(unitExistsInMethodMapping(wait.unit)) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+
+        switch (wait.unitType) {
+            case TIME:
+                this.stepStartTime = System.currentTimeMillis();
+                break;
+            case DISTANCE:
+            case ROTATION:
+                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
+                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+                break;
         }
     }
 
     public void loop() {
-        if(isDistanceUnit) {
-            float tarTicks = wait.baseAmount;
-            float ticksReferPoint = stepStartTick;
-            float cTicks = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+        switch (wait.unitType) {
+            case TIME:
+                if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
+                break;
+            case DISTANCE:
+            case ROTATION:
+                float targetDifference = wait.baseAmount;
+                float referPoint = stepStartTick;
+                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
-            if(Math.abs(cTicks - ticksReferPoint) >= Math.abs(tarTicks)) action.loop();
-        } else {
-            if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
+                if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
+                break;
         }
     }
 

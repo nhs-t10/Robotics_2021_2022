@@ -6,7 +6,9 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
+import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CommandHandler {
@@ -36,9 +38,34 @@ public class CommandHandler {
                 return setOpmodeField(args, dataSource);
             case ControlCodes.SET_PERSEC_STREAMS:
                 return setPersec(args, dataSource, stream);
+            case ControlCodes.FAIL_ON_PURPOSE:
+                return failOnPurpose(args, dataSource, stream);
             default:
                 return HttpStatusCodeReplies.Bad_Request;
         }
+    }
+    private static String failOnPurpose(String[] args, TelemetryManager dataSource, StreamHandler stream) {
+        if(args.length < 4) return HttpStatusCodeReplies.Bad_Request("Not enough arguments; must be command,streamid,devicename,failtype");
+        if(dataSource.fallibleHardwareMap == null) return HttpStatusCodeReplies.I_m_a_teapot("This opmode has no fallible hardware map. You can add one with `| BITMASKS.FALLIBLE_HARDWARE` in the TelemetryManager constructor.");
+
+        String deviceName = args[2], failTypeStr = args[3].toUpperCase().trim();
+        FailureType failureType;
+        try {
+            failureType = FailureType.valueOf(failTypeStr);
+        } catch(IllegalArgumentException e) {
+            FailureType[] failtypes = FailureType.values();
+            StringBuilder failTypeNames = new StringBuilder();
+            for (FailureType failtype : failtypes) failTypeNames.append(" ").append(failtype.name());
+
+            return HttpStatusCodeReplies.Bad_Request("`" + failTypeStr + "` is not a valid failure type. Use one of" + failTypeNames);
+        }
+        if(!dataSource.fallibleHardwareMap.deviceHashMap.containsKey(deviceName)) {
+            return HttpStatusCodeReplies.Not_Found("No such hardware device `" + deviceName + "`");
+        }
+
+        dataSource.fallibleHardwareMap.deviceHashMap.get(deviceName).setFailureType(failureType);
+
+        return HttpStatusCodeReplies.OK;
     }
     private static String setPersec(String[] args, TelemetryManager dataSource, StreamHandler stream) {
         if(args.length < 3) return HttpStatusCodeReplies.Bad_Request("Not enough arguments; must be command,streamid,persec.");

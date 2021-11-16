@@ -53,7 +53,7 @@ public class    TelemetryManagerIntegratedServerTest {
 
         String dataLine = httpBodyReader.readLine();
         //keep reading until we get data
-        while(dataLine.equals(ControlCodes.DO_NOT_FRET_MOTHER_I_AM_ALIVE_JUST_BORED) || dataLine.startsWith("{\"streamID\"")) {
+        while(!PojoInspectionServerTest.isDataLine(dataLine)) {
             dataLine = httpBodyReader.readLine();
         }
 

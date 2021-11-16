@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class FileSaver {
@@ -21,10 +22,13 @@ public class FileSaver {
 
     public FileSaver(String _fileName) {
         try {
-            this.context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
-        } catch (Throwable ignored) {}
-        this.fileName = _fileName;
-        this.filePathname = context.getExternalFilesDir(null).getPath() + "/" + fileName;
+            Context context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
+            this.fileName = _fileName;
+            this.filePathname = context.getExternalFilesDir(null).getPath() + "/" + fileName;
+        } catch (Throwable ignored) {
+            this.fileName = null;
+            this.filePathname = null;
+        }
     }
 
     public ArrayList<String> readLines() {
@@ -32,6 +36,8 @@ public class FileSaver {
         String thisLine;
         BufferedReader textFile;
         ArrayList<String> lines = new ArrayList<String>();
+
+        if(this.filePathname == null) return lines;
 
         try (BufferedReader br = new BufferedReader(new BufferedReader(new InputStreamReader(new FileInputStream(filePathname))))) {
 
@@ -46,6 +52,8 @@ public class FileSaver {
     }
 
     public String readContent() {
+
+        if(this.filePathname == null) return "";
 
         StringBuilder result = new StringBuilder();
 
@@ -62,11 +70,15 @@ public class FileSaver {
     }
 
     public void deleteFile() {
+        if(this.filePathname == null) return;
+
         File file = new File(filePathname);
         file.delete();
     }
 
     public void overwriteFile(String newContent) {
+        if(this.filePathname == null) return;
+
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(filePathname));
             output.write(newContent);
@@ -78,6 +90,8 @@ public class FileSaver {
     }
 
     public void appendLine(String line) {
+        if(this.filePathname == null) return;
+
         try {
             BufferedWriter output = new BufferedWriter(new FileWriter(filePathname, true));
             output.newLine();

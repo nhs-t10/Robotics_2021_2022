@@ -98,6 +98,8 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
+        runtime = R(program, imu, driver, limbs, sense, telemetryManager);
+
         AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
         telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
@@ -114,7 +116,6 @@ public class template extends AutoautoOpmode {
     public void runTest() {
         this.hardwareMap = new DummyHardwareMap();
         this.init();
-        FeatureManager.logger.log(runtime.program.toString());
         int TEST_ITERATIONS = /*TEST_ITERATIONS*/0/10;
         //noinspection ConstantConditions
         for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();

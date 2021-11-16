@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
@@ -28,7 +30,11 @@ public class TelemetryServerDemo {
 
         FeatureManager.setIsOpModeRunning(true);
 
-        TelemetryManager telemetry = new TelemetryManager(new DummyTelemetry(), new DummyOpmode(), TelemetryManager.BITMASKS.WEBSERVER);
+        DummyOpmode o = new DummyOpmode();
+        TelemetryManager telemetry = new TelemetryManager(new DummyTelemetry(), o, TelemetryManager.BITMASKS.ALL);
+
+        o.hardwareMap.tryGet(DcMotor.class, "foo");
+        o.hardwareMap.tryGet(DcMotor.class, "bar");
 
         while(System.currentTimeMillis() - start < TEST_TIME_MS) {
             telemetry.addData("foo", Math.random() * 3);

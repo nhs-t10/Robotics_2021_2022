@@ -27,6 +27,8 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.sensor.SensorManager) manSensor = (org.firstinspires.ftc.teamcode.managers.sensor.SensorManager)f;
                 if(f instanceof org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager) manTelemetry = (org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager)f;
             }
+            
+            
             scope.put("setIsOpModeRunning", new SetIsOpModeRunningFunction(manFeature));
             scope.put("getRobotName", new GetRobotNameFunction(manFeature));
             
@@ -70,6 +72,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getHorizontalTicks", new GetHorizontalTicksFunction(manMovement));
             scope.put("getVerticalTicks", new GetVerticalTicksFunction(manMovement));
             scope.put("getMeters", new GetMetersFunction(manMovement));
+            scope.put("getCentimeters", new GetCentimetersFunction(manMovement));
             scope.put("getHorizontalMeters", new GetHorizontalMetersFunction(manMovement));
             scope.put("getVerticalMeters", new GetVerticalMetersFunction(manMovement));
             
