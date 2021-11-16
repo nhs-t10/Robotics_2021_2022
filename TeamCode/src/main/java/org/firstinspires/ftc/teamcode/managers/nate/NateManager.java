@@ -10,6 +10,7 @@ public class NateManager extends FeatureManager {
     private boolean input;
     private boolean found;
     private int position;
+    private boolean clawState;
     ManipulationManager hands;
 
     public NateManager(ManipulationManager hands){
@@ -18,6 +19,20 @@ public class NateManager extends FeatureManager {
 
     public void foldOut(){
 
+    }
+
+    public void toggleClawOpen(){
+        if (clawState == false) {
+            hands.setServoPosition("nateClaw", 1.0);
+            clawState = true;
+        }
+        else if (clawState == true){
+            hands.setServoPosition("nateClaw", 0.0);
+            clawState = false;
+        }
+        else{
+            FeatureManager.logger.log("This message should not appear, if it does, we have realized a quantum claw that is both open and closed at the same time.");
+        }
     }
 
     public void positionOne(){

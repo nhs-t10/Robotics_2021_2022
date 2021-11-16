@@ -102,6 +102,12 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode ("b")
                 )
         );
+        input.registerInput("ClawUp",
+                new ButtonNode("righttrigger")
+        );
+        input.registerInput("ClawDown",
+                new ButtonNode("lefttrigger")
+        );
         input.registerInput("spin",
                         new ButtonNode("dpadup")
         );
@@ -153,6 +159,12 @@ public class ExampleTeleopCarousel extends OpMode {
             dashing = false;
         }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
+        if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+            hands.setMotorPower("ClawMover", 1.0);
+        }
+        if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            hands.setMotorPower("ClawMover", 1.0);
+        }
         if (input.getBool("turnAround") == true) {
 
         }
