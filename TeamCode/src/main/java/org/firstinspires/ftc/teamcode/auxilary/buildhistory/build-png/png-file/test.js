@@ -1,9 +1,8 @@
 var fs = require("fs");
 var PngFile = require("./png-file.js");
-var writeText = require("./write-text");
 
-var RENDER_WIDTH = 1600;
-var RENDER_HEIGHT = 800;
+var RENDER_WIDTH = 0xff_ff - 9;
+var RENDER_HEIGHT = 1;
 
 var pixels = [];
 for(var i = 0; i < RENDER_HEIGHT; i++) {
@@ -14,49 +13,22 @@ for(var i = 0; i < RENDER_HEIGHT; i++) {
     pixels.push(row);
 }
 
-var png = new PngFile(pixels, RENDER_WIDTH / 2);
+var png = new PngFile(pixels, RENDER_WIDTH);
+//for(var i = 0; i < 1666; i++) png.addOptionalChunk("TEXT", makeFullTextChunk());
+
 fs.writeFileSync(__dirname + "/test.png", png.toBuffer());
 
-
-function color(y, x) {
-    y = (y / RENDER_HEIGHT) * 400;
-    x = (x / RENDER_WIDTH) * 800;
-    y = 400 - y;
-
-    
-
-    //white slice
-    if(y > (400 / 250) * x - 150 * 400 / 250) {
-        return parseHex("#f7fdfd");
-    } //gradient slice border
-    else if(y > (400 / 250) * (x - 20) - 150 * 400 / 250) {
-        if(y < 200) {
-            return interpolate(parseHex("#57efec"), parseHex("#e85e90"), y / 200);
-        } else {
-            return interpolate(parseHex("#e85e90"), parseHex("#fcc9ba"), (y - 200) / 200);
-        }
-    } //code bg
-    else if(
-        (((y > 40 && y < 360) ||
-        (x > 40 && x < 760)) &&
-        ((y > 20 && y < 380) &&
-        (x > 20 && x < 780))) ||
-        Math.pow(Math.min(Math.abs(y - 360), Math.abs(y - 40)), 2) + Math.pow(Math.abs(x - 760) , 2) < 400
-        
-    ) {
-        return parseHex("#1b1d35");
-    }//background
-    else {
-        return parseHex("#f7f5f5");
-    }
+function makeFullTextChunk() {
+    var c = String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+    return Buffer.concat([
+        Buffer.from(c, "ascii"),
+        Buffer.from([0]),
+        Buffer.from(c.repeat(0xff_ff - 9), "ascii")
+    ]);
 }
 
-function interpolate(start, end, time) {
-    return [
-        start[0] + time * (end[0] - start[0]),
-        start[1] + time * (end[1] - start[1]),
-        start[2] + time * (end[2] - start[2])
-    ];
+function color(y, x) {
+    return parseHex("#ffffff");
 }
 
 function parseHex(hex) {

@@ -55,7 +55,7 @@ public class CommandHandler {
         } catch(IllegalArgumentException e) {
             FailureType[] failtypes = FailureType.values();
             StringBuilder failTypeNames = new StringBuilder();
-            for(int i = 0; i < failtypes.length; i++) failTypeNames.append(" ").append(failtypes[i].name());
+            for (FailureType failtype : failtypes) failTypeNames.append(" ").append(failtype.name());
 
             return HttpStatusCodeReplies.Bad_Request("`" + failTypeStr + "` is not a valid failure type. Use one of" + failTypeNames);
         }

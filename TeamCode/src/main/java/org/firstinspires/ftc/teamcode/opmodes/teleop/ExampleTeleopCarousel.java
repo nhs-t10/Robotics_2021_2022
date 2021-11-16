@@ -43,7 +43,7 @@ public class ExampleTeleopCarousel extends OpMode {
     public void init() {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
 
 //        imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));

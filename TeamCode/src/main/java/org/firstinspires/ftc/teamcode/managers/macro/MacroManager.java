@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class MacroManager extends FeatureManager {
     private final FeatureManager[] managers;
-    private HashMap<String, Macro> macros;
+    private final HashMap<String, Macro> macros;
     
     private Macro runningMacro;
     private MacroRunnerThread runner;
@@ -56,11 +56,15 @@ public class MacroManager extends FeatureManager {
         }
     }
     public void stopMacro() {
+        synchronized (macros) {
             runningMacro = null;
-            if(runner != null) runner.stopMacro();
-            runner = null;
+        }
+        if(runner != null) runner.stopMacro();
+        runner = null;
     }
     public boolean isMacroRunning() {
-        return runningMacro != null;
+        synchronized (macros) {
+            return runningMacro != null;
+        }
     }
 }

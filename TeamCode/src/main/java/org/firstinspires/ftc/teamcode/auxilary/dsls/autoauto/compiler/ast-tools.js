@@ -129,8 +129,6 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${stringDefinitions[ast.statepaths[0].label.value]});
             ${locationSetters.join("")}`;
 
-            var runtimeSetup = `runtime = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoRuntime}(program, driver, limbs, sense, telemetryManager);`;
-
             result = "";
             result += strings + "\n\n";
             var creationStatements = (creation).split(",");
@@ -155,8 +153,6 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var jsonProgram = JSON.stringify(ast);
 
             var jsonSettingCode = "";
-
-            jsonSettingCode += runtimeSetup + "\n\n";
 
             for(var i = 0; i < jsonProgram.length; i += 32768) {
                 jsonSettingCode += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 32768)) + ");\n";
@@ -460,11 +456,24 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
     }
     
     if (typeof result == "object" && result.definitions != "" && !result.noLocation && statepathNonce) {
-        locationSetters.push(`sL(${nonce},L(` +
-            (statepathNonce) + "," + JSON.stringify(stateNumber || 0) + "," +
-            JSON.stringify(ast.location.start.line) + "," + JSON.stringify(ast.location.start.column) + "));");
+        locationSetters.push(makeLocationSetter(nonce, statepathNonce, stateNumber, ast.location.start.line, ast.location.start.column));
     }
     return result;
+}
+
+var lastLocationSetterInfo = [];
+function makeLocationSetter(nonce, statepathNonce, stateNumber, line, column) {
+    var data = [statepathNonce, stateNumber || 0 , line, column];
+    var similarityIndex = 0;
+    for(var i = 0; i < data.length; i++) {
+        if(lastLocationSetterInfo[i] == data[i]) similarityIndex++;
+        else break;
+    }
+    var newData = data.slice(similarityIndex);
+
+    lastLocationSetterInfo = data;
+
+    return `sL(${nonce},L(` + newData.join(",") + "));";
 }
 
 function genNonce() {

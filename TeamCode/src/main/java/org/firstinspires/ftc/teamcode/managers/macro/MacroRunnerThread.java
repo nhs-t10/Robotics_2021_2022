@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.macro;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+
 public class MacroRunnerThread extends Thread {
     Macro macro;
     boolean running = true;

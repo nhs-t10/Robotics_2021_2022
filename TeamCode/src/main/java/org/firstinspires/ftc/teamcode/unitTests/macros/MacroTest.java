@@ -48,6 +48,7 @@ public class MacroTest {
         while(macroManager.isMacroRunning()) {
 
         }
+        FeatureManager.logger.log("mt loop over");
 
         FeatureManager.setIsOpModeRunning(false);
 

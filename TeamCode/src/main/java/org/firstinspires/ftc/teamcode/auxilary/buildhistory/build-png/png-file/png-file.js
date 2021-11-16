@@ -10,6 +10,7 @@ var FILTER_TYPE = 0;
  */
 module.exports = function PngFile(_pixels, width) {
     var pixels = _pixels;
+    var optionalChunks = [];
     
     if(!width) width = pixels[0].length;
      
@@ -28,6 +29,9 @@ module.exports = function PngFile(_pixels, width) {
             scaledPixels.push(row);
         }
         pixels = scaledPixels;
+    }
+    this.addOptionalChunk = function(type, data) {
+        optionalChunks.push(new Chunk(type, data).toBuffer());
     }
     this.toBuffer = function() {
         var header = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
@@ -89,12 +93,16 @@ module.exports = function PngFile(_pixels, width) {
 
         var tailChunk = new Chunk("IEND", Buffer.alloc(0));
 
-        return Buffer.concat([
+        var chunks = [
             header,
             headerChunk.toBuffer(),
             dataChunk.toBuffer(),
             tailChunk.toBuffer()
-        ])
+        ];
+
+        for(var i = 0; i < optionalChunks.length; i++) chunks.push(optionalChunks[i]);
+
+        return Buffer.concat(chunks)
 
     }
     return this;

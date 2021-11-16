@@ -14,8 +14,24 @@ public class Location {
 
     //static alias to constructor
     //for code compression purposes
+    private static String lastStatepath;
+    private static int lastStatenumber;
+    private static int lastLine;
+    private static int lastCol;
     public static Location L (String statepath, int stateNumber, int line, int col) {
         return new Location(statepath, stateNumber, line, col);
+    }
+    public static Location L(int stateNumber, int line, int col) {
+        return new Location(lastStatepath, stateNumber, line, col);
+    }
+    public static Location L(int line, int col) {
+        return new Location(lastStatepath, lastStatenumber, line, col);
+    }
+    public static Location L(int col) {
+        return new Location(lastStatepath, lastStatenumber, lastLine, col);
+    }
+    public static Location L() {
+        return new Location(lastStatepath, lastStatenumber, lastLine, lastCol);
     }
 
     public Location(String statepath, int stateNumber, int line, int col) {

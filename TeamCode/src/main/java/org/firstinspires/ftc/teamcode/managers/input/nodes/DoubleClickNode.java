@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
-import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnits;
+import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
@@ -15,7 +15,7 @@ public class DoubleClickNode extends InputManagerInputNode {
     private long timeClickedFirst = 0;
     private boolean result;
 
-    private final long clickLimitOffsetNs = TimeUnits.convertBetween(TimeUnits.MS, TimeUnits.NS, FeatureManager.DOUBLE_CLICK_TIME_MS);
+    private final long clickLimitOffsetNs = (long) TimeUnit.convertBetween(TimeUnit.MS, TimeUnit.NS, FeatureManager.DOUBLE_CLICK_TIME_MS);
 
 
     public DoubleClickNode(InputManagerInputNode node) {
