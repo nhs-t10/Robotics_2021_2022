@@ -116,7 +116,6 @@ public class template extends AutoautoOpmode {
     public void runTest() {
         this.hardwareMap = new DummyHardwareMap();
         this.init();
-        FeatureManager.logger.log(runtime.program.toString());
         int TEST_ITERATIONS = /*TEST_ITERATIONS*/0/10;
         //noinspection ConstantConditions
         for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();

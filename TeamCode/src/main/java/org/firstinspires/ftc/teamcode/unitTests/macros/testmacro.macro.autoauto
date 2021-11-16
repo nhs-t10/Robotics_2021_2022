@@ -1,4 +1,4 @@
 #init:
-    log("0"), next;
-    log("1"), stopMacro(), log("1.5"), next;
+    log("First state"), next;
+    log("Second state"), stopMacro(), log("Second state, after stopMacro()"), next;
     log("failed :( we got to the next state despite stopping")

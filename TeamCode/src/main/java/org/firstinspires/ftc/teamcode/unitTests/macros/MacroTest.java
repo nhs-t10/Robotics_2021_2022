@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.unitTests.macros;
 
+import org.firstinspires.ftc.teamcode.__compiledautoauto.PokuAuto__autoauto;
+import org.firstinspires.ftc.teamcode.__compiledautoauto.RedWarehouseSide__autoauto;
 import org.firstinspires.ftc.teamcode.__compiledautoauto.Testmacro__macro_autoauto;
 import org.firstinspires.ftc.teamcode.auxilary.Sensor;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -21,6 +24,8 @@ import org.junit.Test;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class MacroTest {
     @Test
@@ -45,14 +50,17 @@ public class MacroTest {
 
         macroManager.runMacro("test");
 
-        while(macroManager.isMacroRunning()) {
+        long startTime = System.currentTimeMillis();
 
+        while(macroManager.isMacroRunning()) {
+            if(System.currentTimeMillis() - 1000 > startTime) {
+                fail();
+            }
         }
-        FeatureManager.logger.log("mt loop over");
 
         FeatureManager.setIsOpModeRunning(false);
 
         String logOutput = ((DummyTelemetry.DummyLog)opmode.telemetry.log()).getLogText();
-        assertThat("Log printed correctly", logOutput, containsString("0\n1\n1.5\n"));
+        assertThat("Log printed correctly", logOutput, containsString("First state\nSecond state\n"));
     }
 }

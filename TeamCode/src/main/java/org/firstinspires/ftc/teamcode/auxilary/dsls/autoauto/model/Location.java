@@ -19,15 +19,26 @@ public class Location {
     private static int lastLine;
     private static int lastCol;
     public static Location L (String statepath, int stateNumber, int line, int col) {
+        lastStatepath = statepath;
+        lastStatenumber = stateNumber;
+        lastLine = line;
+        lastCol = col;
+
         return new Location(statepath, stateNumber, line, col);
     }
     public static Location L(int stateNumber, int line, int col) {
+        lastStatenumber = stateNumber;
+        lastLine = line;
+        lastCol = col;
         return new Location(lastStatepath, stateNumber, line, col);
     }
     public static Location L(int line, int col) {
+        lastLine = line;
+        lastCol = col;
         return new Location(lastStatepath, lastStatenumber, line, col);
     }
     public static Location L(int col) {
+        lastCol = col;
         return new Location(lastStatepath, lastStatenumber, lastLine, col);
     }
     public static Location L() {

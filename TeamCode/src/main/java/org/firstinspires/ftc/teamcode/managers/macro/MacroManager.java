@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.macro;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -11,7 +12,9 @@ public class MacroManager extends FeatureManager {
     private final FeatureManager[] managers;
     private final HashMap<String, Macro> macros;
     
+    @Nullable
     private Macro runningMacro;
+    @Nullable
     private MacroRunnerThread runner;
 
     public MacroManager(FeatureManager... managers) {
@@ -29,13 +32,12 @@ public class MacroManager extends FeatureManager {
             managersIncludingSelf[i] = managers[i];
             if(managers[i] instanceof MacroManager) managersArrayHasMacroManager = true;
         }
-        if(!managersArrayHasMacroManager) {
-            managersIncludingSelf[managers.length] = this;
+        if(managersArrayHasMacroManager) {
+            return managers;
         } else {
-            //fill it in to ensure no nullreferencerrors. This will be filtered later, so we don't have to worry about duplicates
-            managersIncludingSelf[managers.length] = managersIncludingSelf[managers.length - 1];
+            managersIncludingSelf[managers.length] = this;
+            return managersIncludingSelf;
         }
-        return managersIncludingSelf;
     }
 
     public void registerMacro(String name, Macro macro) {
