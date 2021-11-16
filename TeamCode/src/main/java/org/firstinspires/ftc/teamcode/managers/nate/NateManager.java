@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 public class NateManager extends FeatureManager {
     private boolean input;
     private boolean found;
+    private int position;
     ManipulationManager hands;
 
     public NateManager(ManipulationManager hands){
@@ -18,11 +19,49 @@ public class NateManager extends FeatureManager {
     public void foldOut(){
 
     }
+
+    public void positionOne(){
+        hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("outake", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 1;
+    }
+
+    public void positionTwo(){
+        hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("outake", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 2;
+    }
+
+    public void positionThree(){
+        hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("outake", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 3;
+    }
+
     public void homing(){
-        if (input) {
+        if (position == 1) {
             boolean found=true;
             hands.setMotorPower("outake",0);
             hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos1 to Home
+        }
+        else if (position == 2){
+            boolean found=true;
+            hands.setMotorPower("outake",0);
+            hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos2 to Home
+        }
+        else if (position == 3){
+            boolean found=true;
+            hands.setMotorPower("outake",0);
+            hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos3 to Home
+        }
+        else {
+            FeatureManager.logger.log("This message should not appear, if it does, something is wrong with NateManager");
         }
         if (found) {
             hands.setMotorPower("outake",-1);

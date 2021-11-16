@@ -7,13 +7,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
@@ -31,6 +34,7 @@ public class ExampleTeleopCarousel extends OpMode {
     private SensorManager sensor;
     private ImuManager imu;
     private MacroManager macroManager;
+    private NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
 
@@ -79,6 +83,24 @@ public class ExampleTeleopCarousel extends OpMode {
         );
         input.registerInput("Carousel",
                 new ButtonNode("y")
+        );
+        input.registerInput("ClawPos1",
+                new BothNode(
+                        new ButtonNode("leftbumper"),
+                        new ButtonNode ("x")
+                    )
+                );
+        input.registerInput("ClawPos2",
+                new BothNode(
+                        new ButtonNode("leftbumper"),
+                        new ButtonNode ("y")
+                )
+        );
+        input.registerInput("ClawPos3",
+                new BothNode(
+                        new ButtonNode("leftbumper"),
+                        new ButtonNode ("b")
+                )
         );
         input.registerInput("spin",
                         new ButtonNode("dpadup")
@@ -132,8 +154,19 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("turnAround") == true) {
+
         }
         if (input.getBool("spin") ==true) {
+
+        }
+        if (input.getBool("ClawPos1") == true) {
+            clawPosition.positionOne();
+        }
+        if (input.getBool("ClawPos2") == true) {
+            clawPosition.positionTwo();
+        }
+        if (input.getBool("ClawPos3") == true) {
+            clawPosition.positionThree();
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
