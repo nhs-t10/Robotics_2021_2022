@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 public class NateManager extends FeatureManager {
     private boolean input;
     private boolean found;
+    private int position;
     ManipulationManager hands;
 
     public NateManager(ManipulationManager hands){
@@ -18,16 +19,54 @@ public class NateManager extends FeatureManager {
     public void foldOut(){
 
     }
+
+    public void positionOne(){
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 1;
+    }
+
+    public void positionTwo(){
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 2;
+    }
+
+    public void positionThree(){
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+
+        position = 3;
+    }
+
     public void homing(){
-        if (input) {
+        if (position == 1) {
             boolean found=true;
-            hands.setMotorPower("outake",0);
-            hands.setMotorMode("outake", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            hands.setMotorPower("ClawMotor",0);
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos1 to Home
+        }
+        else if (position == 2){
+            boolean found=true;
+            hands.setMotorPower("ClawMotor",0);
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos2 to Home
+        }
+        else if (position == 3){
+            boolean found=true;
+            hands.setMotorPower("ClawMotor",0);
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Move the distance from Pos3 to Home
+        }
+        else {
+            FeatureManager.logger.log("This message should not appear, if it does, something is wrong with NateManager");
         }
         if (found) {
-            hands.setMotorPower("outake",-1);
+            hands.setMotorPower("ClawMotor",-1);
         } else {
-            hands.setMotorPower("outake", PaulMath.proportionalPID((float) hands.getMotorPosition("outake"),0));
+            hands.setMotorPower("ClawMotor", PaulMath.proportionalPID((float) hands.getMotorPosition("ClawMotor"),0));
         }
     }
 }
