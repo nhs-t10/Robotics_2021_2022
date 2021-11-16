@@ -21,6 +21,18 @@ var server = http.createServer((req, res) => {
 
             res.write(message);
         }, 1000/30);
+    } else if(req.url.includes("/fallible-hardware-devices")) {
+        res.setHeader("Content-Type", "application/json");
+        res.writeHead(200);
+        res.write(JSON.stringify({
+            "foo": {
+                capabilities: []
+            },
+            "bar": {
+                capabilities: []
+            }
+        }));
+        res.end();
     } else {
         res.setHeader("Content-Type", "text/html;charset=UTF-8");
         res.writeHead(200);
@@ -29,7 +41,7 @@ var server = http.createServer((req, res) => {
     }
 });
 
-server.listen(5565);
+server.listen(5564);
 
 function newData() {
     return Math.random() > 0.2;
