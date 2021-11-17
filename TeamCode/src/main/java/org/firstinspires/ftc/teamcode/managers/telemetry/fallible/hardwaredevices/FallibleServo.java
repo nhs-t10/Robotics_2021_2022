@@ -17,6 +17,7 @@ public class FallibleServo implements Servo, FallibleHardwareDevice {
 
     @Override
     public ServoController getController() {
+
         return servo.getController();
     }
 

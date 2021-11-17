@@ -77,6 +77,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
             scope.put("getVerticalMeters", new GetVerticalMetersFunction(manMovement));
             
             scope.put("foldOut", new FoldOutFunction(manNate));
+            scope.put("toggleClawOpen", new ToggleClawOpenFunction(manNate));
             scope.put("positionOne", new PositionOneFunction(manNate));
             scope.put("positionTwo", new PositionTwoFunction(manNate));
             scope.put("positionThree", new PositionThreeFunction(manNate));

@@ -36,7 +36,7 @@ public class FeatureManager {
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
             W(1, -1, 1, -1),
             new OmniCalcComponents(
-                vertical      (1f,1f,1f,1f),
+                vertical      (-1f,-1f,-1f,-1f),
                 horizontal    (-1f,1f,1f,-1f),
                 rotational    (-1f, 1f, -1f, 1f)
             ),

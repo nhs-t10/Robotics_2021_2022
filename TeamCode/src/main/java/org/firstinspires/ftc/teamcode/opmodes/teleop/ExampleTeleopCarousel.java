@@ -62,8 +62,8 @@ public class ExampleTeleopCarousel extends OpMode {
         hands = new ManipulationManager(
                 hardwareMap,
                 new String[] {},
-                new String[] {},
-                new String[] {"Carousel"}
+                new String[] {"nateClaw"},
+                new String[] {"Carousel", "ClawMover"}
         );
 
         input = new InputManager(gamepad1, gamepad2);
@@ -102,6 +102,9 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode ("b")
                 )
         );
+        input.registerInput("ToggleClaw",
+                new ButtonNode("rightbumper")
+                );
         input.registerInput("ClawUp",
                 new ButtonNode("righttrigger")
         );
@@ -160,10 +163,13 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-            hands.setMotorPower("ClawMover", 1.0);
+            hands.setMotorPower("ClawMover", 0.25);
         }
         if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-            hands.setMotorPower("ClawMover", 1.0);
+            hands.setMotorPower("ClawMover", -0.25);
+        }
+        if (input.getBool("ToggleClaw") == true){
+            clawPosition.toggleClawOpen();
         }
         if (input.getBool("turnAround") == true) {
 

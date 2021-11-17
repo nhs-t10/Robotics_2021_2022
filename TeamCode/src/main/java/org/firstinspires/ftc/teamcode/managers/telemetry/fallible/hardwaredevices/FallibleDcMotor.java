@@ -167,9 +167,7 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
 
     @Override
     public int getVersion() {
-        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
-        else if(failureType == FailureType.CONTROL_FAILURE) return motor.getVersion();
-        else return motor.getVersion();
+        return motor.getVersion();
     }
 
     @Override
