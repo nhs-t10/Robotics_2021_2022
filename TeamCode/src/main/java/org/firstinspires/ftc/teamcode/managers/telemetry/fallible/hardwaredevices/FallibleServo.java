@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.fallible.hardwaredevices;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
@@ -17,32 +18,44 @@ public class FallibleServo implements Servo, FallibleHardwareDevice {
 
     @Override
     public ServoController getController() {
-        return servo.getController();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return servo.getController();
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getController();
+        else return servo.getController();
     }
 
     @Override
     public int getPortNumber() {
-        return servo.getPortNumber();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getPortNumber();
+        else return servo.getPortNumber();
     }
 
     @Override
     public void setDirection(Direction direction) {
-        servo.setDirection(direction);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else servo.setDirection(direction);
     }
 
     @Override
     public Direction getDirection() {
-        return servo.getDirection();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return Direction.REVERSE;
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getDirection();
+        else return servo.getDirection();
     }
 
     @Override
     public void setPosition(double position) {
-        servo.setPosition(position);
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else servo.setPosition(position);
     }
 
     @Override
     public double getPosition() {
-        return servo.getPosition();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getPosition();
+        else return servo.getPosition();
     }
 
     @Override
@@ -52,32 +65,44 @@ public class FallibleServo implements Servo, FallibleHardwareDevice {
 
     @Override
     public Manufacturer getManufacturer() {
-        return servo.getManufacturer();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return Manufacturer.Other;
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getManufacturer();
+        else return servo.getManufacturer();
     }
 
     @Override
     public String getDeviceName() {
-        return servo.getDeviceName();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return "";
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getDeviceName();
+        else return servo.getDeviceName();
     }
 
     @Override
     public String getConnectionInfo() {
-        return servo.getConnectionInfo();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return "";
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getConnectionInfo();
+        else return servo.getConnectionInfo();
     }
 
     @Override
     public int getVersion() {
-        return servo.getVersion();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
+        else if(failureType == FailureType.CONTROL_FAILURE) return servo.getVersion();
+        else return servo.getVersion();
     }
 
     @Override
     public void resetDeviceConfigurationForOpMode() {
-        servo.resetDeviceConfigurationForOpMode();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else servo.resetDeviceConfigurationForOpMode();
     }
 
     @Override
     public void close() {
-        servo.close();
+        if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
+        else if(failureType == FailureType.CONTROL_FAILURE) ;
+        else servo.close();
     }
 
     @Override

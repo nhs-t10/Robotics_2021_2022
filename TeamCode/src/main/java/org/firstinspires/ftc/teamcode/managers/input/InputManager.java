@@ -12,7 +12,6 @@ import java.util.HashMap;
  * Handle input (button combos, keybinds, etc.) for gamepads.
  */
 public class InputManager extends FeatureManager {
-    // TODO: Implement with new, non-C1 format
     public Gamepad gamepad;
     public Gamepad gamepad2;
 

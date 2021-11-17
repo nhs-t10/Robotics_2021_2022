@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.HardwareCapability;
 
 public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
-
-
     private final DcMotor motor;
     private FailureType failureType;
 
@@ -188,7 +186,7 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
 
     @Override
     public void setFailureType(FailureType f) {
-        this.failureType = FailureType.NOT_FAILING;
+        this.failureType = f;
     }
 
     @Override

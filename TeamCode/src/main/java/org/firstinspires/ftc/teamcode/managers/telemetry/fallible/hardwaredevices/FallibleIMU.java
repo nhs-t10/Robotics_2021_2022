@@ -25,7 +25,7 @@ public class FallibleIMU implements BNO055IMU, FallibleHardwareDevice {
         this.imu = imu;
         this.failureType = FailureType.NOT_FAILING;
     }
-
+//TODO: Make this Fallible
     @Override
     public boolean initialize(@NonNull Parameters parameters) { return imu.initialize(parameters); }
 
@@ -119,7 +119,7 @@ public class FallibleIMU implements BNO055IMU, FallibleHardwareDevice {
 
     @Override
     public void setFailureType(FailureType f) {
-        this.failureType = FailureType.NOT_FAILING;
+        this.failureType = f;
     }
 
     @Override
