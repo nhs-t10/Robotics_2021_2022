@@ -72,17 +72,17 @@ public class template extends AutoautoOpmode {
                 hardwareMap.get(DcMotor.class, "fr"),
                 hardwareMap.get(DcMotor.class, "bl"),
                 hardwareMap.get(DcMotor.class, "br"));
-        limbs = new ManipulationManager(
-                new CRServo[] {
-                        /*CRSERVOS*/
+        limbs = new ManipulationManager(hardwareMap,
+                new String[] {
+
                 },
                 new String[] {
-                        /*CRSERVO_NAMES*/
+                    "leftNateMover", "rightNateMover", "nateClaw"
                 },
-                new Servo[] { /*NSERVOS*/ },
-                new String[] { /*NSERVO_NAMES*/ },
-                new DcMotor[] {},
-                new String[] {}
+                new String[] {
+                    "ClawMover"
+                }
+
         );
         driver.resetEncoders();
         driver.runWithOutEncoders();
