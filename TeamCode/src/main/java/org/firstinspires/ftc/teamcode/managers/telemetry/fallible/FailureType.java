@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.fallible;
 
-public enum FailureType {
+public enum
+FailureType {
     /**
      * Turns off motors, servos, etc. Denies further control.
      */

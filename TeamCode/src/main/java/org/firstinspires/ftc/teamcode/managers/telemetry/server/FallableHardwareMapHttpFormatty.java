@@ -18,7 +18,7 @@ public class FallableHardwareMapHttpFormatty {
         for(Map.Entry<String, FallibleHardwareDevice> d : devices.entrySet()) {
             objectLines[i] = PaulMath.JSONify(d.getKey()) + ":" + "{" +
                     "\"type\":"+ PaulMath.JSONify(d.getValue().getClass().getName()) +
-                    "\"capabilities\"" + PaulMath.JSONify(d.getValue().getCapabilities()) +
+                    ",\"capabilities\":" + PaulMath.JSONify(d.getValue().getCapabilities()) +
                     "}";
             i++;
         }

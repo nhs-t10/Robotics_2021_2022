@@ -36,6 +36,17 @@ public class FallibleHardwareMap extends HardwareMap {
         return (T)fhd;
     }
 
+    @Override
+    public <T> T tryGet(Class<? extends T> classOrInterface, String deviceName) {
+        FallibleHardwareDevice fhd = getFallibleDevice(classOrInterface,deviceName);
+
+        //if there's no fallible class for this hardware device, it'll be null. In that case, just go directly to the real map.
+        if(fhd == null) return internalHardwareMap.tryGet(classOrInterface, deviceName);
+
+        deviceHashMap.put(deviceName,fhd);
+        return (T)fhd;
+    }
+
     private <T> FallibleHardwareDevice getFallibleDevice(Class<? extends T> h, String deviceName) {
         T actualDevice = internalHardwareMap.get(h, deviceName);
         if (DcMotor.class.isAssignableFrom(actualDevice.getClass())) return (new FallibleDcMotor((DcMotor) actualDevice));
