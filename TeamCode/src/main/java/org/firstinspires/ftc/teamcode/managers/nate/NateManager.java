@@ -10,7 +10,7 @@ public class NateManager extends FeatureManager {
     private boolean input;
     private boolean found;
     private int position;
-    private boolean clawState;
+    private boolean clawState = false;
     ManipulationManager hands;
 
     public NateManager(ManipulationManager hands){
@@ -35,52 +35,34 @@ public class NateManager extends FeatureManager {
         }
     }
 
-//    public void positionOne(){
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        position = 1;
-//    }
-//
-//    public void positionTwo(){
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        position = 2;
-//    }
-//
-//    public void positionThree(){
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        position = 3;
-//    }
+    public void positionOne(){
+        position = 1;
+
+        hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void positionTwo(){
+        position = 2;
+
+        hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void positionThree(){
+        position = 3;
+
+        hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void homing(){
-        if (position == 1) {
-            boolean found=true;
+        if (input) {
+            boolean found = true;
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            // Move the distance from Pos1 to Home
         }
-        else if (position == 2){
-            boolean found=true;
-            hands.setMotorPower("ClawMotor",0);
-            hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            // Move the distance from Pos2 to Home
-        }
-        else if (position == 3){
-            boolean found=true;
-            hands.setMotorPower("ClawMotor",0);
-            hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            // Move the distance from Pos3 to Home
-        }
-        else {
-            FeatureManager.logger.log("This message should not appear, if it does, something is wrong with NateManager");
-        }
-        if (found) {
-            hands.setMotorPower("ClawMotor",-1);
-        } else {
+        if (!found) {
             hands.setMotorPower("ClawMotor", PaulMath.proportionalPID((float) hands.getMotorPosition("ClawMotor"),0));
         }
     }

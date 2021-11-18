@@ -83,11 +83,6 @@ public class ManipulationManager extends FeatureManager {
         return servos[index];
     }
 
-    public void setMotorPower(String name, double power) {
-        int index = (Arrays.asList(motorNames)).indexOf(name);
-        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
-        motors[index].setPower(power);
-    }
 
     public double getMotorPower(String name) {
         int index = (Arrays.asList(motorNames)).indexOf(name);
@@ -148,6 +143,22 @@ public class ManipulationManager extends FeatureManager {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
         motors[index].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void setMotorPosition(String name, int position) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+        motors[index].setTargetPosition(position);
+    }
+
+    public void setMotorPosition(int i, int position) {
+        motors[i].setTargetPosition(position);
+    }
+
+    public void setMotorPower(String name, double power) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+        motors[index].setPower(power);
     }
 
     public void setMotorPower(int i, double power) {

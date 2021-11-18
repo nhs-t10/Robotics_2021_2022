@@ -88,8 +88,20 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         
     var template = processTemplate(callMethodSource, definedClass, classname);
     
-    fs.writeFileSync(path.join(robotFunctionsDirectory, classname + ".java"), template);
-    
+//    fs.writeFileSync(path.join(robotFunctionsDirectory, classname + ".java"), template);
+
+
+
+    var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
+
+     fs.mkdirSync(path.dirname(ourPath), { recursive: true});
+
+     fs.writeFileSync(ourPath, template);
+
+
+
+
+
     return [noConflictName, classname];
 }
 
