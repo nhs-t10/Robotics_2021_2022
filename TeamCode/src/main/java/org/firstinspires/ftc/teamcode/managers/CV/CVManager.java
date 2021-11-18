@@ -7,6 +7,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+// "mat" mean image
+
 public class CVManager {
 //    public Mat processFrame(Mat input) {
 //
