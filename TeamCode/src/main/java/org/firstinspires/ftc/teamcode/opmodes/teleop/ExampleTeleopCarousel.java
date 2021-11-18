@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
+import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
@@ -64,7 +65,7 @@ public class ExampleTeleopCarousel extends OpMode {
                 hardwareMap,
                 new String[] {"nateMoverLeft", "nateMoverRight"},
                 new String[] {"nateClaw"},
-                new String[] {"Carousel", "ClawMover"}
+                new String[] {"Carousel", "ClawMotor"}
         );
 
         clawPosition = new NateManager(hands);
@@ -116,9 +117,9 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("ClawShiftOut",
                 new TimeNode(1000,
                         new BothNode(
-                            new ButtonNode("rightbumper"),
+                                new ButtonNode("rightbumper"),
                                 new ButtonNode("b")
-                )
+                        )
                 )
         );
         input.registerInput("ToggleClaw",
@@ -145,6 +146,7 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("turnAround",
             new ButtonNode("right_stick_button")
         );
+        input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
     }
 
     @Override
@@ -182,13 +184,13 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
         if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-            hands.setMotorPower("ClawMover", 0.25);
+            hands.setMotorPower("ClawMotor", 0.25);
         }
         if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-            hands.setMotorPower("ClawMover", -0.25);
+            hands.setMotorPower("ClawMotor", -0.25);
         }
         if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false){
-            hands.setMotorPower("ClawMover", 0.0);
+            hands.setMotorPower("ClawMotor", 0.0);
         }
         if (input.getBool("ToggleClaw") == true){
             clawPosition.toggleClawOpen();
@@ -211,15 +213,15 @@ public class ExampleTeleopCarousel extends OpMode {
         if (input.getBool("spin") ==true) {
 
         }
-        if (input.getBool("ClawPos1") == true) {
-            clawPosition.positionOne();
-        }
-        if (input.getBool("ClawPos2") == true) {
-            clawPosition.positionTwo();
-        }
-        if (input.getBool("ClawPos3") == true) {
-            clawPosition.positionThree();
-        }
+//        if (input.getBool("ClawPos1") == true) {
+//            clawPosition.positionOne();
+//        }
+//        if (input.getBool("ClawPos2") == true) {
+//            clawPosition.positionTwo();
+//        }
+//        if (input.getBool("ClawPos3") == true) {
+//            clawPosition.positionThree();
+//        }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
@@ -227,6 +229,7 @@ public class ExampleTeleopCarousel extends OpMode {
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
+        telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.update();
     }
 

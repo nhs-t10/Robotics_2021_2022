@@ -35,26 +35,26 @@ public class NateManager extends FeatureManager {
         }
     }
 
-    public void positionOne(){
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-
-        position = 1;
-    }
-
-    public void positionTwo(){
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-
-        position = 2;
-    }
-
-    public void positionThree(){
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
-
-        position = 3;
-    }
+//    public void positionOne(){
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        position = 1;
+//    }
+//
+//    public void positionTwo(){
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        position = 2;
+//    }
+//
+//    public void positionThree(){
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        position = 3;
+//    }
 
     public void homing(){
         if (position == 1) {
