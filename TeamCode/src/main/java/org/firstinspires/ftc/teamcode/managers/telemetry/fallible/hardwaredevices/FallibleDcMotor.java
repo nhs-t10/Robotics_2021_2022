@@ -4,12 +4,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.HardwareCapability;
 
 public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
     private final DcMotor motor;
     private FailureType failureType;
+    private JerkingThread jerkingThread;
+    private int lastPosition;
 
     public FallibleDcMotor(DcMotor motor) {
         this.motor = motor;
@@ -95,8 +98,12 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
 
     @Override
     public int getCurrentPosition() {
+        if(failureType != FailureType.SENSOR_FAILURE) lastPosition = motor.getCurrentPosition();
+
         if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0;
         else if(failureType == FailureType.CONTROL_FAILURE) return 0;
+        else if(failureType == FailureType.SENSOR_FAILURE) return lastPosition;
+        else if(failureType == FailureType.SENSOR_FLAILURE) return (int) (Math.random() * FeatureManager.getRobotConfiguration().encoderTicksPerRotation);
         else return motor.getCurrentPosition();
     }
 
@@ -130,8 +137,10 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
 
     @Override
     public void setPower(double power) {
+
         if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return;
         else if(failureType == FailureType.CONTROL_FAILURE) return;
+        else if(failureType == FailureType.POWER_FAILURE) motor.setPower(0);
         else motor.setPower(power);
     }
 
@@ -139,6 +148,7 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
     public double getPower() {
         if(failureType == FailureType.INTERMITTENT_FAILURES && Math.random() < 0.5) return 0.0;
         else if(failureType == FailureType.CONTROL_FAILURE) return motor.getPower();
+        else if(failureType == FailureType.POWER_FAILURE) return 0.0;
         else return motor.getPower();
     }
 
@@ -184,11 +194,48 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
 
     @Override
     public void setFailureType(FailureType f) {
+        if(this.failureType == FailureType.DIRECTION_FAILURE) invertDirection();
+        if(f == FailureType.DIRECTION_FAILURE) invertDirection();
+
+        if(f == FailureType.JERKING) startJerking();
+        else stopJerking();
+
         this.failureType = f;
     }
 
     @Override
     public HardwareCapability[] getCapabilities() {
         return new HardwareCapability[] {HardwareCapability.MOTOR};
+    }
+
+    private void invertDirection() {
+        if(motor.getDirection() == Direction.FORWARD) motor.setDirection(Direction.REVERSE);
+        else motor.setDirection(Direction.FORWARD);
+    }
+
+    private void stopJerking() {
+        if(this.jerkingThread != null) this.jerkingThread.stopJerkingLoop();
+    }
+
+    private void startJerking() {
+        this.jerkingThread = new JerkingThread();
+        this.jerkingThread.start();
+    }
+
+    private class JerkingThread extends Thread {
+        private long nextSetTime;
+        private boolean running = true;
+
+        public void run() {
+            while(running) {
+                if (System.currentTimeMillis() > nextSetTime) {
+                    invertDirection();
+                    nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+                }
+            }
+        }
+        public void stopJerkingLoop() {
+            this.running = false;
+        }
     }
 }

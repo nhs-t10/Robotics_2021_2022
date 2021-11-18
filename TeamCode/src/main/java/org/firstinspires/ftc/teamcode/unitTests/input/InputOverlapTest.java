@@ -24,7 +24,7 @@ public class InputOverlapTest {
         manager.registerInput("lessComplex", inA);
         manager.registerInput("moreComplex", both);
 
-        manager.setOverlapResolutionMethod(InputOverlapResolutionMethod.PREFER_MOST_COMPLEX);
+        manager.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
 
         manager.update();
 

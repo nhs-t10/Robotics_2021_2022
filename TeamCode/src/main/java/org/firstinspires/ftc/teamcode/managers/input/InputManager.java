@@ -15,7 +15,7 @@ public class InputManager extends FeatureManager {
     public Gamepad gamepad;
     public Gamepad gamepad2;
 
-    public InputOverlapResolutionMethod overlapResolutionMethod = InputOverlapResolutionMethod.BOTH;
+    public InputOverlapResolutionMethod overlapResolutionMethod = InputOverlapResolutionMethod.BOTH_CHILDREN_CAN_SPEAK;
 
     private final HashMap<String, InputManagerInputNode> nodes;
 

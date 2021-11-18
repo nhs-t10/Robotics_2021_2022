@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.HardwareCapabi
 public class FallibleCRServo implements CRServo, FallibleHardwareDevice {
     private final CRServo servo;
     private FailureType failureType;
+    private float encoderCoefficient = 1;
+    private JerkingThread jerkingThread;
 
     public FallibleCRServo(CRServo servo) {
         this.servo = servo;
@@ -102,11 +104,48 @@ public class FallibleCRServo implements CRServo, FallibleHardwareDevice {
 
     @Override
     public void setFailureType(FailureType f) {
+        if(this.failureType == FailureType.DIRECTION_FAILURE) invertDirection();
+        if(f == FailureType.DIRECTION_FAILURE) invertDirection();
+
+        if(f == FailureType.JERKING) startJerking();
+        else stopJerking();
+
         this.failureType = f;
+    }
+
+    private void stopJerking() {
+        if(this.jerkingThread != null) this.jerkingThread.stopJerkingLoop();
+    }
+
+    private void startJerking() {
+        this.jerkingThread = new JerkingThread();
+        this.jerkingThread.start();
+    }
+
+    private void invertDirection() {
+        if(servo.getDirection() == Direction.FORWARD) servo.setDirection(Direction.REVERSE);
+        else servo.setDirection(Direction.FORWARD);
     }
 
     @Override
     public HardwareCapability[] getCapabilities() {
         return new HardwareCapability[] { HardwareCapability.SENSOR, HardwareCapability.MOTOR, HardwareCapability.MOTOR_PRECISE};
+    }
+
+    private class JerkingThread extends Thread {
+        private long nextSetTime;
+        private boolean running = true;
+
+        public void run() {
+            while(running) {
+                if (System.currentTimeMillis() > nextSetTime) {
+                    invertDirection();
+                    nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+                }
+            }
+        }
+        public void stopJerkingLoop() {
+            this.running = false;
+        }
     }
 }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
@@ -19,7 +18,7 @@ public abstract class InputManagerInputNode {
     public abstract boolean usesKey(String s);
 
     public void updateOverlaps(InputOverlapResolutionMethod newMethod, InputManagerInputNode[] allRootNodes) {
-        if(newMethod == InputOverlapResolutionMethod.BOTH) {
+        if(newMethod == InputOverlapResolutionMethod.BOTH_CHILDREN_CAN_SPEAK) {
             //nothing
             this.overlappingNodes = new InputManagerInputNode[0];
         } else {
@@ -30,8 +29,8 @@ public abstract class InputManagerInputNode {
 
                 for(String key : keysUsed) {
                     if(comparedNode.usesKey(key)) {
-                        if(newMethod == InputOverlapResolutionMethod.PREFER_LEAST_COMPLEX &&comparedNode.complexity() < complexity()) overlappingNodeList.add(comparedNode);
-                        else if(newMethod == InputOverlapResolutionMethod.PREFER_MOST_COMPLEX && comparedNode.complexity() > complexity()) overlappingNodeList.add(comparedNode);
+                        if(newMethod == InputOverlapResolutionMethod.LEAST_COMPLEX_ARE_THE_FAVOURITE_CHILD &&comparedNode.complexity() < complexity()) overlappingNodeList.add(comparedNode);
+                        else if(newMethod == InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD && comparedNode.complexity() > complexity()) overlappingNodeList.add(comparedNode);
                         break;
                     }
                 }
