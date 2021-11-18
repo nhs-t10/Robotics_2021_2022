@@ -93,6 +93,8 @@ lint/tmp/
 *__controls.java
 *__controls3.java
 **/buildhistory/BuildHistory.java
+**/autoauto/runtime/robotfunctions/
+**/autoauto/runtime/RobotFunctionLoader.java
 **/.cache/
 **/buildimgs/
 last-build-pixels.json
