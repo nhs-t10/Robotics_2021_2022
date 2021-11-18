@@ -62,8 +62,10 @@ public class NateManager extends FeatureManager {
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-        if (!found) {
+        if (found) {
             hands.setMotorPower("ClawMotor", PaulMath.proportionalPID((float) hands.getMotorPosition("ClawMotor"),0));
+        } else {
+            hands.setMotorPower("ClawMotor", -0.75);
         }
     }
 }
