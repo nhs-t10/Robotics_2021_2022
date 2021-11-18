@@ -25,4 +25,19 @@ public class StaticValueNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         return new InputManagerNodeResult(v);
     }
+
+    @Override
+    public int complexity() {
+        return 0;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return new String[0];
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return false;
+    }
 }

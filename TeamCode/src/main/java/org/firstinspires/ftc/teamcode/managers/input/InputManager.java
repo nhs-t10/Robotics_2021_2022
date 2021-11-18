@@ -15,6 +15,8 @@ public class InputManager extends FeatureManager {
     public Gamepad gamepad;
     public Gamepad gamepad2;
 
+    public InputOverlapResolutionMethod overlapResolutionMethod = InputOverlapResolutionMethod.BOTH;
+
     private final HashMap<String, InputManagerInputNode> nodes;
 
     private final InputUpdateThread updateThread;
@@ -42,6 +44,7 @@ public class InputManager extends FeatureManager {
 
         node.init(this);
         nodes.put(key, node);
+        rebuildOverlaps();
         synchronized (updateThread) {
             updateThread.addNode(node);
         }
@@ -209,16 +212,28 @@ public class InputManager extends FeatureManager {
 
     public float[] getFloatArrayOfInput(String key) {
         if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
-        return nodes.get(key).getResult().getFloatArray();
+        return nodes.get(key).getOverlappedResult().getFloatArray();
     }
 
     public boolean getBool(String key) {
         if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `" + key + "` registered");
-        return nodes.get(key).getResult().getBool();
+        return nodes.get(key).getOverlappedResult().getBool();
     }
     public float getFloat(String key) {
         if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
-        return nodes.get(key).getResult().getFloat();
+        return nodes.get(key).getOverlappedResult().getFloat();
+    }
+
+    public void setOverlapResolutionMethod(InputOverlapResolutionMethod newMethod) {
+        this.overlapResolutionMethod = newMethod;
+        rebuildOverlaps();
+    }
+
+    private void rebuildOverlaps() {
+        InputManagerInputNode[] allRootNodes = nodes.values().toArray(new InputManagerInputNode[0]);
+        for(InputManagerInputNode node : allRootNodes) {
+            node.updateOverlaps(overlapResolutionMethod, allRootNodes);
+        }
     }
 }
 

@@ -63,4 +63,19 @@ public class DoubleClickNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         return new InputManagerNodeResult(result);
     }
+
+    @Override
+    public int complexity() {
+        return node.complexity() + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return node.getKeysUsed();
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return node.usesKey(s);
+    }
 }

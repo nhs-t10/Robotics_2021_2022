@@ -29,6 +29,21 @@ public class DummyInputNode extends InputManagerInputNode {
         return new InputManagerNodeResult(value);
     }
 
+    @Override
+    public int complexity() {
+        return 0;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return new String[0];
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return false;
+    }
+
     public void set(float v) {
         this.value = v;
     }

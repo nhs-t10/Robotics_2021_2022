@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -47,5 +48,20 @@ public class ScaleNode extends InputManagerInputNode {
             scaled[i] = resultNumbers[i] * scaleFactor;
         }
         return new InputManagerNodeResult(scaled);
+    }
+
+    @Override
+    public int complexity() {
+        return scale.complexity() + node.complexity() + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return PaulMath.concatArrays(node.getKeysUsed(), scale.getKeysUsed());
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return node.usesKey(s) || scale.usesKey(s);
     }
 }

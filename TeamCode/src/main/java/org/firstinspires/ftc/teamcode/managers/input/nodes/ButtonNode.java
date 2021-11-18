@@ -25,4 +25,19 @@ public class ButtonNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         return new InputManagerNodeResult(boss.getKey(key));
     }
+
+    @Override
+    public int complexity() {
+        return 0;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return new String[] {key};
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return key.equals(s);
+    }
 }

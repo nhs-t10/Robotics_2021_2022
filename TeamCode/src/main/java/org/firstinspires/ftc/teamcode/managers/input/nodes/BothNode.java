@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -32,5 +33,20 @@ public class BothNode extends InputManagerInputNode {
         boolean input1Check = input1.getResult().getBool();
         boolean input2Check = input2.getResult().getBool();
         return new InputManagerNodeResult(input1Check && input2Check ? 1f : 0f);
+    }
+
+    @Override
+    public int complexity() {
+        return input1.complexity() + input2.complexity() + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return PaulMath.concatArrays(input1.getKeysUsed(), input2.getKeysUsed());
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return input1.usesKey(s) || input2.usesKey(s);
     }
 }

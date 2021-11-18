@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -38,5 +39,20 @@ public class SwitchNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         if(on) return nodeIfOn.getResult();
         else return nodeIfOff.getResult();
+    }
+
+    @Override
+    public int complexity() {
+        return node.complexity() + nodeIfOff.complexity() + nodeIfOn.complexity() + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        return PaulMath.concatArrays(node.getKeysUsed(), nodeIfOff.getKeysUsed(), nodeIfOn.getKeysUsed());
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        return node.usesKey(s) ||  nodeIfOn.usesKey(s) || nodeIfOff.usesKey(s);
     }
 }

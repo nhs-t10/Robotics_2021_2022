@@ -28,4 +28,28 @@ public class CallOtherInputNode extends InputManagerInputNode {
         if(targetNode == null) return new InputManagerNodeResult(0f);
         else return targetNode.getResult();
     }
+
+    @Override
+    public int complexity() {
+        InputManagerInputNode targetNode = boss.getInputNode(target);
+
+        if(targetNode == null) return Integer.MAX_VALUE;
+        else return targetNode.complexity() + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        InputManagerInputNode targetNode = boss.getInputNode(target);
+
+        if(targetNode == null) return new String[0];
+        else return targetNode.getKeysUsed();
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        InputManagerInputNode targetNode = boss.getInputNode(target);
+
+        if(targetNode == null) return false;
+        else return targetNode.usesKey(s);
+    }
 }

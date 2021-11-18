@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -26,5 +27,29 @@ public class MultiInputNode extends InputManagerInputNode {
         for(int i = 0; i < vals.length; i++) vals[i] = childs[i].getResult();
 
         return new InputManagerNodeResult(vals);
+    }
+
+    @Override
+    public int complexity() {
+        int r = 0;
+        for(InputManagerInputNode n : childs) r += n.complexity();
+        return r + 1;
+    }
+
+    @Override
+    public String[] getKeysUsed() {
+        String[][] keylists = new String[childs.length][];
+        for(int i = 0; i < childs.length; i++) {
+            keylists[i] = childs[i].getKeysUsed();
+        }
+        return PaulMath.concatArrays(keylists);
+    }
+
+    @Override
+    public boolean usesKey(String s) {
+        for(InputManagerInputNode n : childs) {
+            if(n.usesKey(s)) return true;
+        }
+        return false;
     }
 }
