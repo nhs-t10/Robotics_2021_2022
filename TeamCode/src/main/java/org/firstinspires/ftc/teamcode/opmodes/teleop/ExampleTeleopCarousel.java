@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.TimeNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -61,10 +62,12 @@ public class ExampleTeleopCarousel extends OpMode {
 
         hands = new ManipulationManager(
                 hardwareMap,
-                new String[] {},
+                new String[] {"nateMoverLeft", "nateMoverRight"},
                 new String[] {"nateClaw"},
                 new String[] {"Carousel", "ClawMover"}
         );
+
+        clawPosition = new NateManager(hands);
 
         input = new InputManager(gamepad1, gamepad2);
 
@@ -102,8 +105,24 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode ("b")
                 )
         );
+        input.registerInput("ClawShiftIn",
+                new TimeNode(1000,
+                    new BothNode(
+                        new ButtonNode("rightbumper"),
+                        new ButtonNode("a")
+                    )
+                )
+        );
+        input.registerInput("ClawShiftOut",
+                new TimeNode(1000,
+                        new BothNode(
+                            new ButtonNode("rightbumper"),
+                                new ButtonNode("b")
+                )
+                )
+        );
         input.registerInput("ToggleClaw",
-                new ButtonNode("rightbumper")
+                new ButtonNode("start")
                 );
         input.registerInput("ClawUp",
                 new ButtonNode("righttrigger")
@@ -168,8 +187,23 @@ public class ExampleTeleopCarousel extends OpMode {
         if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
             hands.setMotorPower("ClawMover", -0.25);
         }
+        if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false){
+            hands.setMotorPower("ClawMover", 0.0);
+        }
         if (input.getBool("ToggleClaw") == true){
             clawPosition.toggleClawOpen();
+        }
+        if (input.getBool("ClawShiftIn") == true){
+            hands.setServoPower("nateMoverLeft", 1.0);
+            hands.setServoPower("nateMoverRight", -1.0);
+        }
+        if (input.getBool("ClawShiftOut") == true){
+            hands.setServoPower("nateMoverRight", 1.0);
+            hands.setServoPower("nateMoverLeft", -1.0);
+        }
+        if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
+            hands.setServoPower("nateMoverRight", 0.0);
+            hands.setServoPower("nateMoverLeft", 0.0);
         }
         if (input.getBool("turnAround") == true) {
 
