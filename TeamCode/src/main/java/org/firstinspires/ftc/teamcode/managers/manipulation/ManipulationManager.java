@@ -181,6 +181,15 @@ public class ManipulationManager extends FeatureManager {
         for(DcMotor m : motors) m.close();
     }
 
+    public int getMotorTargetPosition(String name) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+        return motors[index].getTargetPosition();
+    }
+    public int getMotorTargetPosition(int i) {
+        return motors[i].getTargetPosition();
+    }
+
 //    public void setServoPosition(int i, double power) {
 //        servos[i].setPosition(power);
 //    }

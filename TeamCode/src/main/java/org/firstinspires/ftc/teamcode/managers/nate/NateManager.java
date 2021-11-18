@@ -13,8 +13,11 @@ public class NateManager extends FeatureManager {
     private boolean clawState = false;
     ManipulationManager hands;
 
+    private double resetOffset;
+
     public NateManager(ManipulationManager hands){
-       this.hands = hands;
+
+        this.hands = hands;
     }
 
     public void foldOut(){
@@ -36,23 +39,26 @@ public class NateManager extends FeatureManager {
     }
 
     public void positionOne(){
-        position = 1;
+        position = -4093;
 
         hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorPower("ClawMotor", 0.5);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void positionTwo(){
-        position = 2;
+        position = -5295;
 
         hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorPower("ClawMotor", 0.5);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void positionThree(){
-        position = 3;
+        position = -7068;
 
         hands.setMotorPosition("ClawMotor", position);
+        hands.setMotorPower("ClawMotor", 0.5);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
     }
 

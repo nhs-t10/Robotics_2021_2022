@@ -147,6 +147,8 @@ public class ExampleTeleopCarousel extends OpMode {
             new ButtonNode("right_stick_button")
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     @Override
@@ -182,14 +184,17 @@ public class ExampleTeleopCarousel extends OpMode {
         else {
             dashing = false;
         }
-        hands.setMotorPower("Carousel", input.getFloat("Carousel")*-0.25);
+        hands.setMotorPower("Carousel", input.getFloat("Carousel")*0.5);
         if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hands.setMotorPower("ClawMotor", 0.25);
         }
         if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hands.setMotorPower("ClawMotor", -0.25);
         }
         if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false){
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
             hands.setMotorPower("ClawMotor", 0.0);
         }
         if (input.getBool("ToggleClaw") == true){
@@ -213,15 +218,15 @@ public class ExampleTeleopCarousel extends OpMode {
         if (input.getBool("spin") ==true) {
 
         }
-//        if (input.getBool("ClawPos1") == true) {
-//            clawPosition.positionOne();
-//        }
-//        if (input.getBool("ClawPos2") == true) {
-//            clawPosition.positionTwo();
-//        }
-//        if (input.getBool("ClawPos3") == true) {
-//            clawPosition.positionThree();
-//        }
+        if (input.getBool("ClawPos1") == true) {
+            clawPosition.positionOne();
+        }
+        if (input.getBool("ClawPos2") == true) {
+            clawPosition.positionTwo();
+        }
+        if (input.getBool("ClawPos3") == true) {
+            clawPosition.positionThree();
+        }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
@@ -230,6 +235,7 @@ public class ExampleTeleopCarousel extends OpMode {
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
+        telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.update();
     }
 
