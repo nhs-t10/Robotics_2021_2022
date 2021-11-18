@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
@@ -25,6 +26,8 @@ public abstract class InputManagerInputNode {
             String[] keysUsed = getKeysUsed();
             ArrayList<InputManagerInputNode> overlappingNodeList = new ArrayList<>();
             for(InputManagerInputNode comparedNode : allRootNodes) {
+                if(comparedNode == this) continue;
+
                 for(String key : keysUsed) {
                     if(comparedNode.usesKey(key)) {
                         if(newMethod == InputOverlapResolutionMethod.PREFER_LEAST_COMPLEX &&comparedNode.complexity() < complexity()) overlappingNodeList.add(comparedNode);

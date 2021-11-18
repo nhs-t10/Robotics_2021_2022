@@ -7,11 +7,19 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode
 public class DummyInputNode extends InputManagerInputNode {
     private float value;
 
+    private String key;
+
     public DummyInputNode() {
         this(0);
     }
     public DummyInputNode(float v) {
         this.value = v;
+    }
+    public DummyInputNode(float v, String k) {
+        this.value = v; this.key = k;
+    }
+    public DummyInputNode(String k, float v) {
+        this.value = v; this.key = k;
     }
 
     @Override
@@ -36,12 +44,12 @@ public class DummyInputNode extends InputManagerInputNode {
 
     @Override
     public String[] getKeysUsed() {
-        return new String[0];
+        return new String[] { key };
     }
 
     @Override
     public boolean usesKey(String s) {
-        return false;
+        return s.equals(key);
     }
 
     public void set(float v) {

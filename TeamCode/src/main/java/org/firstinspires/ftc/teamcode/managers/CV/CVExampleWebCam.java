@@ -57,11 +57,11 @@ public class CVExampleWebCam
          * the RC phone). If no camera monitor is desired, use the alternate
          * single-parameter constructor instead (commented out below)
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
-        //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
 
         /*
          * Specify the image processing pipeline we wish to invoke upon receipt
@@ -148,6 +148,8 @@ public class CVExampleWebCam
          * constantly allocating and freeing large chunks of memory.
          */
 
+        Mat lightOptimizedInput;
+
         @Override
         public Mat processFrame(Mat input)
         {
@@ -159,9 +161,14 @@ public class CVExampleWebCam
              * it to another Mat.
              */
 
+            Imgproc.cvtColor(input,lightOptimizedInput, Imgproc.COLOR_RGB2YUV);
+
+
+
             /*
              * Draw a simple box around the middle 1/2 of the entire frame
              */
+
             Imgproc.rectangle(
                     input,
                     new Point(
