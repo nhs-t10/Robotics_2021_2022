@@ -13,9 +13,11 @@ public class DoubleClickNode extends InputManagerInputNode {
 
     boolean firstClicked = false;
     private long timeClickedFirst = 0;
-    private boolean result;
+    private boolean currentlyDblClicked;
 
     private final long clickLimitOffsetNs = (long) TimeUnit.convertBetween(TimeUnit.MS, TimeUnit.NS, FeatureManager.DOUBLE_CLICK_TIME_MS);
+
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
 
     public DoubleClickNode(InputManagerInputNode node) {
@@ -47,13 +49,13 @@ public class DoubleClickNode extends InputManagerInputNode {
 
         if(isClickedRisingEdge) {
             if(firstClicked) {
-                result = true;
+                currentlyDblClicked = true;
             } else {
                 timeClickedFirst = System.nanoTime();
                 firstClicked = true;
             }
         } else {
-            result = false;
+            currentlyDblClicked = false;
         }
 
         lastTimeClicked = clickedCheck;
@@ -61,7 +63,8 @@ public class DoubleClickNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(result);
+        result.setBool(currentlyDblClicked);
+        return result;
     }
 
     @Override

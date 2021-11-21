@@ -9,6 +9,7 @@ public class ToggleNode extends InputManagerInputNode {
 
     private boolean wasPressed;
     private boolean toggledOn;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public ToggleNode(InputManagerInputNode node) {
         this.node = node;
@@ -31,7 +32,8 @@ public class ToggleNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(toggledOn ? 1f : 0f);
+        result.setBool(toggledOn);
+        return result;
     }
 
     @Override

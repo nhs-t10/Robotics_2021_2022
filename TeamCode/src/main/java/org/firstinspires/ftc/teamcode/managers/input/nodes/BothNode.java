@@ -10,6 +10,8 @@ public class BothNode extends InputManagerInputNode {
 
     private InputManagerInputNode input2;
 
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
+
     public BothNode(InputManagerInputNode input1, InputManagerInputNode input2) {
         this.input1 = input1;
         this.input2 = input2;
@@ -32,7 +34,9 @@ public class BothNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         boolean input1Check = input1.getResult().getBool();
         boolean input2Check = input2.getResult().getBool();
-        return new InputManagerNodeResult(input1Check && input2Check ? 1f : 0f);
+        result.setBool(input1Check && input2Check);
+
+        return result;
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 public class JoystickNode extends InputManagerInputNode {
     private final String key;
     private InputManager boss;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public JoystickNode(String key) {
         this.key = key;
@@ -23,7 +24,8 @@ public class JoystickNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(boss.getKey(key));
+        this.result.setFloat(boss.getKey(key));
+        return result;
     }
 
     @Override

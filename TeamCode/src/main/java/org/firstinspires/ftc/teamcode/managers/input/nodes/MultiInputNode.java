@@ -7,6 +7,8 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 public class MultiInputNode extends InputManagerInputNode {
     private final InputManagerInputNode[] childs;
 
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
+
     public MultiInputNode(InputManagerInputNode... childs) {
         this.childs = childs;
     }
@@ -26,7 +28,8 @@ public class MultiInputNode extends InputManagerInputNode {
 
         for(int i = 0; i < vals.length; i++) vals[i] = childs[i].getResult();
 
-        return new InputManagerNodeResult(vals);
+        result.setChildren(vals);
+        return result;
     }
 
     @Override

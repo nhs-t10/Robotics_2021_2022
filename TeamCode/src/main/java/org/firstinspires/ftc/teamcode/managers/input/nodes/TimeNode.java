@@ -10,6 +10,7 @@ public class TimeNode extends InputManagerInputNode {
     private float time;
     private boolean turnedOn;
     private long timeTurnedOn;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public TimeNode(InputManagerInputNode node, float numberOfMillis) {
         this.time = (numberOfMillis);
@@ -43,7 +44,8 @@ public class TimeNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(turnedOn);
+        this.result.setBool(turnedOn);
+        return result;
     }
 
     @Override

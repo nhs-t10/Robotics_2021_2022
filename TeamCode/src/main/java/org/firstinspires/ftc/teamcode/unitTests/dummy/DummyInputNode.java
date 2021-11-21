@@ -3,11 +3,15 @@ package org.firstinspires.ftc.teamcode.unitTests.dummy;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class DummyInputNode extends InputManagerInputNode {
     private float value;
 
     private String key;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public DummyInputNode() {
         this(0);
@@ -34,7 +38,8 @@ public class DummyInputNode extends InputManagerInputNode {
 
     @Override
     public final InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(value);
+        result.setFloat(value);
+        return result;
     }
 
     @Override

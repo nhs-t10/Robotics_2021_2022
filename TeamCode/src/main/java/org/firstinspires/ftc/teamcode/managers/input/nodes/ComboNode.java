@@ -7,8 +7,10 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 public class ComboNode extends InputManagerInputNode {
     InputManagerInputNode[] conditionals;
 
-    private InputManagerNodeResult result  = new InputManagerNodeResult(0f);
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
     private long[] risingEdgeTime;
+    private boolean comboMatch;
+    private InputManagerNodeResult lastChildResult;
 
     public ComboNode(InputManagerInputNode... conditionals) {
         this.conditionals = conditionals;
@@ -43,15 +45,18 @@ public class ComboNode extends InputManagerInputNode {
                 comboMatch = false;
             }
         }
-        if(comboMatch && lastResult != null) {
-            this.result = lastResult;
-        } else {
-            this.result = new InputManagerNodeResult(0f);
-        }
+        this.comboMatch = comboMatch;
+        this.lastChildResult = lastResult;
     }
 
     @Override
     public InputManagerNodeResult getResult() {
+        if(comboMatch && lastChildResult != null) {
+            this.result.copyValuesFrom(lastChildResult);
+        } else {
+            this.result.setBool(false);
+        }
+
         return result;
     }
 

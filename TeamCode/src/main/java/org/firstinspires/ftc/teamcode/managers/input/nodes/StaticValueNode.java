@@ -4,17 +4,14 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
 public class StaticValueNode extends InputManagerInputNode {
-    private InputManager boss;
-
-    private float v;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();;
 
     public StaticValueNode(float f) {
-        this.v = f;
+        result.setFloat(f);
     }
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
     }
 
     @Override
@@ -23,7 +20,7 @@ public class StaticValueNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(v);
+        return result;
     }
 
     @Override

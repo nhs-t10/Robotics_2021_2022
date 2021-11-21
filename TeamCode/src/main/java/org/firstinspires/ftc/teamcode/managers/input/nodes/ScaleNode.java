@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
 public class ScaleNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
+    private InputManagerInputNode scale;
     private InputManager boss;
 
-    private InputManagerInputNode scale;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public ScaleNode(InputManagerInputNode scaleBy, InputManagerInputNode node) {
         this.scale = scaleBy;
@@ -47,7 +49,11 @@ public class ScaleNode extends InputManagerInputNode {
         for(int i = 0; i < scaled.length; i++) {
             scaled[i] = resultNumbers[i] * scaleFactor;
         }
-        return new InputManagerNodeResult(scaled);
+
+        FeatureManager.logger.log(scaled);
+
+        result.setFloatArray(scaled);
+        return result;
     }
 
     @Override

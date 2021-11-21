@@ -25,7 +25,7 @@ public class CallOtherInputNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         InputManagerInputNode targetNode = boss.getInputNode(target);
 
-        if(targetNode == null) return new InputManagerNodeResult(0f);
+        if(targetNode == null) return InputManagerNodeResult.FALSE;
         else return targetNode.getResult();
     }
 
