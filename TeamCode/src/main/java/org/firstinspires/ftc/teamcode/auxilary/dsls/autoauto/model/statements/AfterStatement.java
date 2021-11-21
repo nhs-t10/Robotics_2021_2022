@@ -82,7 +82,7 @@ public class AfterStatement extends Statement {
     @Override
     public void stepInit() {
 
-        if(unitExistsInMethodMapping(wait.unit)) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+        if(unitExistsInMethodMapping(wait.unit) && wait.unitType == AutoautoUnitValue.UnitType.UNKNOWN) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
 
         switch (wait.unitType) {
             case TIME:

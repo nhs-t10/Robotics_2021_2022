@@ -20,7 +20,7 @@ public class NateManager extends FeatureManager {
         this.hands = hands;
     }
 
-    public void foldOut(){
+    public void foldOutLift(){
 
     }
 
@@ -41,25 +41,19 @@ public class NateManager extends FeatureManager {
     public void positionOne(){
         position = -4093;
 
-        hands.setMotorPosition("ClawMotor", position);
-        hands.setMotorPower("ClawMotor", 0.5);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
     }
 
     public void positionTwo(){
         position = -5295;
 
-        hands.setMotorPosition("ClawMotor", position);
-        hands.setMotorPower("ClawMotor", 0.5);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
     }
 
     public void positionThree(){
         position = -7068;
 
-        hands.setMotorPosition("ClawMotor", position);
-        hands.setMotorPower("ClawMotor", 0.5);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
     }
 
     public void homing(){

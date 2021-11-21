@@ -5,10 +5,20 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+
 public class DummyDcMotor implements DcMotor {
     private double power;
     private Direction direction;
     private RunMode runMode;
+    private int target;
+    private double currentPosition;
+
+    private double ticksPerRot;
+
+    public DummyDcMotor() {
+        this.ticksPerRot = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
+    }
 
     @Override
     public MotorConfigurationType getMotorType() {
@@ -52,12 +62,12 @@ public class DummyDcMotor implements DcMotor {
 
     @Override
     public void setTargetPosition(int position) {
-
+        this.target = position;
     }
 
     @Override
     public int getTargetPosition() {
-        return 0;
+        return target;
     }
 
     @Override
@@ -67,7 +77,7 @@ public class DummyDcMotor implements DcMotor {
 
     @Override
     public int getCurrentPosition() {
-        return 0;
+        return (int) Math.round(this.currentPosition);
     }
 
     @Override
@@ -93,6 +103,10 @@ public class DummyDcMotor implements DcMotor {
     @Override
     public void setPower(double p) {
         this.power = p;
+        if(this.runMode == RunMode.RUN_TO_POSITION) {
+            double delta = target - this.currentPosition;
+            this.currentPosition += Math.min(delta, ticksPerRot) * 0.1;
+        }
     }
 
     @Override

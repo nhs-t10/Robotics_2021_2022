@@ -33,7 +33,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         this.location = location;
     }
 
-    public static enum UnitType { TIME, DISTANCE, ROTATION };
+    public static enum UnitType { TIME, DISTANCE, UNKNOWN, ROTATION };
 
     public UnitType unitType;
     public long baseAmount;
@@ -69,6 +69,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
             this.unit = RotationUnit.naturalRotationUnit.name;
             this.unitType = UnitType.ROTATION;
         } else {
+            this.unitType = UnitType.UNKNOWN;
             FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
         }
 
@@ -77,8 +78,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
 
     //Methods
     public String getString() {
-        return this.baseAmount +
-                ((unitType == UnitType.TIME) ? "ms" : "ticks");
+        return this.baseAmount + this.unit;
     }
 
     public AutoautoUnitValue clone() {
@@ -89,7 +89,6 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
 
     @NonNull
     public String toString() {
-        return this.baseAmount +
-                ((unitType == UnitType.TIME) ? "ms" : "ticks");
+        return this.baseAmount + this.unit;
     }
 }

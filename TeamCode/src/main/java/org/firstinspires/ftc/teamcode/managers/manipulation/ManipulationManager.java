@@ -18,11 +18,15 @@ public class ManipulationManager extends FeatureManager {
     public String[] motorNames;
     public String[] servoNames;
 
+    public MotorEncodedMovementThread[] encoderMovementThreads;
+
 
     public ManipulationManager(CRServo[] _crservos, Servo[] _servos, DcMotor[] _motors) {
         this.crservos = _crservos;
         this.servos = _servos;
         this.motors = _motors;
+
+        this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
 
     public ManipulationManager(HardwareMap _hardwareMap, String[] _crservos, String[] _servos, String[] _motors) {
@@ -35,6 +39,8 @@ public class ManipulationManager extends FeatureManager {
         this.motors = new DcMotor[_motors.length];
         for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
+
+        this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
 
     public ManipulationManager(CRServo[] _crservos, String[] _crservoNames, Servo[] _servos, String[] _servoNames, DcMotor[] _motors, String[] _motorNames) {
@@ -48,6 +54,8 @@ public class ManipulationManager extends FeatureManager {
         this.servoNames = _servoNames;
         this.motors = _motors;
         this.motorNames = _motorNames;
+
+        this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
 
     public void setCRServoNames(String[] _crservoNames) {
@@ -158,10 +166,11 @@ public class ManipulationManager extends FeatureManager {
     public void setMotorPower(String name, double power) {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
-        motors[index].setPower(power);
+        setMotorPower(index,power);
     }
 
     public void setMotorPower(int i, double power) {
+        cancelEncodedMovement(i);
         motors[i].setPower(power);
     }
 
@@ -188,6 +197,75 @@ public class ManipulationManager extends FeatureManager {
     }
     public int getMotorTargetPosition(int i) {
         return motors[i].getTargetPosition();
+    }
+
+    public void encodeMoveToPosition(String name, int position, double power) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+
+        encodeMoveToPosition(index,position, power);
+    }
+
+    public void encodeMoveToPosition(String name, int position) {
+        encodeMoveToPosition(name,position, 0.5);
+    }
+
+    public void encodeMoveToPosition(int index, int position) {
+        encodeMoveToPosition(index, position, 0.5);
+    }
+
+    public void encodeMoveToPosition(int index, int position, double power) {
+        DcMotor motor = motors[index];
+
+        //if there's already a running thread with the same target, don't bother replacing it
+        if(encoderMovementThreads[index] != null) {
+            if(encoderMovementThreads[index].running && encoderMovementThreads[index].equalTarget(position,power)) {
+                return;
+            } else {
+                //if a thread exists, but it doesn't have the same target, cancel it
+                encoderMovementThreads[index].cancelMovement();
+            }
+        }
+        MotorEncodedMovementThread motorThread = new MotorEncodedMovementThread(motor, position, power);
+        motorThread.start();
+
+        encoderMovementThreads[index] = motorThread;
+    }
+
+    public boolean hasEncodedMovement(int index) {
+        MotorEncodedMovementThread thread = encoderMovementThreads[index];
+        //if there's no thread, return false right away
+        if(thread == null) {
+            return false;
+        }
+        //if there is, but it's not running, garbage-collect it before returning false
+        else if(!thread.running) {
+            encoderMovementThreads[index] = null;
+            return false;
+        }
+        //if we've passed all the checks, that means there is a thread & it's running.
+        else {
+            return true;
+        }
+
+
+    }
+    public boolean hasEncodedMovement(String name) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+
+        return hasEncodedMovement(index);
+    }
+
+    public void cancelEncodedMovement(int index) {
+        if(encoderMovementThreads[index] != null) encoderMovementThreads[index].cancelMovement();
+        encoderMovementThreads[index] = null;
+    }
+    public void cancelEncodedMovement(String name) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+
+        cancelEncodedMovement(index);
     }
 
 //    public void setServoPosition(int i, double power) {
