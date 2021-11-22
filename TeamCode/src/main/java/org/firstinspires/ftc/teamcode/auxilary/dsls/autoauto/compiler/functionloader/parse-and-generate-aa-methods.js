@@ -87,10 +87,6 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
     var classname = noConflictName.charAt(0).toUpperCase() + noConflictName.substring(1) + "Function";
         
     var template = processTemplate(callMethodSource, definedClass, classname);
-    
-//    fs.writeFileSync(path.join(robotFunctionsDirectory, classname + ".java"), template);
-
-
 
     var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
 

@@ -16,6 +16,7 @@ var cacheManagers = require(cacheFile);
 var managerArgs = {};
 
 var generateAaMethods = require("./parse-and-generate-aa-methods.js");
+var deleteUnusedMethodClasses = require("./delete-unused-method-classes.js");
 
 if (!fs.existsSync(managersDir)) throw "Managers directory `" + managersDir + "` doesn't exist";
 
@@ -42,6 +43,7 @@ for (var i = 0; i < managers.length; i++) {
     }
 }
 
+deleteUnusedMethodClasses(methods.map(x=>x[1].map(y=>y[1])).flat());
 
 var robotFunctionLoaderAddress = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/RobotFunctionLoader.java");
 var robotFunctionsTemplate = require("./render-rfl.js");
