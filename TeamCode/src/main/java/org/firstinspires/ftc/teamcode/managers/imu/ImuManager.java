@@ -30,7 +30,7 @@ public class ImuManager extends FeatureManager {
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(DistanceUnit.CM, 0.0, 0.0, 0.0, System.nanoTime()),
                 new Velocity(DistanceUnit.CM, 0.0, 0.0, 0.0, System.nanoTime()),
-                10);
+                0);
     }
 
     /**
