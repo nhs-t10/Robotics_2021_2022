@@ -33,11 +33,23 @@ var server = http.createServer((req, res) => {
             }
         }));
         res.end();
-    } else {
+    } else if(req.url == "/") {
         res.setHeader("Content-Type", "text/html;charset=UTF-8");
         res.writeHead(200);
         res.write(fs.readFileSync("./index.html"));
         res.end();
+    } else {
+        var file = __dirname + req.url.replace(/\.\./g, ".");
+        if(fs.existsSync(file)) {
+            res.setHeader("Content-Type", "application/json");
+            res.writeHead(200);
+            res.write(fs.readFileSync(file));
+            res.end();
+        } else {
+            res.writeHead(404);
+            res.write("404");
+            res.end();
+        }
     }
 });
 
