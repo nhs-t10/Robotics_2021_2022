@@ -1,23 +1,25 @@
 #init:
-    goto sampling
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 5s next;
+    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+    goto nyoomForwards
 
-#sampling:
+#nyoomForwards:
     let value = computerVision(), next;
-    driveRaw(1, 1, 1, 1), after 10cm driveRaw(0,0,0,0), next;
-    if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto Position3
+    driveOmni(1,0,0), after 16.5in next;
+    if(value == 0) goto Position1, if(value == 1) goto Position2, if(value == 2) goto Position3
 
-#firstPosition:
-    setMotorPower("deposit", 1), after 10cm setMotorPower("deposit", 0), next;
+#Position1:
+    positionOne(), if (hasEncodedMovement("ClawMotor") == 0) next;
     depositFrieght(), after 3s next;
     goto finalMovement
 
-#secondPosition:
-    setMotorPower("deposit", 1), after 20cm setMotorPower("deposit", 0), next;
+#Position2:
+    positionTwo(), if (hasEncodedMovement("ClawMotor") == 0) next;
     depositFrieght(), after 3s next;
     goto finalMovement
 
 #Position3:
-    setMotorPower("deposit", 1), after 30cm setMotorPower("deposit", 0), next;
+    positionThree(), if (hasEncodedMovement("ClawMotor") == 0) next;
     depositFrieght(), after 3s next;
     goto finalMovement
 
