@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
+import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
 import org.junit.Test;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 
@@ -57,6 +58,7 @@ public class template extends AutoautoOpmode {
     ManipulationManager limbs;
     SensorManager sense;
     ImuManager imu;
+    NateManager clawPosition;
 
     public static AutoautoProgram program = generateProgram();
 
@@ -72,18 +74,15 @@ public class template extends AutoautoOpmode {
                 hardwareMap.get(DcMotor.class, "fr"),
                 hardwareMap.get(DcMotor.class, "bl"),
                 hardwareMap.get(DcMotor.class, "br"));
-        limbs = new ManipulationManager(hardwareMap,
-                new String[] {
+        limbs = new ManipulationManager(
+                        hardwareMap,
+                        new String[] {"nateMoverLeft", "nateMoverRight"},
+                        new String[] {"nateClaw"},
+                        new String[] {"Carousel", "ClawMotor"}
+                );
 
-                },
-                new String[] {
-                    "leftNateMover", "rightNateMover", "nateClaw"
-                },
-                new String[] {
-                    "ClawMover"
-                }
+        clawPosition = new NateManager(limbs);
 
-        );
         driver.resetEncoders();
         driver.runWithOutEncoders();
 
@@ -98,7 +97,7 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, imu, driver, limbs, sense, telemetryManager);
+        runtime = R(program, imu, driver, limbs, sense, telemetryManager, clawPosition);
 
         AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
         telemetryManager.autoauto.setProgramJson(programJson.toString());

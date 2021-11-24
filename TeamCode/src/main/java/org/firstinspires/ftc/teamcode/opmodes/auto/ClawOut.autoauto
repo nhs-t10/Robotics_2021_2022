@@ -1,0 +1,10 @@
+#init:
+    goto clawout
+
+#clawout:
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 5s next;
+    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+    positionOne(), after 3s goto deliver
+
+#deliver:
+    log("HOORAH")

@@ -39,21 +39,28 @@ public class NateManager extends FeatureManager {
     }
 
     public void positionOne(){
-        position = -4093;
+        position = -3470;
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
+
+        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void positionTwo(){
         position = -5295;
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
+        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void positionThree(){
-        position = -7068;
+        position = -6893;
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.5);
+        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
+    }
+
+    public void positionHome(){
+        position = 570;
+
+        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void homing(){

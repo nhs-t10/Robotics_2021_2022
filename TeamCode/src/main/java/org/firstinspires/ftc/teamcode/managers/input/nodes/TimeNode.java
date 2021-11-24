@@ -17,7 +17,7 @@ public class TimeNode extends InputManagerInputNode {
         this.node = node;
     }
     public TimeNode(float numberOfMillis, InputManagerInputNode node) {
-        this.time = (numberOfMillis);
+        this.time = numberOfMillis;
         this.node = node;
     }
 
@@ -44,8 +44,7 @@ public class TimeNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        this.result.setBool(turnedOn);
-        return result;
+        return new InputManagerNodeResult(turnedOn);
     }
 
     @Override

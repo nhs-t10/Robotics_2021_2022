@@ -88,6 +88,12 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("Carousel",
                 new ButtonNode("y")
         );
+        input.registerInput("EmergencyStop",
+                new ButtonNode("guide")
+                );
+        input.registerInput("StopAndBounce",
+                new ButtonNode("start")
+                );
         input.registerInput("ClawPos1",
                 new BothNode(
                         new ButtonNode("leftbumper"),
@@ -106,20 +112,22 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode ("b")
                 )
         );
+        input.registerInput("ClawPosHome",
+                new BothNode(
+                        new ButtonNode("leftbumper"),
+                        new ButtonNode("a")
+                )
+        );
         input.registerInput("ClawShiftIn",
-                new TimeNode(1000,
                     new BothNode(
                         new ButtonNode("rightbumper"),
                         new ButtonNode("a")
                     )
-                )
         );
         input.registerInput("ClawShiftOut",
-                new TimeNode(1000,
-                        new BothNode(
-                                new ButtonNode("rightbumper"),
-                                new ButtonNode("b")
-                        )
+                new BothNode(
+                        new ButtonNode("rightbumper"),
+                        new ButtonNode("b")
                 )
         );
         input.registerInput("ToggleClaw",
@@ -148,54 +156,60 @@ public class ExampleTeleopCarousel extends OpMode {
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
     public void loop() {
         input.update();
         driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
-        if (input.getBool("precisionDriving") == true && precision == false){
+        if (input.getBool("precisionDriving") == true && precision == false) {
             driver.downScale(0.5f);
             precision = true;
-        }
-        else if (input.getBool("precisionDriving") == true && precision == true){
+        } else if (input.getBool("precisionDriving") == true && precision == true) {
             precision = true;
-        }
-        else if (input.getBool("precisionDriving") == false && precision == true){
+        } else if (input.getBool("precisionDriving") == false && precision == true) {
             driver.upScale(0.5f);
             precision = false;
-        }
-        else {
+        } else {
             precision = false;
         }
 
-        if (input.getBool("dashing") == true && dashing == false){
+        if (input.getBool("dashing") == true && dashing == false) {
             driver.upScale(0.4f);
             dashing = true;
-        }
-        else if (input.getBool("precisionDriving") == true && dashing == true){
+        } else if (input.getBool("precisionDriving") == true && dashing == true) {
             dashing = true;
-        }
-        else if (input.getBool("precisionDriving") == false && dashing == true){
+        } else if (input.getBool("precisionDriving") == false && dashing == true) {
             driver.downScale(0.4f);
             dashing = false;
-        }
-        else {
+        } else {
             dashing = false;
         }
-        hands.setMotorPower("Carousel", input.getFloat("Carousel")*0.5);
-        if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+        if (input.getBool("EmergencyStop")){
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hands.setMotorPower("ClawMotor", 0.25);
+            hands.setMotorPower("ClawMotor", 0.0);
         }
-        if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+        if (input.getBool("StopAndBounce")){
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hands.setMotorPower("ClawMotor", 0.0);
             hands.setMotorPower("ClawMotor", -0.25);
         }
-        if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false){
-            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.5);
+        if (hands.hasEncodedMovement("ClawMotor") == false) {
+            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hands.setMotorPower("ClawMotor", 0.25);
+            }
+            if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hands.setMotorPower("ClawMotor", -0.25);
+            }
+            if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false) {
+            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
             hands.setMotorPower("ClawMotor", 0.0);
+
+            }
         }
         if (input.getBool("ToggleClaw") == true){
             clawPosition.toggleClawOpen();
@@ -212,12 +226,6 @@ public class ExampleTeleopCarousel extends OpMode {
             hands.setServoPower("nateMoverRight", 0.0);
             hands.setServoPower("nateMoverLeft", 0.0);
         }
-        if (input.getBool("turnAround") == true) {
-
-        }
-        if (input.getBool("spin") ==true) {
-
-        }
         if (input.getBool("ClawPos1") == true) {
             clawPosition.positionOne();
         }
@@ -226,6 +234,9 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         if (input.getBool("ClawPos3") == true) {
             clawPosition.positionThree();
+        }
+        if (input.getBool("ClawPosHome") == true) {
+            clawPosition.positionHome();
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
