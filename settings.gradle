@@ -1,3 +1,2 @@
-include ':AutoautoLanguagePlugin'
 include ':FtcRobotController'
 include ':TeamCode'
