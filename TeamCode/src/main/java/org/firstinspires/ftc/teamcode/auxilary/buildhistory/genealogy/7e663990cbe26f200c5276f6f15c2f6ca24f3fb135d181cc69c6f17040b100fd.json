@@ -3,15 +3,6 @@
     "cognomen": "Ansekalt",
     "builds": [
         {
-            "name": "Dillon Ansekalt",
-            "time": "2021-11-21T13:55:30.550Z",
-            "buildHash": "6df29af49db1530d2b3742d7f993152ebe5b1c4f2b4d1c7e12dd6674ae8c1980",
-            "w3w": "clearance hockey dialect",
-            "phrase": "Tavern, Hoxton Road, by eight-thirty. He heaved a grave was my son. He sighed and strolled down and then, you do.” I suppose.”",
-            "perceptualHash": "f141fbfdfdf8",
-            "colors": "#77cd81,#808048"
-        },
-        {
             "name": "Robin Ansekalt",
             "time": "2021-11-21T13:58:21.947Z",
             "buildHash": "8c6fd8f312e4f79648e6b0ec8136363ae891a6d7e8e2fa31c2bb199b631f5d1d",
@@ -901,8 +892,17 @@
             "phrase": "Manon Lescaut that comes back as a gentleman, he declared he exhausted him. A half-caste, in turn. Only England become bankrupt over us.",
             "perceptualHash": "fcf9584fd4d",
             "colors": "#807cd6,#fc94b0"
+        },
+        {
+            "name": "Lucy Ansekalt",
+            "time": "2021-11-28T10:03:03.219Z",
+            "buildHash": "9d2e0bba7a7bdd9cc2e07bba375299566ceef57249cdce065795a83f46d7be64",
+            "w3w": "dioxide baron Sister",
+            "phrase": "God.” he whispered, as poetry has, or so depressing. I remember. I mean. I shan’t go and accentuating the passion of most themselves. Some day long engagement is there stood at times.",
+            "perceptualHash": "fefdfdfefae6fdfe2fd1",
+            "colors": "#805555,#80712b,#80c626,#9655a8"
         }
     ],
-    "buildCount": 1964,
-    "lastBuildTimeUnixMs": 1638093592098
+    "buildCount": 1965,
+    "lastBuildTimeUnixMs": 1638093783605
 }

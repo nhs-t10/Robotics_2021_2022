@@ -1,6 +1,5 @@
 #init:
-    let CLAW_CLOSED = false,
-    function depositFreight(a, b, c) {
+    let CLAW_CLOSED = false, function depositFreight(a, b, c) {
         if(getClawStatus() == CLAW_CLOSED) toggleClawOpen(), log(getClawStatus())
     }, goto a
 
