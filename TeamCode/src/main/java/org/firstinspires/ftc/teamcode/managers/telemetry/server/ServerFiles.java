@@ -33,9 +33,8 @@ public class ServerFiles {
         return r.toString();
     }
     public static InputStream getAssetStream(String asset) throws FileNotFoundException {
-        Context context = null;
         try {
-            context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
+            Context context = ((Application) Class.forName("android.app.ActivityThread").getMethod("currentApplication").invoke(null, (Object[]) null)).getApplicationContext();
 
             AssetManager assets = context.getAssets();
 

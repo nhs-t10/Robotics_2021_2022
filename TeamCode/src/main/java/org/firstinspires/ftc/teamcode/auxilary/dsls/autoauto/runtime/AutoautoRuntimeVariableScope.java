@@ -116,8 +116,10 @@ public class AutoautoRuntimeVariableScope {
         this.systemSet("e", new AutoautoNumericValue((float) Math.E));
 
         this.systemSet("True", new AutoautoBooleanValue(true));
+        this.systemSet("true", new AutoautoBooleanValue(true));
         this.systemSet("TRUE", new AutoautoBooleanValue(true));
         this.systemSet("False", new AutoautoBooleanValue(false));
+        this.systemSet("false", new AutoautoBooleanValue(false));
         this.systemSet("FALSE", new AutoautoBooleanValue(false));
 
         this.systemSet("undefined", new AutoautoUndefined());

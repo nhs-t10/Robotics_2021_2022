@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="120"
+   height="120"
+   viewBox="0 0 31.749999 31.750001"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="autoauto.svg"
+   inkscape:export-filename="C:\Users\coleh\Robotics_2020_2021\AutoautoLanguagePlugin\src\main\resources\icons\autoauto-16.png"
+   inkscape:export-xdpi="12.8"
+   inkscape:export-ydpi="12.8">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="48.21255"
+     inkscape:cy="47.645409"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     units="px"
+     inkscape:snap-page="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-global="true"
+     inkscape:snap-grids="false"
+     inkscape:snap-intersection-paths="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid815"
+       empspacing="12" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-265.24998)">
+    <path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.1486702px;line-height:1.25;font-family:Bahnschrift;-inkscape-font-specification:'Bahnschrift, Bold';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#8280e1;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:10.26673508;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       d="M 59.599609 10.375 C 35.907615 10.375 16.029885 27.148279 11.324219 49.507812 A 5.1338812 5.1338812 0 1 0 21.371094 51.621094 C 24.958735 34.573961 39.635898 21.612752 57.582031 20.703125 L 31.628906 94.757812 A 5.1338812 5.1338812 0 1 0 41.314453 98.150391 L 45.535156 86.105469 L 73.611328 86.105469 C 74.569916 89.33086 75.111813 92.222928 75.689453 94.662109 C 76.074723 96.288969 76.179186 97.67358 77.660156 99.693359 C 78.400641 100.70325 79.973438 102.01635 81.921875 102.26172 C 83.870312 102.50701 85.385406 101.78964 86.367188 101.1543 C 99.945473 92.367613 108.93555 77.051334 108.93555 59.710938 C 108.93555 32.526119 86.784409 10.375 59.599609 10.375 z M 61.615234 20.697266 C 82.308056 21.739979 98.664062 38.750788 98.664062 59.710938 C 98.664062 71.323799 93.4366 81.490082 85.421875 88.626953 L 82.787109 81.109375 C 82.582641 80.490445 82.363796 79.852965 82.109375 79.173828 C 82.108094 79.17041 82.106751 79.167483 82.105469 79.164062 L 61.615234 20.697266 z M 59.599609 45.986328 L 70.060547 75.833984 L 49.138672 75.833984 L 59.599609 45.986328 z "
+       transform="matrix(0.26458333,0,0,0.26458333,0,265.24998)"
+       id="path4533" />
+  </g>
+</svg>

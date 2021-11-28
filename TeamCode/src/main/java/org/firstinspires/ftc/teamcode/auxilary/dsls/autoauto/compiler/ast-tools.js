@@ -34,6 +34,7 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     BooleanOperator: "T",
     VariableReference: "H",
     AutoautoBooleanValue: "B",
+    FunctionDefStatement: "J",
     "Statement[]": ""
 };
 
@@ -79,8 +80,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             newStateNumber || stateNumber,
             depth + 1
         );
-        
-        r.definitions = (dedent(r.definitions));
+
         return r;
     }
 
@@ -96,19 +96,34 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             
             var programName = genNonce();
             
-            var typedDefinitions = depthMappedDefinitions
+            var splitDefinitions = depthMappedDefinitions
                 .map(x=>
                     x.definition
                     .split(";")
                     .filter(x=>x!="")
                     .map(x=>x+";")
-                    .map((y,i,a)=>({ definition: y, depth: x.depth - (1 - (i / a.length))})))
-                .flat() //split by semicolons, make each statement into its own depth mapped definition
-                .sort((a,b) => {
-                    var aType = JAVA_TYPE_REGEX.exec(a.definition.trim())[0];
-                    var bType = JAVA_TYPE_REGEX.exec(b.definition.trim())[0];
-                    return (PRIMITIVENESS_OF_TYPE[bType] - PRIMITIVENESS_OF_TYPE[aType]) || (b.depth - a.depth) || (b.definition.localeCompare(a.definition));
-                    }) //sort more primitive things first. When it's the same, sort by depth; break ties by alphabetical order. Primitives/literals (like numeric values) ALWAYS go first.
+                    .map((y,i,a)=>({ definition: y, depends: x.depends, self: x.self, depth: x.depth })))
+                .flat();
+
+                var sortedDefinitions = [];
+
+                function addSortDefs(def) {
+                    if(def.processed) return;
+                    def.processed = true;
+
+                    def.depends.forEach(y=> {
+                        var f = splitDefinitions
+                            .filter(z=>z.self==y)
+                            .forEach(z=>addSortDefs(z));
+                    });
+                    if(def.definition) sortedDefinitions.push(def);
+                }
+
+                var childDefsDefinitions = childDefs.map(x=>splitDefinitions.filter(y=>y.self == x.varname)).flat();
+                childDefsDefinitions.forEach(x=>addSortDefs(x));
+
+                 //split by semicolons, make each statement into its own depth mapped definition
+                var typedDefinitions = sortedDefinitions
                 .map(x => ({
                     definition: x.definition.trim(),
                     type: JAVA_TYPE_REGEX.exec(x.definition.trim())[0] //discern and record the type
@@ -177,11 +192,14 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: childDefs.map(x => x.varname).concat([label.varname]),
                 definition: `State[] $${nonce} = new State[] { ${childDefs.map(x => x.varname).join(",")} }; Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${label.varname});`
             });
 
             result = {
                 varname: nonce,
+                depends: childDefs.map(x => x.varname).concat([label.varname]),
                 noLocation: true
             };
             break;
@@ -194,6 +212,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: childDefs.map(x=>x.varname),
                 definition: `Statement[] $${nonce} = new Statement[] { ${childDefs.map(x => x.varname).join(",")} }; State ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.State}($${nonce});`
             });
 
@@ -205,6 +225,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [],
                 definition: `NextStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.NextStatement}();`
             });
 
@@ -212,11 +234,45 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 varname: nonce
             }
             break;
+        case "FunctionDefStatement":
+            var name = process(ast.name);
+            var args = process(ast.args);
+            var body = process(ast.body);
+
+            depthMappedDefinitions.push({
+                depth: depth,
+                self: nonce,
+                depends: [name.varname, args.varname, body.varname],
+                definition: `FunctionDefStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionDefStatement}(${name.varname}, ${args.varname}, ${body.varname})`
+            });
+
+            result = {
+                varname: nonce
+            };
+            break;
+        case "Block":
+            var b = process(ast.state).varname;
+            result = {
+                varname: b,
+                depends: [b],
+                noLocation: true
+            };
+            break;
+        case "DynamicValue":
+            var b = process(ast.value).varname;
+            result = {
+                varname: b,
+                depends: [b],
+                noLocation: true
+            };
+            break;
         case "FunctionCallStatement":
             var call = process(ast.call);
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [call.varname],
                 definition: `FunctionCallStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionCallStatement}(${call.varname});`
             });
 
@@ -230,6 +286,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [unitValue.varname, statement.varname],
                 definition: `AfterStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AfterStatement}(${unitValue.varname}, ${statement.varname});`
             });
 
@@ -243,6 +301,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [func.varname, args.varname],
                 definition: `FunctionCall ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionCall}(${func.varname}, ${args.varname});`
             });
 
@@ -270,6 +330,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var childDefs = ast.args.map(x => process(x));
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: childDefs.map(x => x.varname),
                 definition: `AutoautoValue[] ${nonce} = {${childDefs.map(x => x.varname).join(", ")}};`
             });
 
@@ -293,6 +355,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [left.varname, right.varname],
                 definition: `ArithmeticValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.ArithmeticValue}(${left.varname}, ${operatorName}, ${right.varname});`
             });
 
@@ -303,6 +367,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
         case "NumericValue":
             depthMappedDefinitions.push({
                 depth: depth,
+                depends: [],
+                self: nonce,
                 definition: `AutoautoNumericValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoNumericValue}(${ast.v});`
             });
             result = {
@@ -321,6 +387,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [],
                 definition: `AutoautoString ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoString}(${strNonce});`
             });
 
@@ -333,7 +401,9 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
-                definition: `${args.definitions}\nAutoautoTable ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoTable}(${args.varname});`
+                self: nonce,
+                depends: [args.varname],
+                definition: `AutoautoTable ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoTable}(${args.varname});`
             });
 
             result = {
@@ -345,7 +415,9 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
-                definition: `${unit.definitions}\nAutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname});`
+                self: nonce,
+                depends: [unit.varname],
+                definition: `AutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname});`
             });
 
             result = {
@@ -357,7 +429,9 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
-                definition: `${path.definitions}\nGotoStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.GotoStatement}(${path.varname});`
+                self: nonce,
+                depends: [path.varname],
+                definition: `GotoStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.GotoStatement}(${path.varname});`
             });
 
             result = {
@@ -375,6 +449,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [variable.varname, value.varname],
                 definition: `LetStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.LetStatement}(${variable.varname}, ${value.varname});`
             });
 
@@ -388,6 +464,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [conditional.varname, statement.varname],
                 definition: `IfStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.IfStatement}(${conditional.varname}, ${statement.varname});`
             });
 
@@ -408,6 +486,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [left.varname, right.varname],
                 definition: `BooleanOperator ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.BooleanOperator}(${left.varname}, ${right.varname}, ${operatorName});`
             });
 
@@ -420,6 +500,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [variable.varname],
                 definition: `VariableReference ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.VariableReference}(${variable.varname});`
             });
 
@@ -430,6 +512,8 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
         case "BooleanLiteral":
             depthMappedDefinitions.push({
                 depth: depth,
+                self: nonce,
+                depends: [],
                 definition: `AutoautoBooleanValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoBooleanValue}(${ast.value});`
             });
 

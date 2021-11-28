@@ -5,11 +5,12 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 
 public class GotoStatement extends Statement {
-    String gotoPath;
+    AutoautoValue gotoPath;
 
     private AutoautoRuntimeVariableScope scope;
     private Location location;
@@ -17,18 +18,26 @@ public class GotoStatement extends Statement {
     public static GotoStatement G(String path) {
         return new GotoStatement(path);
     }
+    public static GotoStatement G(AutoautoValue path) {
+        return new GotoStatement(path);
+    }
 
     public GotoStatement(String path) {
+        this.gotoPath = new AutoautoString(path);
+    }
+
+    public GotoStatement(AutoautoValue path) {
         this.gotoPath = path;
     }
 
     public void loop() {
-        scope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(gotoPath));
+        gotoPath.loop();
+        scope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, gotoPath.getResolvedValue());
     }
 
     @Override
     public GotoStatement clone() {
-        GotoStatement c = new GotoStatement(gotoPath);
+        GotoStatement c = new GotoStatement(gotoPath.getResolvedValue());
         c.setLocation(location);
         return c;
     }
@@ -44,6 +53,7 @@ public class GotoStatement extends Statement {
 
     @Override
     public void setScope(AutoautoRuntimeVariableScope scope) {
+        this.gotoPath.setScope(scope);
         this.scope = scope;
     }
 

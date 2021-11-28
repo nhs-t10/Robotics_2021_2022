@@ -10,9 +10,15 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     private State body;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
+    private String[] argNames;
 
     public AutoautoFunction(State body) {
         this.body = body;
+    }
+
+    public AutoautoFunction(State body, String[] argNames) {
+        this.body = body;
+        this.argNames = argNames;
     }
 
     @Override
@@ -57,6 +63,12 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
 
         AutoautoTable arglist = new AutoautoTable(args);
         callScope.systemSet(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME, arglist.clone());
+
+        for(int i = 0; i < args.length; i++) {
+            if(argNames != null && i < argNames.length && argNames[i] != null) {
+                callScope.systemSet(argNames[i], args[i]);
+            }
+        }
 
         State callState = body.clone();
         callState.setScope(callScope);

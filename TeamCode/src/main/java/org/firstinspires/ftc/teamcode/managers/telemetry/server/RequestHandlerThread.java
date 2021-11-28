@@ -47,7 +47,7 @@ public class RequestHandlerThread extends Thread {
                 StreamHandler stream = new StreamHandler(writer, dataSource, socket);
                 //add this stream to the registry and start it
                 synchronized (streamRegistry) {
-                    streamID = genStreamID();
+                    streamID = StreamHandler.genStreamID();
                     streamRegistry.put(streamID, stream);
                     stream.setStreamID(streamID);
                 }
@@ -73,13 +73,21 @@ public class RequestHandlerThread extends Thread {
                 String[] commaSepValues = command.split(",");
 
                 writer.print(CommandHandler.handle(commaSepValues, dataSource, streamRegistry));
-            } else if(path.startsWith("/buildimgs")) {
+            } else if(path.equals("/build-history")) {
+                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
+                        + "Content-Type: " + "application/json" + HTTP_LINE_SEPARATOR
+                        + HTTP_LINE_SEPARATOR);
+                writer.print(BuildHistory.getJSON());
+            } else if(path.equals("/fallible-hardware-devices")) {
+                writer.print(FallableHardwareMapHttpFormatty.summarizeHardwareDevices(dataSource));
+            } else {
                 try (InputStream file = ServerFiles.getAssetStream(path)) {
                     if (file == null) {
-                        writer.print(HttpStatusCodeReplies.Not_Found("buildimgs not found"));
+                        writer.print(HttpStatusCodeReplies.Not_Found(path + " not found"));
                     } else {
+                        String fileExtension = path.substring(path.lastIndexOf('.') + 1);
                         writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
-                                + "Content-Type: " + "image/png" + HTTP_LINE_SEPARATOR
+                                + "Content-Type: " + MimeTypeLookup.lookupFileExtension(fileExtension) + HTTP_LINE_SEPARATOR
                                 + HTTP_LINE_SEPARATOR);
                         writer.flush();
                         //flush the class file into the stream
@@ -91,15 +99,6 @@ public class RequestHandlerThread extends Thread {
                         output.flush();
                     }
                 }
-            } else if(path.equals("/build-history")) {
-                writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
-                        + "Content-Type: " + "application/json" + HTTP_LINE_SEPARATOR
-                        + HTTP_LINE_SEPARATOR);
-                writer.print(BuildHistory.getJSON());
-            } else if(path.equals("/fallible-hardware-devices")) {
-                writer.print(FallableHardwareMapHttpFormatty.summarizeHardwareDevices(dataSource));
-            } else {
-                writer.print(HttpStatusCodeReplies.Not_Found);
             }
             writer.flush();
             socket.close();
@@ -108,8 +107,5 @@ public class RequestHandlerThread extends Thread {
         } catch(Exception e) {
             dataSource.log().add("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
         }
-    }
-    public String genStreamID() {
-        return Long.toHexString(System.nanoTime()) + Integer.toHexString((int)(Math.random() * 1000));
     }
 }

@@ -82,4 +82,8 @@ public class StreamHandler {
     public void waitForStreamID() {
         while(streamID == null);
     }
+
+    public static String genStreamID() {
+        return Long.toHexString(System.nanoTime()) + Integer.toHexString((int)(Math.random() * 1000));
+    }
 }

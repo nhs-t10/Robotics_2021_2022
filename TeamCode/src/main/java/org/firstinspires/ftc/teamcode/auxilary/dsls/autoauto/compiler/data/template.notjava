@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoOpmode;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoMacro;
 import org.firstinspires.ftc.teamcode.managers.*;
+import org.firstinspires.ftc.teamcode.managers.CV.CVManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -48,6 +49,7 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statem
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.BooleanOperator.T;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference.H;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue.B;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionDefStatement.J;
 
 import java.util.HashMap;
 
@@ -58,6 +60,7 @@ public class template extends AutoautoOpmode {
     ManipulationManager limbs;
     SensorManager sense;
     ImuManager imu;
+    CVManager cv;
     NateManager clawPosition;
 
     public static AutoautoProgram program = generateProgram();
@@ -83,6 +86,8 @@ public class template extends AutoautoOpmode {
 
         clawPosition = new NateManager(limbs);
 
+        cv = new CVManager(hardwareMap);
+
         driver.resetEncoders();
         driver.runWithOutEncoders();
 
@@ -97,7 +102,7 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, imu, driver, limbs, sense, telemetryManager, clawPosition);
+        runtime = R(program, imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
 
         AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
         telemetryManager.autoauto.setProgramJson(programJson.toString());
@@ -115,7 +120,7 @@ public class template extends AutoautoOpmode {
     public void runTest() {
         this.hardwareMap = new DummyHardwareMap();
         this.init();
-        int TEST_ITERATIONS = /*TEST_ITERATIONS*/0/10;
+        int TEST_ITERATIONS = 100;
         //noinspection ConstantConditions
         for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();
         this.stop();

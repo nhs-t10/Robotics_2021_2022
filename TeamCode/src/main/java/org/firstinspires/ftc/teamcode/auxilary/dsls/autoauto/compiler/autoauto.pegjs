@@ -48,31 +48,41 @@ state =
     }
   }
 
-statement =
-  _  s:(afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement/functionCallStatement)  _
-  
+statement = singleStatement / multiStatement
+
+multiStatement = _ OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
+	return { type: "Block", state: s, location: location() }
+}
+
+singleStatement =
+  _  s:(functionCallStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
+
   { return s; }
 
 afterStatement =
- AFTER _ u:unitValue _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
+ AFTER _ u:value _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
 
 functionCallStatement =
- f:functionCall { return { type: "FunctionCallStatement", location: location(), call: f } }
+ f:value { return { type: "FunctionCallStatement", location: location(), call: f } }
+
+funcDefStatement = (FUNCTION / FUNC) _
+	name:(IDENTIFIER/dynamicValue) _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
+    { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
 gotoStatement =
- GOTO _ p:IDENTIFIER { return { type: "GotoStatement", location: location(), path: p } } 
+ GOTO _ p:(IDENTIFIER/dynamicValue) { return { type: "GotoStatement", location: location(), path: p } }
 
 ifStatement =
- IF _ OPEN_PAREN t:value CLOSE_PAREN s:statement { return { type: "IfStatement", location: location(), conditional: t, statement: s } }
+ (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement { return { type: "IfStatement", location: location(), conditional: t, statement: s } }
 
 letStatement =
- LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }  
+ LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
 
 nextStatement =
  NEXT { return { type: "NextStatement", location: location() }   }
 
 skipStatement =
- SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   } 
+ SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   }
 
 value =
  _  b:boolean _ { return b }
@@ -80,19 +90,19 @@ value =
 valueInParens =
  _ OPEN_PAREN v:value CLOSE_PAREN _ { return v; }
 
-modulo = 
- l:baseExpression o:MODULUS r:baseExpression { 
-    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }  
+modulo =
+ l:baseExpression o:MODULUS r:baseExpression {
+    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }
 }
 / b:baseExpression  { return b; }
 
-exponent = 
- l:modulo o:EXPONENTIATE r:modulo { 
-    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }  
-} 
+exponent =
+ l:modulo o:EXPONENTIATE r:modulo {
+    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }
+}
 / m:modulo { return m; }
 
-product = 
+product =
  l:exponent tail:(o:(MULTIPLY / DIVIDE) r:product { return [o, r]; })+ {
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
@@ -105,9 +115,9 @@ product =
   tar.operator = tail[tail.length - 1][0];
   tar.right = tail[tail.length - 1][1];
   return r;
-} 
+}
 / p:exponent { return p; }
- 
+
 sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })+ {
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
@@ -120,7 +130,7 @@ sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })+ {
   tar.operator = tail[tail.length - 1][0];
   tar.right = tail[tail.length - 1][1];
   return r;
-} 
+}
 / p:product { return p; }
 arithmeticValue =
  s:sum {
@@ -136,7 +146,7 @@ variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
 
 arrayLiteral =
- OPEN_SQUARE_BRACKET a:argumentList? CLOSE_SQUARE_BRACKET { 
+ OPEN_SQUARE_BRACKET a:argumentList? CLOSE_SQUARE_BRACKET {
  return {
    type: "ArrayLiteral", location: location(),
    elems: a || {type:"ArgumentList",args:[], location: location()}
@@ -144,7 +154,7 @@ arrayLiteral =
 }
 
 boolean =
- l:arithmeticValue o:comparisonOperator r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; } 
+ l:arithmeticValue o:comparisonOperator r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; }
  / TRUE { return { type: "BooleanLiteral", location: location(), value: true }; }
  / FALSE { return { type: "BooleanLiteral", location: location(), value: false }; }
  / r:arithmeticValue { return r; }
@@ -153,7 +163,7 @@ comparisonOperator =
  o:(COMPARE_LTE / COMPARE_LT / COMPARE_EQ / COMPARE_NEQ / COMPARE_GTE / COMPARE_GT) { return o; }
 
 functionCall =
- f:IDENTIFIER _ OPEN_PAREN a:argumentList? CLOSE_PAREN { 
+ f:IDENTIFIER _ OPEN_PAREN a:argumentList? CLOSE_PAREN {
  return {
    type: "FunctionCall", location: location(),
    func: f, args: a || {type:"ArgumentList",args:[], location: location()}
@@ -164,16 +174,23 @@ stringLiteral =
  DOUBLE_QUOTE q:NON_QUOTE_CHARACTER* DOUBLE_QUOTE { return { type: "StringLiteral", location: location(), str: q.join("") } }
 
 unitValue =
- u:NUMERIC_VALUE_WITH_UNIT { return u; }
+ v:(NUMERIC_VALUE/dynamicValue) u:(IDENTIFIER/dynamicValue) { return {type: "UnitValue", location: location(), value: v, unit: u } }
 
 argumentList =
- heads:(value COMMA)* tail:value { 
- return { 
-   type: "ArgumentList", location: location(), 
+ heads:(argument COMMA)* tail:argument {
+ return {
+   type: "ArgumentList", location: location(),
    len: heads.length + 1,
    args: heads.map(x=> x[0]).concat([tail])
  }
-}  
+}
+
+argument = n:(value EQUALS)? v:value {
+	if(n) return { type: "TitledArgument", value: v, name: n[0]  };
+    else return v;
+}
+
+dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }
 
 _ = [ \t\n\r]* comment? [ \t\n\r]*
 
@@ -196,10 +213,13 @@ COMMA =
     ","
 AFTER =
     "after"
+FUNC = "func "
+FUNCTION = "function"
 GOTO =
     "goto"
 IF =
     "if"
+WHEN = "when"
 OPEN_PAREN =
     "("
 CLOSE_PAREN =
@@ -246,17 +266,21 @@ OPEN_SQUARE_BRACKET =
     "["
 CLOSE_SQUARE_BRACKET =
     "]"
+OPEN_CURLY_BRACKET =
+    "{"
+CLOSE_CURLY_BRACKET =
+    "}"
 IDENTIFIER =
     l:(LETTER / DIGIT)+
     &{
     var name = l.join("");
-    var reserved = ["if", "goto", "skip", "let", "next"];
+    var reserved = ["if", "goto", "skip", "let", "next", "function", "func", "when", "after"];
     if(reserved.indexOf(name) == -1) return true;
     else return false;
     }
     { return { type: "Identifier", location: location(), value: l.join("") } }
 DIGIT = [0-9]
-LETTER = [A-Za-z]
+LETTER = [A-Za-z_]
 STATEPATH_LABEL_ID = HASHTAG i:IDENTIFIER { return i; }
 NUMERIC_VALUE = m:MINUS? v:(
     h:DIGIT* '.' t:DIGIT+ { return h.join("") + "." + t.join("") }

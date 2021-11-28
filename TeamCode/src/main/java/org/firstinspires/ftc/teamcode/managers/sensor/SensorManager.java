@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.managers.sensor;
 
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.Sensor;
+import org.firstinspires.ftc.teamcode.managers.CV.CVManager;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.Arrays;
@@ -14,6 +18,14 @@ public class SensorManager extends FeatureManager {
     public Sensor[] sensors;
 
     public String[] sensorNames;
+
+    public SensorManager(HardwareMap hardwareMap, String[] _sensorNames) {
+        this.sensorNames = _sensorNames;
+
+        Sensor[] sensors = new Sensor[_sensorNames.length];
+        for(int i = 0; i < sensors.length; i++) sensors[i] = new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, _sensorNames[i]));
+        this.sensors = sensors;
+    }
 
     public SensorManager(Sensor[] _sensors, String[] _sensorNames) {
         if(_sensorNames.length != _sensors.length) throw new IllegalArgumentException("Sensor Names must be the same length as Sensors");
@@ -63,14 +75,6 @@ public class SensorManager extends FeatureManager {
     public boolean isSpecial1(int index) {
         update(index);
         return ((ColorSensor)this.sensors[index]).isSpecial1();
-    }
-
-    /**
-     * TODO: make this actually work
-     * @return
-     */
-    public int computerVision() {
-        return 0;
     }
 
 

@@ -67,6 +67,8 @@
         else if(src.endsWith("/")) src += "index.js";
         else src += ".js";
         
+        var moduleExportsNonce = encodeForJs(src);
+        
         var fileContent = requireCache[moduleExportsNonce];
         if(!fileContent) {
             var xhr = new XMLHttpRequest();
@@ -77,8 +79,6 @@
             
             fileContent = requireCache[moduleExportsNonce] = xhr.responseText;
         }
-        
-        var moduleExportsNonce = encodeForJs(src);
         
         var script = document.createElement("script");
         script.textContent = "(function(){var m = {}; var r = function(s) {return window.require(s," + JSON.stringify(src) + ");};" 

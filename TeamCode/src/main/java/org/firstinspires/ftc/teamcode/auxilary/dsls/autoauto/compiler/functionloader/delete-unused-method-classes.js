@@ -12,6 +12,7 @@ var robotFunctionsDirectory = path.join(rootDirectory, "TeamCode/src/main/java/o
 module.exports = function(methodClassNames) {
     var javaFileNames = fs.readdirSync(robotFunctionsDirectory);
     for(var i = 0; i < javaFileNames.length; i++) {
+        if(!javaFileNames[i].endsWith(".java")) continue;
         var javaClassName = /(\w+)(\.java)?$/.exec(javaFileNames[i])[1];
         if(!methodClassNames.includes(javaClassName)) {
             fs.unlinkSync(path.join(robotFunctionsDirectory, javaClassName + ".java"));

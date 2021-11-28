@@ -1,0 +1,29 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.7.2"
+    id "java-library"
+
+}
+
+apply plugin: 'org.jetbrains.intellij'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://dl.bintray.com/jetbrains/intellij-plugin-service'
+    }
+}
+
+sourceSets.main.java.srcDirs "/gen"
+
+intellij {
+    version "201.8743.12"
+    type "IC"
+    pluginName 'autoauto-language-plugin'
+    updateSinceUntilBuild false
+    plugins "android"
+}

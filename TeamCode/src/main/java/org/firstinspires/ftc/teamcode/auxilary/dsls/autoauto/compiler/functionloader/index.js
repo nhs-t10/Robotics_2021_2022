@@ -17,8 +17,11 @@ var managerArgs = {};
 
 var generateAaMethods = require("./parse-and-generate-aa-methods.js");
 var deleteUnusedMethodClasses = require("./delete-unused-method-classes.js");
+var functionIndexMaker = require("./function-index-maker.js");
 
 if (!fs.existsSync(managersDir)) throw "Managers directory `" + managersDir + "` doesn't exist";
+
+functionIndexMaker.cleanIndex();
 
 var managers = loadManagersFromFolder(managersDir);
 
@@ -33,6 +36,8 @@ for (var i = 0; i < managers.length; i++) {
     
     if(cacheManagers[manager].javaSha === sha) {
         methods.push(cacheManagers[manager].methods);
+        //if this cache entry has index lines, add them
+        if(cacheManagers[manager].methods[2] !== undefined) cacheManagers[manager].methods[2].forEach(x=> functionIndexMaker.addFunctionIndexLine(x[0]));
     } else {
         cacheManagers[manager].javaSha = sha
         var preexistingNames = methods.map(x=>x[1].map(y=>y[0])).flat();

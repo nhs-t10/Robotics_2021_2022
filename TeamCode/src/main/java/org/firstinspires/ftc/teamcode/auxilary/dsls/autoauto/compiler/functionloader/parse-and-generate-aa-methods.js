@@ -9,6 +9,7 @@ var parser = require("./javaparser/parser.js");
 var astTools = require("./javaparser/ast-tools.js");
 
 var processTemplate = require("./template-render.js");
+var functionIndexMaker = require("./function-index-maker.js");
 
 module.exports = function(javaSource, preexistingNames) {
     try {
@@ -29,8 +30,9 @@ module.exports = function(javaSource, preexistingNames) {
     
     var methods = findShimableMethods(primaryType);
     var overloads = groupMethodsIntoOverloads(methods);
-    
-    return [fullClassName, overloads.map(x=>generateRobotFunction(x, fullClassName, preexistingNames))];
+
+    var processedMethodClassLocs = overloads.map(x=>generateRobotFunction(x, fullClassName, preexistingNames));
+    return [fullClassName, processedMethodClassLocs.map(x=>x.shimClassFunction), processedMethodClassLocs.map(x=>x.cachableFunctionIndexLines)];
 }
 
 function generateRobotFunction(overload, definedClass, preexistingNames) {
@@ -40,7 +42,8 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
     while(preexistingNames.includes(noConflictName)) noConflictName += definedClass.split(".").slice(-1)[0];
     
     var typemaps = overload[1];
-    
+
+    var functionIndexLines = [];
     
     var callMethodSource = "";
     
@@ -57,12 +60,17 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
             }
         }
         processedOverloads += overloadsWithNArgs.length;
-        
+
         callMethodSource += `if(args.length == ${i}) {`;
         
         for(var j = 0; j < overloadsWithNArgs.length; j++) {
             var overload = overloadsWithNArgs[j];
-            
+
+            var overloadAutocompleteIndexLine = noConflictName + "(" + overload.args.map((x,k)=>`${x.toLowerCase()} ${overload.argnames[k]}`) + ") <- " + definedClass;
+            functionIndexMaker.addFunctionIndexLine(overloadAutocompleteIndexLine);
+            functionIndexLines.push(overloadAutocompleteIndexLine);
+
+
             //process each arg & add it to the pile of `&&` clauses
             
             if(overload.args.length) {
@@ -77,6 +85,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
                 else callMethodSource += "); return new AutoautoUndefined();";
             if(overload.args.length) callMethodSource += "}";
         }
+
 
         callMethodSource += `}`;
     }
@@ -98,7 +107,10 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
 
 
 
-    return [noConflictName, classname];
+    return {
+        shimClassFunction: [noConflictName, classname],
+        cachableFunctionIndexLines: functionIndexLines
+    }
 }
 
 function replaceNumbers(str) {
@@ -188,7 +200,8 @@ function getTypeCode(type) {
 function getBasicTypeInfo(method) {
     return {
         type: getTypeCode(method.returnType2),
-        args: method.parameters.map(x=>getTypeCode(x.typeType))
+        args: method.parameters.map(x=>getTypeCode(x.typeType)),
+        argnames: method.parameters.map(x=>x.name.identifier)
     };
 }
 
