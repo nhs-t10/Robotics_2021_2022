@@ -1,9 +1,10 @@
 $
 testIterations: 100,
-expectedTestOutput: "args: [0 = boo, 1 = undefined, 2 = 30]\nfalseboo\n0xe3\n86"
+expectedTestOutput: "start\n1\nargs: [0 = boo, 1 = undefined, 2 = 30]\nfalseboo\n0xe3\n86\nend"
 $
 
 #init:
+    log("start"), next;
     let baz = false, function foo(a, b = "3", c) {
         log("args: " + args), log(baz + a), log("0xe" + b), log((54 + 2) + c), goto b, next
     }, goto a;
@@ -20,9 +21,9 @@ $
     goto finalMovement
 
 #Position2:
-    pass
+    causeErrorFromAnUnknownFunction
 #Position3:
-    pass
+    causeErrorFromAnUnknownFunction
 #finalMovement:
-    let finalIterations = 0, next;
-    let finalIterations = finalIterations + 1, log("atFinal " + finalIterations)
+    log("end"), next;
+    if(false) log(3)

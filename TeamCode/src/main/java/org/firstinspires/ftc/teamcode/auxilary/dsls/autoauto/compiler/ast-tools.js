@@ -1,3 +1,5 @@
+const visualiseTree = require("./visualise-tree");
+
 var generalNumberToIncrementWhenSomethingNeedsToBeChanged = 0;
 var stringDefinitions = {};
 var locationSetters = [];
@@ -19,7 +21,9 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     AutoautoProgram: "P",
     AutoautoRuntime: "R",
     Statepath: "S",
+    "State[]": "S",
     State: "A",
+    "Statement[]": "A",
     NextStatement: "N",
     FunctionCallStatement: "F",
     AfterStatement: "W",
@@ -37,7 +41,8 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     AutoautoBooleanValue: "B",
     FunctionDefStatement: "J",
     TitledArgument: "V",
-    "Statement[]": ""
+    
+    "AutoautoValue[]" : "%"
 };
 
 var PRIMITIVENESS_OF_TYPE = {
@@ -99,12 +104,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var programName = genNonce();
             
             var splitDefinitions = depthMappedDefinitions
-                .map(x=>
-                    x.definition
-                    .split(";")
-                    .filter(x=>x!="")
-                    .map(x=>x+";")
-                    .map((y,i,a)=>({ definition: y, depends: x.depends, self: x.self, depth: x.depth })))
+                .map(x=>({ definition: x.definition, depends: x.depends, self: x.self, depth: x.depth }))
                 .flat();
 
                 var sortedDefinitions = [];
@@ -114,15 +114,27 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                     def.processed = true;
 
                     def.depends.forEach(y=> {
-                        var f = splitDefinitions
+                        splitDefinitions
                             .filter(z=>z.self==y)
                             .forEach(z=>addSortDefs(z));
                     });
                     if(def.definition) sortedDefinitions.push(def);
                 }
+                
+                function toTreeNode(def) {
+                    return {
+                        class: STATIC_CONSTRUCTOR_SHORTNAMES[JAVA_TYPE_REGEX.exec(def.definition.trim())[0]],
+                        children: def.depends.map(y=>splitDefinitions.filter(z=>z.self==y)).flat().map(y=>toTreeNode(y))
+                    }
+                }
 
                 var childDefsDefinitions = childDefs.map(x=>splitDefinitions.filter(y=>y.self == x.varname)).flat();
                 childDefsDefinitions.forEach(x=>addSortDefs(x));
+                
+                visualiseTree({
+                    class: "_ROOT",
+                    children: childDefsDefinitions.map(x=>toTreeNode(x))
+                });
 
                  //split by semicolons, make each statement into its own depth mapped definition
                 var typedDefinitions = sortedDefinitions
@@ -245,7 +257,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 depth: depth,
                 self: nonce,
                 depends: [name.varname, args.varname, body.varname],
-                definition: `FunctionDefStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionDefStatement}(${name.varname}, ${args.varname}, ${body.varname})`
+                definition: `FunctionDefStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionDefStatement}(${name.varname}, ${args.varname}, ${body.varname});`
             });
 
             result = {
