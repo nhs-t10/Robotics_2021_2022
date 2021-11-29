@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoatuoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AutoautoTable extends AutoautoPrimitive {
     private HashMap<String, AutoautoValue> elems;
@@ -29,7 +32,10 @@ public class AutoautoTable extends AutoautoPrimitive {
 
     public AutoautoTable(AutoautoValue[] e) {
         elems = new HashMap<>();
-        for(int i = 0; i < e.length; i++) set(new AutoautoNumericValue(i), e[i]);
+        for(int i = 0; i < e.length; i++) {
+            if(e[i] == null) throw new AutoatuoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
+            set(new AutoautoNumericValue(i), e[i]);
+        }
     }
 
     public void init() {
@@ -48,8 +54,8 @@ public class AutoautoTable extends AutoautoPrimitive {
     @Override
     public String getString() {
         StringBuilder strElems = new StringBuilder();
-        for(String key : elems.keySet()) {
-            strElems.append(key).append(" = ").append(this.elems.get(key).getString()).append(", ");
+        for(Map.Entry<String, AutoautoValue> entry : elems.entrySet()) {
+            strElems.append(entry.getKey()).append(" = ").append(entry.getValue().getString()).append(", ");
         }
         String str = strElems.toString();
         //use substring() to trim off ending comma & space

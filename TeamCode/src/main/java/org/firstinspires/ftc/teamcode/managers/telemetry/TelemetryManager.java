@@ -305,7 +305,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
             this.logged = "";
         }
 
-        public String getLogText() {
+        public String getLogHistory() {
             return logHistory;
         }
 

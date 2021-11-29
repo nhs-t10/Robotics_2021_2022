@@ -19,6 +19,11 @@ public class DefunFunction extends NativeFunction {
     }
 
     @Override
+    public String[] getArgNames() {
+        return new String[0];
+    }
+
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         if(args.length == 0) throw new AutoautoArgumentException("0 arguments provided to defun(); 1 argument required" + AutoautoProgram.formatStack(getLocation()));
 

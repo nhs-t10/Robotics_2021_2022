@@ -59,6 +59,11 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     }
 
     @Override
+    public String[] getArgNames() {
+        return argNames;
+    }
+
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         AutoautoRuntimeVariableScope callScope = new AutoautoRuntimeVariableScope(scope.getRoot());
         AutoautoNumericValue actualStateNumber = (AutoautoNumericValue) scope.get(AutoautoSystemVariableNames.STATE_NUMBER);
@@ -72,7 +77,7 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
 
         if(argNames != null) {
             for (int i = 0; i < argNames.length; i++) {
-                if (i < args.length) {
+                if (i < args.length && !(args[i] instanceof AutoautoUndefined)){
                     callScope.systemSet(argNames[i], args[i]);
                 } else {
                     if(defaultArgValues == null || defaultArgValues[i] == null) callScope.systemSet(argNames[i], new AutoautoUndefined());

@@ -12,6 +12,11 @@ public class ExistsFunction extends NativeFunction {
     }
 
     @Override
+    public String[] getArgNames() {
+        return new String[0];
+    }
+
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         return new AutoautoBooleanValue(args[0] != null);
     }

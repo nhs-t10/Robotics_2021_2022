@@ -1,6 +1,6 @@
 $
 testIterations: 100,
-expectedTestOutput: "args: [0 = boo]\nfalseboo\n0xe3\n56undefined"
+expectedTestOutput: "args: [0 = boo, 1 = undefined, 2 = 30]\nfalseboo\n0xe3\n86"
 $
 
 #init:
@@ -16,7 +16,7 @@ $
 
 #Position1:
     positionOne(), when (true) { log("1"), next };
-    foo("boo"), next;
+    foo("boo", c = 30), next;
     goto finalMovement
 
 #Position2:

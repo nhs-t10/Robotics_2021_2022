@@ -14,8 +14,13 @@ public class LogFunction extends NativeFunction {
     }
 
     @Override
+    public String[] getArgNames() {
+        return new String[0];
+    }
+
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        FeatureManager.logger.log((args[0] == null ? new AutoautoUndefined() : args[0]).getString());
+        for(AutoautoPrimitive a : args) FeatureManager.logger.log((a == null ? new AutoautoUndefined() : a).getString());
         return new AutoautoUndefined();
     }
 }

@@ -21,6 +21,11 @@ public class ReturnFunction extends NativeFunction {
     }
 
     @Override
+    public String[] getArgNames() {
+        return new String[0];
+    }
+
+    @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
         AutoautoPrimitive returnedVal = args.length == 0 ? new AutoautoUndefined() : args[0];
 

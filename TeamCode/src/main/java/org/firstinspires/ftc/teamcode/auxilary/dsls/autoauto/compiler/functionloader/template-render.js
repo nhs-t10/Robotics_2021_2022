@@ -1,4 +1,8 @@
-module.exports = function(callMethodSource, definingClass, classname) {
+module.exports = function(callMethodSource, definingClass, classname, argNames) {
+    if(!argNames) argNames = "[]";
+    else argNames = JSON.stringify(argNames);
+    argNames = argNames.substring(1, argNames.length - 1);
+
     return `package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.robotfunctions;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
@@ -11,6 +15,12 @@ public class ${classname} extends NativeRobotFunction {
 
     public ${classname}(FeatureManager manager) {
         this.manager = (${definingClass})manager;
+    }
+
+    private String[] argNames = new String[] { ${ argNames } };
+    @Override
+    public String[] getArgNames() {
+        return argNames;
     }
 
     @Override

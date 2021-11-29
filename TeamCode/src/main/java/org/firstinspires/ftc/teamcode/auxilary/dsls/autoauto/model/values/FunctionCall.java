@@ -5,7 +5,12 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FunctionCall extends AutoautoValue {
     public AutoautoValue[] args;
@@ -68,8 +73,21 @@ public class FunctionCall extends AutoautoValue {
 
         for(int i = this.args.length - 1; i >= 0; i--) this.args[i].loop();
 
-        AutoautoPrimitive[] argsResolved = new AutoautoPrimitive[args.length];
-        for(int i = this.args.length - 1; i >= 0; i--) argsResolved[i] = this.args[i].getResolvedValue();
+        String[] argNames = fn.getArgNames();
+        AutoautoPrimitive[] argsResolved = new AutoautoPrimitive[Math.max(args.length, argNames.length)];
+
+        for(int i = argsResolved.length - 1; i >= 0; i--) {
+            if(i < args.length && args[i] instanceof TitledArgument) {
+                String argTitle = ((TitledArgument)args[i]).getResolvedValue().title.getString();
+                int index = Arrays.asList(argNames).indexOf(argTitle);
+                AutoautoPrimitive resolvedArg = ((TitledArgument)this.args[i]).getResolvedValue().value;
+                if(index != -1) argsResolved[index] = resolvedArg;
+            } else if(i < args.length) {
+                argsResolved[i] = args[i].getResolvedValue();
+            }
+
+            if(argsResolved[i] == null) argsResolved[i] = new AutoautoUndefined();
+        }
 
         this.returnValue = fn.call(argsResolved);
     }

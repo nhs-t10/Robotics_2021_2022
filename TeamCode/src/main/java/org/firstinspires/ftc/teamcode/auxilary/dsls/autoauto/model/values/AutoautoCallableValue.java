@@ -5,5 +5,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerSetu
 public interface AutoautoCallableValue {
     AutoautoValue returnValue = null;
 
+    String[] getArgNames();
     AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException;
 }

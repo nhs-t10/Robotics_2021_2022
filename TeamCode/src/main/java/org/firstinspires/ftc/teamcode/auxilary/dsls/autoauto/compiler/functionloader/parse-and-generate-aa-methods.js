@@ -48,6 +48,8 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
     var callMethodSource = "";
     
     var processedOverloads = 0;
+
+    var argumentNames = [];
     
     for(var i = 0; ; i++) {
         var overloadsWithNArgs = typemaps.filter(x=>x.args.length == i);
@@ -65,6 +67,8 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         
         for(var j = 0; j < overloadsWithNArgs.length; j++) {
             var overload = overloadsWithNArgs[j];
+
+            if(overload.argnames.length > argumentNames.length) argumentNames = overload.argnames;
 
             var overloadAutocompleteIndexLine = noConflictName + "(" + overload.args.map((x,k)=>`${x.toLowerCase()} ${overload.argnames[k]}`) + ") <- " + definedClass;
             functionIndexMaker.addFunctionIndexLine(overloadAutocompleteIndexLine);
@@ -95,7 +99,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
 
     var classname = noConflictName.charAt(0).toUpperCase() + noConflictName.substring(1) + "Function";
         
-    var template = processTemplate(callMethodSource, definedClass, classname);
+    var template = processTemplate(callMethodSource, definedClass, classname, argumentNames);
 
     var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
 

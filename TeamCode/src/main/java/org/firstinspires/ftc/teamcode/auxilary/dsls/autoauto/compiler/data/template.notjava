@@ -77,7 +77,7 @@ public class template extends AutoautoOpmode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this);
         telemetry = telemetryManager;
         
-        if(this.internalOpModeServices!=null) FeatureManager.logger.setBackend(telemetry.log());
+        FeatureManager.logger.setBackend(telemetry.log());
 
         driver = new MovementManager(hardwareMap.get(DcMotor.class, "fl"),
                 hardwareMap.get(DcMotor.class, "fr"),
@@ -125,6 +125,8 @@ public class template extends AutoautoOpmode {
     @Test
     public void runTest() {
         this.hardwareMap = new DummyHardwareMap();
+        this.telemetry = new DummyTelemetry();
+
         this.init();
         ((TelemetryManager.LogCatcher)telemetry.log()).setRecordLogHistory(true);
         int TEST_ITERATIONS = /*TEST_ITERATIONS*/;

@@ -6,4 +6,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 
 public abstract class AutoautoOpmode extends OpMode {
     public static AutoautoProgram program;
+
+    public static AutoautoProgram generateProgram() {
+        return null;
+    }
 }
