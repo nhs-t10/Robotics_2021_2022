@@ -15,6 +15,7 @@ function initFileState() {
 var COLUMN_THRESHOLD = 120;
 var JAVA_TYPE_REGEX = /^\w+(<(\w+)( *,(\w+))+>)?(\[\])?/;
 var STATIC_CONSTRUCTOR_SHORTNAMES = {
+    __do_not_use_reserved_for_location: "L",
     AutoautoProgram: "P",
     AutoautoRuntime: "R",
     Statepath: "S",
@@ -35,6 +36,7 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     VariableReference: "H",
     AutoautoBooleanValue: "B",
     FunctionDefStatement: "J",
+    TitledArgument: "V",
     "Statement[]": ""
 };
 
@@ -339,6 +341,21 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 varname: nonce,
                 noLocation: true
             };
+            break;
+        case "TitledArgument":
+            var value = process(ast.value);
+            var name = process(ast.name);
+
+            depthMappedDefinitions.push({
+                depth: depth,
+                self: nonce,
+                depends: [value.varname, name.varname],
+                definition: `TitledArgument ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.TitledArgument}(${name.varname}, ${value.varname});`
+            })
+
+            result = {
+                varname: nonce
+            }
             break;
         case "OperatorExpression":
             var left = process(ast.left);

@@ -1,0 +1,28 @@
+$
+testIterations: 100,
+expectedTestOutput: "args: [0 = boo]\nfalseboo\n0xe3\n56undefined"
+$
+
+#init:
+    let baz = false, function foo(a, b = "3", c) {
+        log("args: " + args), log(baz + a), log("0xe" + b), log((54 + 2) + c), goto b, next
+    }, goto a;
+    log("FAIL! `next` in function worked. It's not supposed to :/ :/ :/")
+#a:
+    let value = 0, goto ["Position" + (value + 1)],
+    log("FAIL! `next` in function worked. It's not supposed to :/ :/ :/")
+#b:
+    log("FAIL! `goto` in function worked. It's not supposed to :/ :/ :/")
+
+#Position1:
+    positionOne(), when (true) { log("1"), next };
+    foo("boo"), next;
+    goto finalMovement
+
+#Position2:
+    pass
+#Position3:
+    pass
+#finalMovement:
+    let finalIterations = 0, next;
+    let finalIterations = finalIterations + 1, log("atFinal " + finalIterations)

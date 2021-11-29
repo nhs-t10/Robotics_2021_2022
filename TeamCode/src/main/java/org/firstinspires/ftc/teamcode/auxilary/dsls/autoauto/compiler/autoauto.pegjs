@@ -186,7 +186,7 @@ argumentList =
 }
 
 argument = n:(value EQUALS)? v:value {
-	if(n) return { type: "TitledArgument", value: v, name: n[0]  };
+	if(n) return { type: "TitledArgument", value: v, name: n[0], location: location()  };
     else return v;
 }
 

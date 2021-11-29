@@ -11,14 +11,19 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     private AutoautoRuntimeVariableScope scope;
     private Location location;
     private String[] argNames;
+    private AutoautoPrimitive[] defaultArgValues;
 
     public AutoautoFunction(State body) {
-        this.body = body;
+        this(body, new String[0]);
     }
 
     public AutoautoFunction(State body, String[] argNames) {
+        this(body, argNames, new AutoautoPrimitive[0]);
+    }
+    public AutoautoFunction(State body, String[] argNames, AutoautoPrimitive[] defaultArgValues) {
         this.body = body;
         this.argNames = argNames;
+        this.defaultArgValues = defaultArgValues;
     }
 
     @Override
@@ -40,6 +45,7 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     @Override
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
+        body.setScope(scope);
     }
 
     @Override
@@ -64,9 +70,14 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
         AutoautoTable arglist = new AutoautoTable(args);
         callScope.systemSet(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME, arglist.clone());
 
-        for(int i = 0; i < args.length; i++) {
-            if(argNames != null && i < argNames.length && argNames[i] != null) {
-                callScope.systemSet(argNames[i], args[i]);
+        if(argNames != null) {
+            for (int i = 0; i < argNames.length; i++) {
+                if (i < args.length) {
+                    callScope.systemSet(argNames[i], args[i]);
+                } else {
+                    if(defaultArgValues == null || defaultArgValues[i] == null) callScope.systemSet(argNames[i], new AutoautoUndefined());
+                    else callScope.systemSet(argNames[i], defaultArgValues[i]);
+                }
             }
         }
 

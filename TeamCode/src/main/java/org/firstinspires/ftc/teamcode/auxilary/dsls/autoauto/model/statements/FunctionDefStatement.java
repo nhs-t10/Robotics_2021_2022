@@ -4,16 +4,19 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.TitledArgument;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 public class FunctionDefStatement extends Statement {
+    private AutoautoValue[] args;
+    private State body;
     public AutoautoValue fName;
 
-    public AutoautoFunction func;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
@@ -25,46 +28,61 @@ public class FunctionDefStatement extends Statement {
     }
     public FunctionDefStatement(AutoautoValue fName, AutoautoValue[] args, State body) {
         this.fName = fName;
+        this.args = args;
+        this.body = body;
 
-        String[] a = new String[args.length];
         for(int i = 0; i < args.length; i++) {
-            if(args[i] instanceof VariableReference) a[i] = ((VariableReference)args[i]).getName();
-            else if(args[i] instanceof AutoautoPrimitive) a[i] = args[i].getString();
-            else a[i] = "";
+            if(args[i] instanceof VariableReference) args[i] = new AutoautoString(((VariableReference)args[i]).getName());
         }
-
-        this.func = new AutoautoFunction(body, a);
     }
 
-    public FunctionDefStatement(AutoautoValue fName, AutoautoFunction f) {
-        this.fName = fName;
-        this.func = f;
-    }
-
-    public FunctionDefStatement(String fName, AutoautoValue[] args, State val) {
-        this(new AutoautoString(fName), args, val);
+    public FunctionDefStatement(String fName, AutoautoValue[] args, State body) {
+        this(new AutoautoString(fName), args, body);
     }
 
     public void init() {
         this.fName.init();
-        this.func.init();
+        for(AutoautoValue v : args) v.init();
+        body.init();
     }
 
     @Override
     public FunctionDefStatement clone() {
-        FunctionDefStatement c = new FunctionDefStatement(fName.clone(), func.clone());
+        AutoautoValue[] clonedArgs = new AutoautoValue[args.length];
+        for(int i = 0; i < clonedArgs.length; i++) clonedArgs[i] = args[i].clone();
+
+        FunctionDefStatement c = new FunctionDefStatement(fName.clone(), clonedArgs, body.clone());
         c.setLocation(location);
         return c;
     }
 
     public void loop() {
+        body.stepInit();
+
         fName.loop();
-        this.func.loop();
-        this.scope.put(this.fName.getResolvedValue().getString(), func.getResolvedValue());
+        for(AutoautoValue v : args) v.loop();
+
+        AutoautoFunction func = makeFunction();
+        this.scope.put(this.fName.getResolvedValue().getString(), func);
+    }
+
+    private AutoautoFunction makeFunction() {
+        String[] a = new String[args.length];
+        AutoautoPrimitive[] defaultValues = new AutoautoPrimitive[args.length];
+        for(int i = 0; i < args.length; i++) {
+            if(args[i] instanceof VariableReference) a[i] = ((VariableReference)args[i]).getName();
+            else if(args[i] instanceof AutoautoPrimitive) a[i] = args[i].getString();
+            else if(args[i] instanceof TitledArgument) a[i] = ((TitledArgument)args[i]).getResolvedValue().title.getString();
+            else a[i] = "";
+
+            if(args[i] instanceof TitledArgument) defaultValues[i] = ((TitledArgument)args[i]).getResolvedValue().value;
+        }
+
+        return new AutoautoFunction(body, a, defaultValues);
     }
 
     public String toString() {
-        return "function " + this.fName.toString() + " = " + this.func.toString();
+        return "function " + this.fName.toString();
     }
 
     @Override
@@ -76,7 +94,8 @@ public class FunctionDefStatement extends Statement {
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
         this.fName.setScope(scope);
-        this.func.setScope(scope);
+        for(AutoautoValue v : args) v.setScope(scope);
+        this.body.setScope(scope);
     }
 
     @Override

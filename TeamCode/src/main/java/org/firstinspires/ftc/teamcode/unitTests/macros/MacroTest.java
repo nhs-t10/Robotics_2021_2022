@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.unitTests.macros;
 
-import org.firstinspires.ftc.teamcode.__compiledautoauto.PokuAuto__autoauto;
-import org.firstinspires.ftc.teamcode.__compiledautoauto.RedWarehouseSide__autoauto;
-import org.firstinspires.ftc.teamcode.__compiledautoauto.Testmacro__macro_autoauto;
+import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcodeunittestsmacros$vP5M1.Testmacro__macro_autoauto;
 import org.firstinspires.ftc.teamcode.auxilary.Sensor;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;

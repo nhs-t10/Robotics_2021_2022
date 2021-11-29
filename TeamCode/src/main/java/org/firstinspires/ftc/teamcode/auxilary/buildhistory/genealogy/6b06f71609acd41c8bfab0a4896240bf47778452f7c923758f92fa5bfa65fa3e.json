@@ -3,14 +3,6 @@
     "cognomen": "Dinger",
     "builds": [
         {
-            "name": "Frederick Dinger",
-            "time": "2021-11-09T02:38:45.009Z",
-            "buildHash": "cd514af883e89cef93e56aa46334238c75128b9bfa2007fe7d4fb5af0e038207",
-            "w3w": "fusion brewer bookmark",
-            "phrase": "Death is because the room. She said of crooked, false-jewelled fingers creep through having a moment. “Down on plodded the symbol of Humour’s cast-off clothes. “Really! And this scene. I kept something unfair about him?",
-            "perceptualHash": "000000"
-        },
-        {
             "name": "Gustavo Dinger",
             "time": "2021-11-09T02:39:18.914Z",
             "buildHash": "2b25f5f2d9646b62e93eaee8eb6988f87192ea09bf9e03b5af1b0f0ffb85dbef",
@@ -892,8 +884,17 @@
             "phrase": "Giordano Bruno thought? The bright dawn flooded the senses, just before dawn, he did, even on there. It used bad rehearsal. “No.” she seeks for respectability, you mustn’t believe it? Yet he fed them. Yet he started.",
             "perceptualHash": "f85648f8361fe2fcf782fc612b227df87f94fe7f64fefbfdf49f8555715fbf85dfbfeffdfbfcfdfebfdf0f6f6faf8f9f82fc3fdfcfba3f7fafaf4fe6f9fc91fef7282ecfb6fdfa3fb",
             "colors": "#83decf,#83d4bf,#812f29,#23da81,#b54bc0,#8320e8,#db7a80,#4d6f80,#ec8583,#11c669,#83f28f,#80790c,#805167,#0b7980,#9ec7ee,#a3a71e,#2e81cc,#2b8f1e,#cba710,#66d28c,#f18153,#8066c4,#8997c0,#80ccef,#6e71f9"
+        },
+        {
+            "name": "Bishop Dinger",
+            "time": "2021-11-18T15:21:31.152Z",
+            "buildHash": "36e4b49ed14cd655d3491c9f360680d23744700ea58a374f33d39acd0f51435e",
+            "w3w": "begun hardship envoy",
+            "phrase": "King Perozes, and had quite useless. The studio now, tell her.” “Oh! she cried. “Horribly.” he cried. “Impossible.” “It is all. The nineteenth century that others might cease. It came I suppose.” was over.",
+            "perceptualHash": "632f7fe1fd3fefe78f6fefd6f8fefef9fcfefbfe",
+            "colors": "#68c5bf,#6580cc,#876cf3,#5787e2,#804554,#48806e,#b6804e"
         }
     ],
-    "buildCount": 126,
-    "lastBuildTimeUnixMs": 1637190797337
+    "buildCount": 127,
+    "lastBuildTimeUnixMs": 1637248891520
 }

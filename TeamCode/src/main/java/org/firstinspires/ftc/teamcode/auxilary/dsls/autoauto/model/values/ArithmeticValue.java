@@ -37,10 +37,10 @@ public class ArithmeticValue extends AutoautoValue {
         AutoautoValue leftRes = left.getResolvedValue();
         AutoautoValue rightRes = right.getResolvedValue();
 
-        if(leftRes instanceof AutoautoString || rightRes instanceof AutoautoString) {
+        if(!(leftRes instanceof AutoautoNumericValue) || !(rightRes instanceof AutoautoNumericValue)) {
             if(operator.equals("+")) concatenate(left.asString(), right.asString());
-            else throw new AutoautoNameException("[AUTOAUTO ERROR] Bad operator " + operator + "on string value.");
-
+            else throw new AutoautoNameException("[AUTOAUTO ERROR] Bad operator " + operator + "on incompatible value types "
+                    + leftRes.getClass().getSimpleName() + "; " + rightRes.getClass().getSimpleName());
             return;
         }
 
@@ -52,6 +52,7 @@ public class ArithmeticValue extends AutoautoValue {
                 this.returnValue = new AutoautoNumericValue(a % b);
                 break;
             case "^":
+            case "**":
                 this.returnValue = new AutoautoNumericValue((float) Math.pow(a, b));
                 break;
             case "*":

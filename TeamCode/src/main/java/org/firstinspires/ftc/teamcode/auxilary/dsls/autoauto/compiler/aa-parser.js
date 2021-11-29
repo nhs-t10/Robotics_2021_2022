@@ -244,7 +244,7 @@ module.exports = /*
          }
         },
         peg$c37 = function(n, v) {
-        	if(n) return { type: "TitledArgument", value: v, name: n[0]  };
+        	if(n) return { type: "TitledArgument", value: v, name: n[0], location: location()  };
             else return v;
         },
         peg$c38 = function(v) { return { type: "DynamicValue", value: v, location: location() } },

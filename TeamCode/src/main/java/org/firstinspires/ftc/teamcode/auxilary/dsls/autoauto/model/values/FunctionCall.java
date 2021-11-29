@@ -56,54 +56,6 @@ public class FunctionCall extends AutoautoValue {
         AutoautoValue val = scope.get(name);
         if(val == null) throw new AutoautoNameException("`" + this.name + "` is undefined" + AutoautoProgram.formatStack(location));
 
-        //array values are recovered using a function-like syntax
-        if(val instanceof AutoautoTable) {
-            AutoautoTable arrayValue = (AutoautoTable)val;
-            for(int i = this.args.length - 1; i >= 0; i--) this.args[i].loop();
-
-            if(args.length != 1 && args.length != 2) throw new AutoautoArgumentException("Array accessors must have 1 or 2 arguments"+ AutoautoProgram.formatStack(location));
-
-            args[0].loop();
-            AutoautoPrimitive key = args[0].getResolvedValue();
-
-            if(args.length == 1) {
-                this.returnValue = arrayValue.get(key);
-            } else if(args.length == 2) {
-                if(args[1].toString().equals("var<delete>")) {
-                    this.returnValue = arrayValue.get(key);
-                    arrayValue.delete(key);
-                } else {
-                    args[1].loop();
-                    arrayValue.set(key, args[1].getResolvedValue());
-                    this.returnValue = args[1].getResolvedValue();
-                }
-            }
-
-            return;
-        }
-
-        if(val instanceof AutoautoString) {
-            this.returnValue = new AutoautoString("");
-            if(args.length == 1 || args.length == 2) {
-                args[0].loop();
-                AutoautoPrimitive index = args[0].getResolvedValue();
-                if(!(index instanceof AutoautoNumericValue)) throw new AutoautoArgumentException("String accessors must be numeric; attempt with " + index.getString() + AutoautoProgram.formatStack(location));
-                int indexNum = (int)((AutoautoNumericValue) index).getFloat();
-                String str = val.getString();
-                if(indexNum < 0 || indexNum >= str.length()) throw new AutoautoArgumentException("Illegal index " + indexNum + " for a string of length " + str.length() + AutoautoProgram.formatStack(location));
-                this.returnValue = new AutoautoString(str.charAt(indexNum) + "");
-                if(args.length == 2) {
-                    args[1].loop();
-                    AutoautoPrimitive index2 = args[1].getResolvedValue();
-                    if(!(index2 instanceof AutoautoNumericValue)) throw new AutoautoArgumentException("String accessors must be numeric; attempt with " + index2.getString() + AutoautoProgram.formatStack(location));
-                    int index2Num = (int)((AutoautoNumericValue) index2).getFloat();
-                    if(index2Num < 0 || index2Num >= str.length()) throw new AutoautoArgumentException("Illegal index " + index2Num + " for a string of length " + str.length() + AutoautoProgram.formatStack(location));
-                    this.returnValue = new AutoautoString(str.substring(indexNum, index2Num) + "");
-                }
-            }
-            return;
-        }
-
         if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + name + "` is not a function" + AutoautoProgram.formatStack(location));
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;

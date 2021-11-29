@@ -292,20 +292,31 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         else return "{\"left_stick_x\":" + gamepad2.left_stick_x + ", \"left_stick_y\":" + gamepad2.left_stick_y + ", \"right_stick_x\":" + gamepad2.right_stick_x + ", \"right_stick_y\":" + gamepad2.right_stick_y + ", \"dpad_up\":" + gamepad2.dpad_up + ", \"dpad_down\":" + gamepad2.dpad_down + ", \"dpad_left\":" + gamepad2.dpad_left + ", \"dpad_right\":" + gamepad2.dpad_right + ", \"a\":" + gamepad2.a + ", \"b\":" + gamepad2.b + ", \"x\":" + gamepad2.x + ", \"y\":" + gamepad2.y + ", \"guide\":" + gamepad2.guide + ", \"start\":" + gamepad2.start + ", \"back\":" + gamepad2.back + ", \"left_bumper\":" + gamepad2.left_bumper + ", \"right_bumper\":" + gamepad2.right_bumper + ", \"left_stick_button\":" + gamepad2.left_stick_button + ", \"right_stick_button\":" + gamepad2.right_stick_button + ", \"left_trigger\":" + gamepad2.left_trigger + ", \"right_trigger\":" + gamepad2.right_trigger + ", \"circle\":" + gamepad2.circle + ", \"cross\":" + gamepad2.cross + ", \"triangle\":" + gamepad2.triangle + ", \"square\":" + gamepad2.square + ", \"share\":" + gamepad2.share + ", \"options\":" + gamepad2.options + ", \"touchpad\":" + gamepad2.touchpad + ", \"ps\":" + gamepad2.ps + "}";
     }
 
-    private static class LogCatcher implements Log {
+    public static class LogCatcher implements Log {
         private Log backend;
 
         private String logged;
+
+        private String logHistory = "";
+        private boolean recordLogHistory;
 
         public LogCatcher(Log backend) {
             this.backend = backend;
             this.logged = "";
         }
 
+        public String getLogText() {
+            return logHistory;
+        }
+
         public String readLog() {
             String log = logged;
             this.logged = "";
             return log;
+        }
+
+        public void setRecordLogHistory(boolean b) {
+            this.recordLogHistory = b;
         }
 
         @Override
@@ -331,12 +342,16 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         @Override
         public void add(String entry) {
             logged += entry + "\n";
+            if(recordLogHistory) logHistory += entry + "\n";
+
             backend.add(entry);
         }
 
         @Override
         public void add(String format, Object... args) {
             logged += String.format(format, args) + "\n";
+            if(recordLogHistory) logHistory += String.format(format, args) + "\n";
+
             backend.add(format, args);
         }
 

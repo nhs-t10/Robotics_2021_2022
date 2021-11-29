@@ -9,4 +9,6 @@ public abstract class AutoautoPrimitive extends AutoautoValue {
         return this;
     }
     public abstract String getJSONString();
+    @Override
+    public abstract AutoautoPrimitive clone();
 }
