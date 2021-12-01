@@ -1,0 +1,5 @@
+#init:
+    function sweepSwoop() {
+    neep()
+    },
+    driveOmni(max(3, min(20, "bing bing!"), 30, sweepSwoop))

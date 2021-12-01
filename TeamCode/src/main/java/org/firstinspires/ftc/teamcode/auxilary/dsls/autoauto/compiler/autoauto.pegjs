@@ -85,7 +85,10 @@ skipStatement =
  SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   }
 
 value =
- _  b:boolean _ { return b }
+ _  b:boolean t:tail? _ { if(t) return { type: "TailedValue", location: location(), tail: t }; else return b }
+
+tail = DOT v:value { return v; }
+
 
 valueInParens =
  _ OPEN_PAREN v:value CLOSE_PAREN _ { return v; }
@@ -270,6 +273,7 @@ OPEN_CURLY_BRACKET =
     "{"
 CLOSE_CURLY_BRACKET =
     "}"
+DOT = "."
 IDENTIFIER =
     l:(LETTER / DIGIT)+
     &{

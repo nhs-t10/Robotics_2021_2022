@@ -2,108 +2,91 @@ var fs = require("fs");
 var path = require("path");
 
 /**
- * @typedef {object} ClassedTree
- * @property {string} class
- * @property {ClassedTree[]} children
+ * @typedef {object} ClassedGraphNode
+ * @property {string} definition
+ * @property {string} self
+ * @property {string[]} depends
+ * @property {number} depth
  */
 
 
 
- var NODE_DOT_DIAMETER = 10;
- var NODE_DOT_MARGIN = 1;
+ var NODE_DOT_DIAMETER = 20;
+ var NODE_DOT_MARGIN = 10;
  var STROKE_WIDTH = 1;
  var VERTICAL_SPACING = 200;
- var EMBEDDED_DOT_DIAMETER = 20;
 
 /**
  * 
- * @param {ClassedTree} tree 
+ * @param {ClassedGraphNode[]} nodes 
  */
 var m = 0;
-module.exports = function(tree) {
-    var svg = treeToSvg(tree, NODE_DOT_DIAMETER, NODE_DOT_DIAMETER);
-    var flattededTree = naiveFlatten(tree, NODE_DOT_DIAMETER, svg.height * 0.9, svg.width);
-    var goodFlatten = spiffyFlatten(tree, NODE_DOT_DIAMETER, svg.height * 0.95, svg.width);
+module.exports = function(nodes) {
     
+    var svg = treeToSvg(nodes);
     var svgFile = `<svg width="${svg.width + NODE_DOT_DIAMETER/2}" height="${svg.height + NODE_DOT_DIAMETER/2}" xmlns="http://www.w3.org/2000/svg">`
-    + svg.xml + flattededTree + goodFlatten
+    + svg.xml
     + `</svg>`;
     fs.writeFileSync(path.join(__dirname, "trees", (m++) + "tree.svg"), svgFile);
     
 }
 
-function naiveFlatten(tree, x, y, totalWidth) {
-    var currentX = x;
-
-    function n(t) {
-        var m = `<ellipse cx="${currentX}" cy="${y}" rx="${EMBEDDED_DOT_DIAMETER/2}" ry="${EMBEDDED_DOT_DIAMETER/2}" style="fill:${getClassColour(t.class)}"/>`;
-        currentX += EMBEDDED_DOT_DIAMETER + NODE_DOT_MARGIN;
-        if(Math.abs(currentX - x) + EMBEDDED_DOT_DIAMETER >= totalWidth) {
-            currentX = x;
-            y += EMBEDDED_DOT_DIAMETER + NODE_DOT_MARGIN;
-        }
-        t.children.forEach(z=> {
-            m+=n(z);
-        });
-        return m;
-    }
-    return n(tree);
-}
-
-function spiffyFlatten(tree, x, y, totalWidth) {
-    /**
-     * @type {ClassedTree[]}
-     */
-    var aC = [];
-    function n(t) {
-        aC.push({class: t.class, children:[]});
-        t.children.forEach(j=>n(j));
-    }
-    tree.children.forEach(j=>n(j));
-    
-    return naiveFlatten({class: tree.class, children: aC.sort((a,b)=>a.class.localeCompare(b.class))}, x, y, totalWidth);
-}
-
 /**
  * 
- * @param {ClassedTree} tree 
+ * @param {ClassedGraphNode[]} nodes 
  */
-function treeToSvg(tree, x, y) {
+function treeToSvg(nodes, x, y) {
     x = x||0;
     y = y||0;
     
-    var xml = "";
+    var xml = "", lineLayer = "";
     var totalWidth = 0;
     var totalHeight = 0;
+    var nodePositions = {};
+    var widths = {};
     
-    totalWidth += NODE_DOT_MARGIN + NODE_DOT_DIAMETER;
-    totalHeight += NODE_DOT_MARGIN + NODE_DOT_DIAMETER;
+    totalWidth += NODE_DOT_DIAMETER;
+    totalHeight += NODE_DOT_DIAMETER;
     
-    tree.children.forEach((child,i,a)=>{
-        var childX = x + totalWidth + NODE_DOT_MARGIN;
-        var childY = y + NODE_DOT_MARGIN + VERTICAL_SPACING;
+    nodes.forEach((node) => {
+        if(!widths[node.depth]) widths[node.depth] = 0;
+        widths[node.depth] += NODE_DOT_DIAMETER + NODE_DOT_MARGIN;
         
-        xml += `<path d="M${x} ${y} L${childX} ${childY}" style="stroke:#000;stroke-width:${STROKE_WIDTH}px"/>`
-        var processedChild = treeToSvg(child, childX, childY);
-        xml += processedChild.xml;
-        totalWidth += processedChild.width + NODE_DOT_MARGIN;
-        totalHeight += processedChild.height;
+        var pos = [x + widths[node.depth] + NODE_DOT_MARGIN, y + node.depth * VERTICAL_SPACING];
+        nodePositions[node.self] = pos;
+        
+        totalHeight = Math.max(pos[1], totalHeight);
+        
+        xml += `<ellipse cx="${pos[0]}" cy="${pos[1]}" rx="${NODE_DOT_DIAMETER/2}" ry="${NODE_DOT_DIAMETER/2}" style="fill:${getClassColour(node.definition)}"/>`;
     });
     
-    xml += `<ellipse cx="${x}" cy="${y}" rx="${NODE_DOT_DIAMETER/2}" ry="${NODE_DOT_DIAMETER/2}" style="fill:${getClassColour(tree.class)}"/>`;
+    totalWidth = Math.max(...Object.values(widths));
+    
+    nodes.forEach(node => {
+        node.depends.forEach(dependedId => {
+            var from = nodePositions[node.self];
+            var to = nodePositions[dependedId];
+            lineLayer += `<path d="M${from[0]} ${from[1]} L${to[0]} ${to[1]}" style="stroke:#000;stroke-width:${STROKE_WIDTH}px"/>`
+        });
+    });
     
     return {
         width: totalWidth,
-        xml: xml,
+        xml: lineLayer + xml,
         height: totalHeight
     }
 }
 
 
 var classColours = {};
-function getClassColour(cl) {
+function getClassColour(def) {
+    var cl = classFromDef(def);
     if(classColours[cl]) return classColours[cl];
     else return (classColours[cl] = nextColour());
+}
+
+function classFromDef(definition) {
+    return (/\w+/).exec(definition)[0];
 }
 
 
