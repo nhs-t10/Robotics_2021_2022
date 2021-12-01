@@ -93,7 +93,9 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
 
         callMethodSource += `}`;
     }
-    callMethodSource += `throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No ${noConflictName} with ${overload.args.length} args");`;
+    callMethodSource += `
+    throw new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNoNativeMethodOverloadException("No ${noConflictName} with " + args.length + " args");
+    `;
 
     noConflictName = replaceNumbers(noConflictName);
 

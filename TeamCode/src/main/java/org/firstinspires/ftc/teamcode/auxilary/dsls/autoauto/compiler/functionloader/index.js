@@ -6,12 +6,19 @@ var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/managers");
 
+var CACHE_VERSION = 10000;
+
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
 
 var cacheFile = path.join(__dirname, ".cache/managers.json");
 if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "{}");
+
 var cacheManagers = require(cacheFile);
+
+if(cacheManagers.cacheVersion != CACHE_VERSION) cacheManagers = {};
+
+cacheManagers.cacheVersion = CACHE_VERSION;
 
 var managerArgs = {};
 
