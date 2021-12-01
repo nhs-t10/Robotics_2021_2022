@@ -10,6 +10,8 @@ public class NateManager extends FeatureManager {
     private boolean input;
     private boolean found;
     private int position;
+    private int currentPosition;
+    private double currentPos;
     private boolean clawState = false;
     ManipulationManager hands;
 
@@ -38,34 +40,58 @@ public class NateManager extends FeatureManager {
         }
     }
 
+    public void emergencyStop(){
+//        currentPos = hands.getMotorPosition("ClawMotor");
+//        currentPosition = (int) Math.round(currentPos);
+//        hands.encodeMoveToPosition("ClawMotor", currentPosition, 0.75);
+        hands.cancelEncodedMovement("ClawMotor");
+    }
+
     public void positionOne(){
-        position = -3470;
+        if (!found){
+            position = -1490;
+        }
+        else {
+            position = -3470;
+        }
 
 
         hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void positionTwo(){
-        position = -5295;
+        if(!found) {
+            position = -3024;
+        } else{
+            position = -5295;
+        }
 
         hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void positionThree(){
-        position = -6893;
+        if(!found) {
+            position = -4679;
+        } else {
+            position = -6893;
+        }
 
         hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void positionHome(){
-        position = 570;
+        if(!found){
+            position = 2537;
+        } else {
+            position = 570;
+        }
 
         hands.encodeMoveToPosition("ClawMotor", position, 0.75);
     }
 
     public void homing(){
         if (input) {
-            boolean found = true;
+            found = true;
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }

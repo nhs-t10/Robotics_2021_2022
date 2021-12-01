@@ -83,6 +83,7 @@ public class InputManager extends FeatureManager {
             case "gamepad1y":
                 return gamepad.y?1f:0f;
             case "guide":
+            case "select":
             case "gamepad1guide":
                 return gamepad.guide?1f:0f;
             case "start":

@@ -64,8 +64,8 @@ public class ExampleTeleopCarousel extends OpMode {
         hands = new ManipulationManager(
                 hardwareMap,
                 new String[] {"nateMoverLeft", "nateMoverRight"},
-                new String[] {"nateClaw"},
-                new String[] {"Carousel", "ClawMotor"}
+                new String[] {"nateClaw", "rampLeft", "rampRight"},
+                new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
         );
 
         clawPosition = new NateManager(hands);
@@ -79,81 +79,45 @@ public class ExampleTeleopCarousel extends OpMode {
                         new JoystickNode("right_stick_x")
                 )
         );
-        input.registerInput("precisionDriving",
-                new ButtonNode("b")
-        );
-        input.registerInput("dashing",
-                new ButtonNode("x")
-        );
-        input.registerInput("Carousel",
-                new ButtonNode("y")
-        );
-        input.registerInput("EmergencyStop",
-                new ButtonNode("guide")
-                );
-        input.registerInput("StopAndBounce",
-                new ButtonNode("start")
-                );
+        input.registerInput("precisionDriving", new ButtonNode("b"));
+        input.registerInput("dashing", new ButtonNode("x"));
+        input.registerInput("Carousel", new ButtonNode("y"));
+        input.registerInput("EmergencyStop", new ButtonNode("select"));
         input.registerInput("ClawPos1",
                 new BothNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("x")
-                    )
-                );
+                    ));
         input.registerInput("ClawPos2",
                 new BothNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("y")
-                )
-        );
+                ));
         input.registerInput("ClawPos3",
                 new BothNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("b")
-                )
-        );
+                ));
         input.registerInput("ClawPosHome",
                 new BothNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
-                )
-        );
+                ));
         input.registerInput("ClawShiftIn",
                     new BothNode(
                         new ButtonNode("rightbumper"),
                         new ButtonNode("a")
-                    )
-        );
+                    ));
         input.registerInput("ClawShiftOut",
                 new BothNode(
                         new ButtonNode("rightbumper"),
                         new ButtonNode("b")
-                )
-        );
-        input.registerInput("ToggleClaw",
-                new ButtonNode("start")
-                );
-        input.registerInput("ClawUp",
-                new ButtonNode("righttrigger")
-        );
-        input.registerInput("ClawDown",
-                new ButtonNode("lefttrigger")
-        );
-        input.registerInput("spin",
-                        new ButtonNode("dpadup")
-        );
-        input.registerInput("taunt1",
-                        new ButtonNode("dpadleft")
-        );
-        input.registerInput("taunt2",
-                new ButtonNode("dpadright")
-        );
-        input.registerInput("taunt3",
-                new ButtonNode("dpaddown")
-        );
-        input.registerInput("turnAround",
-            new ButtonNode("right_stick_button")
-        );
+                ));
+        input.registerInput("ToggleClaw", new ButtonNode("start"));
+        input.registerInput("ClawUp", new ButtonNode("righttrigger"));
+        input.registerInput("ClawDown", new ButtonNode("lefttrigger"));
+        input.registerInput("turnAround", new ButtonNode("right_stick_button"));
+        input.registerInput("Intake", new ButtonNode("start"));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
@@ -186,14 +150,20 @@ public class ExampleTeleopCarousel extends OpMode {
         } else {
             dashing = false;
         }
-        if (input.getBool("EmergencyStop")){
-            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hands.setMotorPower("ClawMotor", 0.0);
+        if (input.getBool("Intake")){
+            hands.setMotorPower("noodle", 1);
+            hands.setMotorPower("intake", 1);
+            hands.setServoPosition("rampLeft", 0.5);
+            hands.setServoPosition("rampRight", 0.0);
         }
-        if (input.getBool("StopAndBounce")){
-            hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hands.setMotorPower("ClawMotor", 0.0);
-            hands.setMotorPower("ClawMotor", -0.25);
+        else {
+            hands.setMotorPower("noodle", 0.0);
+            hands.setMotorPower("intake", 0.0);
+            hands.setServoPosition("rampLeft", 0.0);
+            hands.setServoPosition("rampRight", 0.35);
+        }
+        if (input.getBool("EmergencyStop")){
+            clawPosition.emergencyStop();
         }
         hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.5);
         if (hands.hasEncodedMovement("ClawMotor") == false) {
