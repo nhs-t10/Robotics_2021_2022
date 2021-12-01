@@ -49,7 +49,7 @@ public class HttpServerTest {
 
         String httpBody = BodyParser.from(httpBodyReader, headers);
 
-        assertEquals(ServerFiles.indexDotHtml, httpBody);
+        assertEquals(ServerFiles.getAssetString("index.html"), httpBody);
 
         FeatureManager.setIsOpModeRunning(false);
     }

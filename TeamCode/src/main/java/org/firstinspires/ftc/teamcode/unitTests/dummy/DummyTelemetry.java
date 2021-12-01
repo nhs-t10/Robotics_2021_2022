@@ -5,27 +5,34 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+
+import androidx.annotation.Nullable;
 
 public class DummyTelemetry implements Telemetry {
 
     @Override
     public Item addData(String caption, String format, Object... args) {
-        return null;
+        FeatureManager.logger.log(caption + "\t" + String.format(format, args));
+        return new DummyItem();
     }
 
     @Override
     public Item addData(String caption, Object value) {
-        return null;
+        FeatureManager.logger.log(caption + "\t" + value);
+        return new DummyItem();
     }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {
-        return null;
+        FeatureManager.logger.log(caption + "\t" + valueProducer.value());
+        return new DummyItem();
     }
 
     @Override
     public <T> Item addData(String caption, String format, Func<T> valueProducer) {
-        return null;
+        FeatureManager.logger.log(caption + "\t" + String.format(format, valueProducer.value()));
+        return new DummyItem();
     }
 
     @Override
@@ -178,6 +185,74 @@ public class DummyTelemetry implements Telemetry {
         @Override
         public void clear() {
 
+        }
+    }
+    public static class DummyItem implements Item {
+
+        private boolean retained;
+        private String caption;
+        private String value;
+
+        @Override
+        public String getCaption() {
+            return caption;
+        }
+
+        @Override
+        public Item setCaption(String caption) {
+            this.caption = caption;
+            return this;
+        }
+
+        @Override
+        public Item setValue(String format, Object... args) {
+            return this;
+        }
+
+        @Override
+        public Item setValue(Object value) {
+            return this;
+        }
+
+        @Override
+        public <T> Item setValue(Func<T> valueProducer) {
+            return this;
+        }
+
+        @Override
+        public <T> Item setValue(String format, Func<T> valueProducer) {
+            return this;
+        }
+
+        @Override
+        public Item setRetained(@Nullable Boolean retained) {
+            this.retained = retained == null || retained;
+            return this;
+        }
+
+        @Override
+        public boolean isRetained() {
+            return retained;
+        }
+
+        @Override
+        public Item addData(String caption, String format, Object... args) {
+            return this;
+        }
+
+        @Override
+        public Item addData(String caption, Object value) {
+            return this;
+        }
+
+        @Override
+        public <T> Item addData(String caption, Func<T> valueProducer) {
+            return this;
+        }
+
+        @Override
+        public <T> Item addData(String caption, String format, Func<T> valueProducer) {
+            return this;
         }
     }
 }
