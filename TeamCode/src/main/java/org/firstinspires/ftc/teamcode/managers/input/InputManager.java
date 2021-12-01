@@ -43,7 +43,7 @@ public class InputManager extends FeatureManager {
         else node = new MultiInputNode(registerNodes);
 
         node.init(this);
-        nodes.put(key, node);
+        nodes.put(key.toLowerCase(), node);
         rebuildOverlaps();
         synchronized (updateThread) {
             updateThread.addNode(node);
@@ -52,7 +52,7 @@ public class InputManager extends FeatureManager {
 
 
     public InputManagerInputNode getInputNode(String key) {
-        return nodes.get(key);
+        return nodes.get(key.toLowerCase());
     }
 
     public float getKey(String key) {
@@ -138,7 +138,7 @@ public class InputManager extends FeatureManager {
                 return gamepad.right_stick_x;
             case "rightsticky":
             case "gamepad1rightsticky":
-                return gamepad2.right_stick_y;
+                return gamepad.right_stick_y;
             case "lefttrigger":
             case "gamepad1lefttrigger":
                 return gamepad.left_trigger;
@@ -211,17 +211,17 @@ public class InputManager extends FeatureManager {
     }
 
     public float[] getFloatArrayOfInput(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
-        return nodes.get(key).getOverlappedResult().getFloatArray();
+        if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
+        return nodes.get(key.toLowerCase()).getOverlappedResult().getFloatArray();
     }
 
     public boolean getBool(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `" + key + "` registered");
-        return nodes.get(key).getOverlappedResult().getBool();
+        if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
+        return nodes.get(key.toLowerCase()).getOverlappedResult().getBool();
     }
     public float getFloat(String key) {
-        if(!nodes.containsKey(key)) throw new IllegalArgumentException("No control `\" + key + \"` registered");
-        return nodes.get(key).getOverlappedResult().getFloat();
+        if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
+        return nodes.get(key.toLowerCase()).getOverlappedResult().getFloat();
     }
 
     public void setOverlapResolutionMethod(InputOverlapResolutionMethod newMethod) {

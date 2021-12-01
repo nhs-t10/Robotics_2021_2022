@@ -65,7 +65,7 @@ public class CVManager extends FeatureManager
             //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
             // OR...  Do Not Activate the Camera Monitor View
-            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Eyer"));
 
             /*
              * Specify the image processing pipeline we wish to invoke upon receipt
