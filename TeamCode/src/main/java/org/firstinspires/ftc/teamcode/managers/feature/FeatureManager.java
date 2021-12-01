@@ -42,7 +42,7 @@ public class FeatureManager {
             ),
             0.03f, 1680, 1, 4, 0.7, 3f);
 
-    public static final RobotConfiguration defaultConfiguration = littleBoyConfiguration;
+    public static final RobotConfiguration defaultConfiguration = bigBoyConfiguration;
 
 
     private static RobotConfiguration cachedConfiguration;

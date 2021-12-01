@@ -14,9 +14,6 @@ import java.io.InputStream;
 
 public class ServerFiles {
     public static String indexDotHtml;
-    public static void loadIndexDotHtml() throws IOException {
-        indexDotHtml = getAssetString("index.html");
-    }
     public static String getAssetString(String asset) throws IOException {
         InputStream file = getAssetStream(asset);
 

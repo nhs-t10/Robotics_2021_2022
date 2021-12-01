@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -330,5 +333,20 @@ public abstract class PaulMath extends FeatureManager {
         }
 
         return r;
+    }
+
+    public static void pipeStream(InputStream in, OutputStream out) throws IOException {
+        //if either's null, don't care.
+        if(in == null || out == null) return;
+
+        try {
+            byte[] buffer = new byte[1024];
+            int len;
+            while((len = in.read(buffer, 0, in.available())) != -1) {
+                out.write(buffer, 0, len);
+            }
+        } finally {
+            in.close();
+        }
     }
 }
