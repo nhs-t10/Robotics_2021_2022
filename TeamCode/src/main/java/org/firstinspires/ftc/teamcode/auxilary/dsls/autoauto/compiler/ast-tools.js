@@ -99,57 +99,48 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             break;
         case "Program":
             var childDefs = ast.statepaths.map(x => process(x));
-            var strings = `final String ${Object.entries(stringDefinitions).map(x=>`${x[1]}=${JSON.stringify(x[0])}`).join(",")};`;
             
             var programName = genNonce();
-            
-            var splitDefinitions = depthMappedDefinitions
-                .map(x=>({ definition: x.definition, depends: x.depends, self: x.self, depth: x.depth }))
-                .flat();
 
-                var sortedDefinitions = [];
+            var sortedDefinitions = [];
 
-                function addSortDefs(def) {
-                    if(def.processed) return;
-                    def.processed = true;
+            function addSortDefs(def) {
+                if(def.processed) return;
+                def.processed = true;
 
-                    def.depends.forEach(y=> {
-                        splitDefinitions
-                            .filter(z=>z.self==y)
-                            .forEach(z=>addSortDefs(z));
-                    });
-                    if(def.definition) sortedDefinitions.push(def);
-                }
-                
-                function toTreeNode(def) {
-                    return {
-                        class: STATIC_CONSTRUCTOR_SHORTNAMES[JAVA_TYPE_REGEX.exec(def.definition.trim())[0]],
-                        children: def.depends.map(y=>splitDefinitions.filter(z=>z.self==y)).flat().map(y=>toTreeNode(y))
-                    }
-                }
-
-                var childDefsDefinitions = childDefs.map(x=>splitDefinitions.filter(y=>y.self == x.varname)).flat();
-                childDefsDefinitions.forEach(x=>addSortDefs(x));
-                
-                visualiseTree({
-                    class: "_ROOT",
-                    children: childDefsDefinitions.map(x=>toTreeNode(x))
+                def.depends.forEach(y=> {
+                    var d = depthMappedDefinitions.find(z=>z.self==y);
+                    console.log(d, y);
+                    if(!d) console.log(def);
+                    addSortDefs(d);
                 });
+                if(def.definition) sortedDefinitions.push(def);
+            }
 
-                 //split by semicolons, make each statement into its own depth mapped definition
-                var typedDefinitions = sortedDefinitions
-                .map(x => ({
-                    definition: x.definition.trim(),
-                    type: JAVA_TYPE_REGEX.exec(x.definition.trim())[0] //discern and record the type
-                }))
-                .map((x,i,a) => { //if the type is the same as the previous, join the declarations with commas instead of semicolons
-                    if(a[i-1] && a[i-1].type == x.type) x.definition = x.definition.replace(x.type, "").replace(/new \w+\[\]/, "");
-                    if(a[i+1] && a[i+1].type == x.type) x.definition = x.definition.replace(/;$/, ",");
-                    return x;
-                })
-                .map(x=>x.definition) //remove type data
-                .join("") //join into one string
-                .replace(/ ?(\W) ?/g, "$1") //remove extra whitespace
+            var childDefsDefinitions = childDefs.map(x=>depthMappedDefinitions.filter(y=>y.self == x.varname)).flat();
+            childDefsDefinitions.forEach(x=>addSortDefs(x));
+
+             //split by semicolons, make each statement into its own depth mapped definition
+            var typedDefinitions = sortedDefinitions
+            .map(x => ({
+                self: x.self,
+                depends: x.depends,
+                definition: x.definition.trim(),
+                type: JAVA_TYPE_REGEX.exec(x.definition.trim())[0] //discern and record the type
+            }))
+            .sort((a,b)=> {
+                if(a.depends.includes(b.self)) return 1;
+                else if(b.depends.includes(a.self)) return -1;
+                else return a.type.localeCompare(b.type);
+            })
+            .map((x,i,a) => { //if the type is the same as the previous, join the declarations with commas instead of semicolons
+                if(a[i-1] && a[i-1].type == x.type) x.definition = x.definition.replace(x.type, "").replace(/new \w+\[\]/, "");
+                if(a[i+1] && a[i+1].type == x.type) x.definition = x.definition.replace(/;$/, ",");
+                return x;
+            })
+            .map(x=>x.definition) //remove type data
+            .join("") //join into one string
+            .replace(/ ?(\W) ?/g, "$1") //remove extra whitespace
                 
             var creation = `
             ${typedDefinitions}
@@ -207,8 +198,14 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             depthMappedDefinitions.push({
                 depth: depth,
                 self: nonce,
-                depends: childDefs.map(x => x.varname).concat([label.varname]),
-                definition: `State[] $${nonce} = new State[] { ${childDefs.map(x => x.varname).join(",")} }; Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${label.varname});`
+                depends: [label.varname, "$" + nonce],
+                definition: `Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${label.varname});`
+            });
+            depthMappedDefinitions.push({
+                depth: depth + 1,
+                self: "$" + nonce,
+                depends: childDefs.map(x => x.varname),
+                definition: `State[] $${nonce} = new State[] { ${childDefs.map(x => x.varname).join(",")} };`
             });
 
             result = {
@@ -227,8 +224,15 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             depthMappedDefinitions.push({
                 depth: depth,
                 self: nonce,
+                depends: ["$" + nonce],
+                definition: `State ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.State}($${nonce});`
+            });
+            
+            depthMappedDefinitions.push({
+                depth: depth + 1,
+                self: "$" + nonce,
                 depends: childDefs.map(x=>x.varname),
-                definition: `Statement[] $${nonce} = new Statement[] { ${childDefs.map(x => x.varname).join(",")} }; State ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.State}($${nonce});`
+                definition: `Statement[] $${nonce} = new Statement[] { ${childDefs.map(x => x.varname).join(",")} };`
             });
 
             result = {
@@ -325,20 +329,10 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             };
             break;
         case "Identifier":
-            //if this string isn't in the string definitions, then define it!
-            if(!stringDefinitions[ast.value]) {
-                stringDefinitions[ast.value] = nonce;
-                result = {
-                    varname: nonce,
-                    noLocation: true,
-                };
-            } else {
-                //if it HAS been defined, just reuse the same constant
-                result = {
-                    varname: stringDefinitions[ast.value],
-                    noLocation: true,
-                };
-            }
+            result = {
+                varname: getStringNonce(ast.value, nonce, depth),
+                noLocation: true,
+            };
             break;
         case "ArgumentList":
             var childDefs = ast.args.map(x => process(x));
@@ -405,19 +399,12 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             };
             break;
         case "StringLiteral":
-            var strNonce;
-            //if the string literal wasn't defined in the string records, define it
-            if(!stringDefinitions[ast.str]) {
-                strNonce = stringDefinitions[ast.str] = genNonce();
-            } else {
-                //if it HAS been defined, just reuse the same constant
-                strNonce = stringDefinitions[ast.str]
-            }
+            var strNonce = getStringNonce(ast.str, null, depth);
 
             depthMappedDefinitions.push({
                 depth: depth,
                 self: nonce,
-                depends: [],
+                depends: [strNonce],
                 definition: `AutoautoString ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoString}(${strNonce});`
             });
 
@@ -587,6 +574,23 @@ function makeLocationSetter(nonce, statepathNonce, stateNumber, line, column) {
     lastLocationSetterInfo = data;
 
     return `sL(${nonce},L(` + newData.join(",") + "));";
+}
+
+function getStringNonce(str, nonce, depth) {
+    //first of everything, if the str exists already, just return that nonce.
+    if(stringDefinitions[str]) return stringDefinitions[str];
+    
+    if(!nonce) nonce = genNonce();
+    
+    stringDefinitions[str] = nonce;
+    
+    depthMappedDefinitions.push({
+        depth: depth + 1,
+        self: nonce,
+        depends: [],
+        definition: `String ${nonce} = ${JSON.stringify(str)};`
+    });
+    
 }
 
 function genNonce() {
