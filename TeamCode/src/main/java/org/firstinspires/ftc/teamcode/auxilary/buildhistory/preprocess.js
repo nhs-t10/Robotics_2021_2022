@@ -123,20 +123,24 @@ function getName(index, lastName) {
         firstNames[i] = swap;
     }
 
-    var juniorness = Math.floor(index / firstNames.length);
-    if(juniorness <= 1) return firstNames[index] + " " + lastName;
-    else return firstNames[index] + " " + lastName + " " + romanNumeral(index);
+    if(index < firstNames.length) return firstNames[index] + " " + lastName;
+    else return firstNames[index % firstNames.length] + " " + lastName + " " + romanNumeral(Math.ceil(index / firstNames.length));
 }
 
-function romanNumeral(i) {
-      var numerals = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1}, roman = '', digit;
-      for ( letter in numerals ) {
-        while ( i >= lookup[letter] ) {
-          roman += letter;
-          num -= lookup[letter];
-        }
-      }
-      return roman;
+function romanNumeral(num) {
+    var roman = "";
+    if(num < 0) roman += "-";
+    num = Math.abs(num);
+    var numerals = Object.entries({M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1}), digit;
+    while(num > 0) {
+        numerals.forEach(entry => {
+            if(num >= entry[1]) {
+                roman += entry[0];
+                num -= entry[1];
+            }
+        });
+    }
+    return roman;
 }
 
 function generateCognomen(hash) {

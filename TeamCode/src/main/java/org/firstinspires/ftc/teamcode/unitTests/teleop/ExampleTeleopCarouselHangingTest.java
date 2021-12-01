@@ -30,7 +30,6 @@ public class ExampleTeleopCarouselHangingTest {
 
         assertTrue(watchdogThread.blockUntilDone());
     }
-
     private static final long HUMAN_REACTION_TIME = 265;
 
     private static class TestInputterThread extends Thread {
@@ -139,7 +138,7 @@ public class ExampleTeleopCarouselHangingTest {
     private static class WatchdogThread extends Thread {
         private final LoopRunnerThread watched;
 
-        private final static long MS_BETWEEN_CALL_ALLOWED = 100;
+        private final static long MS_BETWEEN_CALL_ALLOWED = HUMAN_REACTION_TIME;
 
         private long killTime;
         private boolean running;
