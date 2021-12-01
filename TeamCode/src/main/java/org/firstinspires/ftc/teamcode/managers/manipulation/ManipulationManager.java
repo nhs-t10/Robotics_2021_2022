@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.auxilary.BasicMapEntry;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class ManipulationManager extends FeatureManager {
     public CRServo[] crservos;
@@ -19,6 +21,38 @@ public class ManipulationManager extends FeatureManager {
     public String[] servoNames;
 
     public MotorEncodedMovementThread[] encoderMovementThreads;
+
+    //allow args in any order
+    public ManipulationManager(HardwareMap _hardwareMap, Map.Entry<String, String[]>... args) {
+        String[] _crservos = new String[0], _servos = new String[0], _motors = new String[0];
+        for(Map.Entry<String, String[]> a : args) {
+            if(a.getKey().equals("crservo")) _crservos = a.getValue();
+            else if(a.getKey().equals("servo")) _servos = a.getValue();
+            else if(a.getKey().equals("motor")) _motors = a.getValue();
+        }
+
+        this.crservos = new CRServo[_crservos.length];
+        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.get(CRServo.class, _crservos[i]); }
+        this.crservoNames = _crservos;
+        this.servos = new Servo[_servos.length];
+        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.get(Servo.class, _servos[i]); }
+        this.servoNames = _servos;
+        this.motors = new DcMotor[_motors.length];
+        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
+        this.motorNames = _motors;
+
+        this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
+    }
+    public static Map.Entry<String, String[]> crservo(String... names) {
+        return new BasicMapEntry<String, String[]>("crservo", names);
+    }
+    public static Map.Entry<String, String[]> motor(String... names) {
+        return new BasicMapEntry<String, String[]>("motor", names);
+    }
+    public static Map.Entry<String, String[]> servo(String... names) {
+        return new BasicMapEntry<String, String[]>("servo", names);
+    }
+
 
 
     public ManipulationManager(CRServo[] _crservos, Servo[] _servos, DcMotor[] _motors) {

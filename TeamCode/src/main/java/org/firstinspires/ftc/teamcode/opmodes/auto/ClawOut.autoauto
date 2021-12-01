@@ -2,9 +2,10 @@
     goto clawout
 
 #clawout:
-    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 5s next;
+    log("JAMES!!!!"), next;
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2.8s next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
-    positionOne(), after 3s goto deliver
+    after 3s goto deliver
 
 #deliver:
     log("HOORAH")
