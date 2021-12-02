@@ -85,11 +85,11 @@ public class template extends AutoautoOpmode {
                 hardwareMap.get(DcMotor.class, "bl"),
                 hardwareMap.get(DcMotor.class, "br"));
         limbs = new ManipulationManager(
-                        hardwareMap,
-                        new String[] {"nateMoverLeft", "nateMoverRight"},
-                        new String[] {"nateClaw"},
-                        new String[] {"Carousel", "ClawMotor"}
-                );
+                                hardwareMap,
+                                new String[] { "nateMoverLeft", "nateMoverRight"},
+                                new String[] {"nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"},
+                                new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
+                        );
 
         clawPosition = new NateManager(limbs);
 
