@@ -113,7 +113,7 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode("b")
                 ));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("ToggleClaw", new ButtonNode("start"));
+        input.registerInput("ToggleClaw", new ButtonNode("dpadleft"));
         input.registerInput("ClawUp", new ButtonNode("righttrigger"));
         input.registerInput("ClawDown", new ButtonNode("lefttrigger"));
         input.registerInput("turnAround", new ButtonNode("right_stick_button"));
