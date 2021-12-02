@@ -64,7 +64,7 @@ public class ExampleTeleopCarousel extends OpMode {
         hands = new ManipulationManager(
                 hardwareMap,
                 new String[] { "nateMoverLeft", "nateMoverRight"},
-                new String[] {"nateClaw", "rampLeft", "rampRight"},
+                new String[] {"nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"},
                 new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
         );
 
