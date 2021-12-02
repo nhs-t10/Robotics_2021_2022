@@ -2,19 +2,15 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class FunctionCall extends AutoautoValue {
     public AutoautoValue[] args;
-    public String name;
+    public AutoautoValue functionName;
 
 
     public AutoautoPrimitive returnValue;
@@ -22,12 +18,12 @@ public class FunctionCall extends AutoautoValue {
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
-    public FunctionCall(String n, AutoautoValue[] a) {
-        this.name = n;
+    public FunctionCall(AutoautoValue n, AutoautoValue[] a) {
+        this.functionName = n;
         this.args = a;
     }
 
-    public static FunctionCall M(String n, AutoautoValue[] a) {
+    public static FunctionCall M(AutoautoValue n, AutoautoValue[] a) {
         return new FunctionCall(n, a);
     }
 
@@ -38,6 +34,7 @@ public class FunctionCall extends AutoautoValue {
 
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
+        this.functionName.setScope(scope);
         for(int i = args.length - 1; i >= 0; i--) this.args[i].setScope(scope);
     }
 
@@ -58,10 +55,11 @@ public class FunctionCall extends AutoautoValue {
     }
 
     public void loop() throws AutoautoNameException {
-        AutoautoValue val = scope.get(name);
-        if(val == null) throw new AutoautoNameException("`" + this.name + "` is undefined" + AutoautoProgram.formatStack(location));
+        functionName.loop();
 
-        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + name + "` is not a function" + AutoautoProgram.formatStack(location));
+        AutoautoValue val = functionName.getResolvedValue();
+
+        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + val.toString() + "` is not a function" + AutoautoProgram.formatStack(location));
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;
 
@@ -102,7 +100,7 @@ public class FunctionCall extends AutoautoValue {
         AutoautoValue[] argsCloned = new AutoautoValue[args.length];
         for(int i = 0; i < argsCloned.length; i++) argsCloned[i] = args[i].clone();
 
-        FunctionCall c = new FunctionCall(name, argsCloned);
+        FunctionCall c = new FunctionCall(functionName.clone(), argsCloned);
         c.setLocation(location);
         return c;
     }
@@ -115,7 +113,7 @@ public class FunctionCall extends AutoautoValue {
     @NotNull
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append(this.name + "(");
+        str.append(this.functionName.toString() + "(");
         for(AutoautoValue arg : args) {
             if(arg == null) str.append("<null>");
             else str.append(arg.toString() + ", ");
