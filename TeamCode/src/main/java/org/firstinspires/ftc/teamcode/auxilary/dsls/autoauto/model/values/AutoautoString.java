@@ -27,7 +27,7 @@ public class AutoautoString extends AutoautoPrimitive {
     }
     @NotNull
     public String toString() {
-        return value;
+        return PaulMath.JSONify(value);
     }
 
     public String getString() {

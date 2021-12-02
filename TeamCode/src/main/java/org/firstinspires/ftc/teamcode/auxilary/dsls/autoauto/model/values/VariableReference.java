@@ -48,7 +48,7 @@ public class VariableReference extends AutoautoValue {
     }
 
     public String toString() {
-        return "var<" + this.name + ">";
+        return this.name;
     }
 
     @Override

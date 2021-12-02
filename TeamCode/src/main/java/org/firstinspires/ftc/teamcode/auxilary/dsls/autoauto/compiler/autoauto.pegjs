@@ -8,10 +8,10 @@ autoautoFile =
   }
 
 frontMatter =
- DOLLAR_SIGN _ heads:(frontMatterKeyValue COMMA _)* tail:frontMatterKeyValue _ DOLLAR_SIGN {
+ DOLLAR_SIGN _ head:frontMatterKeyValue tail:(COMMA _ frontMatterKeyValue)* _ DOLLAR_SIGN {
    return {
      type: "FrontMatter", location: location(),
-     values: heads.map(x=>x[0]).concat([tail])
+     values: [head].concat(tail.map(x=>x[2]))
    }
  }
 
@@ -33,18 +33,18 @@ labeledStatepath =
 
 
 statepath =
-  _ heads:(state SEMICOLON)* tail:state SEMICOLON? _ {
+  _ head:state tail:(SEMICOLON state)* _ {
   	return {
       type: "Statepath", location: location(),
-      states: heads.map(x=>x[0]).concat([tail])
+      states: [head].concat(tail.map(x=>x[1]))
     }
   }
 
 state =
-  _ heads:(statement COMMA)* tail:statement COMMA? _ {
+  _ head:statement tail:(COMMA statement)* _ {
     return {
       type: "State", location: location(),
-      statement: heads.map(x=>x[0]).concat([tail])
+      statement: [head].concat(tail.map(x=>x[1]))
     }
   }
 
@@ -85,28 +85,31 @@ skipStatement =
  SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   }
 
 value =
- _  b:boolean t:tail? _ { if(t) return { type: "TailedValue", location: location(), tail: t }; else return b }
+ _  b:boolean _ { return b }
 
-tail = DOT v:value { return v; }
 
 
 valueInParens =
  _ OPEN_PAREN v:value CLOSE_PAREN _ { return v; }
 
 modulo =
- l:baseExpression o:MODULUS r:baseExpression {
-    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }
+ l:baseExpression r:(MODULUS baseExpression)? {
+   if(!r) return l;
+   
+    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
 }
-/ b:baseExpression  { return b; }
 
 exponent =
- l:modulo o:EXPONENTIATE r:modulo {
-    return { type: "OperatorExpression", location: location(), operator: o, left: l, right: r }
+ l:modulo r:(EXPONENTIATE modulo)? {
+   if(!r) return l;
+   
+    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
 }
-/ m:modulo { return m; }
 
 product =
- l:exponent tail:(o:(MULTIPLY / DIVIDE) r:product { return [o, r]; })+ {
+ l:exponent tail:(o:(MULTIPLY / DIVIDE) r:product { return [o, r]; })* {
+   if(!tail.length) return l;
+   
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
   for(var i = 0; i < tail.length - 1; i++) {
@@ -119,9 +122,10 @@ product =
   tar.right = tail[tail.length - 1][1];
   return r;
 }
-/ p:exponent { return p; }
 
-sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })+ {
+sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })* {
+  if(!tail.length) return l;
+  
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
   for(var i = 0; i < tail.length - 1; i++) {
@@ -134,22 +138,38 @@ sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })+ {
   tar.right = tail[tail.length - 1][1];
   return r;
 }
-/ p:product { return p; }
+
 arithmeticValue =
  s:sum {
    return s;
  }
 
-baseExpression =
- _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / functionCall / variableReference / valueInParens) _ {
+atom =
+ _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / variableReference / valueInParens) _ {
    return x;
  }
+ 
+baseExpression = a:atom _ t:tail* _ {
+     if(!t.length) return a;
+     
+     var value = a;
+     for(var i = 0; i < t.length; i++) {
+       if(t[i].type == "FunctionCall") value = {type: "FunctionCall",func: value, args: t[i].args, location: t[i].location};
+       else if(t[i].type == "TailedValue") value = { type: "TailedValue", head: value, tail: t[i].tail, location: t[i].location };
+     }
+     
+     return value;
+}
+
+tail = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } } /
+	OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } } /
+    DOT a:variableReference { return {type: "TailedValue", head: null, tail: a, location: location() }; }
 
 variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
 
 arrayLiteral =
- OPEN_SQUARE_BRACKET a:argumentList? CLOSE_SQUARE_BRACKET {
+ OPEN_SQUARE_BRACKET _ a:argumentList? CLOSE_SQUARE_BRACKET {
  return {
    type: "ArrayLiteral", location: location(),
    elems: a || {type:"ArgumentList",args:[], location: location()}
@@ -165,13 +185,6 @@ boolean =
 comparisonOperator =
  o:(COMPARE_LTE / COMPARE_LT / COMPARE_EQ / COMPARE_NEQ / COMPARE_GTE / COMPARE_GT) { return o; }
 
-functionCall =
- f:IDENTIFIER _ OPEN_PAREN a:argumentList? CLOSE_PAREN {
- return {
-   type: "FunctionCall", location: location(),
-   func: f, args: a || {type:"ArgumentList",args:[], location: location()}
- }
-}
 
 stringLiteral =
  DOUBLE_QUOTE q:NON_QUOTE_CHARACTER* DOUBLE_QUOTE { return { type: "StringLiteral", location: location(), str: q.join("") } }
@@ -180,17 +193,17 @@ unitValue =
  v:(NUMERIC_VALUE/dynamicValue) u:(IDENTIFIER/dynamicValue) { return {type: "UnitValue", location: location(), value: v, unit: u } }
 
 argumentList =
- heads:(argument COMMA)* tail:argument {
+ head:argument tail:(COMMA argument)* {
  return {
    type: "ArgumentList", location: location(),
-   len: heads.length + 1,
-   args: heads.map(x=> x[0]).concat([tail])
+   len: tail.length + 1,
+   args: tail.map(x=> x[1]).concat([head])
  }
 }
 
-argument = n:(value EQUALS)? v:value {
-	if(n) return { type: "TitledArgument", value: v, name: n[0], location: location()  };
-    else return v;
+argument = n:value v:(EQUALS value)? {
+	if(v) return { type: "TitledArgument", value: v[1], name: n, location: location()  };
+    else return n;
 }
 
 dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import java.util.HashMap;
 import java.util.Map;
 
-public class AutoautoTable extends AutoautoPrimitive {
+public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
     private HashMap<String, AutoautoValue> elems;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
@@ -141,7 +141,7 @@ public class AutoautoTable extends AutoautoPrimitive {
         this.location = location;
     }
 
-    public final AutoautoPrimitive get(AutoautoPrimitive key) {
+    public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
         String keyStr = key.getString();
         if(!elems.containsKey(keyStr)) return new AutoautoUndefined();
 
@@ -149,6 +149,10 @@ public class AutoautoTable extends AutoautoPrimitive {
         AutoautoValue value = elems.get(keyStr);
         value.loop();
         return value.getResolvedValue();
+    }
+
+    public boolean hasProperty(AutoautoPrimitive key) {
+        return elems.containsKey(key.getString());
     }
 
     public final void set(AutoautoPrimitive key, AutoautoValue value) {

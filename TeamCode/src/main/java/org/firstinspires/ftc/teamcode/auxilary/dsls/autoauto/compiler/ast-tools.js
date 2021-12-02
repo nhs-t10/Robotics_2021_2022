@@ -126,7 +126,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 definition: 0,
                 depends: childDefs.map(x=>x.varname)
             };
-            visualiseTree(Object.values(depthMappedDefinitions).concat([rootTreeNode]));
+            //visualiseTree(Object.values(depthMappedDefinitions).concat([rootTreeNode]));
 
             addSortDefs(rootTreeNode);
 

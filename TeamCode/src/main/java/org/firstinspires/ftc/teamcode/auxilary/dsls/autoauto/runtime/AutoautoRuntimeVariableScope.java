@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.AutoautoMathMethodsTable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.DefunFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.ExistsFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.LengthFunction;
@@ -125,6 +126,8 @@ public class AutoautoRuntimeVariableScope {
         this.systemSet("undefined", new AutoautoUndefined());
         this.systemSet("null", new AutoautoUndefined());
         this.systemSet("delete", new AutoautoUndefined());
+
+        this.systemSet("Math", new AutoautoMathMethodsTable());
     }
 
     public void initBuiltinFunctions(AutoautoRuntime runtime) {
