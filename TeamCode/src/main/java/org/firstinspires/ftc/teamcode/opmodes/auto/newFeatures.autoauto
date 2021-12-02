@@ -4,19 +4,24 @@
     }, goto a
 
 #a:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), goto ["Position" + (value + 1)]
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), goto ["Position" + (CVReading + 1)]
 
 #Position1:
+    driveOmni(1, 0, 0), after 13.5in next;
+    driveOmni(0, -1, 0), after 6.5in next;
     positionOne(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     depositFreight(), next;
     goto finalMovement
 
 #Position2:
+    driveOmni(1, 0, 0), after 13.5in next;
     positionTwo(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     depositFrieght(), next;
     goto finalMovement
 
 #Position3:
+    driveOmni(1, 0, 0), after 13.5in next;
+    driveOmni(0, 1, 0), after 6.5in next;
     positionThree(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     depositFrieght(), next;
     goto finalMovement

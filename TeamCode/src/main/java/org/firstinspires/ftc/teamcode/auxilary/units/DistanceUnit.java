@@ -32,6 +32,7 @@ public class DistanceUnit extends Unit {
     public final static DistanceUnit FBF = new DistanceUnit("Football Field", new String[] {"fbfield", "fbf"}, 1 / 109.36133);
     public final static DistanceUnit FTCF = new DistanceUnit("FTC Field", new String[] {"ftcfield", "ftcf", "ftf"}, 1 / 5.4864);
     public final static DistanceUnit RBTW = new DistanceUnit("Robot Width", new String[] {"rbtw", "rbw"}, 2.1872266);
+    public final static DistanceUnit HTDG = new DistanceUnit("Hot Dog", new String[] {"hd", "htdg", "hd", "hotdog"}, 8.2020997);
 
     public final static DistanceUnit naturalDistanceUnit = DistanceUnit.CM;
 
