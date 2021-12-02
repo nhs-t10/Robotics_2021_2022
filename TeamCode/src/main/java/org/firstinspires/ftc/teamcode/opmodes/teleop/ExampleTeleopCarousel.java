@@ -28,6 +28,10 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager.crservo;
+import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager.motor;
+import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager.servo;
+
 @TeleOp
 public class ExampleTeleopCarousel extends OpMode {
     private MovementManager driver;
@@ -63,9 +67,9 @@ public class ExampleTeleopCarousel extends OpMode {
 
         hands = new ManipulationManager(
                 hardwareMap,
-                new String[] { "nateMoverLeft", "nateMoverRight"},
-                new String[] {"nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"},
-                new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
+                crservo ("nateMoverLeft", "nateMoverRight"),
+                servo ("nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"),
+                motor ("Carousel", "ClawMotor", "noodle", "intake")
         );
 
         clawPosition = new NateManager(hands);
