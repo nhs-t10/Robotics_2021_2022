@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.StoredAutoautoVariable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,8 @@ public class State implements AutoautoProgramElement {
     public Statement[] statements;
     public AutoautoRuntimeVariableScope scope;
     public Location location;
+    private StoredAutoautoVariable storedStatepathVariable;
+    private StoredAutoautoVariable storedStateNumberVariable;
 
     @Override
     public AutoautoRuntimeVariableScope getScope() {
@@ -74,6 +77,9 @@ public class State implements AutoautoProgramElement {
     }
 
     public void init() {
+        this.storedStatepathVariable = scope.getConsistentVariableHandle(AutoautoSystemVariableNames.STATEPATH_NAME);
+        this.storedStateNumberVariable = scope.getConsistentVariableHandle(AutoautoSystemVariableNames.STATE_NUMBER);
+
         for(Statement s : statements) {
             if(s != null) s.init();
         }
@@ -82,8 +88,8 @@ public class State implements AutoautoProgramElement {
     public void loop() {
         this.returnValue = new AutoautoUndefined();
         for(Statement s : statements) {
-            if(!this.scope.get(AutoautoSystemVariableNames.STATEPATH_NAME).getString().equals(this.location.statepath)) break;
-            if(((AutoautoNumericValue)this.scope.get(AutoautoSystemVariableNames.STATE_NUMBER)).getFloat() != this.location.stateNumber) break;
+            if(!storedStatepathVariable.value.getString().equals(this.location.statepath)) break;
+            if(((AutoautoNumericValue)storedStateNumberVariable.value).getFloat() != this.location.stateNumber) break;
             if(s != null) s.loop();
 
             //break if there's a return statement

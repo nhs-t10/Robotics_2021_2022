@@ -1,6 +1,6 @@
 $
 testIterations: 100,
-expectedTestOutput: "start\n1\nargs: [0 = boo, 1 = undefined, 2 = 30]\nfalseboo\n0xe3\n86\nend"
+expectedTestOutput: "start\n1\nargs: [0 = boo, 1 = undefined, 2 = 30]\nfalseboo\n0xe3\n86\nend\n"
 $
 
 #init:

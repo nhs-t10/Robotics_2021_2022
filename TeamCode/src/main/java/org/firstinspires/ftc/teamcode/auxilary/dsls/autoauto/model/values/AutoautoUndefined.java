@@ -49,4 +49,7 @@ public class AutoautoUndefined extends AutoautoPrimitive {
         c.setLocation(location);
         return c;
     }
+    public String toString() {
+        return "undefined";
+    }
 }

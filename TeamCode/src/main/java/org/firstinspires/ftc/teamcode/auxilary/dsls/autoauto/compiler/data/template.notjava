@@ -137,10 +137,6 @@ public class template extends AutoautoOpmode {
         /*OUTPUT_ASSERTATION*/
     }
 
-    public static void sL(AutoautoProgramElement e, Location l) {
-        e.setLocation(l);
-    }
-
     @Override
     public void stop() {
         FeatureManager.setIsOpModeRunning(false);

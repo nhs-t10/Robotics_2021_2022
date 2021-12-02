@@ -5,6 +5,9 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+
+import java.util.Arrays;
 
 public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCallableValue {
     private State body;
@@ -69,15 +72,9 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
         AutoautoNumericValue actualStateNumber = (AutoautoNumericValue) scope.get(AutoautoSystemVariableNames.STATE_NUMBER);
         AutoautoString actualStatepath = (AutoautoString) scope.get(AutoautoSystemVariableNames.STATEPATH_NAME);
 
-        callScope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(body.location.stateNumber));
-        callScope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(body.location.statepath));
-
-        AutoautoTable arglist = new AutoautoTable(args);
-        callScope.systemSet(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME, arglist.clone());
-
         if(argNames != null) {
             for (int i = 0; i < argNames.length; i++) {
-                if (i < args.length && !(args[i] instanceof AutoautoUndefined)){
+                if (i < args.length && !(args[i] instanceof AutoautoUndefined)) {
                     callScope.systemSet(argNames[i], args[i]);
                 } else {
                     if(defaultArgValues == null || defaultArgValues[i] == null) callScope.systemSet(argNames[i], new AutoautoUndefined());
@@ -88,6 +85,12 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
 
         State callState = body.clone();
         callState.setScope(callScope);
+
+        AutoautoTable arglist = new AutoautoTable(args);
+        callScope.systemSet(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME, arglist.clone());
+
+        callScope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(body.location.stateNumber));
+        callScope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(body.location.statepath));
 
         callState.init();
         callState.stepInit();

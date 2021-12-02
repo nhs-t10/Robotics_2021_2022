@@ -1,0 +1,7 @@
+$
+testIterations: 1,
+expectedTestOutput: "f a"
+$
+
+#f:
+ log("f " + "a")

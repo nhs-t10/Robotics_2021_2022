@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class AutoautoRuntimeVariableScope {
-    public HashMap<String, StoredAutoautoValue> variables;
+    public HashMap<String, StoredAutoautoVariable> variables;
 
     @Nullable
     public AutoautoRuntimeVariableScope parentScope;
@@ -27,12 +27,12 @@ public class AutoautoRuntimeVariableScope {
     private AutoautoRuntimeVariableScope rootScope;
 
     public AutoautoRuntimeVariableScope() {
-        this.variables = new HashMap<String, StoredAutoautoValue>();
+        this.variables = new HashMap<String, StoredAutoautoVariable>();
     }
     public AutoautoRuntimeVariableScope(@NotNull AutoautoRuntimeVariableScope parentScope) {
+        this();
         this.parentScope = parentScope;
         this.rootScope = parentScope.getRoot();
-        this.variables = new HashMap<String, StoredAutoautoValue>();
     }
 
     public Set<String> getKeys() {
@@ -40,27 +40,17 @@ public class AutoautoRuntimeVariableScope {
     }
 
     public void put(String s, AutoautoPrimitive v) {
-        StoredAutoautoValue value = getStored(s);
+        StoredAutoautoVariable value = getStored(s);
 
         if(value == null) {
-            this.variables.put(s, new StoredAutoautoValue(v));
+            this.variables.put(s, new StoredAutoautoVariable(v));
         } else {
             if(value.systemManaged) {
                 throw new IllegalArgumentException("Variable " + s + " is a system variable");
             } else if(value.readOnly) {
                 throw new IllegalArgumentException("Variable " + s + " is a read-only variable");
             };
-            //if it's in this scope...
-            if(this.variables.containsKey(s)) {
-                //... set it
-                value.value = v;
-                this.variables.put(s, value);
-            } // if not...
-            else {
-                //... propagate up. This gets inefficient with a large number of nested scopes; should be fine for now, but should be fixed
-                // TODO: optimize nested scopes
-                parentScope.put(s, v);
-            }
+            value.value = v;
         }
     }
 
@@ -70,7 +60,11 @@ public class AutoautoRuntimeVariableScope {
         else return null;
     }
 
-    private StoredAutoautoValue getStored(String s) {
+    public StoredAutoautoVariable getConsistentVariableHandle(String s) {
+        return getStored(s);
+    }
+
+    private StoredAutoautoVariable getStored(String s) {
         if(this.variables.containsKey(s)) return this.variables.get(s);
         else if(parentScope != null) return parentScope.getStored(s);
         else return null;
@@ -82,30 +76,20 @@ public class AutoautoRuntimeVariableScope {
     }
 
     public void systemSet(String s, AutoautoPrimitive v) {
-        StoredAutoautoValue value = getStored(s);
+        StoredAutoautoVariable value = this.variables.get(s);
 
         if(value == null) {
-            value = new StoredAutoautoValue(v);
+            value = new StoredAutoautoVariable(v);
             value.systemManaged = true;
             this.variables.put(s, value);
         } else {
             if(!value.systemManaged) {
-                throw new IllegalArgumentException("Variable " + s + " is not a system variable");
+                throw new IllegalArgumentException("Variable " + s + " is not a system variable; it cannot be systemSet.");
             }
             if(value.readOnly) {
                 throw new IllegalArgumentException("Variable " + s + " is a read-only variable");
             }
-            //if it's in this scope...
-            if(this.variables.containsKey(s)) {
-                //... set it
-                value.value = v;
-                this.variables.put(s, value);
-            } // if not
-            else {
-                //... propagate up. This gets inefficient with a large number of nested scopes; should be fine for now, but should be fixed
-                // TODO: optimize nested scopes
-                parentScope.systemSet(s, v);
-            }
+            value.value = v;
         }
     }
 

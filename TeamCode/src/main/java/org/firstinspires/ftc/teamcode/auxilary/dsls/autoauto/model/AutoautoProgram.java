@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.StoredAutoautoVariable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -18,6 +19,8 @@ public class AutoautoProgram implements AutoautoProgramElement {
 
     AutoautoRuntimeVariableScope scope;
     Location location;
+
+    StoredAutoautoVariable currentStatepathVariable;
 
 
     public static String formatStack(Location location) {
@@ -34,7 +37,7 @@ public class AutoautoProgram implements AutoautoProgramElement {
         this.currentPath = paths.get(initialPathName);
     }
     public void loop() {
-        String currentStatepathName = ((AutoautoString)(scope.get(AutoautoSystemVariableNames.STATEPATH_NAME))).getString();
+        String currentStatepathName = this.currentStatepathVariable.value.getString();
 
         //if steps have changed, init the new one
         if(!currentStatepathName.equals(this.oldPathName)) {
@@ -50,9 +53,12 @@ public class AutoautoProgram implements AutoautoProgramElement {
     }
 
     public void init() {
-        for(Statepath p : this.paths.values()) p.init();
         scope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(this.initialPathName));
         scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(0));
+
+        this.currentStatepathVariable = scope.getConsistentVariableHandle(AutoautoSystemVariableNames.STATEPATH_NAME);
+
+        for(Statepath p : this.paths.values()) p.init();
     }
 
     public void stepInit() {

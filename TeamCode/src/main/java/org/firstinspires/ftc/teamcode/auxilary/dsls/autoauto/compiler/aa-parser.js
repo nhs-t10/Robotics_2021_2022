@@ -264,7 +264,7 @@ module.exports = /*
          return {
            type: "ArgumentList", location: location(),
            len: tail.length + 1,
-           args: tail.map(x=> x[1]).concat([head])
+           args: [head].concat(tail.map(x=> x[1]))
          }
         },
         peg$c38 = function(n, v) {

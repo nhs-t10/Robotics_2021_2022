@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSys
 import org.jetbrains.annotations.NotNull;
 
 public class Statepath implements AutoautoProgramElement {
-    public State[] states;
+    public final State[] states;
     private int oldCurrentState;
 
     Location location;
@@ -59,8 +59,9 @@ public class Statepath implements AutoautoProgramElement {
     }
 
     public void init() {
-        for(State s : this.states) s.init();
         this.scope.systemSet(AutoautoSystemVariableNames.STATE_COUNT_OF_PREFIX + name, new AutoautoNumericValue(this.states.length));
+
+        for(State s : this.states) s.init();
     }
 
     public void stepInit() {

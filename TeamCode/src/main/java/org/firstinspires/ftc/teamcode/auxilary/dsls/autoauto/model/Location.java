@@ -45,7 +45,25 @@ public class Location {
         return new Location(lastStatepath, lastStatenumber, lastLine, lastCol);
     }
 
+    public static void L(AutoautoProgramElement e, String statepath, int stateNumber, int line, int col) {
+        e.setLocation(L(statepath, stateNumber, line, col));
+    }
+    public static void L(AutoautoProgramElement e, int stateNumber, int line, int col) {
+        e.setLocation(L(stateNumber, line, col));
+    }
+    public static void L(AutoautoProgramElement e, int line, int col) {
+        e.setLocation(L(line, col));
+    }
+    public static void L(AutoautoProgramElement e, int col) {
+        e.setLocation(L(col));
+    }
+    public static void L(AutoautoProgramElement e) {
+        e.setLocation(L());
+    }
+
     public Location(String statepath, int stateNumber, int line, int col) {
+        assert statepath != null;
+
         this.statepath = statepath;
         this.stateNumber = stateNumber;
         this.line = line;

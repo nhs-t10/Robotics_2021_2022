@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class SkipStatement extends Statement {
@@ -11,15 +12,21 @@ public class SkipStatement extends Statement {
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
+    int stateCount = -1;
+
     public SkipStatement(int delta) {
         this.delta = delta;
     }
     public void loop() {
         int currentState = (int)((AutoautoNumericValue)scope.get(AutoautoSystemVariableNames.STATE_NUMBER)).getFloat();
-        int stateCount = (int)((AutoautoNumericValue)scope.get(AutoautoSystemVariableNames.STATE_COUNT_OF_PREFIX + location.statepath)).getFloat();
         int nextState = (currentState + delta) % stateCount;
 
         scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(nextState));
+    }
+
+    @Override
+    public void init() {
+        this.stateCount = (int)((AutoautoNumericValue)scope.get(AutoautoSystemVariableNames.STATE_COUNT_OF_PREFIX + location.statepath)).getFloat();
     }
 
     @Override

@@ -13,25 +13,25 @@ public class DummyTelemetry implements Telemetry {
 
     @Override
     public Item addData(String caption, String format, Object... args) {
-        FeatureManager.logger.log(caption + "\t" + String.format(format, args));
+        //FeatureManager.logger.log(caption + "\t" + String.format(format, args));
         return new DummyItem();
     }
 
     @Override
     public Item addData(String caption, Object value) {
-        FeatureManager.logger.log(caption + "\t" + value);
+        //FeatureManager.logger.log(caption + "\t" + value);
         return new DummyItem();
     }
 
     @Override
     public <T> Item addData(String caption, Func<T> valueProducer) {
-        FeatureManager.logger.log(caption + "\t" + valueProducer.value());
+        //FeatureManager.logger.log(caption + "\t" + valueProducer.value());
         return new DummyItem();
     }
 
     @Override
     public <T> Item addData(String caption, String format, Func<T> valueProducer) {
-        FeatureManager.logger.log(caption + "\t" + String.format(format, valueProducer.value()));
+        //FeatureManager.logger.log(caption + "\t" + String.format(format, valueProducer.value()));
         return new DummyItem();
     }
 

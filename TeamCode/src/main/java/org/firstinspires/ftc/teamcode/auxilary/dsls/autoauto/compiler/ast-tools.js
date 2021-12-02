@@ -113,8 +113,6 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
                 def.depends.forEach(y=> {
                     var d = depthMappedDefinitions[y];
-                    if(!d) console.log(d, y);
-                    if(!d) console.log(def);
                     addSortDefs(d);
                 });
                 if(def.definition) sortedDefinitions.push(def);
@@ -130,12 +128,12 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
 
             addSortDefs(rootTreeNode);
 
-             //split by semicolons, make each statement into its own depth mapped definition
+             //splitted by semicolons, make each statement into its own depth mapped definition
             var typedDefinitions = sortedDefinitions
             .map(x => ({
                 self: x.self,
                 depends: x.depends,
-                definition: x.definition.trim(),
+                definition: x.definition,
                 type: JAVA_TYPE_REGEX.exec(x.definition.trim())[0] //discern and record the type
             }))
             .map((x,i,a) => { //if the type is the same as the previous, join the declarations with commas instead of semicolons
@@ -144,8 +142,18 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 return x;
             })
             .map(x=>x.definition) //remove type data
+            .map(x=>
+                (x.includes("\"") ? 
+                    x
+                    .substring(0, x.indexOf("\""))
+                    .replace(/ ?(\W) ?/g, "$1")
+                    + x.substring(x.indexOf("\""))
+                :
+                    x.replace(/ ?(\W) ?/g, "$1")
+                ).trim()
+            ) //remove extra whitespace, if it's not a string
             .join("") //join into one string
-            .replace(/ ?(\W) ?/g, "$1") //remove extra whitespace
+            
                 
             var creation = `
             ${typedDefinitions}
@@ -158,8 +166,6 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
             var creationStatements = (creation).split(",");
             var line = "";
             for(var i = 0; i < creationStatements.length; i++) {
-                creationStatements[i] = creationStatements[i].split(";").map(x=>x.trim()).join(";");
-
                 if(creationStatements[i] != "") line += creationStatements[i];
                 if(i + 1 < creationStatements.length) line += ",";
 
@@ -563,15 +569,19 @@ var lastLocationSetterInfo = [];
 function makeLocationSetter(nonce, statepathNonce, stateNumber, line, column) {
     var data = [statepathNonce, stateNumber || 0 , line, column];
     var similarityIndex = 0;
-    for(var i = 0; i < data.length; i++) {
-        if(lastLocationSetterInfo[i] == data[i]) similarityIndex++;
-        else break;
-    }
-    var newData = data.slice(similarityIndex);
+    
+    //Compressing the method calls for a shorter output-- not working with the optimization sorter.
+    //TODO: make this return a normal def ({self: genNonce(), depends: [nonce], ...}) and work that into the optimization system.
+    
+    // for(var i = 0; i < data.length; i++) {
+    //     if(lastLocationSetterInfo[i] == data[i]) similarityIndex++;
+    //     else break;
+    // }
+    var newData = data; //.slice(similarityIndex);
 
     lastLocationSetterInfo = data;
 
-    return `sL(${nonce},L(` + newData.join(",") + "));";
+    return `L(${nonce}${newData.length?",":""}` + newData.join(",") + ");";
 }
 
 function getStringNonce(str, depth, nonce) {
@@ -596,7 +606,6 @@ function addDepthMappedDefinition(def) {
     if(depthMappedDefinitions[def.self]) throw "Already defined!";
     def.depends.forEach(x=> {
         if(!depthMappedDefinitions[x]) {
-            console.log(def);
             throw "No dependency " + x;
         }
     })
