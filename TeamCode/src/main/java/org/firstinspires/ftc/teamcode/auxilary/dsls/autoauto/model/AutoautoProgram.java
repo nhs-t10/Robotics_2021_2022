@@ -31,6 +31,13 @@ public class AutoautoProgram implements AutoautoProgramElement {
         return new AutoautoProgram(s, initialPathName);
     }
 
+    public static AutoautoProgram P(Statepath[] s) {
+        HashMap<String, Statepath> paths = new HashMap<>();
+        for(Statepath p : s) paths.put(p.name, p);
+
+        return new AutoautoProgram(paths, s[0].name);
+    }
+
     public AutoautoProgram(HashMap<String, Statepath> s, String initialPathName) {
         this.paths = s;
         this.initialPathName = initialPathName;
