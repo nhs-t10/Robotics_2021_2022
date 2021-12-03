@@ -5,27 +5,34 @@ import java.util.ArrayList;
 
 public class TimeUnit extends Unit {
     public String name;
+    public String pluralName;
     public String[] abbreviations;
-    public double perSecond;
+    public double milliseconds;
 
-    private TimeUnit(String name, String abbr, double perSecond) {
-        this(name, new String[] {abbr}, perSecond);
+    private TimeUnit(String name, String abbr, double perSecond, String pluralName) {
+        this(name, new String[] {abbr}, perSecond, pluralName);
     }
-    private TimeUnit(String name, String[] abbreviations, double perSecond) {
-        super(name, abbreviations, perSecond);
+    private TimeUnit(String name, String[] abbreviations, double milliseconds, String pluralName) {
+        super(name, abbreviations, milliseconds);
         this.name = name;
         this.abbreviations = abbreviations;
-        this.perSecond = perSecond;
+        this.milliseconds = milliseconds;
+        this.pluralName = pluralName;
     }
 
-    public final static TimeUnit S = new TimeUnit("Second", "s", 1);
-    public final static TimeUnit MS = new TimeUnit("Millisecond", "ms", 1000);
-    public final static TimeUnit NS = new TimeUnit("Nanosecond", "ns", 1e9);
-    public final static TimeUnit MIN = new TimeUnit("Minute", new String[] {"min", "mn"}, 1.0/60.0);
-    public final static TimeUnit HR = new TimeUnit("Hour", new String[] {"h", "hr"}, 1.0/(60.0*60.0));
-    public final static TimeUnit D = new TimeUnit("Day", "d", 1.0/(60.0*60.0*24.0));
-    public final static TimeUnit YR = new TimeUnit("Year", new String[] {"y", "yr"}, 1.0/(60.0*60.0*24.0*365.0));
-    public final static TimeUnit JIF = new TimeUnit("Jiffy", new String[] {"jif", "jiff", "jiffy", "jiffies"}, 100);
+    //Smaller than the natural time unit
+    public final static TimeUnit NS = new TimeUnit("Nanosecond", "ns", 1e-6, "Nanoseconds");
+
+    //The natural time unit!
+    public final static TimeUnit MS = new TimeUnit("Millisecond", "ms", 1, "Milliseconds");
+
+    //Larger than the natural time unit
+    public final static TimeUnit S = new TimeUnit("Second", "s", 1000, "Seconds");
+    public final static TimeUnit MIN = new TimeUnit("Minute", new String[] {"min", "mn"}, 1000 * 60, "Minutes");
+    public final static TimeUnit HR = new TimeUnit("Hour", new String[] {"h", "hr"}, 1000 * 60 * 60, "Hours");
+    public final static TimeUnit D = new TimeUnit("Day", "d", 1000 * 60 * 60 * 24, "Days");
+    public final static TimeUnit YR = new TimeUnit("Year", new String[] {"y", "yr"}, 1000.0 * 60 * 60 * 24 * 365, "Years");
+    public final static TimeUnit JIF = new TimeUnit("Jiffy", new String[] {"jif", "jiff", "jiffy", "jiffies", "jiffie"}, 10, "Jiffies");
 
     public final static TimeUnit naturalTimeUnit = TimeUnit.MS;
 
@@ -53,10 +60,9 @@ public class TimeUnit extends Unit {
     }
 
     public static TimeUnit forAbbreviation(String abbr) {
-        String singularName = singular(abbr);
 
         for(TimeUnit u : getUnits()) {
-            if(u.name.equalsIgnoreCase(singularName)) return u;
+            if(u.name.equalsIgnoreCase(abbr) || u.pluralName.equalsIgnoreCase(abbr)) return u;
             for(String a : u.abbreviations) {
                 if(a.equals(abbr)) return u;
             }
@@ -64,16 +70,13 @@ public class TimeUnit extends Unit {
         return null;
     }
 
-    public static String singular(String abbr) {
-        if(abbr == null) return null;
-        else if(abbr.endsWith("s")) return abbr.substring(0, abbr.length() - 1);
-        else return abbr;
-    }
-
     public static double convertBetween(TimeUnit unitFrom, TimeUnit unitTo, double fromAmount) {
-        return (fromAmount * (unitTo.perSecond / unitFrom.perSecond));
+        if(unitFrom == null) throw new IllegalArgumentException("Cannot convert from null");
+        if(unitTo == null) throw new IllegalArgumentException("Cannot convert to null");
+
+        return (fromAmount * (unitFrom.milliseconds / unitTo.milliseconds));
     }
     public static double convertBetween(TimeUnit unitFrom, TimeUnit unitTo, float fromAmount) {
-        return (fromAmount * (unitTo.perSecond / unitFrom.perSecond));
+        return convertBetween(unitFrom, unitTo, (double)fromAmount);
     }
 }

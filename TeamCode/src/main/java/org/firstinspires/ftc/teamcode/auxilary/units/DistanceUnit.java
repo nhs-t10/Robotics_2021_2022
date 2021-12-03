@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class DistanceUnit extends Unit {
     public String name;
     public String[] abbreviations;
+    //TODO: refactor this class so it measures in millimeters, not "per meter". See TimeUnitTest for example.
     public double perMeter;
 
     private DistanceUnit(String name, String abbr, double perMeter) {
