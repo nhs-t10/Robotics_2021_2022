@@ -43,13 +43,13 @@ public class ManipulationManager extends FeatureManager {
 
         this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
-    public static Map.Entry<String, String[]> crservo(String... names) {
+    public static BasicMapEntry<String, String[]> crservo(String... names) {
         return new BasicMapEntry<String, String[]>("crservo", names);
     }
-    public static Map.Entry<String, String[]> motor(String... names) {
+    public static BasicMapEntry<String, String[]> motor(String... names) {
         return new BasicMapEntry<String, String[]>("motor", names);
     }
-    public static Map.Entry<String, String[]> servo(String... names) {
+    public static BasicMapEntry<String, String[]> servo(String... names) {
         return new BasicMapEntry<String, String[]>("servo", names);
     }
 

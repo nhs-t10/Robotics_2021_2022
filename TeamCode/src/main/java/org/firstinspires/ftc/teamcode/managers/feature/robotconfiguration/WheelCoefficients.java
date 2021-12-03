@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration;
 
 
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.auxilary.BasicMapEntry;
 
 public class WheelCoefficients {
     public enum WheelDirective { OMNI_HOR, OMNI_VER, OMNI_ROT, MOTORS };
@@ -9,28 +9,23 @@ public class WheelCoefficients {
     public static WheelCoefficients W(float fl, float fr, float bl, float br) {
         return new WheelCoefficients(fl, fr, bl, br);
     }
-    public static WheelCoefficients horizontal(float fl, float fr, float bl, float br) {
-        return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_HOR);
+    public static BasicMapEntry<WheelDirective, WheelCoefficients> horizontal(float fl, float fr, float bl, float br) {
+        return new BasicMapEntry<>(WheelDirective.OMNI_HOR, new WheelCoefficients(fl, fr, bl, br));
     }
-    public static WheelCoefficients rotational(float fl, float fr, float bl, float br) {
-        return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_ROT);
+    public static BasicMapEntry<WheelDirective, WheelCoefficients> rotational(float fl, float fr, float bl, float br) {
+        return new BasicMapEntry<>(WheelDirective.OMNI_ROT, new WheelCoefficients(fl, fr, bl, br));
     }
-    public static WheelCoefficients vertical(float fl, float fr, float bl, float br) {
-        return new WheelCoefficients(fl, fr, bl, br, WheelDirective.OMNI_VER);
+    public static BasicMapEntry<WheelDirective, WheelCoefficients> vertical(float fl, float fr, float bl, float br) {
+        return new BasicMapEntry<>(WheelDirective.OMNI_VER, new WheelCoefficients(fl, fr, bl, br));
     }
 
     public float fl, fr, bl, br;
     public WheelDirective directive;
 
-    public WheelCoefficients(float fl, float fr, float bl, float br, WheelDirective directive) {
+    public WheelCoefficients(float fl, float fr, float bl, float br) {
         this.fl = fl;
         this.fr = fr;
         this.bl = bl;
         this.br = br;
-        this.directive = directive;
-    }
-
-    public WheelCoefficients(float fl, float fr, float bl, float br) {
-        this(fl, fr, bl,br, WheelDirective.MOTORS);
     }
 }

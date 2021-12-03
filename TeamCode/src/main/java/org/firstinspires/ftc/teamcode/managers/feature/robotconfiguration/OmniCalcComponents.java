@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
+import java.util.Map;
+
 public class OmniCalcComponents {
     public WheelCoefficients hor, ver, rot;
 
@@ -18,6 +20,14 @@ public class OmniCalcComponents {
             if(c.directive == WheelCoefficients.WheelDirective.OMNI_HOR) hor = c;
             if(c.directive == WheelCoefficients.WheelDirective.OMNI_VER) ver = c;
             if(c.directive == WheelCoefficients.WheelDirective.OMNI_ROT) rot = c;
+        }
+    }
+    @SafeVarargs
+    public OmniCalcComponents(Map.Entry<WheelCoefficients.WheelDirective, WheelCoefficients>... coefSets) {
+        for(Map.Entry<WheelCoefficients.WheelDirective, WheelCoefficients> c : coefSets) {
+            if(c.getKey() == WheelCoefficients.WheelDirective.OMNI_HOR) hor = c.getValue();
+            if(c.getKey() == WheelCoefficients.WheelDirective.OMNI_VER) ver = c.getValue();
+            if(c.getKey() == WheelCoefficients.WheelDirective.OMNI_ROT) rot = c.getValue();
         }
     }
 }
