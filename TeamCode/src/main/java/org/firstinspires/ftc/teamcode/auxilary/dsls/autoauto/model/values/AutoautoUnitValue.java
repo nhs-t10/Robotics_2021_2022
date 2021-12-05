@@ -36,18 +36,14 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
     public static enum UnitType { TIME, DISTANCE, UNKNOWN, ROTATION };
 
     public UnitType unitType;
-    public long baseAmount;
+    public double baseAmount;
     public String unit;
 
-    //Constructors
-    public static AutoautoUnitValue E(long baseAmount, String unit) {
+    public static AutoautoUnitValue E(double baseAmount, String unit) {
         return new AutoautoUnitValue(baseAmount, unit);
     }
-    public static AutoautoUnitValue E(double baseAmount, String unit) {
-        return new AutoautoUnitValue((long)baseAmount, unit);
-    }
 
-    public AutoautoUnitValue(long baseAmount, String unit) {
+    public AutoautoUnitValue(double baseAmount, String unit) {
         super(baseAmount);
         this.baseAmount = baseAmount;
         this.unit = unit;
@@ -57,15 +53,15 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
 
         if(timeUnit != null) {
-            this.baseAmount = (long)Math.round(TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount));
+            this.baseAmount = TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount);
             this.unit = TimeUnit.naturalTimeUnit.name;
             this.unitType = UnitType.TIME;
         } else if(distanceUnit != null) {
-            this.baseAmount = (long)Math.round(DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount));
+            this.baseAmount = DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount);
             this.unit = DistanceUnit.naturalDistanceUnit.name;
             this.unitType = UnitType.DISTANCE;
         } else if(rotationUnit != null) {
-            this.baseAmount = (long)Math.round(RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount));
+            this.baseAmount = RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount);
             this.unit = RotationUnit.naturalRotationUnit.name;
             this.unitType = UnitType.ROTATION;
         } else {
@@ -73,7 +69,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
             FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
         }
 
-        this.value = this.baseAmount;
+        super.value = (float) this.baseAmount;
     }
 
     //Methods
