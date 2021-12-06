@@ -103,7 +103,7 @@ public class AfterStatement extends Statement {
                 break;
             case DISTANCE:
             case ROTATION:
-                float targetDifference = wait.baseAmount;
+                double targetDifference = wait.baseAmount;
                 float referPoint = stepStartTick;
                 float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
