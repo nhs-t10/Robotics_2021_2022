@@ -22,7 +22,28 @@ public class ManipulationManager extends FeatureManager {
 
     public MotorEncodedMovementThread[] encoderMovementThreads;
 
-    //allow args in any order
+    /**
+     * Make a ManipulationManager by only specifying the names. The constructor uses the given HardwareMap to resolve each name by itself.
+     * <h3>Usage Example:</h3>
+     * <pre><code>
+     *     new ManipulationManager(hardwareMap,
+     *          ManipulationManager.crservo("CRServoNameOne", "CRServoNameTwo"),
+     *          ManipulationManager.servo("ServoNameOne", "ServoNameTwo"),
+     *          ManipulationManager.motor("MotorNameOne", "MotorNameTwo")
+     *     );
+     * </code></pre>
+     *
+     * <p>The constructor works the same way as {@link #ManipulationManager(HardwareMap, String[], String[], String[]) the other constructor}, but allows you to specify args
+     * in any order with the {@link #crservo(String...) crservo}, {@link #servo(String...) servo}, and {@link #motor(String...) motor} helpers.</p>
+     * <p>Consider using <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/language/static-import.html">static imports</a> on the helper methods for better readability.</p>
+     *
+     * @see #crservo(String...) 
+     * @see #servo(String...) 
+     * @see #motor(String...)
+     * 
+     * @param _hardwareMap a hardware map that contains <u>all</u> of the listed hardware devices.
+     * @param args A series of at least 3 map entries.
+     */
     public ManipulationManager(HardwareMap _hardwareMap, Map.Entry<String, String[]>... args) {
         String[] _crservos = new String[0], _servos = new String[0], _motors = new String[0];
         for(Map.Entry<String, String[]> a : args) {
@@ -53,16 +74,17 @@ public class ManipulationManager extends FeatureManager {
         return new BasicMapEntry<String, String[]>("servo", names);
     }
 
-
-
-    public ManipulationManager(CRServo[] _crservos, Servo[] _servos, DcMotor[] _motors) {
-        this.crservos = _crservos;
-        this.servos = _servos;
-        this.motors = _motors;
-
-        this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
-    }
-
+    /**
+     * Make a ManipulationManager by only specifying the names. The constructor uses the given HardwareMap to resolve each name by itself.
+     * <br> This is a less verbose alternative to {@link #ManipulationManager(CRServo[], String[], Servo[], String[], DcMotor[], String[]) the six-argument constructor}.
+     *
+     * @see #ManipulationManager(HardwareMap, Map.Entry[])
+     * 
+     * @param _hardwareMap a hardware map that contains <u>all</u> of the listed hardware devices.
+     * @param _crservos an array of each CR Servo's name
+     * @param _servos an array of each Servo's name
+     * @param _motors an array of each DC Motor's name
+     */
     public ManipulationManager(HardwareMap _hardwareMap, String[] _crservos, String[] _servos, String[] _motors) {
         this.crservos = new CRServo[_crservos.length];
         for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.get(CRServo.class, _crservos[i]); }
@@ -77,6 +99,11 @@ public class ManipulationManager extends FeatureManager {
         this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
 
+    /**
+     * An older form of the ManipulationManager constructor that doesn't need a HardwareMap, but uses wayyyyy too many arguments.
+     * Consider using {@link #ManipulationManager(HardwareMap, String[], String[], String[])} instead.
+     */
+    @Deprecated
     public ManipulationManager(CRServo[] _crservos, String[] _crservoNames, Servo[] _servos, String[] _servoNames, DcMotor[] _motors, String[] _motorNames) {
         if(_crservoNames.length != _crservos.length) throw new IllegalArgumentException("CRServo Names must be the same length as CRServos");
         if(_servoNames.length != _servos.length) throw new IllegalArgumentException("Servo Names must be the same length as Servos");
@@ -92,32 +119,33 @@ public class ManipulationManager extends FeatureManager {
         this.encoderMovementThreads = new MotorEncodedMovementThread[motors.length];
     }
 
-    public void setCRServoNames(String[] _crservoNames) {
-        if(_crservoNames.length != crservos.length) throw new IllegalArgumentException("CRServo Names must be the same length as CRServos");
-        this.crservoNames = _crservoNames;
-    }
-
-    public void setServoNames(String[] _servoNames) {
-        if (_servoNames.length != servos.length) throw new IllegalArgumentException("Servo Names must be the same length as Servos");
-        this.servoNames = _servoNames;
-    }
-
-    public void setMotorNames(String[] _motorNames) {
-        if(_motorNames.length != motors.length) throw new IllegalArgumentException("Motor Names must be the same length as Motors");
-        this.motorNames = _motorNames;
-    }
-
+    /**
+     * Move the given servo to the given position.
+     * @param name the name of the servo; must be one of the names given in the {@link #ManipulationManager(HardwareMap, String[], String[], String[]) constructor}
+     * @param position the position to go to, between {@code 0} and {@code 1}, inclusive.
+     */
     public void setServoPosition(String name, double position) {
         int index = (Arrays.asList(servoNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Servo " + name + " does not exist or is not registered in ManipulationManager");
         servos[index].setPosition(position);
     }
 
+    /**
+     * Set the given CR Servo's power.
+     * @param name the name of the CRServo; must be one of the names given in the {@link #ManipulationManager(HardwareMap, String[], String[], String[]) constructor}
+     * @param power the power to give it, between {@code 0} and {@code 1}, inclusive.
+     */
     public void setServoPower(String name, double power) {
         int index = (Arrays.asList(crservoNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Servo " + name + " does not exist or is not registered in ManipulationManager");
         crservos[index].setPower(power);
     }
+
+    /**
+     * Get a Servo object by name.
+     * @param name the name of the servo; must be one of the names given in the {@link #ManipulationManager(HardwareMap, String[], String[], String[]) constructor}
+     * @return The Servo object, exactly as it came out of the {@link HardwareMap}.
+     */
     public Servo getServo(String name) {
         int index = (Arrays.asList(servoNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Servo " + name + " does not exist or is not registered in ManipulationManager");
@@ -185,16 +213,6 @@ public class ManipulationManager extends FeatureManager {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
         motors[index].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void setMotorPosition(String name, int position) {
-        int index = (Arrays.asList(motorNames)).indexOf(name);
-        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
-        motors[index].setTargetPosition(position);
-    }
-
-    public void setMotorPosition(int i, int position) {
-        motors[i].setTargetPosition(position);
     }
 
     public void setMotorPower(String name, double power) {
@@ -266,6 +284,14 @@ public class ManipulationManager extends FeatureManager {
         encoderMovementThreads[index] = motorThread;
     }
 
+    /**
+     * Check whether the given motor is moving asynchronously. Usually, this means that it was moved with {@link #encodeMoveToPosition(String, int) encodeMoveToPosition} and hasn't finished yet.
+     * <p>
+     * Unless you're a robot, please try to use {@link #hasEncodedMovement(String) the String version} of this method instead.
+     * </p>
+     * @param index the index of the motor in the internal motors array.
+     * @return {@code true} if the motor is moving; {@code false} otherwise.
+     */
     public boolean hasEncodedMovement(int index) {
         MotorEncodedMovementThread thread = encoderMovementThreads[index];
         //if there's no thread, return false right away
@@ -284,6 +310,13 @@ public class ManipulationManager extends FeatureManager {
 
 
     }
+
+    /**
+     * Check whether the given motor is moving asynchronously. Usually, this means that it was moved with {@link #encodeMoveToPosition(String, int) encodeMoveToPosition} and hasn't finished yet.
+     *
+     * @param name the name of the motor; must be one of the motor names given in the {@link #ManipulationManager(HardwareMap, String[], String[], String[]) constructor}
+     * @return {@code true} if the motor is moving; {@code false} otherwise.
+     */
     public boolean hasEncodedMovement(String name) {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
@@ -291,20 +324,36 @@ public class ManipulationManager extends FeatureManager {
         return hasEncodedMovement(index);
     }
 
+    /**
+     * <p>
+     * If a motor is moving asynchronously, stop it.
+     * If it isn't moving, this has no effect.
+     * </p>
+     * <p>
+     * Unless you're a robot, please try to use {@link #cancelEncodedMovement(String) the String version} of this method instead.
+     * </p>
+     *
+     * @see #cancelEncodedMovement(String)
+     *
+     * @param index the index of the motor in the internal motors array.
+     */
     public void cancelEncodedMovement(int index) {
         if(encoderMovementThreads[index] != null) encoderMovementThreads[index].cancelMovement();
         encoderMovementThreads[index] = null;
     }
+
+    /**
+     * If a motor is moving asynchronously, stop it.
+     * If it isn't moving, this has no effect.
+     *
+     * @param name the name of the motor; must be one of the names given in the {@link #ManipulationManager(HardwareMap, String[], String[], String[]) constructor}
+     */
     public void cancelEncodedMovement(String name) {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
 
         cancelEncodedMovement(index);
     }
-
-//    public void setServoPosition(int i, double power) {
-//        servos[i].setPosition(power);
-//    }
 
 
 

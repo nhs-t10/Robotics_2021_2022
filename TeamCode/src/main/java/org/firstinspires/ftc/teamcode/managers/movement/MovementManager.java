@@ -14,7 +14,6 @@ public class MovementManager extends FeatureManager {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    private ElapsedTime timer;
 
     private static float scale = 0.6f;
 
@@ -36,19 +35,19 @@ public class MovementManager extends FeatureManager {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
-    public MovementManager(DcMotor fl, DcMotor fr, DcMotor br, DcMotor bl, ElapsedTime timer) {
-        this.frontLeft = fl;
-        this.frontRight = fr;
-        this.backRight = br;
-        this.backLeft = bl;
-        this.timer = timer;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-    }
-
+    /**
+     * Just drive the motors, without <u>any</u> calculations.
+     *
+     * <h2 class="AutoautoDontUseProd">Never use this unless you are testing motors. This is for <u>testing only</u>. Don't use this in final OpModes.<br>
+     *      If you need to individually control each motor, try {@linkplain #driveBlue(float, float, float, float) driveBlue} instead so that it can account for robot differences.</h2>
+     *
+     *
+     * @param fl The raw power for the front left motor. From {@code -1} to {@code 1}, inclusive.
+     * @param fr The raw power for the front right motor. From {@code -1} to {@code 1}, inclusive.
+     * @param br The raw power for the back right motor. From {@code -1} to {@code 1}, inclusive.
+     * @param bl The raw power for the back left motor. From {@code -1} to {@code 1}, inclusive.
+     */
     public void driveRaw(float fl, float fr, float br, float bl) {
         frontLeft.setPower(fl);
         frontRight.setPower(fr);
@@ -57,6 +56,18 @@ public class MovementManager extends FeatureManager {
 
     }
 
+    /**
+     * <p>
+     * Drive each motor individually. This method accounts for per-robot differences (e.g. motors being backwards), which are
+     * defined in {@link FeatureManager#defaultConfiguration FeatureManager}.</p>
+     *<p>
+     * Each power is considered from the perspective of the <u>robot</u>, not the motor. For example, {@code 1} means "towards the front of the robot", not just "motor forwards".
+     *</p>
+     * @param fl The power for the front left motor. From {@code -1} to {@code 1}, inclusive.
+     * @param fr The power for the front right motor. From {@code -1} to {@code 1}, inclusive.
+     * @param br The power for the back right motor. From {@code -1} to {@code 1}, inclusive.
+     * @param bl The power for the back left motor. From {@code -1} to {@code 1}, inclusive.
+     */
     public void driveBlue(float fl, float fr, float br, float bl) {
         RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
         driveRaw(fl * configuration.motorCoefficients.fl,
@@ -65,6 +76,15 @@ public class MovementManager extends FeatureManager {
                 bl * configuration.motorCoefficients.bl);
     }
 
+    /**
+     * Stop all drive motors directly. <br>
+     * Equivalent to {@code driveOmni(0,0,0)}.
+     * <br><br>
+     * If you are changing this method's signature:
+     * <ul>
+     *     <li>Change {@linkplain org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State#init() its usage in Autoauto}, if necessary</li>
+     * </ul>
+     */
     public void stopDrive() {
         frontLeft.setPower(0);
         frontRight.setPower(0);

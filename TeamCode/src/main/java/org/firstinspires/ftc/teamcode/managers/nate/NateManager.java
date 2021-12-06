@@ -25,9 +25,10 @@ public class NateManager extends FeatureManager {
     //TODO: test and remove untested warning.
     /**
      * Make the claw open or close
+     *
      * <h2>Warning: This method has not been tested in the wild. Use it, but don't rely fully until it's been tested.</h2>
      *
-     * @param open If {@true}, open the claw; otherwise, close it.
+     * @param open If {@code true}, open the claw; otherwise, close it.
      */
     public void setClawOpen(boolean open) {
         //by setting the `clawState` variable to the opposite and then calling toggleClawOpen(), we can cut down on code reuse.
@@ -97,7 +98,7 @@ public class NateManager extends FeatureManager {
      * <p>Move the claw's lift to position 1, the highest position.</p>
      *
      * <p>Note that this is an <u>asynchronous</u> method, meaning that the method will complete before the action does.
-     * Because of this, something like {@code positionOne(); toggleClawOpen()} will open the claw <u>right away</u>.
+     * Something like {@code positionOne(); toggleClawOpen()} will open the claw <u>right away</u>. It does <u>not</u> wait for the lift to move.
      * </p>
      * <p>
      * If you want autonomous to have synchronous-ish behaviour, use the {@link #liftMovementFinished clawMovementFinished()} method, like so:
@@ -120,7 +121,7 @@ public class NateManager extends FeatureManager {
      * <p>Move the claw's lift to position 2, the middle position.</p>
      *
      * <p>Note that this is an <u>asynchronous</u> method, meaning that the method will complete before the action does.
-     * Because of this, something like {@code positionTwo(); toggleClawOpen()} will open the claw <u>right away</u>.
+     * Something like {@code positionTwo(); toggleClawOpen()} will open the claw <u>right away</u>. It does <u>not</u> wait for the lift to move.
      * </p>
      * <p>
      * If you want autonomous to have synchronous-ish behaviour, use the {@link #liftMovementFinished clawMovementFinished()} method, like so:
@@ -141,7 +142,7 @@ public class NateManager extends FeatureManager {
      * <p>Move the claw's lift to position 3, the lowest position.</p>
      *
      * <p>Note that this is an <u>asynchronous</u> method, meaning that the method will complete before the action does.
-     * Because of this, something like {@code positionThree(); toggleClawOpen()} will open the claw <u>right away</u>.
+     * Something like {@code positionThree(); toggleClawOpen()} will open the claw <u>right away</u>. It does <u>not</u> wait for the lift to move.
      * </p>
      * <p>
      * If you want autonomous to have synchronous-ish behaviour, use the {@link #liftMovementFinished clawMovementFinished()} method, like so:
@@ -162,7 +163,7 @@ public class NateManager extends FeatureManager {
      * <p>Move the claw's lift back to the home position inside the chassis in order to intake objects.</p>
      *
      * <p>Note that this is an <u>asynchronous</u> method, meaning that the method will complete before the action does.
-     * Because of this, something like {@code positionHome(); toggleClawOpen()} will open the claw <u>right away</u>.
+     * Something like {@code positionHome(); toggleClawOpen()} will open the claw <u>right away</u>. It does <u>not</u> wait for the lift to move.
      * </p>
      * <p>
      * If you want autonomous to have synchronous-ish behaviour, use the {@link #liftMovementFinished clawMovementFinished()} method, like so:
