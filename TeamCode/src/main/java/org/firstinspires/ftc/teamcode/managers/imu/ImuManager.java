@@ -57,11 +57,11 @@ public class ImuManager extends FeatureManager {
         float y = drive[0];
         float x = drive[1];
 
-        float[] polar = PaulMath.polarToCartesian(x, y);
+        float[] polar = PaulMath.cartesianToPolar(x, y);
 
-        polar[0] -= getOrientation().thirdAngle;
+        polar[1] -= getOrientation().thirdAngle;
 
-        float[] cartesian = PaulMath.cartesianToPolar(polar[0], polar[1]);
+        float[] cartesian = PaulMath.polarToCartesian(polar[0], polar[1]);
 
         return new float[] {
                 cartesian[0],

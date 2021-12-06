@@ -10,6 +10,9 @@
 
 
 // Custom definitions may go here
+plugins {
+    id "com.github.node-gradle.node" version "3.0.1"
+}
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
@@ -22,63 +25,20 @@ dependencies {
     implementation 'org.jetbrains:annotations-java5:15.0'
 }
 
-task generateAutoautoSources {
-    doFirst {
-        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js".execute()
-        script.in.eachLine { line -> println line }
-        script.err.eachLine { line ->
-            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
-            else println line;
-        }
-        script.waitFor()
-        if(script.exitValue() != 0) {
-            throw new Error();
-        }
-    }
+task generateAutoautoSources(type: NodeTask) {
+    script = file("/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js")
 }
 
-task recordBuildHistory {
-    doFirst {
-        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js".execute()
-        script.in.eachLine { line -> println line }
-        script.err.eachLine { line ->
-            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
-            else println line;
-        }
-        script.waitFor()
-    }
+
+task recordBuildHistory(type: NodeTask) {
+    script = file("src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js")
 }
 
-task generateControlsSources {
-    doFirst {
-        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/controls2/compiler/compiler.js".execute()
-        script.in.eachLine { line -> println line }
-        script.err.eachLine { line ->
-            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
-            else println line;
-        }
-        script.waitFor()
-    }
-}
-
-task generateControls3Sources {
-    doFirst {
-        def script = "node TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/controls3/compiler/compiler.js".execute()
-        script.in.eachLine { line -> println line }
-        script.err.eachLine { line ->
-            if(!line.startsWith("WARNING: ")) println "ERROR: " + line;
-            else println line;
-        }
-        script.waitFor()
-    }
-}
 
 
 android {
     gradle.projectsEvaluated {
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
-        preBuild.dependsOn(generateControlsSources)
-        preBuild.dependsOn(generateControls3Sources)
     }
 }
