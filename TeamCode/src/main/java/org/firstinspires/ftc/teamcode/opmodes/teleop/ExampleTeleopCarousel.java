@@ -65,9 +65,9 @@ public class ExampleTeleopCarousel extends OpMode {
         driver = new MovementManager(fl, fr, br, bl);
         hands = new ManipulationManager(
                 hardwareMap,
-                crservo ("nateMoverLeft", "nateMoverRight"),
-                servo ("nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"),
-                motor ("Carousel", "ClawMotor", "noodle", "intake")
+                crservo         ("nateMoverLeft", "nateMoverRight"),
+                servo           ("nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"),
+                motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
         clawPosition = new NateManager(hands);
         input = new InputManager(gamepad1, gamepad2);
