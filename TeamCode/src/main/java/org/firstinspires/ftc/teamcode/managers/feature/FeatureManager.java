@@ -85,4 +85,12 @@ public class FeatureManager {
                 return cachedConfiguration = defaultConfiguration;
         }
     }
+
+    /**
+     * Show a warning about an emergency stop to the user. This does <u>not</u> perform any stopping by itself.
+     * @param description an unstructured description of what caused the stop. This can be anything, including `null`.
+     */
+    public static void reportEmergencyStop(String description) {
+        if(description != null) FeatureManager.logger.log(description);
+    }
 }

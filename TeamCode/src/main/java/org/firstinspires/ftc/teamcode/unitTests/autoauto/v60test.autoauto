@@ -16,7 +16,7 @@ $
     log("FAIL! `goto` in function worked. It's not supposed to :/ :/ :/")
 
 #Position1:
-    positionOne(), when (liftMovementFinished()) { log("1"), next }; 
+    positionOne(), when (liftMovementFinished()) { log("1"), next }; am
     foo("boo", c = 30), next;
     goto finalMovement
 
