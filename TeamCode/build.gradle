@@ -26,12 +26,12 @@ dependencies {
 }
 
 task generateAutoautoSources(type: NodeTask) {
-    script = file("/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js")
+    script = file("./src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js")
 }
 
 
 task recordBuildHistory(type: NodeTask) {
-    script = file("src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js")
+    script = file("./src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js")
 }
 
 
