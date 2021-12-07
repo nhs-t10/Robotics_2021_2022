@@ -1,4 +1,11 @@
 #init:
+    goto clawout
+
+#clawout:
+    log(2.3s), next;
+    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
     goto sampling
 
 #sampling:

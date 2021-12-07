@@ -114,7 +114,7 @@ public class NateManager extends FeatureManager {
         }
 
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
+        hands.encodeMoveToPosition("ClawMotor", position, 1);
     }
 
     /**
@@ -135,7 +135,7 @@ public class NateManager extends FeatureManager {
             position = -5295;
         }
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
+        hands.encodeMoveToPosition("ClawMotor", position, 1);
     }
 
     /**
@@ -156,7 +156,7 @@ public class NateManager extends FeatureManager {
             position = -6893;
         }
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
+        hands.encodeMoveToPosition("ClawMotor", position, 1);
     }
 
     /**
@@ -177,7 +177,7 @@ public class NateManager extends FeatureManager {
             position = 570;
         }
 
-        hands.encodeMoveToPosition("ClawMotor", position, 0.75);
+        hands.encodeMoveToPosition("ClawMotor", position, 1);
     }
 
     /**

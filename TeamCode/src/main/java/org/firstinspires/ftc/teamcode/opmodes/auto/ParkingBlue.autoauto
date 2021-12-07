@@ -1,8 +1,38 @@
 #init:
-    goto EnterWarehouse
+    goto clawout
 
-#EnterWarehouse:
-    driveOmni(0,0,-1), after 3s goto Parking
+#clawout:
+    log(2.3s), next;
+    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+    goto sampling
+
+#sampling:
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
+    driveRaw(1, 1, 1, 1), after 10cm driveRaw(0,0,0,0), next;
+    if(CVReading == 0) goto firstPosition, if(CVReading == 1) goto secondPosition, if(CVReading == 2) goto thirdPosition
+
+#firstPosition:
+    setMotorPower("deposit", 1), after 10cm setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#secondPosition:
+    setMotorPower("deposit", 1), after 20cm setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#thirdPosition:
+    setMotorPower("deposit", 1), after 30cm setMotorPower("deposit", 0), next;
+    depositFrieght(), after 3s next;
+    goto finalMovement
+
+#finalMovement:
+    driveRaw(-1, -1, -1, -1), after 10cm next;
+    driveRaw(-1, 1, -1, 1), after 30cm next;
+    spinCarousell(), after 3s stopCarousell(), next;
+    driveRaw(1, -1, 1, -1), after 60cm driveRaw(0, 0, 0, 0), goto parking
 
 #parking:
-    driveOmni(0,0,0)
+    driveRaw(0,0,0,0), stopAllMotors()

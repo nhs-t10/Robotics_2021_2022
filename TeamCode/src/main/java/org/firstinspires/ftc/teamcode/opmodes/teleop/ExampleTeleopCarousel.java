@@ -113,11 +113,11 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode("b")
                 ));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("ToggleClaw", new ButtonNode("dpadleft"));
-        input.registerInput("ClawUp", new ButtonNode("righttrigger"));
-        input.registerInput("ClawDown", new ButtonNode("lefttrigger"));
+        input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
+        input.registerInput("ClawUp", new ButtonNode("dpadup"));
+        input.registerInput("ClawDown", new ButtonNode("dpaddown"));
         input.registerInput("turnAround", new ButtonNode("right_stick_button"));
-        input.registerInput("Intake", new ButtonNode("start"));
+        input.registerInput("Intake", new ButtonNode("righttrigger"));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -171,11 +171,11 @@ public class ExampleTeleopCarousel extends OpMode {
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hands.setMotorPower("ClawMotor", 0.25);
+            hands.setMotorPower("ClawMotor", -0.25);
             }
             if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hands.setMotorPower("ClawMotor", -0.25);
+            hands.setMotorPower("ClawMotor", 0.25);
             }
             if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false) {
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
