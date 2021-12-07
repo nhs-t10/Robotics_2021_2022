@@ -46,16 +46,17 @@ for(var i = 0; i < autoautoFiles.length; i++) {
     var fileSource = fs.readFileSync(autoautoFiles[i]).toString();
     var shortButUniqueFolder = path.dirname(autoautoFiles[i]).replace(srcDirectory, "").toLowerCase();
     shortButUniqueFolder = shortButUniqueFolder.substring(shortButUniqueFolder.indexOf("teamcode"));
-    var package = encodeAsJavaPackageName(shortButUniqueFolder);
+    var package = shortButUniqueFolder
 
-    var packageDeclaration = "package org.firstinspires.ftc.teamcode.__compiledautoauto." + package + ";";
+    var packageDeclaration = "package org.firstinspires.ftc.teamcode.__compiledautoauto." + package.replace(/\/|\\/g, ".") + ";";
 
     var fileName = autoautoFiles[i].substring(autoautoFiles[i].lastIndexOf(path.sep) + 1);
     var templateUsed = fileName.includes(".macro") ? "macro" : "template";
     var className = jClassIfy(fileName)
         .replace(".macro.autoauto", "__macro_autoauto")
         .replace(".autoauto", "__autoauto");
-    if(alreadyUsedAutoautoFileNames[className]) className += "__" + crc(package);
+
+    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) className += "__" + crc(package);
 
     if(!alreadyUsedAutoautoFileNames[className]) alreadyUsedAutoautoFileNames[className] = 0;
     alreadyUsedAutoautoFileNames[className]++;
