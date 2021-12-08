@@ -3,15 +3,6 @@
     "cognomen": "Thigermaner",
     "builds": [
         {
-            "name": "Kye Thigermaner",
-            "time": "2021-11-09T23:21:50.498Z",
-            "buildHash": "e06c0a9f2cdbc7ffbefe704345784c056cd4de638f942d85b372949ce1893abd",
-            "w3w": "hammock circus Rodeo",
-            "phrase": "Place de Joyeuse, Admiral of style. No gentleman would mar his personality there would laugh she answered. “You disarm me, Gladys.” “How sad truth, but he walked over, they led.",
-            "perceptualHash": "",
-            "colors": ""
-        },
-        {
             "name": "Samir Thigermaner",
             "time": "2021-11-10T00:28:49.182Z",
             "buildHash": "52a59608d3cd45904f24e8522f93375122247b8648ebfee58c0e03029a69df7d",
@@ -901,8 +892,17 @@
             "phrase": "Each hideous and as bad.” “He is ten hours now. Don’t speak against the surface do the one day long past could only real psychology of terror he leaned over morals.” I spare our pockets.",
             "perceptualHash": "55375c8e",
             "colors": "#89f0ac,#80b6b6"
+        },
+        {
+            "name": "Dax Thigermaner",
+            "time": "2021-12-08T01:12:36.619Z",
+            "buildHash": "7256f7f3bbbc2b1e81062e7406e8c25d2bafa3a5e853618e2ef2fa21d3612acf",
+            "w3w": "clutches brunt illness",
+            "phrase": "Finally he bathed his pipe, looked back turned back. His voice was because he leaped up long hands stretched out in tears. And they emerged, dragging a model or something. It enraged him.",
+            "perceptualHash": "6fe9c61a4f8fef8fdfbfafcfef3f94f87fcb5633faf3f7f1f2f4f5f5fa1f3fe1f99f2fbd7fd1f6f91fe7fe",
+            "colors": "#e28a5a,#ac25b7,#f38710,#229762,#87cb1a,#e8fc83,#82c710,#834e47,#84505e,#823bc0,#56cc82,#a0bffe,#e984f9,#82bff9,#b680e1"
         }
     ],
-    "buildCount": 235,
-    "lastBuildTimeUnixMs": 1638923956782
+    "buildCount": 236,
+    "lastBuildTimeUnixMs": 1638925956925
 }

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
@@ -83,16 +84,20 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("turnAround", new ButtonNode("lefttrigger"));
-        input.registerInput("Anti-Intake", new ButtonNode("righttrigger"));
-        input.registerInput("ClawShiftOut", new ButtonNode("select"));
+        input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
+        input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2x"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPosHome", new ButtonNode("gamepad2a"));
-        input.registerInput("ToggleClaw", new ButtonNode("gamepad2lefttrigger"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
-        input.registerInput("Intake", new ButtonNode("gamepad2righttrigger"));
+        input.registerInput("Anti-Intake", new ButtonNode("gamepad2lefttrigger"));
+        input.registerInput("Intake",
+                new EitherNode(
+                        new ButtonNode("righttrigger"),
+                        new ButtonNode("gamepad2righttrigger")
+                ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
         macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
