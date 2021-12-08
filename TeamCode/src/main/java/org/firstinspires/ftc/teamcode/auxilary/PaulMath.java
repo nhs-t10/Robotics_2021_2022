@@ -351,4 +351,19 @@ public abstract class PaulMath extends FeatureManager {
             in.close();
         }
     }
+
+    /**
+     * Normalizes a path to POSIX-esque-ness. Removes repeating slashes and leading slashes; resolves ".." and "." terms;
+     * @param path The path to normalize, in some format
+     * @return
+     */
+    public static String normalizeRelativePath(String path) {
+        if(path == null) return "";
+        return path
+                .replace("\\", "/")
+                .replace("/+", "/")
+                .replaceAll("(^|/)\\./", "/")
+                .replaceAll("(^|[^/]+)/\\.\\./", "")
+                .replaceAll("^/", "");
+    }
 }
