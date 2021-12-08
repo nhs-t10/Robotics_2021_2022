@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.ClawOut__macro_autoauto;
+import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.TurnAround__macro_autoauto;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -15,6 +17,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.TimeNode;
+import org.firstinspires.ftc.teamcode.managers.macro.Macro;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -56,7 +59,7 @@ public class ExampleTeleopCarousel extends OpMode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
 
-//        imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+        imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -81,7 +84,6 @@ public class ExampleTeleopCarousel extends OpMode {
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
         input.registerInput("Carousel", new ButtonNode("y"));
-        input.registerInput("EmergencyStop", new ButtonNode("select"));
         input.registerInput("ClawPos1",
                 new BothNode(
                         new ButtonNode("leftbumper"),
@@ -102,24 +104,18 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
                 ));
-        input.registerInput("ClawShiftIn",
-                    new BothNode(
-                        new ButtonNode("rightbumper"),
-                        new ButtonNode("a")
-                    ));
-        input.registerInput("ClawShiftOut",
-                new BothNode(
-                        new ButtonNode("rightbumper"),
-                        new ButtonNode("b")
-                ));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
         input.registerInput("ClawUp", new ButtonNode("dpadup"));
         input.registerInput("ClawDown", new ButtonNode("dpaddown"));
+        input.registerInput("ClawShiftOut", new ButtonNode("select"));
         input.registerInput("turnAround", new ButtonNode("right_stick_button"));
         input.registerInput("Intake", new ButtonNode("righttrigger"));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
+        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
+        macroManager.registerMacro("ClawOut", new ClawOut__macro_autoauto());
+        macroManager.registerMacro("turnAround", new TurnAround__macro_autoauto());
     }
 
     @Override
@@ -208,6 +204,12 @@ public class ExampleTeleopCarousel extends OpMode {
         }
         if (input.getBool("ClawPosHome") == true) {
             clawPosition.positionHome();
+        }
+        if (input.getBool("turnAround") == true){
+            macroManager.runMacro("TurnAround");
+        }
+        if (input.getBool("ClawShiftOut") == true){
+            macroManager.runMacro("ClawOut");
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
