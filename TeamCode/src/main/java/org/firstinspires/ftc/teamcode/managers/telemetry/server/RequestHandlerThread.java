@@ -60,7 +60,6 @@ public class RequestHandlerThread extends Thread {
                 try(InputStream file = ServerFiles.getAssetStream("index.html")) {
                     writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                             + "Content-Type: " + "text/html; charset=utf-8" + HTTP_LINE_SEPARATOR
-                            + "Content-Length: " + ServerFiles.indexDotHtml.getBytes(StandardCharsets.UTF_8).length + HTTP_LINE_SEPARATOR
                             + HTTP_LINE_SEPARATOR);
                     writer.flush();
                     PaulMath.pipeStream(file, output);

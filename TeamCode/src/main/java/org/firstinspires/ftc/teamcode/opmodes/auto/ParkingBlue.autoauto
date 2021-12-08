@@ -1,8 +1,40 @@
 #init:
-    goto EnterWarehouse
+    goto clawout
 
-#EnterWarehouse:
-    driveOmni(0,0,-1), after 3s goto Parking
+#clawout:
+    driveOmni(-1,0,0), after 20cm next;
+    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
+    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+    goto sampling
+
+#sampling:
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), goto duck
+
+#duck:
+    driveOmni(0,-1, 0), after 20cm next;
+    setMotorPower("Carousel", 1), after 5s next;
+    driveOmni(0, 1, 0), after 20cm next;
+    driveOmni(-1,0,0), after 50cm next;
+    goto ["Position" + (CVReading + 1)]
+
+#Position1:
+    positionOne(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
+    goto finalMovement
+
+#Position2:
+    positionTwo(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
+    goto finalMovement
+
+#Position3:
+    positionThree(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
+    goto finalMovement
+
+#finalMovement:
+    driveOmni(0,1,0), after 8s driveOmni(0,0,0), goto parking
 
 #parking:
-    driveOmni(0,0,0)
+    driveRaw(0,0,0,0)

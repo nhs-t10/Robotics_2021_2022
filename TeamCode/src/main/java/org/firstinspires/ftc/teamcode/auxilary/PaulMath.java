@@ -342,7 +342,9 @@ public abstract class PaulMath extends FeatureManager {
         try {
             byte[] buffer = new byte[1024];
             int len;
-            while((len = in.read(buffer, 0, in.available())) != -1) {
+            while(true) {
+                len = in.read(buffer, 0, Math.max(1, Math.min(buffer.length - 1, in.available())));
+                if(len == -1) break;
                 out.write(buffer, 0, len);
             }
         } finally {

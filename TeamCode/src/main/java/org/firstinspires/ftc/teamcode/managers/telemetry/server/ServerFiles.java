@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ServerFiles {
-    public static String indexDotHtml;
     public static String getAssetString(String asset) throws IOException {
         InputStream file = getAssetStream(asset);
 

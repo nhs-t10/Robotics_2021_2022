@@ -74,7 +74,8 @@ public class template extends AutoautoOpmode {
 
     AutoautoRuntime runtime;
     public void init() {
-        FeatureManager.isOpModeRunning = true;
+        FeatureManager.setIsOpModeRunning(true, true);
+        FeatureManager.reconfigureForAuto();
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this);
         telemetry = telemetryManager;
         
@@ -139,7 +140,7 @@ public class template extends AutoautoOpmode {
 
     @Override
     public void stop() {
-        FeatureManager.setIsOpModeRunning(false);
+        FeatureManager.setIsOpModeRunning(false, true);
     }
     /*USER_DEFINED_FUNCTIONS*/
 
