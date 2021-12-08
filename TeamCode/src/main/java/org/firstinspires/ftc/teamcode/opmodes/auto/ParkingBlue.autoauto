@@ -2,37 +2,39 @@
     goto clawout
 
 #clawout:
-    log(2.3s), next;
+    driveOmni(-1,0,0), after 20cm next;
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
     setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
     goto sampling
 
 #sampling:
-    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
-    driveRaw(1, 1, 1, 1), after 10cm driveRaw(0,0,0,0), next;
-    if(CVReading == 0) goto firstPosition, if(CVReading == 1) goto secondPosition, if(CVReading == 2) goto thirdPosition
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), goto duck
 
-#firstPosition:
-    setMotorPower("deposit", 1), after 10cm setMotorPower("deposit", 0), next;
-    depositFrieght(), after 3s next;
+#duck:
+    driveOmni(0,-1, 0), after 20cm next;
+    setMotorPower("Carousel", 1), after 5s next;
+    driveOmni(0, 1, 0), after 20cm next;
+    driveOmni(-1,0,0), after 50cm next;
+    goto ["Position" + (CVReading + 1)]
+
+#Position1:
+    positionOne(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
     goto finalMovement
 
-#secondPosition:
-    setMotorPower("deposit", 1), after 20cm setMotorPower("deposit", 0), next;
-    depositFrieght(), after 3s next;
+#Position2:
+    positionTwo(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
     goto finalMovement
 
-#thirdPosition:
-    setMotorPower("deposit", 1), after 30cm setMotorPower("deposit", 0), next;
-    depositFrieght(), after 3s next;
+#Position3:
+    positionThree(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    toggleClaw(), next;
     goto finalMovement
 
 #finalMovement:
-    driveRaw(-1, -1, -1, -1), after 10cm next;
-    driveRaw(-1, 1, -1, 1), after 30cm next;
-    spinCarousell(), after 3s stopCarousell(), next;
-    driveRaw(1, -1, 1, -1), after 60cm driveRaw(0, 0, 0, 0), goto parking
+    driveOmni(0,1,0), after 8s driveOmni(0,0,0), goto parking
 
 #parking:
-    driveRaw(0,0,0,0), stopAllMotors()
+    driveRaw(0,0,0,0)

@@ -34,14 +34,14 @@ public class NateManager extends FeatureManager {
         //by setting the `clawState` variable to the opposite and then calling toggleClawOpen(), we can cut down on code reuse.
         //toggleClawOpen() will reverse it back to the value the user asked for.
         clawState = !open;
-        toggleClawOpen();
+        toggleClaw();
     }
 
     /**
      * Toggle whether the robot's claw is open.
      * If the claw is closed, it'll become open. If it's open, it'll become closed.
      */
-    public void toggleClawOpen(){
+    public void toggleClaw(){
         if (clawState == false) {
             hands.setServoPosition("nateClaw", 1.0);
             clawState = true;

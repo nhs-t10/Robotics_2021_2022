@@ -183,7 +183,7 @@ public class ExampleTeleopCarousel extends OpMode {
             }
         }
         if (input.getBool("ToggleClaw") == true){
-            clawPosition.toggleClawOpen();
+            clawPosition.toggleClaw();
         }
         if (input.getBool("ClawShiftIn") == true){
             hands.setServoPower("nateMoverLeft", 1.0);
