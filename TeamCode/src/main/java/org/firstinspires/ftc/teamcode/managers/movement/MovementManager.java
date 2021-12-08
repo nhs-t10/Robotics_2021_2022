@@ -130,25 +130,6 @@ public class MovementManager extends FeatureManager {
 
 
     /**
-     * Drive with vertical, horizontal, and rotational powers. This is the same as {@link #driveOmni(float[])},
-     * but it also applies a <u>per-robot exponential scalar</u> defined in the {@link RobotConfiguration}. This method ignores the {@link #scale} variable and its associated methods.
-     * <hr>
-     * <h2>This should not be used. Please don't use this. It only remains here because I don't want to remove it abruptly.</h2>
-     * <hr>
-     *
-     * @param powers An array of powers (vertical, horizontal, rotational-- in that order). Each must be between {@code -1} and {@code 1} inclusive.
-     */
-    @Deprecated
-    public void driveOmniExponential(float[] powers) {
-        float exponentialScalar = FeatureManager.getRobotConfiguration().exponentialScalar;
-        float[] sum = PaulMath.omniCalc(
-                (float) Math.pow(powers[0], exponentialScalar),
-                (float) Math.pow(powers[1], exponentialScalar),
-                (float) Math.pow(powers[2], exponentialScalar));
-        driveBlue(sum[0], sum[1], sum[2], sum[3]);
-    }
-
-    /**
      * Get the internal array of DCMotors.
      * @return All 4 DcMotors managed by this manager, in the following order: frontLeft, frontRight, backRight, backLeft
      */
