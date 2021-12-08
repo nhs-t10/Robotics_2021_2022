@@ -125,7 +125,8 @@ public class ExampleTeleopCarousel extends OpMode {
     @Override
     public void loop() {
         input.update();
-        driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        float[] drive = input.getFloatArrayOfInput("drivingControls");
+        driver.driveOmni(drive[0], drive[1], drive[2]);
 
         if (input.getBool("precisionDriving") == true && precision == false) {
             driver.downScale(0.5f);

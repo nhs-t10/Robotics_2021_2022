@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.OmniCalcComponents;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
+import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,15 @@ public class FeatureManager {
     public static boolean isOpModeRunning = false;
 
     public static void setIsOpModeRunning(boolean b) {
+        setIsOpModeRunning(b, false);
+    }
+    public static void setIsOpModeRunning(boolean b, boolean shouldLoadAutoConfig) {
         isOpModeRunning = b;
+
+        if(b) {
+            if (shouldLoadAutoConfig) reconfigureForAuto();
+            else reconfigureForTeleop();
+        }
     }
 
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
@@ -33,6 +42,20 @@ public class FeatureManager {
             ),
             0.03f, 1680, 1, 8.9, 0.9, 3f);
 
+    public static void reconfigureForTeleop() {
+        bigBoyConfiguration.omniComponents = new OmniCalcComponents(
+                vertical      (-1f,-1f,-1f,-1f),
+                horizontal    (1f, -1f, 1f, -1f),
+                rotational    (1f,-1f,-1f,1f)
+        );
+    }
+    public static void reconfigureForAuto() {
+        bigBoyConfiguration.omniComponents = new OmniCalcComponents(
+                vertical      (-1f,-1f,1f,1f),
+                horizontal    (1f, -1f, 1f, -1f),
+                rotational    (1f,-1f,-1f,1f)
+        );
+    }
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
             W(1, -1, 1, -1),
             new OmniCalcComponents(
