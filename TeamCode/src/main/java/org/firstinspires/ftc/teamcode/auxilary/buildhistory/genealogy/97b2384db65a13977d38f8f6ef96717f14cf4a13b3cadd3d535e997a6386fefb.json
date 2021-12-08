@@ -3,24 +3,6 @@
     "cognomen": "Thigermaner",
     "builds": [
         {
-            "name": "Lydia Thigermaner",
-            "time": "2021-11-09T23:15:31.357Z",
-            "buildHash": "93d9d620865682c686d86099b8097cd452aa4be4c56cc1d452ca5edc796e9053",
-            "w3w": "damsel grocer grappling",
-            "phrase": "Still, it began ringing out against it. Its monstrous wings are Sphinxes, and smiled. “I am going.",
-            "perceptualHash": "",
-            "colors": ""
-        },
-        {
-            "name": "Paul Thigermaner",
-            "time": "2021-11-09T23:16:48.679Z",
-            "buildHash": "93d9d620865682c686d86099b8097cd452aa4be4c56cc1d452ca5edc796e9053",
-            "w3w": "damsel grocer grappling",
-            "phrase": "Roman ritual had them in six-petalled formal blossoms, beyond all ended, or fetid laboratory you corrupt every word where one time.",
-            "perceptualHash": "",
-            "colors": ""
-        },
-        {
             "name": "Violette Thigermaner",
             "time": "2021-11-09T23:19:44.173Z",
             "buildHash": "a7e17f70dbe4a3ae70b9df2c9fa1e40cf2427e81c292814aa733921ad332b07c",
@@ -901,8 +883,26 @@
             "phrase": "Jim, you want? Money? Here was folly of raised her gauze is quite different colours, so long? Once it has behaved very useful. If it come to say, but money.” “Oh! I feel humble.",
             "perceptualHash": "d97fef6fef97f26fb73fbb",
             "colors": "#64eb81,#e38114,#8018e3,#9c01a5"
+        },
+        {
+            "name": "Jenesis Thigermaner",
+            "time": "2021-12-08T00:01:58.722Z",
+            "buildHash": "2139ab3f2b0581553429139c6124fad9b81200866ba097ce15623cfe9d23ac19",
+            "w3w": "ardor billing drumming",
+            "phrase": "Beside him once that such a bric-à-brac shop, all meant. He sat in everything is hidden from one’s face, “we have gone down he sent it from matter to many editions.”",
+            "perceptualHash": "f2f6f811179fc631fef7f523b6fb95fbfeefaf9f7fcf9f2f2fc1916f4fcfbf9fcfefbfa1df6fa2fa6fefb61fefa7f71f32f9f71f83f1f7f6fe12f3fb",
+            "colors": "#476f83,#a7b2af,#c78076,#c02583,#7c81f3,#806036,#0da709,#2597c0,#9e4fbf,#97d339,#399710,#feff87,#5a8fe4,#e06282,#87bddf,#83bf49,#825cc7,#8608be,#41806a,#bb6381"
+        },
+        {
+            "name": "Grant Thigermaner",
+            "time": "2021-12-08T00:02:35.501Z",
+            "buildHash": "f68a8802c8bc2ab416551986408e9287935955f474359fd4b08a9f7cd52833f5",
+            "w3w": "housing cumin crossroads",
+            "phrase": "Mohammed had none.” The lad flushed for there into some reason I go, I will open the sunlight. Its red roses. Soul and passion to dress, I say he collected together this horror?",
+            "perceptualHash": "68313bc",
+            "colors": "#80e400,#f07474"
         }
     ],
-    "buildCount": 231,
-    "lastBuildTimeUnixMs": 1638920659395
+    "buildCount": 233,
+    "lastBuildTimeUnixMs": 1638921755832
 }

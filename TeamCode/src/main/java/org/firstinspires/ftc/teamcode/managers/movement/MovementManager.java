@@ -276,7 +276,7 @@ public class MovementManager extends FeatureManager {
      * @return a general measurement of total movement
      */
     public int getTicks() {
-        return frontLeft.getCurrentPosition();
+        return backRight.getCurrentPosition();
     }
 
     /**
