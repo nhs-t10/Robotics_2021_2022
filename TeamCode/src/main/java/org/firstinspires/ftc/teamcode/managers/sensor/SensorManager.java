@@ -33,33 +33,31 @@ public class SensorManager extends FeatureManager {
         this.sensorNames = _sensorNames;
     }
 
-    public void setSensorNames(String[] _sensorNames) {
-        if(_sensorNames.length != sensorNames.length) throw new IllegalArgumentException("Sensor Names must be the same length as Sensors");
-        this.sensorNames = _sensorNames;
-    }
 
     public float[] getHSL(String name) {
         int index = (Arrays.asList(sensorNames)).indexOf(name);
-        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered");
+        if(index == -1) throw new IllegalArgumentException("ColorSensor " + name + " does not exist or is not registered in SensorManager");
         return getHSL(index);
     }
 
     public float[] getHSL(int index) {
+        updateSensor(index);
         NormalizedRGBA color = ((ColorSensor)this.sensors[index]).getNormalizedColors();
         return PaulMath.rgbToHsl(color.red, color.green, color.blue);
     }
 
-    public void update() {
+    public void updateAllSensors() {
         for(Sensor s : sensors) {
             s.update();
         }
     }
 
-    public void update(int index) {
+    public void updateSensor(int index) {
         this.sensors[index].update();
     }
 
     public int getColorInteger(int index) {
+        updateSensor(index);
         NormalizedRGBA color = ((ColorSensor)this.sensors[index]).getNormalizedColors();
         float scale = 256; int min = 0, max = 255;
         return (Range.clip((int)(color.alpha * scale), min, max) << 24) |
@@ -69,11 +67,10 @@ public class SensorManager extends FeatureManager {
     }
 
     public boolean isSpecial(int index) {
-        update(index);
-        return ((ColorSensor)this.sensors[index]).isSpecial1();
+        return isSpecial1(index);
     }
     public boolean isSpecial1(int index) {
-        update(index);
+        updateSensor(index);
         return ((ColorSensor)this.sensors[index]).isSpecial1();
     }
 

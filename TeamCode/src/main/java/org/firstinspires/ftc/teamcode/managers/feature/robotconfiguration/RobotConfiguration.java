@@ -37,6 +37,8 @@ public class RobotConfiguration {
      * The circumference of the main drive wheels, in centimeters
      */
     public double wheelCircumference;
+
+
     public float exponentialScalar;
 
 

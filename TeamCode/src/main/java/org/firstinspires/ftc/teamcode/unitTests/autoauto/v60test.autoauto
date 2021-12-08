@@ -10,13 +10,13 @@ $
     }, goto a;
     log("FAIL! `next` in function worked. It's not supposed to :/ :/ :/")
 #a:
-    let value = 0, goto ["Position" + (value + 1)],
+    let positionFromCv = 0, goto ["Position" + (positionFromCv + 1)],
     log("FAIL! `next` in function worked. It's not supposed to :/ :/ :/")
 #b:
     log("FAIL! `goto` in function worked. It's not supposed to :/ :/ :/")
 
 #Position1:
-    positionOne(), when (liftMovementFinished()) { log("1"), next }; am
+    positionOne(), when (liftMovementFinished()) { log("1"), next };
     foo("boo", c = 30), next;
     goto finalMovement
 

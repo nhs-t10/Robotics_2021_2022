@@ -16,9 +16,6 @@ public class MotorEncodedMovementThread extends Thread {
     public int position;
     public double power;
 
-    public DcMotorEx safetyController;
-    public boolean hasSafety;
-
     public boolean running = true;
     private long deltaEclipsedTime = 0;
 
@@ -29,20 +26,13 @@ public class MotorEncodedMovementThread extends Thread {
         this.motor = motor;
         this.position = position;
         this.power = power;
-
-        this.hasSafety = motor instanceof DcMotorEx;
-        if(hasSafety) {
-            this.safetyController = (DcMotorEx) motor;
-        }
     }
 
     public void run() {
-        double oldAmperage = 0, oldAmpsPerSecond = 0, oldDegreesPerSecond = 0, amperage = 0;
+        //integration variables for safety-tracker
+        double oldTicksPerNs = 0, oldTickDelta = 0;
         long oldTime;
 
-        if(hasSafety) {
-            oldAmperage = safetyController.getCurrent(CurrentUnit.MILLIAMPS);
-        }
         oldTime = System.nanoTime();
 
         while (FeatureManager.isOpModeRunning && running) {
@@ -55,35 +45,22 @@ public class MotorEncodedMovementThread extends Thread {
             int currentPos = motor.getCurrentPosition();
             int tickDelta = Math.abs(currentPos - position);
 
-            //if a safety controller was found, use it. Check whether there's an amperage surge and a corresponding speed dip; if so, cancel movement.
-            if(hasSafety) {
-                amperage = safetyController.getCurrent(CurrentUnit.MILLIAMPS);
-                double ampsPerSecond = (amperage - oldAmperage) / (time - oldTime);
-                double ampsPerSecondPerSecond = (ampsPerSecond - oldAmpsPerSecond) / (time - oldTime);
 
-                double degreesPerSecond = safetyController.getVelocity(AngleUnit.DEGREES);
-                double degreesPerSecondPerSecond = (degreesPerSecond - oldDegreesPerSecond) / (time - oldTime);
+            double ticksPerNs = (tickDelta - oldTickDelta) / (time - oldTime);
+            double ticksPerNsPerNs = (ticksPerNs - oldTicksPerNs) / (time - oldTime);
 
-                //if there's a sudden decrease in velocity AND a sudden increase in energy, that's a signal that something is going very wrong.
-                // Stop the motor instantly. Don't wait for synchronization. For further measure, disable it completely and report an emergency stop.
-                if(ampsPerSecondPerSecond > 0.01 && degreesPerSecondPerSecond < -0.01) {
-                    motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    motor.setPower(0);
-
-                    if(motor instanceof FallibleHardwareDevice) ((FallibleHardwareDevice) motor).setFailureType(FailureType.POWER_FAILURE);
-
-                    safetyController.setMotorDisable();
-
-                    running = false;
-
-                    FeatureManager.reportEmergencyStop(motor.getConnectionInfo());
-                }
-
-                oldDegreesPerSecond = degreesPerSecond;
-                oldAmpsPerSecond = ampsPerSecond;
-                oldTime = time;
-                oldAmperage = amperage;
+            // If both acceleration and velocity are low (but not zero)AND we haven't reached the target, then we have a safety problem
+            // Stop the motor instantly. Don't wait for synchronization. For further measure, disable it completely and report an emergency stop.
+            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < 0.01 && ticksPerNs != 0 && Math.abs(ticksPerNs) < 0.01) {
+                motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motor.setPower(0);
+                running = false;
+                FeatureManager.reportEmergencyStop(motor.getConnectionInfo());
             }
+
+            oldTime = time;
+            oldTicksPerNs = ticksPerNs;
+            oldTickDelta = tickDelta;
 
             //make sure that the current position is within the tolerance for at least MS_TO_CONFIRM_COMPLETION milliseconds.
             if(tickDelta <= TICK_TOLERANCE && deltaEclipsedTime == 0) deltaEclipsedTime = System.currentTimeMillis();
