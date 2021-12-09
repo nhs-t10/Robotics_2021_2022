@@ -1,2 +1,2 @@
 #init:
-    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(CVReading);
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(CVReading)
