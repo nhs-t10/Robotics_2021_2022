@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -78,6 +79,12 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                         new JoystickNode("right_stick_x")
                 )
         );
+        //note from chloe: there were some missing controls in the test sweep that i did, so i added them in :)
+        //if they're wrong, feel very free to fix them-- everything between these two comments is copy/pasted from ExampleTeleopCarousel or a static value of false.
+        input.registerInput("emergencystop", new StaticValueNode(0));
+        input.registerInput("Carousel", new ButtonNode("y"));
+        //end chloe-added controls
+
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
@@ -163,8 +170,11 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
         }
-        hands.setMotorPower("CarouselBlue", input.getFloat("Carousel") * 0.75);
-        hands.setMotorPower("CarouselRed", input.getFloat("Carousel") * -0.75);
+        //chloe note: changed "carouselblue" to "carousel" and commented out "carouselred" to fix errors that the test suite caught
+        hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.75);
+        input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
+        //hands.setMotorPower("CarouselRed", input.getFloat("Carousel") * -0.75);
+
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);

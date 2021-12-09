@@ -19,8 +19,8 @@ public class MotorEncodedMovementThread extends Thread {
     public boolean running = true;
     private long deltaEclipsedTime = 0;
 
-    private final static int TICK_TOLERANCE = 2;
-    private final static int MS_TO_CONFIRM_COMPLETION = FeatureManager.DOUBLE_CLICK_TIME_MS;
+    public final static int TICK_TOLERANCE = 2;
+    public final static int MS_TO_CONFIRM_COMPLETION = FeatureManager.DOUBLE_CLICK_TIME_MS;
 
     public MotorEncodedMovementThread(DcMotor motor, int position, double power) {
         this.motor = motor;
@@ -34,6 +34,10 @@ public class MotorEncodedMovementThread extends Thread {
         long oldTime;
 
         oldTime = System.nanoTime();
+
+        //convert 1rpm to ticks per ns for quicker safety calculations
+        double rpmSafetyTarget = 1;
+        double tpnsSafetyTarget = (rpmSafetyTarget / 60 / 1e9) / FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
 
         while (FeatureManager.isOpModeRunning && running) {
             long time = System.nanoTime();
@@ -51,7 +55,7 @@ public class MotorEncodedMovementThread extends Thread {
 
             // If both acceleration and velocity are low (but not zero)AND we haven't reached the target, then we have a safety problem
             // Stop the motor instantly. Don't wait for synchronization. For further measure, disable it completely and report an emergency stop.
-            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < 0.01 && ticksPerNs != 0 && Math.abs(ticksPerNs) < 0.01) {
+            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < tpnsSafetyTarget && ticksPerNs != 0 && Math.abs(ticksPerNs) < tpnsSafetyTarget) {
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 motor.setPower(0);
                 running = false;

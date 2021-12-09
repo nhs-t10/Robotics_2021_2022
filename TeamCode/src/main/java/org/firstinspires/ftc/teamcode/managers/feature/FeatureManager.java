@@ -114,6 +114,6 @@ public class FeatureManager {
      * @param description an unstructured description of what caused the stop. This can be anything, including `null`.
      */
     public static void reportEmergencyStop(String description) {
-        if(description != null) FeatureManager.logger.log(description);
+        FeatureManager.logger.log("EMERGENCY STOP: " + description);
     }
 }

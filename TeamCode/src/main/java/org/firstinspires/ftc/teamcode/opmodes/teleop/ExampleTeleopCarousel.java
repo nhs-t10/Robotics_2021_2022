@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.TimeNode;
 import org.firstinspires.ftc.teamcode.managers.macro.Macro;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
@@ -104,6 +105,16 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
                 ));
+
+        //note from chloe: there were some missing controls in the test sweep that i did, so i added them in :)
+        //if they're wrong, feel very free to fix them-- everything between these two comments is copy/pasted from DualController or a static value of false.
+        input.registerInput("emergencystop", new StaticValueNode(0));
+
+        input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
+        input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
+
+        //end chloe-added controls
+
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
         input.registerInput("ClawUp", new ButtonNode("dpadup"));

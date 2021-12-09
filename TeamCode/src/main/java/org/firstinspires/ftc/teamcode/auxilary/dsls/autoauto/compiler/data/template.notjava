@@ -121,6 +121,7 @@ public class template extends AutoautoOpmode {
     public void loop() {
         telemetry.addData("Build Name", BuildHistory.buildName);
         telemetry.addData("Build Time", BuildHistory.buildTimeIso);
+        telemetry.update();
         runtime.loop();
     }
 

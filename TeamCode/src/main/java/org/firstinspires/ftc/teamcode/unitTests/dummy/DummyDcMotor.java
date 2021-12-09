@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.unitTests.dummy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -15,6 +14,8 @@ public class DummyDcMotor implements DcMotor {
     private double currentPosition;
 
     private double ticksPerRot;
+
+    private static int dummyIDcounter;
 
     public DummyDcMotor() {
         this.ticksPerRot = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
@@ -126,7 +127,7 @@ public class DummyDcMotor implements DcMotor {
 
     @Override
     public String getConnectionInfo() {
-        return null;
+        return "dummy motor " + (dummyIDcounter++);
     }
 
     @Override

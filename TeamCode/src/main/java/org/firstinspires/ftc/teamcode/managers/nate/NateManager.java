@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 
 public class NateManager extends FeatureManager {
     private boolean input;
@@ -191,13 +192,13 @@ public class NateManager extends FeatureManager {
      */
 
     public void homing(){
-        if (input) {
+        //`input` will always be false for now, but we need to replace it with `sensor.isPressed()` or whichever the correct method is
+        if (found) {
+            hands.encodeMoveToPosition("ClawMotor", 0, 0.25);
+        } else if (input) {
             found = true;
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-        if (found) {
-            hands.setMotorPower("ClawMotor", PaulMath.proportionalPID((float) hands.getMotorPosition("ClawMotor"),0));
         } else {
             hands.setMotorPower("ClawMotor", -0.75);
         }

@@ -2,7 +2,7 @@
     goto sampling
 
 #sampling:
-    let value = computerVision(), next;
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
     driveRaw(1, 1, 1, 1), after 10cm stopDrive(), next;
     if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto thirdPosition
 
