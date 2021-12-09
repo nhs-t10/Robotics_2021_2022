@@ -141,21 +141,14 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         }
 
         if (input.getBool("Intake")){
-            hands.setMotorPower("noodle", 1);
+            hands.setMotorPower("noodle", 0.75);
             hands.setMotorPower("intake", 1);
-            hands.setServoPosition("rampLeft", 0.5);
+            hands.setServoPosition("rampLeft", 0.50);
             hands.setServoPosition("rampRight", 0.0);
         }
-        else {
-            hands.setMotorPower("noodle", 0.0);
-            hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.35);
-        }
-
-        if (input.getBool("Anti-Intake")){
-            hands.setMotorPower("noodle", -1);
-            hands.setMotorPower("intake", -1);
+        else if (input.getBool("Anti-Intake")){
+            hands.setMotorPower("noodle", -0.50);
+            hands.setMotorPower("intake", -0.50);
             hands.setServoPosition("rampLeft", 0.50);
             hands.setServoPosition("rampRight", 0.0);
         }
@@ -170,10 +163,13 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.75);
+            hands.setMotorPower("Carousel", 0.75);
         }
-        if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", input.getFloat("Carousel") * -0.75);
+        else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
+            hands.setMotorPower("Carousel", -0.75);
+        }
+        else {
+            hands.setMotorPower("Carousel", 0.0);
         }
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
@@ -191,7 +187,10 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             }
         }
         if (input.getBool("ToggleClaw") == true){
-            clawPosition.toggleClaw();
+            clawPosition.setClawOpen(true);
+        }
+        else {
+            clawPosition.setClawOpen(false);
         }
         if (input.getBool("ClawShiftIn") == true){
             hands.setServoPower("nateMoverLeft", 1.0);

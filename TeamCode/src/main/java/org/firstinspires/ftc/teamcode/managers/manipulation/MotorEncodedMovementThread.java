@@ -55,12 +55,13 @@ public class MotorEncodedMovementThread extends Thread {
 
             // If both acceleration and velocity are low (but not zero)AND we haven't reached the target, then we have a safety problem
             // Stop the motor instantly. Don't wait for synchronization. For further measure, disable it completely and report an emergency stop.
-            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < tpnsSafetyTarget && ticksPerNs != 0 && Math.abs(ticksPerNs) < tpnsSafetyTarget) {
-                motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motor.setPower(0);
-                running = false;
-                FeatureManager.reportEmergencyStop(motor.getConnectionInfo());
-            }
+//            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < tpnsSafetyTarget && ticksPerNs != 0 && Math.abs(ticksPerNs) < tpnsSafetyTarget) {
+//                motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                motor.setPower(0);
+//                running = false;
+//                FeatureManager.reportEmergencyStop(motor.getConnectionInfo());
+//            }
+            /* Adam authorized the removal of this safety code */
 
             oldTime = time;
             oldTicksPerNs = ticksPerNs;

@@ -34,8 +34,7 @@ public class NateManager extends FeatureManager {
     public void setClawOpen(boolean open) {
         //by setting the `clawState` variable to the opposite and then calling toggleClawOpen(), we can cut down on code reuse.
         //toggleClawOpen() will reverse it back to the value the user asked for.
-        clawState = !open;
-        toggleClaw();
+        hands.setServoPosition("nateClaw", open ? 1 : 0);
     }
 
     /**
@@ -43,17 +42,8 @@ public class NateManager extends FeatureManager {
      * If the claw is closed, it'll become open. If it's open, it'll become closed.
      */
     public void toggleClaw(){
-        if (clawState == false) {
-            hands.setServoPosition("nateClaw", 1.0);
-            clawState = true;
-        }
-        else if (clawState == true){
-            hands.setServoPosition("nateClaw", 0.0);
-            clawState = false;
-        }
-        else{
-            FeatureManager.logger.log("This message should not appear, if it does, we have realized a quantum claw that is both open and closed at the same time.");
-        }
+        clawState = !clawState;
+        setClawOpen(clawState);
     }
 
     //TODO: test and remove untested warning.
