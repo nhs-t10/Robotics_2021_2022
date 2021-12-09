@@ -1,7 +1,3 @@
-$
-testIterations: 10000000
-$
-
 #init:
     goto clawout
 
