@@ -37,7 +37,7 @@ import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationM
 import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager.servo;
 
 @TeleOp
-public class ExampleTeleopCarousel extends OpMode {
+public class ExampleTeleopCarouselSingleController extends OpMode {
     private MovementManager driver;
     private ManipulationManager hands;
     private InputManager input;
@@ -75,6 +75,7 @@ public class ExampleTeleopCarousel extends OpMode {
         );
         clawPosition = new NateManager(hands);
         input = new InputManager(gamepad1, gamepad2);
+        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
@@ -105,26 +106,27 @@ public class ExampleTeleopCarousel extends OpMode {
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
                 ));
-
-        //note from chloe: there were some missing controls in the test sweep that i did, so i added them in :)
-        //if they're wrong, feel very free to fix them-- everything between these two comments is copy/pasted from DualController or a static value of false.
-        input.registerInput("emergencystop", new StaticValueNode(0));
-
-        input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
-        input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
-
-        //end chloe-added controls
-
+        input.registerInput("ClawShiftOut",
+                new BothNode(
+                        new ButtonNode("rightbumper"),
+                        new ButtonNode("a")
+                ));
+        input.registerInput("ClawShiftIn",
+                new BothNode(
+                        new ButtonNode("rightbumper"),
+                        new ButtonNode("b")
+                ));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
+        input.registerInput("EmergencyStop", new ButtonNode("start"));
+        input.registerInput("ToggleClaw", new ButtonNode("leftbumper"));
         input.registerInput("ClawUp", new ButtonNode("dpadup"));
         input.registerInput("ClawDown", new ButtonNode("dpaddown"));
         input.registerInput("ClawShiftOut", new ButtonNode("select"));
         input.registerInput("turnAround", new ButtonNode("right_stick_button"));
         input.registerInput("Intake", new ButtonNode("righttrigger"));
+        input.registerInput("Anti-Intake", new ButtonNode("lefttrigger"));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         macroManager.registerMacro("ClawOut", new ClawOut__macro_autoauto());
         macroManager.registerMacro("turnAround", new TurnAround__macro_autoauto());
     }
@@ -171,6 +173,20 @@ public class ExampleTeleopCarousel extends OpMode {
             hands.setServoPosition("rampLeft", 0.0);
             hands.setServoPosition("rampRight", 0.35);
         }
+
+        if (input.getBool("Anti-Intake")){
+            hands.setMotorPower("noodle", -1);
+            hands.setMotorPower("intake", -1);
+            hands.setServoPosition("rampLeft", 0.0);
+            hands.setServoPosition("rampRight", 0.35);
+        }
+        else {
+            hands.setMotorPower("noodle", 0.0);
+            hands.setMotorPower("intake", 0.0);
+            hands.setServoPosition("rampLeft", 0.5);
+            hands.setServoPosition("rampRight", 0.0);
+        }
+
 
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();

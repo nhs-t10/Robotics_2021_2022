@@ -56,7 +56,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
-
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
@@ -72,6 +71,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         );
         clawPosition = new NateManager(hands);
         input = new InputManager(gamepad1, gamepad2);
+        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
@@ -79,12 +79,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                         new JoystickNode("right_stick_x")
                 )
         );
-        //note from chloe: there were some missing controls in the test sweep that i did, so i added them in :)
-        //if they're wrong, feel very free to fix them-- everything between these two comments is copy/pasted from ExampleTeleopCarousel or a static value of false.
-        input.registerInput("emergencystop", new StaticValueNode(0));
-        input.registerInput("Carousel", new ButtonNode("y"));
-        //end chloe-added controls
-
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
@@ -99,15 +93,20 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("ClawPosHome", new ButtonNode("gamepad2a"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
+        input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("Anti-Intake", new ButtonNode("gamepad2lefttrigger"));
         input.registerInput("Intake",
                 new EitherNode(
                         new ButtonNode("righttrigger"),
                         new ButtonNode("gamepad2righttrigger")
                 ));
+        input.registerInput("EmergencyStop",
+                new EitherNode(
+                        new ButtonNode("select"),
+                        new ButtonNode("gamepad2select")
+                ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         macroManager.registerMacro("ClawOut", new ClawOut__macro_autoauto());
         macroManager.registerMacro("turnAround", new TurnAround__macro_autoauto());
     }
@@ -170,10 +169,12 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
         }
-        //chloe note: changed "carouselblue" to "carousel" and commented out "carouselred" to fix errors that the test suite caught
-        hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.75);
-        input.registerInput("ToggleClaw", new ButtonNode("lefttrigger"));
-        //hands.setMotorPower("CarouselRed", input.getFloat("Carousel") * -0.75);
+        if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
+            hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.75);
+        }
+        if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
+            hands.setMotorPower("Carousel", input.getFloat("Carousel") * -0.75);
+        }
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
