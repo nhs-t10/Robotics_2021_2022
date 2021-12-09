@@ -29,43 +29,15 @@ public class MotorEncodedMovementThread extends Thread {
     }
 
     public void run() {
-        //integration variables for safety-tracker
-        double oldTicksPerNs = 0, oldTickDelta = 0;
-        long oldTime;
-
-        oldTime = System.nanoTime();
-
-        //convert 1rpm to ticks per ns for quicker safety calculations
-        double rpmSafetyTarget = 1;
-        double tpnsSafetyTarget = (rpmSafetyTarget / 60 / 1e9) / FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
+        motor.setTargetPosition(position);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(power);
 
         while (FeatureManager.isOpModeRunning && running) {
-            long time = System.nanoTime();
-
-            motor.setTargetPosition(position);
-            motor.setPower(power);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             int currentPos = motor.getCurrentPosition();
             int tickDelta = Math.abs(currentPos - position);
 
-
-            double ticksPerNs = (tickDelta - oldTickDelta) / (time - oldTime);
-            double ticksPerNsPerNs = (ticksPerNs - oldTicksPerNs) / (time - oldTime);
-
-            // If both acceleration and velocity are low (but not zero)AND we haven't reached the target, then we have a safety problem
-            // Stop the motor instantly. Don't wait for synchronization. For further measure, disable it completely and report an emergency stop.
-//            if(deltaEclipsedTime == 0 && ticksPerNsPerNs != 0 && Math.abs(ticksPerNsPerNs) < tpnsSafetyTarget && ticksPerNs != 0 && Math.abs(ticksPerNs) < tpnsSafetyTarget) {
-//                motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                motor.setPower(0);
-//                running = false;
-//                FeatureManager.reportEmergencyStop(motor.getConnectionInfo());
-//            }
-            /* Adam authorized the removal of this safety code */
-
-            oldTime = time;
-            oldTicksPerNs = ticksPerNs;
-            oldTickDelta = tickDelta;
 
             //make sure that the current position is within the tolerance for at least MS_TO_CONFIRM_COMPLETION milliseconds.
             if(tickDelta <= TICK_TOLERANCE && deltaEclipsedTime == 0) deltaEclipsedTime = System.currentTimeMillis();

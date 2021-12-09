@@ -247,6 +247,7 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
+        telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.update();
     }

@@ -267,22 +267,13 @@ public class ManipulationManager extends FeatureManager {
         encodeMoveToPosition(index, position, 0.5);
     }
 
+    //monitors whether the lift motor has been given RUN_TO_POSITION
     public void encodeMoveToPosition(int index, int position, double power) {
         DcMotor motor = motors[index];
 
-        //if there's already a running thread with the same target, don't bother replacing it
-        if(encoderMovementThreads[index] != null) {
-            if(encoderMovementThreads[index].running && encoderMovementThreads[index].equalTarget(position,power)) {
-                return;
-            } else {
-                //if a thread exists, but it doesn't have the same target, cancel it
-                encoderMovementThreads[index].cancelMovement();
-            }
-        }
-        MotorEncodedMovementThread motorThread = new MotorEncodedMovementThread(motor, position, power);
-        motorThread.start();
-
-        encoderMovementThreads[index] = motorThread;
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(power);
+        motor.setTargetPosition(position);
     }
 
     /**
@@ -294,22 +285,8 @@ public class ManipulationManager extends FeatureManager {
      * @return {@code true} if the motor is moving; {@code false} otherwise.
      */
     public boolean hasEncodedMovement(int index) {
-        MotorEncodedMovementThread thread = encoderMovementThreads[index];
-        //if there's no thread, return false right away
-        if(thread == null) {
-            return false;
-        }
-        //if there is, but it's not running, garbage-collect it before returning false
-        else if(!thread.running) {
-            encoderMovementThreads[index] = null;
-            return false;
-        }
-        //if we've passed all the checks, that means there is a thread & it's running.
-        else {
-            return true;
-        }
-
-
+        DcMotor m = motors[index];
+        return (Math.abs(m.getCurrentPosition() - m.getTargetPosition()) < MotorEncodedMovementThread.TICK_TOLERANCE);
     }
 
     /**
@@ -357,5 +334,10 @@ public class ManipulationManager extends FeatureManager {
     }
 
 
+    public void setMotorTargetPosition(String name, int position) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
 
+        motors[index].setTargetPosition(position);
+    }
 }
