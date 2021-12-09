@@ -13,7 +13,8 @@ import java.util.HashMap;
 
 public class CommandHandler {
     public static String handle(String[] args, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
-        if(args.length == 0 || args[0] == null) return HttpStatusCodeReplies.Bad_Request;
+        if(args.length == 0) return HttpStatusCodeReplies.Bad_Request("No arguments read!");
+        if(args[0] == null) return HttpStatusCodeReplies.Bad_Request("args[0] is null!");
         if(args.length == 1) return HttpStatusCodeReplies.Unauthorized;
 
         String command = args[0].trim();
@@ -41,7 +42,7 @@ public class CommandHandler {
             case ControlCodes.FAIL_ON_PURPOSE:
                 return failOnPurpose(args, dataSource, stream);
             default:
-                return HttpStatusCodeReplies.Bad_Request;
+                return HttpStatusCodeReplies.Bad_Request("Unknown control code " + command);
         }
     }
     private static String failOnPurpose(String[] args, TelemetryManager dataSource, StreamHandler stream) {
@@ -73,29 +74,28 @@ public class CommandHandler {
             stream.sendPerSecond = Float.parseFloat(args[2]);
             return HttpStatusCodeReplies.No_Content;
         } catch(NumberFormatException ignored) {
-            return HttpStatusCodeReplies.Bad_Request;
+            return HttpStatusCodeReplies.Bad_Request( args[2] + " is not a valid number");
         }
     }
     private static String setOpmodeField(String[] args, TelemetryManager dataSource) {
         if(dataSource.opmodeFieldMonitor == null) return HttpStatusCodeReplies.Bad_Gateway;
-        if(args.length < 3) return HttpStatusCodeReplies.Bad_Request;
-        if(!dataSource.opmodeFieldMonitor.hasKey(args[1])) return HttpStatusCodeReplies.Not_Found;
+        if(args.length < 4) return HttpStatusCodeReplies.Bad_Request("Must be command,streamid,field,value");
+        if(!dataSource.opmodeFieldMonitor.hasKey(args[2])) return HttpStatusCodeReplies.Not_Found;
 
-        dataSource.opmodeFieldMonitor.parseAndSet(args[0], args[2]);
+        dataSource.opmodeFieldMonitor.parseAndSet(args[2], args[3]);
 
         return HttpStatusCodeReplies.No_Content;
     }
     private static String moveToAutoautoState(String[] args, TelemetryManager dataSource) {
-        FeatureManager.logger.log("debug: argslength " + args.length);
         //requires at least 2 extra args
-        if(args.length < 3) return HttpStatusCodeReplies.Bad_Request;
+        if(args.length < 4) return HttpStatusCodeReplies.Bad_Request("Must be command,streamid,statepath,statenum");
         //and the 2nd one has to be a number
         int state = -1;
-        try { state = Integer.parseInt(args[2].trim()); } catch (NumberFormatException ignored) {
-            return HttpStatusCodeReplies.Bad_Request;
+        try { state = Integer.parseInt(args[3].trim()); } catch (NumberFormatException ignored) {
+            return HttpStatusCodeReplies.Bad_Request(args[3] + " is not a valid number");
         }
 
-        String statepathName = args[1].trim();
+        String statepathName = args[2].trim();
 
         FeatureManager.logger.log("debug: statepath " + statepathName + "; state " + state);
 
@@ -105,10 +105,10 @@ public class CommandHandler {
         if(lengthOfStatepath == null) return HttpStatusCodeReplies.Not_Found;
 
         //if it's not null, but also not a numeric value, that's the server's fault
-        if(!(lengthOfStatepath instanceof AutoautoNumericValue)) return HttpStatusCodeReplies.Bad_Gateway;
+        if(!(lengthOfStatepath instanceof AutoautoNumericValue)) return HttpStatusCodeReplies.Bad_Gateway("Non-numeric variable");
 
         //ensure that the client isn't asking for a nonexistent state (state >= stateArrayLength)
-        if((int)((AutoautoNumericValue)lengthOfStatepath).getFloat() <= state) return HttpStatusCodeReplies.Not_Found;
+        if((int)((AutoautoNumericValue)lengthOfStatepath).getFloat() <= state) return HttpStatusCodeReplies.Not_Found("No such state " + state + " in statepath " + statepathName);
 
         //yay the checks are done and we can do the things!
         dataSource.autoauto.globalScope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(statepathName));
