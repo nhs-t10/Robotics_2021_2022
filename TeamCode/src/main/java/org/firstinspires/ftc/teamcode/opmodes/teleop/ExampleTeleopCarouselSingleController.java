@@ -177,14 +177,14 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         if (input.getBool("Anti-Intake")){
             hands.setMotorPower("noodle", -1);
             hands.setMotorPower("intake", -1);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.35);
+            hands.setServoPosition("rampLeft", 0.5);
+            hands.setServoPosition("rampRight", 0.0);
         }
         else {
             hands.setMotorPower("noodle", 0.0);
             hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.5);
-            hands.setServoPosition("rampRight", 0.0);
+            hands.setServoPosition("rampLeft", 0.0);
+            hands.setServoPosition("rampRight", 0.35);
         }
 
 
