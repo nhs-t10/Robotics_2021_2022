@@ -12,11 +12,7 @@ public class RobotConfiguration {
 
     public OmniCalcComponents omniComponents;
 
-    /**
-     * The `p` coefficient of a PID controller. This should not be used, since we want to be able to use different coefficients in different situations.
-     */
-    @Deprecated
-    public float pidPCoefficient;
+
     /**
      * How many "ticks" quantify a rotation of the motor.
      */

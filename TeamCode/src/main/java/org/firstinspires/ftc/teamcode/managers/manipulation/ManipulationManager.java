@@ -103,7 +103,8 @@ public class ManipulationManager extends FeatureManager {
      * An older form of the ManipulationManager constructor that doesn't need a HardwareMap, but uses wayyyyy too many arguments.
      * Consider using {@link #ManipulationManager(HardwareMap, String[], String[], String[])} instead.
      */
-    @Deprecated
+
+    /**Use only when there is no HardWareMap*/
     public ManipulationManager(CRServo[] _crservos, String[] _crservoNames, Servo[] _servos, String[] _servoNames, DcMotor[] _motors, String[] _motorNames) {
         if(_crservoNames.length != _crservos.length) throw new IllegalArgumentException("CRServo Names must be the same length as CRServos");
         if(_servoNames.length != _servos.length) throw new IllegalArgumentException("Servo Names must be the same length as Servos");

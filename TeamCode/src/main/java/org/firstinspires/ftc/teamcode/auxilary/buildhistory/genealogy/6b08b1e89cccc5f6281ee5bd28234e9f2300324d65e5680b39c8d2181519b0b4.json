@@ -3,13 +3,6 @@
     "cognomen": "Allmaner",
     "builds": [
         {
-            "name": "Lexie Allmaner",
-            "time": "2021-10-07T20:02:18.922Z",
-            "buildHash": "06df23bbb921c97de614bde2da72054366a1f5f584af24871c9de60a8a524209",
-            "w3w": "Mayer hallway arrow",
-            "phrase": "really my favourite aunt but still pretty valiant"
-        },
-        {
             "name": "Amelia Allmaner",
             "time": "2021-10-07T20:03:38.555Z",
             "buildHash": "06df23bbb921c97de614bde2da72054366a1f5f584af24871c9de60a8a524209",
@@ -853,8 +846,35 @@
             "phrase": "Dutch silver inlaid with you, will return as Michelangelo had kissed, Jim.” Do you.” The lad of violins. You won’t? Let nothing must do meet him.” “You fill me compared with dull red. murmured Mr.",
             "perceptualHash": "6f3b25f4fefafefbfbfd5fbaf45fa2fc6fefe379f8fb442fafcf92df4ef928faa5fdbfe4f9fef5fcc5f5df9fcfa86f6f5f78fa5f0fe7fdfe9fafdf9bf9fcfb26fe39f4faf5f2f2f542f4f51fe57624f91fef61f684f5dfe7f5f8bfb7f74f45fcfbf2f0f9f0f2fcbf5fa9af8fbfefcfcf22e18f7faf6fd556f4f3f9f0",
             "colors": "#c70cbd,#3e8065,#794d80,#fcd980,#d98548,#81e049,#83e500,#81c652,#279704,#82d25a,#82c328,#80270c,#807740,#298110,#8f055f,#abfba2,#d9822c,#b5058b,#f83a80,#8f4102,#816b4e,#6a80c3,#468082,#508452,#7e84cd,#3cbb8c,#bf3d82,#da8455,#8400eb,#834a34,#09834f,#ce8138,#483d81,#825e41,#d98152,#1ea7a3,#873215,#8e21bc,#a77e09,#94d763,#82474d,#87fab2"
+        },
+        {
+            "name": "Blaise Allmaner",
+            "time": "2021-12-09T20:16:37.211Z",
+            "buildHash": "c5f78522a72cf97cb3a443cdc6a835d5fea45cb8d3c32b985fa345d7fc0d00a4",
+            "w3w": "footing illness cracker",
+            "phrase": "Besides, individualism has still décolletée.” he felt he doing absolutely delightful. Your aunt has established her whether, like this. It makes more perfect, as romance, passion, also, to possess.”",
+            "perceptualHash": "1af9fef26dfefa34d7f35fd",
+            "colors": "#bf7b80,#72df80,#e382c7,#53b785"
+        },
+        {
+            "name": "Ricardo Allmaner",
+            "time": "2021-12-09T20:18:37.303Z",
+            "buildHash": "b4bd09a5ccbf0cb31cc6b4c562f9852cd777436917fb83c3066907518659e71f",
+            "w3w": "envoy firing Pullman",
+            "phrase": "Didn’t you or overheard a useless thing worth hers. Her prince, Prince Charming..” She knows quite magnificent. The thing again, my beautiful passage— Thou knowest the ivy, danced and colourless, the room.",
+            "perceptualHash": "5fbf7fefd144fe19febfa4fef55fdf8cfa2",
+            "colors": "#e19f20,#8766cd,#be4c80,#1bfa80,#84d93a,#b5e382"
+        },
+        {
+            "name": "Brady Allmaner",
+            "time": "2021-12-09T20:20:27.581Z",
+            "buildHash": "a0c99a570c701efed5fdbd6cd2a09dd88b19e0eed2dddb589ef9f87b905235de",
+            "w3w": "docking frequency dialect",
+            "phrase": "Live! Live the terror had their manufacture, distilling heavily in answer, and shot across them for anything, my letter? Oh, don’t work yourself with anybody in foreigners.",
+            "perceptualHash": "4fafa4812f98f778f29faaf9f75faf2fefbfbf57f64",
+            "colors": "#d9a58e,#7cc1b1,#1281e6,#4df980,#81da02,#c58570,#6681d6,#17fd6c"
         }
     ],
-    "buildCount": 98,
-    "lastBuildTimeUnixMs": 1639079982480
+    "buildCount": 101,
+    "lastBuildTimeUnixMs": 1639081227788
 }
