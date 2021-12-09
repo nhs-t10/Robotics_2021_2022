@@ -6,6 +6,7 @@
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
     setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+    homing(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
 
     after 3s goto deliver
 
