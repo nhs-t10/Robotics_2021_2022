@@ -155,8 +155,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         else {
             hands.setMotorPower("noodle", 0.0);
             hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.50);
+            hands.setServoPosition("rampLeft", 0.15);
+            hands.setServoPosition("rampRight", 0.35);
         }
 
         if (input.getBool("EmergencyStop")){
