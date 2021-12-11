@@ -84,7 +84,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("dashing", new ButtonNode("x"));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
-        input.registerInput("turnAround", new ButtonNode("lefttrigger"));
         input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
         input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2x"));
@@ -94,11 +93,15 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
-        input.registerInput("Anti-Intake", new ButtonNode("gamepad2lefttrigger"));
         input.registerInput("Intake",
                 new EitherNode(
                         new ButtonNode("righttrigger"),
                         new ButtonNode("gamepad2righttrigger")
+                ));
+        input.registerInput("Anti-Intake",
+                new EitherNode(
+                        new ButtonNode("lefttrigger"),
+                        new ButtonNode("gamepad2lefttrigger")
                 ));
         input.registerInput("EmergencyStop",
                 new EitherNode(
