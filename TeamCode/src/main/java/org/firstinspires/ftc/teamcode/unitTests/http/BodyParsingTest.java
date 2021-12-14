@@ -49,7 +49,7 @@ public class BodyParsingTest {
         //TODO: fix BodyParser
 //        String body = BodyParser.from(reqReader, headers);
 //
-//        assertEquals(HTTP_BODY, body);
+//        assertEquals(HTTP_BODY, body);dummy
 //
 //        reqReader.close();
     }

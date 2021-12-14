@@ -63,7 +63,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.opmode = opMode;
 
         //opMode is commented out because the pojo tracker isn't working right now (december 9, 2021)
-        if((config & BITMASKS.POJO_MONITOR) != 0) this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(/*opMode*/);
+        if((config & BITMASKS.POJO_MONITOR) != 0) this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer(opMode);
         else this.opmodeFieldMonitor = new OhNoJavaFieldMonitorAndExposer();
 
         this.fields = new HashMap<String, String>();

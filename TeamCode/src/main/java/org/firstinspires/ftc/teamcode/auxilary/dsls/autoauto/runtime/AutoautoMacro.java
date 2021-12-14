@@ -9,21 +9,23 @@ public abstract class AutoautoMacro extends Macro {
 
     private AutoautoRuntime runtime = null;
     private boolean forceStop;
+    private boolean started;
 
     public abstract AutoautoProgram generateProgram();
 
     @Override
     public final void start(FeatureManager... managers) {
         program = generateProgram();
-        if(runtime == null) {
-            runtime = new AutoautoRuntime(program, managers);
-        } else {
-            runtime.setProgram(program);
-        }
+        if(runtime == null) runtime = new AutoautoRuntime(managers);
+
+        runtime.setProgram(program);
+
+        started = true;
     }
 
     @Override
     public final void loop() {
+        assert started == true;
         runtime.loop();
     }
 

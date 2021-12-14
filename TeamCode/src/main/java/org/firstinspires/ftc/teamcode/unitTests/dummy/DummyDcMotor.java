@@ -11,6 +11,7 @@ public class DummyDcMotor implements DcMotor {
     private Direction direction;
     private RunMode runMode;
     private int target;
+    private boolean hasTargetSet;
     private double currentPosition;
 
     private double ticksPerRot;
@@ -64,6 +65,7 @@ public class DummyDcMotor implements DcMotor {
     @Override
     public void setTargetPosition(int position) {
         this.target = position;
+        hasTargetSet = true;
     }
 
     @Override
@@ -83,6 +85,7 @@ public class DummyDcMotor implements DcMotor {
 
     @Override
     public void setMode(RunMode mode) {
+        if(mode == RunMode.RUN_TO_POSITION) assert hasTargetSet == true;
         this.runMode = mode;
     }
 
@@ -105,8 +108,7 @@ public class DummyDcMotor implements DcMotor {
     public void setPower(double p) {
         this.power = p;
         if(this.runMode == RunMode.RUN_TO_POSITION) {
-            double delta = target - this.currentPosition;
-            this.currentPosition += Math.min(delta, ticksPerRot) * 0.1;
+            (new RunToPositionAdjusterThread()).start();
         }
     }
 
@@ -143,5 +145,14 @@ public class DummyDcMotor implements DcMotor {
     @Override
     public void close() {
 
+    }
+
+    private class RunToPositionAdjusterThread extends Thread {
+        public void run() {
+            while(Math.abs(target - currentPosition) > 0.25) {
+                double delta = target - currentPosition;
+                currentPosition += Math.min(delta, ticksPerRot) * 0.1;
+            }
+        }
     }
 }

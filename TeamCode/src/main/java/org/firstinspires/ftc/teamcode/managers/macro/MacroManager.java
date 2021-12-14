@@ -83,8 +83,8 @@ public class MacroManager extends FeatureManager {
         if(macro != null) {
             runningMacro = macro;
             macro.start(managers);
-            runner = new MacroRunnerThread(macro);
 
+            runner = new MacroRunnerThread(macro);
             runner.start();
         }
     }

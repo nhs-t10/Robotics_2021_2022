@@ -18,7 +18,9 @@ public class EncodedMovementTest {
         m.encodeMoveToPosition(fooMotor, 4096);
 
         //wait until it's finished moving
-        while(m.hasEncodedMovement(fooMotor));
+        while(m.hasEncodedMovement(fooMotor)) {
+            FeatureManager.logger.log("Current: " + m.getMotorPosition(fooMotor));
+        }
 
         assertEquals(4096, m.getMotorPosition(fooMotor), ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
     }

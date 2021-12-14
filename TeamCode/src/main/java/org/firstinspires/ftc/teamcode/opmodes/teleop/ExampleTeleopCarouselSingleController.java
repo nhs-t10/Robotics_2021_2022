@@ -48,11 +48,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
     private boolean precision = false;
     private boolean dashing = false;
 
-    public DcMotor NewMotor(DcMotor motor, String name) {
-        motor = hardwareMap.get(DcMotor.class, name);
-        return motor;
-    }
-
     @Override
     public void init() {
         // Phone is labelled as Not Ready For Use
@@ -61,6 +56,8 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         telemetry = telemetryManager;
 
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+
+        sensor = new SensorManager(hardwareMap, new String[] {});
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");

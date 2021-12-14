@@ -47,7 +47,7 @@ public class HttpServerTest {
         Headers headers = Headers.from(httpBodyReader);
         assertEquals("text/html; charset=utf-8", headers.get("Content-Type"));
 
-        String httpBody = BodyParser.from(httpBodyReader, headers);
+        String httpBody = BodyParser.from(httpBodyReader, headers, false);
 
         assertEquals(ServerFiles.getAssetString("index.html"), httpBody);
 

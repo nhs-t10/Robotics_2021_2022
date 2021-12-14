@@ -35,20 +35,15 @@ import java.util.Arrays;
 
 @TeleOp
 public class ExampleTeleopCarouselDualController extends OpMode {
-    private MovementManager driver;
-    private ManipulationManager hands;
-    private InputManager input;
-    private SensorManager sensor;
-    private ImuManager imu;
-    private MacroManager macroManager;
-    private NateManager clawPosition;
+    public MovementManager driver;
+    public ManipulationManager hands;
+    public InputManager input;
+    public SensorManager sensor;
+    public ImuManager imu;
+    public MacroManager macroManager;
+    public NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
-
-    public DcMotor NewMotor(DcMotor motor, String name) {
-        motor = hardwareMap.get(DcMotor.class, name);
-        return motor;
-    }
 
     @Override
     public void init() {
@@ -57,6 +52,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+
+        sensor = new SensorManager(hardwareMap, new String[] {});
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");

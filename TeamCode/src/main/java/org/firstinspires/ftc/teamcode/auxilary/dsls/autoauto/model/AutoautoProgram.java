@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.StoredAutoautoVariable;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class AutoautoProgram implements AutoautoProgramElement {
     AutoautoRuntimeVariableScope scope;
     Location location;
 
-    StoredAutoautoVariable currentStatepathVariable;
+    private StoredAutoautoVariable currentStatepathVariable;
 
 
     public static String formatStack(Location location) {
@@ -44,6 +45,8 @@ public class AutoautoProgram implements AutoautoProgramElement {
         this.currentPath = paths.get(initialPathName);
     }
     public void loop() {
+        //TODO: Investigate how loop() can be called before init(). It seems impossible, but MacroManager can do it somehow???
+
         String currentStatepathName = this.currentStatepathVariable.value.getString();
 
         //if steps have changed, init the new one

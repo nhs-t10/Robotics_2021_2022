@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -41,6 +42,8 @@ public class InputManager extends FeatureManager {
         if(registerNodes.length == 0) throw new IllegalArgumentException("Must have more than 0 args");
         else if(registerNodes.length == 1) node = registerNodes[0];
         else node = new MultiInputNode(registerNodes);
+
+        node.setName(key);
 
         node.init(this);
         nodes.put(key.toLowerCase(), node);
@@ -235,6 +238,10 @@ public class InputManager extends FeatureManager {
         for(InputManagerInputNode node : allRootNodes) {
             node.updateOverlaps(overlapResolutionMethod, allRootNodes);
         }
+    }
+
+    public Collection<InputManagerInputNode> getNodes() {
+        return nodes.values();
     }
 }
 
