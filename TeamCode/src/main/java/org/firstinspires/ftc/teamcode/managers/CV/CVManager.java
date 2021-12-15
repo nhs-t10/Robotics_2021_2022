@@ -198,9 +198,9 @@ public class CVManager extends FeatureManager
         /*
          * Working variables
          */
-        Mat region1_Cb, region2_Cb, region3_Cb;
+        Mat region1_Cr, region2_Cr, region3_Cr;
         Mat YCrCb = new Mat();
-        Mat Cb = new Mat();
+        Mat Cr = new Mat();
         int avg1, avg2, avg3;
 
         // Volatile since accessed by OpMode thread w/o synchronization
@@ -210,10 +210,10 @@ public class CVManager extends FeatureManager
          * This function takes the RGB frame, converts to YCrCb,
          * and extracts the Cb channel to the 'Cb' variable
          */
-        void inputToCb(Mat input)
+        void inputToCr(Mat input)
         {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 2);
+            Core.extractChannel(YCrCb, Cr, 1);
         }
 
         @Override
@@ -228,16 +228,16 @@ public class CVManager extends FeatureManager
              * buffer would be re-allocated the first time a real frame
              * was crunched)
              */
-            inputToCb(firstFrame);
+            inputToCr(firstFrame);
 
             /*
              * Submats are a persistent reference to a region of the parent
              * buffer. Any changes to the child affect the parent, and the
              * reverse also holds true.
              */
-            region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
-            region2_Cb = Cb.submat(new Rect(region2_pointA, region2_pointB));
-            region3_Cb = Cb.submat(new Rect(region3_pointA, region3_pointB));
+            region1_Cr = Cr.submat(new Rect(region1_pointA, region1_pointB));
+            region2_Cr = Cr.submat(new Rect(region2_pointA, region2_pointB));
+            region3_Cr = Cr.submat(new Rect(region3_pointA, region3_pointB));
         }
 
         @Override
@@ -281,7 +281,7 @@ public class CVManager extends FeatureManager
             /*
              * Get the Cb channel of the input frame after conversion to YCrCb
              */
-            inputToCb(input);
+            inputToCr(input);
 
             /*
              * Compute the average pixel value of each submat region. We're
@@ -290,9 +290,9 @@ public class CVManager extends FeatureManager
              * pixel value of the 3-channel image, and referenced the value
              * at index 2 here.
              */
-            avg1 = (int) Core.mean(region1_Cb).val[0];
-            avg2 = (int) Core.mean(region2_Cb).val[0];
-            avg3 = (int) Core.mean(region3_Cb).val[0];
+            avg1 = (int) Core.mean(region1_Cr).val[0];
+            avg2 = (int) Core.mean(region2_Cr).val[0];
+            avg3 = (int) Core.mean(region3_Cr).val[0];
 
             /*
              * Draw a rectangle showing sample region 1 on the screen.

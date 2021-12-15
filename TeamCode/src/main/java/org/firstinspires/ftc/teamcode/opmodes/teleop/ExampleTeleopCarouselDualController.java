@@ -225,7 +225,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 macroManager.runMacro("ClawOut");
             }
         }
-
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
