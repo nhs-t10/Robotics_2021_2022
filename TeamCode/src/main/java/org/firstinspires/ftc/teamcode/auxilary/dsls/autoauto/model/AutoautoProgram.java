@@ -44,6 +44,15 @@ public class AutoautoProgram implements AutoautoProgramElement {
         this.initialPathName = initialPathName;
         this.currentPath = paths.get(initialPathName);
     }
+    public void init() {
+        scope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(this.initialPathName));
+        scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(0));
+
+        this.currentStatepathVariable = scope.getConsistentVariableHandle(AutoautoSystemVariableNames.STATEPATH_NAME);
+
+        for(Statepath p : this.paths.values()) p.init();
+    }
+
     public void loop() {
         //TODO: Investigate how loop() can be called before init(). It seems impossible, but MacroManager can do it somehow???
 
@@ -60,15 +69,6 @@ public class AutoautoProgram implements AutoautoProgramElement {
         }
 
         this.currentPath.loop();
-    }
-
-    public void init() {
-        scope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(this.initialPathName));
-        scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(0));
-
-        this.currentStatepathVariable = scope.getConsistentVariableHandle(AutoautoSystemVariableNames.STATEPATH_NAME);
-
-        for(Statepath p : this.paths.values()) p.init();
     }
 
     public void stepInit() {
