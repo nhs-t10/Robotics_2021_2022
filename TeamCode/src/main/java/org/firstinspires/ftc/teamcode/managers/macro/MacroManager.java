@@ -79,13 +79,15 @@ public class MacroManager extends FeatureManager {
      * @param name the unique name of the macro, originally specified by the call to {@link #registerMacro(String, Macro)}
      */
     public void runMacro(String name) {
-        Macro macro = macros.get(name);
-        if(macro != null) {
-            runningMacro = macro;
-            macro.start(managers);
+        if(runningMacro != null) {
+            Macro macro = macros.get(name);
+            if (macro != null) {
+                runningMacro = macro;
+                macro.start(managers);
 
-            runner = new MacroRunnerThread(macro);
-            runner.start();
+                runner = new MacroRunnerThread(macro);
+                runner.start();
+            }
         }
     }
     /**
