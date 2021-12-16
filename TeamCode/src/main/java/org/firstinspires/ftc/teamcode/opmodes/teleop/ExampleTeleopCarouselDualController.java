@@ -194,14 +194,14 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             else {
                 clawPosition.setClawOpen(false);
             }
-            if (input.getBool("ClawShiftIn") == true){
-                hands.setServoPower("nateMoverLeft", 1.0);
-                hands.setServoPower("nateMoverRight", -1.0);
-            }
-            if (input.getBool("ClawShiftOut") == true){
-                hands.setServoPower("nateMoverRight", 1.0);
-                hands.setServoPower("nateMoverLeft", -1.0);
-            }
+//            if (input.getBool("ClawShiftIn") == true){
+//                hands.setServoPower("nateMoverLeft", 1.0);
+//                hands.setServoPower("nateMoverRight", -1.0);
+//            }
+//            if (input.getBool("ClawShiftOut") == true){
+//                hands.setServoPower("nateMoverRight", 1.0);
+//                hands.setServoPower("nateMoverLeft", -1.0);
+//            } Removed for safety, an accidental activation would be bad.
             if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
                 hands.setServoPower("nateMoverRight", 0.0);
                 hands.setServoPower("nateMoverLeft", 0.0);
