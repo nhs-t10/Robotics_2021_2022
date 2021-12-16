@@ -121,6 +121,11 @@ public class CVManager extends FeatureManager
         else return pipeline.getAnalysis();
     }
 
+    public double getCVPrecisePosition() {
+        if(pipeline == null) return 0;
+        else return pipeline.getAnalysisPrecise();
+    }
+
 
     public void stopWebcam() {
             /*
