@@ -25,7 +25,7 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
      * Some color constants
      */
     static final Scalar YCRCB_RED = new Scalar(255, 255, 0);
-    static final Scalar YCRCB_ORIGIN = new Scalar(128, 128, 128);
+    static final Scalar YCRCB_ORIGIN = new Scalar(0, 128, 128);
 
 
     // Working variables. Because of memory concerns, we're not allowed to make ANY non-primitive variables within the `processFrame` method.
