@@ -23,7 +23,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * if you're doing something weird where you do need it synchronized with your OpMode thread,
  * then you will need to account for that accordingly.
  */
-public class RegionBasedAveragesPipeline extends OpenCvPipeline {
+public class RegionBasedAveragesPipeline extends PipelineThatExposesSomeAnalysis {
     /*
      * An enum to define the skystone position
      */
@@ -281,7 +281,7 @@ public class RegionBasedAveragesPipeline extends OpenCvPipeline {
          */
         return input;
     }
-    public SkystonePosition getAnalysis() {
-        return position;
+    public int getAnalysis() {
+        return position.ordinal();
     }
 }
