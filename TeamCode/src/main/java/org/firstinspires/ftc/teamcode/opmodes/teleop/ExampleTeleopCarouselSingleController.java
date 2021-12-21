@@ -48,11 +48,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
     private boolean precision = false;
     private boolean dashing = false;
 
-    public DcMotor NewMotor(DcMotor motor, String name) {
-        motor = hardwareMap.get(DcMotor.class, name);
-        return motor;
-    }
-
     @Override
     public void init() {
         // Phone is labelled as Not Ready For Use
@@ -61,6 +56,8 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         telemetry = telemetryManager;
 
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+
+        sensor = new SensorManager(hardwareMap, new String[] {});
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -85,7 +82,8 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         );
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
-        input.registerInput("Carousel", new ButtonNode("y"));
+        input.registerInput("CarouselBlue", new ButtonNode("y"));
+        input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1",
                 new BothNode(
                         new ButtonNode("leftbumper"),
@@ -106,23 +104,12 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
                 ));
-        input.registerInput("ClawShiftOut",
-                new BothNode(
-                        new ButtonNode("rightbumper"),
-                        new ButtonNode("a")
-                ));
-        input.registerInput("ClawShiftIn",
-                new BothNode(
-                        new ButtonNode("rightbumper"),
-                        new ButtonNode("b")
-                ));
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("EmergencyStop", new ButtonNode("start"));
-        input.registerInput("ToggleClaw", new ButtonNode("leftbumper"));
+        input.registerInput("ToggleClaw", new ButtonNode("rightbumper"));
         input.registerInput("ClawUp", new ButtonNode("dpadup"));
         input.registerInput("ClawDown", new ButtonNode("dpaddown"));
-        input.registerInput("ClawShiftOut", new ButtonNode("select"));
-        input.registerInput("turnAround", new ButtonNode("right_stick_button"));
+        input.registerInput("turnAround", new ButtonNode("rightstickbutton"));
         input.registerInput("Intake", new ButtonNode("righttrigger"));
         input.registerInput("Anti-Intake", new ButtonNode("lefttrigger"));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -191,7 +178,15 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
         }
-        hands.setMotorPower("Carousel", input.getFloat("Carousel") * 0.5);
+        if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
+            hands.setMotorPower("Carousel", 0.75);
+        }
+        else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
+            hands.setMotorPower("Carousel", -0.75);
+        }
+        else {
+            hands.setMotorPower("Carousel", 0.0);
+        }
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -209,14 +204,14 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         if (input.getBool("ToggleClaw") == true){
             clawPosition.toggleClaw();
         }
-        if (input.getBool("ClawShiftIn") == true){
-            hands.setServoPower("nateMoverLeft", 1.0);
-            hands.setServoPower("nateMoverRight", -1.0);
-        }
-        if (input.getBool("ClawShiftOut") == true){
-            hands.setServoPower("nateMoverRight", 1.0);
-            hands.setServoPower("nateMoverLeft", -1.0);
-        }
+//        if (input.getBool("ClawShiftIn") == true){
+//            hands.setServoPower("nateMoverLeft", 1.0);
+//            hands.setServoPower("nateMoverRight", -1.0);
+//        }
+//        if (input.getBool("ClawShiftOut") == true){
+//            hands.setServoPower("nateMoverRight", 1.0);
+//            hands.setServoPower("nateMoverLeft", -1.0);
+//        } Removed for safety purposes
         if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
             hands.setServoPower("nateMoverRight", 0.0);
             hands.setServoPower("nateMoverLeft", 0.0);
@@ -235,9 +230,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         }
         if (input.getBool("turnAround") == true){
             macroManager.runMacro("TurnAround");
-        }
-        if (input.getBool("ClawShiftOut") == true){
-            macroManager.runMacro("ClawOut");
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());

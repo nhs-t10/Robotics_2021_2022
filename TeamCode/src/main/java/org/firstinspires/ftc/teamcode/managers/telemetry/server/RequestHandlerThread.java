@@ -42,7 +42,10 @@ public class RequestHandlerThread extends Thread {
 
             HttpStatusLine requestMeta = HttpStatusLine.from(reader);
             Headers headers = Headers.from(reader);
-            String body = BodyParser.from(reader, headers);
+            String body = "";
+
+            //only scan for a body on non-GET requests
+            if(!requestMeta.verb.equalsIgnoreCase("GET")) body = BodyParser.from(reader, headers, true);
 
             String path = requestMeta.path;
 

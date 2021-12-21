@@ -7,19 +7,19 @@ import java.io.IOException;
 
 public class BodyParser {
 
-    public static String from(BufferedReader reader, Headers headers) throws IOException {
+    public static String from(BufferedReader reader, Headers headers, boolean isClientRequest) throws IOException {
         boolean hasContentLength = headers.hasHeader("content-length");
         int contentLength = headers.getAsInt("content-length");
 
         if(hasContentLength) return readBodyInPlace(reader, contentLength);
+        //if it's a client request and doesn't specify the content-length, it has no body.
+        else if(isClientRequest) return "";
         //body time!
         StringBuilder reqBodyBuilder = new StringBuilder();
-        int length = 0;
-        while(hasContentLength && length < contentLength) {
+        while(true) {
             int nextChar = reader.read();
             if(nextChar < 0) break;
             reqBodyBuilder.append((char)nextChar);
-            length++;
         }
 
         return reqBodyBuilder.toString();
@@ -34,12 +34,5 @@ public class BodyParser {
             readStart += len;
         }
         return new String(charArr);
-    }
-
-    public static String from(BufferedReader reader) throws IOException {
-
-        //consume headers.
-        Headers headers = Headers.from(reader);
-        return from(reader, headers);
     }
 }

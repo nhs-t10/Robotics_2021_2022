@@ -12,27 +12,18 @@ public class AutoautoRuntime {
     private final FeatureManager[] managers;
     public AutoautoRuntimeVariableScope globalScope;
     public AutoautoProgram program;
+    private boolean calledInit;
 
     public static AutoautoRuntime R(AutoautoProgram program, FeatureManager... managers) {
         return new AutoautoRuntime(program, managers);
     }
 
     public AutoautoRuntime(AutoautoProgram program, FeatureManager... managers) {
-        MovementManager drive = null;
-        ManipulationManager manip = null;
-        SensorManager sense = null;
-        TelemetryManager telemetry = null;
-        //find managers of each required type
-        for(FeatureManager f : managers) {
-            if(f instanceof MovementManager) drive = (MovementManager) f;
-            if(f instanceof ManipulationManager) manip = (ManipulationManager) f;
-            if(f instanceof SensorManager) sense = (SensorManager) f;
-            if(f instanceof TelemetryManager) telemetry = (TelemetryManager) f;
-        }
-
-        if(drive == null || manip == null || sense == null || telemetry == null) throw new ManagerSetupException("Managers must contain at least one of each type.");
         this.managers = managers;
         setProgram(program);
+    }
+    public AutoautoRuntime(FeatureManager... managers) {
+        this.managers = managers;
     }
 
     public int getCurrentState() {
@@ -44,6 +35,7 @@ public class AutoautoRuntime {
     }
 
     public void loop() {
+        assert calledInit == true;
         this.program.loop();
     }
 
@@ -63,5 +55,7 @@ public class AutoautoRuntime {
 
         this.program.init();
         this.program.stepInit();
+
+        this.calledInit = true;
     }
 }

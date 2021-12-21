@@ -35,20 +35,15 @@ import java.util.Arrays;
 
 @TeleOp
 public class ExampleTeleopCarouselDualController extends OpMode {
-    private MovementManager driver;
-    private ManipulationManager hands;
-    private InputManager input;
-    private SensorManager sensor;
-    private ImuManager imu;
-    private MacroManager macroManager;
-    private NateManager clawPosition;
+    public MovementManager driver;
+    public ManipulationManager hands;
+    public InputManager input;
+    public SensorManager sensor;
+    public ImuManager imu;
+    public MacroManager macroManager;
+    public NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
-
-    public DcMotor NewMotor(DcMotor motor, String name) {
-        motor = hardwareMap.get(DcMotor.class, name);
-        return motor;
-    }
 
     @Override
     public void init() {
@@ -57,6 +52,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+
+        sensor = new SensorManager(hardwareMap, new String[] {});
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
@@ -108,6 +105,11 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                         new ButtonNode("select"),
                         new ButtonNode("gamepad2select")
                 ));
+        input.registerInput("Failsafe",
+                new EitherNode(
+                        new ButtonNode("start"),
+                        new ButtonNode("gamepad2start")
+                ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
         macroManager.registerMacro("ClawOut", new ClawOut__macro_autoauto());
@@ -142,62 +144,88 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         } else {
             dashing = false;
         }
+        if (input.getBool("Failsafe") == false){
+            if (input.getBool("Intake")){
+                hands.setMotorPower("noodle", 0.75);
+                hands.setMotorPower("intake", 1);
+                hands.setServoPosition("rampLeft", 0.50);
+                hands.setServoPosition("rampRight", 0.0);
+            }
+            else if (input.getBool("Anti-Intake")){
+                hands.setMotorPower("noodle", -0.50);
+                hands.setMotorPower("intake", -0.50);
+                hands.setServoPosition("rampLeft", 0.50);
+                hands.setServoPosition("rampRight", 0.0);
+            }
+            else {
+                hands.setMotorPower("noodle", 0.0);
+                hands.setMotorPower("intake", 0.0);
+                hands.setServoPosition("rampLeft", 0.0);
+                hands.setServoPosition("rampRight", 0.35);
+            }
+            if (input.getBool("EmergencyStop")){
+                clawPosition.emergencyStop();
+            }
+            if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
+                hands.setMotorPower("Carousel", 0.75);
+            }
+            else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
+                hands.setMotorPower("Carousel", -0.75);
+            }
+            else {
+                hands.setMotorPower("Carousel", 0.0);
+            }
 
-        if (input.getBool("Intake")){
-            hands.setMotorPower("noodle", 0.75);
-            hands.setMotorPower("intake", 1);
-            hands.setServoPosition("rampLeft", 0.50);
-            hands.setServoPosition("rampRight", 0.0);
-        }
-        else if (input.getBool("Anti-Intake")){
-            hands.setMotorPower("noodle", -0.50);
-            hands.setMotorPower("intake", -0.50);
-            hands.setServoPosition("rampLeft", 0.50);
-            hands.setServoPosition("rampRight", 0.0);
-        }
-        else {
-            hands.setMotorPower("noodle", 0.0);
-            hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.15);
-            hands.setServoPosition("rampRight", 0.35);
-        }
-
-        if (input.getBool("EmergencyStop")){
-            clawPosition.emergencyStop();
-        }
-        if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.75);
-        }
-        else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.75);
-        }
-        else {
-            hands.setMotorPower("Carousel", 0.0);
-        }
-
-        if (input.getBool("ToggleClaw") == true){
-            clawPosition.setClawOpen(true);
-        }
-        else {
-            clawPosition.setClawOpen(false);
-        }
-        if (input.getBool("ClawPos1") == true) {
-            clawPosition.positionOne();
-        }
-        if (input.getBool("ClawPos2") == true) {
-            clawPosition.positionTwo();
-        }
-        if (input.getBool("ClawPos3") == true) {
-            clawPosition.positionThree();
-        }
-        if (input.getBool("ClawPosHome") == true) {
-            clawPosition.positionHome();
-        }
-        if (input.getBool("turnAround") == true){
-            macroManager.runMacro("TurnAround");
-        }
-        if (input.getBool("ClawShiftOut") == true){
-            //macroManager.runMacro("ClawOut");
+            if (hands.hasEncodedMovement("ClawMotor") == false) {
+                if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    hands.setMotorPower("ClawMotor", -0.25);
+                }
+                if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    hands.setMotorPower("ClawMotor", 0.25);
+                }
+                if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false) {
+                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
+                    hands.setMotorPower("ClawMotor", 0.0);
+                }
+            }
+            if (input.getBool("ToggleClaw") == true){
+                clawPosition.setClawOpen(true);
+            }
+            else {
+                clawPosition.setClawOpen(false);
+            }
+//            if (input.getBool("ClawShiftIn") == true){
+//                hands.setServoPower("nateMoverLeft", 1.0);
+//                hands.setServoPower("nateMoverRight", -1.0);
+//            }
+//            if (input.getBool("ClawShiftOut") == true){
+//                hands.setServoPower("nateMoverRight", 1.0);
+//                hands.setServoPower("nateMoverLeft", -1.0);
+//            } Removed for safety, an accidental activation would be bad.
+            if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
+                hands.setServoPower("nateMoverRight", 0.0);
+                hands.setServoPower("nateMoverLeft", 0.0);
+            }
+            if (input.getBool("ClawPos1") == true) {
+                clawPosition.positionOne();
+            }
+            if (input.getBool("ClawPos2") == true) {
+                clawPosition.positionTwo();
+            }
+            if (input.getBool("ClawPos3") == true) {
+                clawPosition.positionThree();
+            }
+            if (input.getBool("ClawPosHome") == true) {
+                clawPosition.positionHome();
+            }
+            if (input.getBool("turnAround") == true){
+                macroManager.runMacro("TurnAround");
+            }
+            if (input.getBool("ClawShiftOut") == true){
+                macroManager.runMacro("ClawOut");
+            }
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());

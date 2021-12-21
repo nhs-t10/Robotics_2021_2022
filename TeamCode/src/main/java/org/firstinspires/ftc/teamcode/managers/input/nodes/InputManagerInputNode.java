@@ -17,6 +17,12 @@ public abstract class InputManagerInputNode {
     public abstract String[] getKeysUsed();
     public abstract boolean usesKey(String s);
 
+    public String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void updateOverlaps(InputOverlapResolutionMethod newMethod, InputManagerInputNode[] allRootNodes) {
         if(newMethod == InputOverlapResolutionMethod.BOTH_CHILDREN_CAN_SPEAK) {
             //nothing
