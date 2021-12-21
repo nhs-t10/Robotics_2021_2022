@@ -263,6 +263,7 @@ public class ManipulationManager extends FeatureManager {
         encodeMoveToPosition(index, position, 0.5);
     }
 
+    //monitors whether the lift motor has been given RUN_TO_POSITION
     public void encodeMoveToPosition(int index, int position, double power) {
         DcMotor motor = motors[index];
 
@@ -343,5 +344,10 @@ public class ManipulationManager extends FeatureManager {
     }
 
 
+    public void setMotorTargetPosition(String name, int position) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
 
+        motors[index].setTargetPosition(position);
+    }
 }

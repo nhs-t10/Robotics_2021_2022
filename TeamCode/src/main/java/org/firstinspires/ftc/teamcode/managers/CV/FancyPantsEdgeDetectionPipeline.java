@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.CV;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnalysis {
 
 
-    /*
+    /*r
      * An enum to define the skystone position
      */
     public enum SkystonePosition
@@ -24,13 +25,13 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     /*
      * Some color constants
      */
-    static final Scalar YCRCB_RED = new Scalar(255, 255, 0);
-    static final Scalar YCRCB_ORIGIN = new Scalar(0, 128, 128);
+    static final Scalar YCRCB_RED = new Scalar(0, 128, 0);
+    static final Scalar YCRCB_ORIGIN = new Scalar(255, 255, 128);
 
 
     // Working variables. Because of memory concerns, we're not allowed to make ANY non-primitive variables within the `processFrame` method.
 
-    Mat YCrCb = new Mat(), redPixels = new Mat(), edges = new Mat(), hierarchy = new Mat();
+    Mat YCrCb = new Mat(), redPixels = new Mat(), hierarchy = new Mat();
     MatOfPoint biggestContour;
 
     ArrayList<MatOfPoint> contours;
@@ -51,19 +52,17 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     public Mat processFrame(Mat input)
     {
         //convert the input to YCrCb, which is better for analysis than the default bgr.
-        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
+        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
 
         //filter the image to ONLY redish pixels
-        Core.inRange(YCrCb, YCRCB_ORIGIN, YCRCB_RED, redPixels);
+        Core.inRange(YCrCb, YCRCB_RED, YCRCB_ORIGIN, redPixels);
 
-        //perform edge detection to find the big blobs of reddish pixels. `threshold1` and `threshold2` should be determined through experimentation.
-        Imgproc.Canny(redPixels, edges, 100, 300);
-
-        //sometimes, Canny doesn't completely connect the blobs, so fill in by finding all "contours".
+        //Find the biggest blob of reddish pixels.
         //It likes using a list of Matrices of points instead of something more simple, but that's ok.
         contours = new ArrayList<>();
-        Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(redPixels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
+        FeatureManager.logger.log("Contour Count: " + contours.size());
         //only bother continuing if there were any contours found
         if(contours.size() == 0) return input;
 

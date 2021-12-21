@@ -62,8 +62,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         driver = new MovementManager(fl, fr, br, bl);
         hands = new ManipulationManager(
                 hardwareMap,
-                crservo         ("nateMoverLeft", "nateMoverRight"),
-                servo           ("nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"),
+                crservo         (),
+                servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
         clawPosition = new NateManager(hands);
@@ -160,7 +160,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 hands.setServoPosition("rampLeft", 0.0);
                 hands.setServoPosition("rampRight", 0.35);
             }
-
             if (input.getBool("EmergencyStop")){
                 clawPosition.emergencyStop();
             }
@@ -234,6 +233,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
+        telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
         telemetry.update();
     }
 
