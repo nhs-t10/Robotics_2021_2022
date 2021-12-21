@@ -509,7 +509,6 @@ public class FtcRobotControllerActivity extends Activity
   }
 
   protected void readNetworkType() {
-<<<<<<< HEAD
 
     // The code here used to defer to the value found in a configuration file
     // to configure the network type. If the file was absent, then it initialized
