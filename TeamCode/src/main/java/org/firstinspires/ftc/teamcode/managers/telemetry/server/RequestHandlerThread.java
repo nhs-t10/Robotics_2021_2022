@@ -49,8 +49,6 @@ public class RequestHandlerThread extends Thread {
 
             String path = requestMeta.path;
 
-            FeatureManager.logger.log("clientRequest", path);
-
             if(path.equals("/stream")) {
                 StreamHandler stream = new StreamHandler(writer, dataSource, socket);
                 //add this stream to the registry and start it
