@@ -134,7 +134,7 @@ public class ManipulationManager extends FeatureManager {
      */
     public void setServoPower(String name, double power) {
         int index = (Arrays.asList(crservoNames)).indexOf(name);
-        if(index == -1) throw new IllegalArgumentException("Servo " + name + " does not exist or is not registered in ManipulationManager");
+        if(index == -1) throw new IllegalArgumentException("CRServo " + name + " does not exist or is not registered in ManipulationManager");
         crservos[index].setPower(power);
     }
 

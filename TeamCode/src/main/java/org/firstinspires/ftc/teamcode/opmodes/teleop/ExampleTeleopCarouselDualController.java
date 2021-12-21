@@ -53,6 +53,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry = telemetryManager;
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
+        FeatureManager.logger.setBackend(telemetry.log());
+
         sensor = new SensorManager(hardwareMap, new String[] {});
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
@@ -62,7 +64,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         driver = new MovementManager(fl, fr, br, bl);
         hands = new ManipulationManager(
                 hardwareMap,
-                crservo         (),
+                crservo         ("nateMoverRight", "nateMoverLeft"),
                 servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
@@ -90,6 +92,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
+        input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Intake",
                 new EitherNode(
                         new ButtonNode("righttrigger"),

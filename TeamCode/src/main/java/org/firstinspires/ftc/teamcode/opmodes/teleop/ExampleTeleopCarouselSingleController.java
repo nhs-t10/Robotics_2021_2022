@@ -55,6 +55,8 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
 
+        FeatureManager.logger.setBackend(telemetry.log());
+
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         sensor = new SensorManager(hardwareMap, new String[] {});
@@ -211,11 +213,13 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
 //        if (input.getBool("ClawShiftOut") == true){
 //            hands.setServoPower("nateMoverRight", 1.0);
 //            hands.setServoPower("nateMoverLeft", -1.0);
-//        } Removed for safety purposes
-        if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
-            hands.setServoPower("nateMoverRight", 0.0);
-            hands.setServoPower("nateMoverLeft", 0.0);
-        }
+//        }
+//        if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
+//            hands.setServoPower("nateMoverRight", 0.0);
+//            hands.setServoPower("nateMoverLeft", 0.0);
+//        }
+// Removed for safety purposes
+
         if (input.getBool("ClawPos1") == true) {
             clawPosition.positionOne();
         }
