@@ -32,6 +32,7 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
 
     // Working variables. Because of memory concerns, we're not allowed to make ANY non-primitive variables within the `processFrame` method.
 
+    //Mat is what you see
     Mat YCrCb = new Mat(), redPixels = new Mat(), hierarchy = new Mat();
     MatOfPoint biggestContour;
 
