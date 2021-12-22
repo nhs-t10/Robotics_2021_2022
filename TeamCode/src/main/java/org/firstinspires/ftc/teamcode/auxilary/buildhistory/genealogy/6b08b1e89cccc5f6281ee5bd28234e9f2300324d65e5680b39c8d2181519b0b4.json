@@ -3,15 +3,6 @@
     "cognomen": "Allmaner",
     "builds": [
         {
-            "name": "Murphy Allmaner",
-            "time": "2021-12-02T20:52:45.159Z",
-            "buildHash": "682153fd2d8edfc170852c57ce0ab74f6355bf53f7d907b835d8f68b1c6b4da5",
-            "w3w": "check-in ardor broth",
-            "phrase": "Tower previous to yield. After the theatre to-night.” I spared somebody. It enraged him. “Mother, I are not equal to content with anybody. However, I have, though.”",
-            "perceptualHash": "",
-            "colors": ""
-        },
-        {
             "name": "Tripp Allmaner",
             "time": "2021-12-02T20:55:41.407Z",
             "buildHash": "bf7d10477040ad435ca3b8da10e52731016e79337b841c1f1db4e28c936b3a1f",
@@ -901,8 +892,17 @@
             "phrase": "Where was wicked.” “I am far too much less than genius, as players at Spa a moment; to quiver, and if possible, than honey to become to have a hand of seeing his life.",
             "perceptualHash": "",
             "colors": ""
+        },
+        {
+            "name": "Stormi Allmaner",
+            "time": "2021-12-22T00:20:05.084Z",
+            "buildHash": "f9682666b08c0aca362b1f39a2a069b0823dcdecee612038d07178ca0cd6b641",
+            "w3w": "influx check-in assembly",
+            "phrase": "Gwendolen, not Buonarotti who act well. Indeed, the butler, coming in.” You became absurdly nervous staccato signs of Les Cent Nouvelles, bound to take. Her shallow people.",
+            "perceptualHash": "",
+            "colors": ""
         }
     ],
-    "buildCount": 141,
-    "lastBuildTimeUnixMs": 1640132135565
+    "buildCount": 142,
+    "lastBuildTimeUnixMs": 1640132405231
 }
