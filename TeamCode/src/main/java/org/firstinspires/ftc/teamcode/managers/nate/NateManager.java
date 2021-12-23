@@ -24,6 +24,11 @@ public class NateManager extends FeatureManager {
         this.hands = hands;
     }
 
+    public NateManager(ManipulationManager hands, TouchSensor input) {
+        this.hands = hands;
+        this.input = input;
+    }
+
     //TODO: test and remove untested warning.
     /**
      * Make the claw open or close
@@ -104,6 +109,7 @@ public class NateManager extends FeatureManager {
         else {
             position = -3470;
         }
+
 
 
         hands.setMotorPower("ClawMotor", 1);
@@ -190,7 +196,7 @@ public class NateManager extends FeatureManager {
      * <p>To do that, we need a sensor connected in the code.</p>
      */
 
-    public void homing(){
+    public boolean homing(){
         //`input` will always be false for now, but we need to replace it with `sensor.isPressed()` or whichever the correct method is
         if (found) {
             hands.encodeMoveToPosition("ClawMotor", 0, 0.25);
@@ -201,5 +207,10 @@ public class NateManager extends FeatureManager {
         } else {
             hands.setMotorPower("ClawMotor", -0.75);
         }
+        return found;
+    }
+
+    public boolean isFound() {
+        return found;
     }
 }

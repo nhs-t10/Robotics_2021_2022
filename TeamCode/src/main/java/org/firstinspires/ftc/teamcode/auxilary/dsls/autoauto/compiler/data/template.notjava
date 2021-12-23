@@ -57,6 +57,7 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionDefStatement.J;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.TitledArgument.V;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTailedValue.Z;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
@@ -92,7 +93,7 @@ public class template extends AutoautoOpmode {
                                 new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
                         );
 
-        clawPosition = new NateManager(limbs);
+        clawPosition = new NateManager(limbs, hardwareMap.get(TouchSensor.class, "limit"));
 
         cv = new CVManager(hardwareMap);
 
