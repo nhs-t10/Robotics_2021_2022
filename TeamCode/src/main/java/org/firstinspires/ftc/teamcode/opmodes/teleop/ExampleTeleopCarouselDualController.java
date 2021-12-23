@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationM
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.ClawOut__macro_autoauto;
 import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.TurnAround__macro_autoauto;
@@ -69,7 +70,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
-        clawPosition = new NateManager(hands);
+        clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         input.registerInput("drivingControls",
