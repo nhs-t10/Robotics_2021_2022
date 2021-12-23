@@ -89,8 +89,6 @@ public class State implements AutoautoProgramElement {
     public void loop() {
         this.returnValue = new AutoautoUndefined();
         for(Statement s : statements) {
-            FeatureManager.logger.log("heehee i am a log");
-            FeatureManager.logger.log(this.location);
             if(!storedStatepathVariable.value.getString().equals(this.location.statepath)) break;
             if(((AutoautoNumericValue)storedStateNumberVariable.value).getFloat() != this.location.stateNumber) break;
             if(s != null) s.loop();

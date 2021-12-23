@@ -87,6 +87,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
         input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
+        input.registerInput("ClawHoming", new ButtonNode("dpadup"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2x"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2b"));
@@ -224,6 +225,9 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             }
             if (input.getBool("ClawPosHome") == true) {
                 clawPosition.positionHome();
+            }
+            if (input.getBool("ClawHoming") == true) {
+                clawPosition.homing();
             }
             if (input.getBool("turnAround") == true){
                 macroManager.runMacro("TurnAround");

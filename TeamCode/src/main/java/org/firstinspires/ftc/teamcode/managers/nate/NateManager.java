@@ -111,10 +111,20 @@ public class NateManager extends FeatureManager {
         }
 
 
+        hands.encodeMoveToPosition("ClawMotor", position);
+    }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+    public void positionNeutral(){
+        if (!found){
+            position = 0;
+        }
+        else {
+            //this value is wrong
+            position = -3470;
+        }
+
+
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -135,9 +145,7 @@ public class NateManager extends FeatureManager {
             position = -5295;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -158,9 +166,7 @@ public class NateManager extends FeatureManager {
             position = -6893;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -181,9 +187,7 @@ public class NateManager extends FeatureManager {
             position = 570;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**

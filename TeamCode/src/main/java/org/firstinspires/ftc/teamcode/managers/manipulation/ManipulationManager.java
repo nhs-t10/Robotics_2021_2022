@@ -24,6 +24,8 @@ public class ManipulationManager extends FeatureManager {
     public String[] motorNames;
     public String[] servoNames;
 
+    public PIDlessEncoderMovementThread movementThread;
+
     /**
      * Make a ManipulationManager by only specifying the names. The constructor uses the given HardwareMap to resolve each name by itself.
      * <h3>Usage Example:</h3>
@@ -63,6 +65,9 @@ public class ManipulationManager extends FeatureManager {
         this.motors = new DcMotor[_motors.length];
         for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
+
+        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread.start();
     }
     public static BasicMapEntry<String, String[]> crservo(String... names) {
         return new BasicMapEntry<String, String[]>("crservo", names);
@@ -95,6 +100,9 @@ public class ManipulationManager extends FeatureManager {
         this.motors = new DcMotor[_motors.length];
         for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
+
+        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread.start();
     }
 
     /**
@@ -114,6 +122,9 @@ public class ManipulationManager extends FeatureManager {
         this.servoNames = _servoNames;
         this.motors = _motors;
         this.motorNames = _motorNames;
+
+        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread.start();
     }
 
     /**
@@ -265,12 +276,7 @@ public class ManipulationManager extends FeatureManager {
 
     //monitors whether the lift motor has been given RUN_TO_POSITION
     public void encodeMoveToPosition(int index, int position, double power) {
-        DcMotor motor = motors[index];
-
-        if(motor.getCurrentPosition() != position) motor.setTargetPosition(position);
-        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)  motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        motor.setPower(power);
+        movementThread.move(index, position, power);
     }
 
     /**
@@ -282,20 +288,7 @@ public class ManipulationManager extends FeatureManager {
      * @return {@code true} if the motor is moving; {@code false} otherwise.
      */
     public boolean hasEncodedMovement(int index) {
-        DcMotor motor = motors[index];
-
-        //if it's not in RunToPosition, return false right away
-        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) return false;
-
-        //check whether its position is within a measure of the target.
-        //We can't just check `motor.getCurrentPosition() == motor.getTargetPosition()` because that'd get thrown off by inaccuracies.
-        boolean isOnTarget = Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) <= ENCODER_TICK_VALUE_TOLERANCE;
-
-        //if it's on-target, movement is over: it can be cancelled.
-        if(isOnTarget) cancelEncodedMovement(index);
-
-        //if it's not on target, it means that it's still moving
-        return !isOnTarget;
+        return movementThread.isMoving(index);
     }
 
     /**
@@ -325,9 +318,7 @@ public class ManipulationManager extends FeatureManager {
      * @param index the index of the motor in the internal motors array.
      */
     public void cancelEncodedMovement(int index) {
-        DcMotor motor = motors[index];
-        if(motor.getMode() == DcMotor.RunMode.RUN_TO_POSITION) motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor.setPower(0);
+        movementThread.cancelMovement(index);
     }
 
     /**
