@@ -119,11 +119,24 @@ public class template extends AutoautoOpmode {
         telemetryManager.autoauto.setGlobalScope(runtime.globalScope);
     }
 
+    boolean shouldActuallyDoThings = true;
+
     public void loop() {
         telemetry.addData("Build Name", BuildHistory.buildName);
         telemetry.addData("Build Time", BuildHistory.buildTimeIso);
         telemetry.update();
-        runtime.loop();
+        try {
+            if(shouldActuallyDoThings) runtime.loop();
+        } catch (Throwable t) {
+            FeatureManager.logger.log("ERROR IN AUTOAUTO!");
+            FeatureManager.logger.log(t.toString());
+            StackTraceElement[] e = t.getStackTrace();
+            for(int i = 0; i < 1 && i < e.length;i++) {
+                FeatureManager.logger.log(e[i].toString());
+            }
+            FeatureManager.logger.log(runtime.getCurrentStatepath() + ":" + runtime.getCurrentState());
+            shouldActuallyDoThings = false;
+        }
     }
 
     @Test

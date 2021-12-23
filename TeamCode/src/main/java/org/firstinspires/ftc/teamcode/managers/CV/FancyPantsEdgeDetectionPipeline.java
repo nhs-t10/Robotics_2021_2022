@@ -64,7 +64,7 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
         contours = new ArrayList<>();
         Imgproc.findContours(redPixels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        FeatureManager.logger.log("Contour Count: " + contours.size());
+        //FeatureManager.logger.log("Contour Count: " + contours.size());
         //only bother continuing if there were any contours found
         if(contours.size() == 0) return input;
 

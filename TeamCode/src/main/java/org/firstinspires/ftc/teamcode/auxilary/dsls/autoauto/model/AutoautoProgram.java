@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.StoredAutoautoVariable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +65,7 @@ public class AutoautoProgram implements AutoautoProgramElement {
             scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(0));
 
             this.currentPath = this.paths.get(currentStatepathName);
+            if(this.currentPath == null) throw new AutoautoNameException(currentStatepathName + " is not a defined statepath. Make sure you didn't make a typo, Paul Max Braverman!");
             this.currentPath.stepInit();
             this.oldPathName = currentStatepathName;
         }
