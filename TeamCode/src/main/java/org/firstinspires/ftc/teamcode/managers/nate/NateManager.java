@@ -192,7 +192,7 @@ public class NateManager extends FeatureManager {
      * <p>This is an asynchronous method, meaning that the method will complete before the action does. Unfortunately, the {@link #liftMovementFinished()}
      * method won't work here. Try using time instead :(</p>
      *
-     * <h2>TODO: <i><u>THIS DOES NOT WORK.</u></i> We should make it work.</h2>
+     * <h2>
      * <p>To do that, we need a sensor connected in the code.</p>
      */
 

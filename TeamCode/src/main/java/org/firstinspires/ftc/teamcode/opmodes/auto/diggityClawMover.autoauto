@@ -16,7 +16,7 @@
     let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
     let CVPosition = getCVPrecisePosition(), next;
     log("Basic Reading: " + CVReading + " | Precise Reading" + CVPosition), next;
-    goto movesomwhere
+    goto movesomewhere
 
 #movesomewhere:
     driveOmni(0,1,0), after 2s goto deliver
