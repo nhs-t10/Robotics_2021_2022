@@ -2,26 +2,29 @@
     goto clawout
 
 #clawout:
-    driveOmni(0.5, 0, 0), after 900ms next;
-    log(2.3s), next;
-    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
-    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
-    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
-    //homing(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
-
-    after 3s goto vision
+//    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
+//    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+//    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
+//    //homing(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    log("I AM MOVING CLAW"), next;
+    after 3s log("I FINISHED CLAW OUT AND ALL I GOT WAS THIS STUPID T-SHIRT"), after 3s goto vision
 
 #vision:
-    if(isFound() == false) homing(), if(isFound() == true) next;
+    log("WELL WE GOT THIS FAR"),
+    //if(isFound() == false) homing(), if(isFound() == true) next;
     let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
     let CVPosition = getCVPrecisePosition(), next;
     log("Basic Reading: " + CVReading + " | Precise Reading" + CVPosition), next;
     goto movesomewhere
 
 #movesomewhere:
-    driveOmni(0,1,0), after 2s goto deliver
+    log("MOVING SOMEWHERE"),
+    driveOmni(0,0,0), after 2s next;
+    log("FINISHED DRIVING"), next;
+    log("going to deliver"), goto deliver
 
 #deliver:
+    log("DELIVERING"),
     if(CVReading == 0) positionOne(), if(CVReading == 1) positionTwo(), if(CVReading == 2) positionThree(), if(liftMovementFinished()) goto park
 
 #park:
