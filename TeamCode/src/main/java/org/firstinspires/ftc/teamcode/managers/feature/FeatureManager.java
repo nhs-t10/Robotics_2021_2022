@@ -43,15 +43,17 @@ public class FeatureManager {
             0.03f, 1680, 1, 8.9, 0.9, 3f);
 
     public static void reconfigureForTeleop() {
+        FeatureManager.logger.log("I am teleop");
         bigBoyConfiguration.omniComponents = new OmniCalcComponents(
-                vertical      (-1f,-1f,-1f,-1f),
+                vertical      (-1f,-1f,1f,1f),
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
         );
     }
     public static void reconfigureForAuto() {
+        FeatureManager.logger.log("I am auto");
         bigBoyConfiguration.omniComponents = new OmniCalcComponents(
-                vertical      (-1f,-1f,1f,1f),
+                vertical      (1f,1f,1f,1f),
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
         );

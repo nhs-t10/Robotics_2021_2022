@@ -54,6 +54,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         FeatureManager.logger.setBackend(telemetry.log());
+        FeatureManager.setIsOpModeRunning(true);
 
         sensor = new SensorManager(hardwareMap, new String[] {});
 
