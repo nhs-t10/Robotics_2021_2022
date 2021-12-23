@@ -59,6 +59,7 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     @Override
     public void setLocation(Location location) {
         this.location = location;
+        if(this.body.location == null) this.body.setLocation(this.location);
     }
 
     @Override

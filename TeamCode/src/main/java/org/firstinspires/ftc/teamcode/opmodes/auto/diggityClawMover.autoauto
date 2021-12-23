@@ -1,3 +1,7 @@
+$
+testIterations: 10000
+$
+
 #init:
     goto clawout
 
@@ -24,8 +28,7 @@
     log("going to deliver"), goto deliver
 
 #deliver:
-    log("DELIVERING"),
-    if(CVReading == 0) positionOne(), if(CVReading == 1) positionTwo(), if(CVReading == 2) positionThree(), if(liftMovementFinished()) goto park
+    log("DELIVERING"), if(CVReading == 0) positionOne(), if(CVReading == 1) positionTwo(), if(CVReading == 2) positionThree(), if(liftMovementFinished()) goto park
 
 #park:
     driveOmni(0,0,0)

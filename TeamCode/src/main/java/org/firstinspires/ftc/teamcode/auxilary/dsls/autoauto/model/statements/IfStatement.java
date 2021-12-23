@@ -74,5 +74,6 @@ public class IfStatement extends Statement {
     @Override
     public void setLocation(Location location) {
         this.location = location;
+        if(this.subject.location == null) this.subject.setLocation(location.clone());
     }
 }
