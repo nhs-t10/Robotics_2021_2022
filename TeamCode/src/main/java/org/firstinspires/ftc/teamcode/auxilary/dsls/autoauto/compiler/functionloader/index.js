@@ -63,14 +63,9 @@ var robotFunctionLoader = robotFunctionsTemplate(
     methods
     .map(x =>
         x[1].map(y =>
-            `scope.put("${y[0]}", new ${y[1]}(${makeManagerName(x[0])}));`
-        )
-            .join("\n")
-            + "\n"
-    )
-    .join("\n"),
-    
-    Object.entries(managerArgs)
+            ({ funcname: y[0], varname: "func_" + y[0], classname: y[1], manager: makeManagerName(x[0])})
+        )).flat(),
+    Object.entries(managerArgs),
 );
 fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
 

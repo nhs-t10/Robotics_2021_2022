@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoOpmode;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.RobotFunctionLoader;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
@@ -19,11 +20,11 @@ public class DelegateFunction extends NativeFunction {
     }
 
     private final String currentModuleAddress;
-    private final FeatureManager[] managers;
+    private final RobotFunctionLoader hardwareAccess;
     AutoautoModule delegatedModule;
 
-    public DelegateFunction(FeatureManager[] managers, String currentModuleAddress) {
-        this.managers = managers;
+    public DelegateFunction(String currentModuleAddress, RobotFunctionLoader hardwareAccess) {
+        this.hardwareAccess = hardwareAccess;
         this.currentModuleAddress = currentModuleAddress;
     }
 
@@ -43,7 +44,7 @@ public class DelegateFunction extends NativeFunction {
             } catch (Exception e) {
                 throw new AutoautoArgumentException("No such module `" + address + "`"+ AutoautoProgram.formatStack(getLocation()));
             }
-            delegatedModule = new AutoautoModule(program, address, managers);
+            delegatedModule = new AutoautoModule(program, address, hardwareAccess);
         }
 
         delegatedModule.loop();

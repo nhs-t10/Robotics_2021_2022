@@ -15,9 +15,8 @@ public abstract class AutoautoMacro extends Macro {
     @Override
     public final void start(FeatureManager... managers) {
         program = generateProgram();
-        if(runtime == null) runtime = new AutoautoRuntime(managers);
-
-        runtime.setProgram(program, getClass().getCanonicalName());
+        if(runtime == null) runtime = new AutoautoRuntime(program, getClass().getCanonicalName(), managers);
+        else runtime.setProgram(program, getClass().getCanonicalName());
     }
 
     @Override

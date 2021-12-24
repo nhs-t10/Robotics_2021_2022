@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class AutoautoRuntime {
-    private final FeatureManager[] managers;
+    public RobotFunctionLoader hardwareAccess;
 
     public AutoautoModule rootModule;
 
@@ -18,12 +18,9 @@ public class AutoautoRuntime {
     }
 
     public AutoautoRuntime(AutoautoProgram program, String creatorAddress, FeatureManager... managers) {
-        this.managers = managers;
+        this.hardwareAccess = new RobotFunctionLoader(managers);
 
         setProgram(program, creatorAddress);
-    }
-    public AutoautoRuntime(FeatureManager... managers) {
-        this.managers = managers;
     }
 
     public int getCurrentState() {
@@ -39,6 +36,6 @@ public class AutoautoRuntime {
     }
 
     public void setProgram(AutoautoProgram program, String creatorAddress) {
-        rootModule = new AutoautoModule(program, creatorAddress, managers);
+        rootModule = new AutoautoModule(program, creatorAddress, hardwareAccess);
     }
 }

@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import com.qualcomm.robotcore.robot.Robot;
+
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.ManagerDeviceScanner;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.RobotFunctionLoader;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
@@ -15,7 +15,7 @@ public class AutoautoModule {
     public AutoautoProgram program;
     public String address;
 
-    public AutoautoModule(AutoautoProgram p, String address, FeatureManager[] managers) {
+    public AutoautoModule(AutoautoProgram p, String address, RobotFunctionLoader hardwareAccess) {
         this.address = address;
         this.program = p;
 
@@ -23,13 +23,9 @@ public class AutoautoModule {
 
         this.globalScope = new AutoautoRuntimeVariableScope();
         globalScope.initSugarVariables();
-        globalScope.initBuiltinFunctions(this, managers);
+        globalScope.initBuiltinFunctions(this, hardwareAccess);
 
         this.program.setScope(globalScope);
-
-        RobotFunctionLoader.loadFunctions(globalScope, managers);
-
-        ManagerDeviceScanner.scan(globalScope, managers);
 
         this.program.init();
         this.program.stepInit();
