@@ -86,9 +86,6 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-# what's compiler.xml??? it keeps being edited :/
-.idea/compiler.xml
-
 *__autoauto.java
 *__macro_autoauto.java
 *__controls.java
@@ -99,10 +96,4 @@ lint/tmp/
 **/.cache/
 **/buildimgs/
 last-build-pixels.json
-.idea/misc.xml
-*.xml
 
-# liable to become very big very fast
-*.hprof
-*.xml
-TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/genealogy/24aa32e75c9a068b78c69396d73295e2c2f018a031a04c72fb64773ef3dfa458.json
