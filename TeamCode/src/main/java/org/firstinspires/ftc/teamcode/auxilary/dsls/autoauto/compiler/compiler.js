@@ -34,8 +34,17 @@ gitignore = gitignoreLines.join("\n");
 fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore);
 
 var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
-var compiledResultDirectory = path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledautoauto");
-if(!fs.existsSync(compiledResultDirectory)) fs.mkdirSync(compiledResultDirectory);
+
+//Clean up old folders
+var oldCompileDirectories = [
+    path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledautoauto"),
+    path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledcontrols")
+];
+//if the folder exists, delete it!
+oldCompileDirectories.forEach(x=> fs.existsSync(x) ? deleteRecursive(x) : false);
+
+var compiledResultDirectory = path.join(srcDirectory, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
+createDirectoryIfNotExist(compiledResultDirectory)
 
 var autoautoFiles = loadAutoautoFilesFromFolder(srcDirectory);
 var alreadyUsedAutoautoFileNames = {};
@@ -135,6 +144,10 @@ function createDirectoryIfNotExist(fileName) {
     if(!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, {recursive: true});
     }
+}
+
+function deleteRecursive(folder) {
+    clearDirectory(folder, []);
 }
 
 function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration, classNameNoConflict) {
