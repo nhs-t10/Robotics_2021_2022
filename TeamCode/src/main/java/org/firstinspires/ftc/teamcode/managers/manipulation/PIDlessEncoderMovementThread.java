@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.managers.manipulation;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class PIDlessEncoderMovementThread extends Thread {
@@ -43,6 +45,7 @@ public class PIDlessEncoderMovementThread extends Thread {
                     if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
                 }
             }
+            Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);
         }
     }
 

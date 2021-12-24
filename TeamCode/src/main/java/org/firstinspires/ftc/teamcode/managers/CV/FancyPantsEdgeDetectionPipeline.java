@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.CV;
 
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -53,6 +55,8 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     @Override
     public Mat processFrame(Mat input)
     {
+        //report how long CV processing is taking
+        Clocktower.time(ClocktowerCodes.CV_UPDATE_LOOP);
         //convert the input to YCrCb, which is better for analysis than the default bgr.
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
 

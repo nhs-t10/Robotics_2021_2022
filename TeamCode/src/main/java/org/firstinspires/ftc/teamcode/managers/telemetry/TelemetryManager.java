@@ -7,6 +7,8 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FallibleHardwareMap;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
@@ -39,9 +41,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     private Gamepad gamepad2;
 
     public Server server;
-
-    private long lastLoopTimeNano = System.nanoTime();
-    private long timeSinceLastLoopNano = 0;
 
     private HashMap<String, String> fields= new HashMap<String, String>();;
 
@@ -161,8 +160,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     @Override
     public boolean update() {
         //monitor loop times
-        timeSinceLastLoopNano = System.nanoTime() - lastLoopTimeNano;
-        lastLoopTimeNano = System.nanoTime();
+        Clocktower.time(ClocktowerCodes.MAIN_OPMODE_LOOP);
 
         this.hasNewData = true;
         return backend.update();
@@ -240,7 +238,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
                 "\"time\":" + System.currentTimeMillis();
                 r += "," +
                         "\"fields\": {"
-                        + "\"meta.looptimeNs\":" + timeSinceLastLoopNano + ",";
+                        + Clocktower.getTimeJSONFlatFragment() + ",";
+
             for(Map.Entry<String, String> field : fields.entrySet()) {
                 r += "\"" + field.getKey() + "\":";
                 try {
