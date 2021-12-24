@@ -1,0 +1,2 @@
+#i:
+log("this is the value from the child " + delegate("delegation/test.autoauto"))

@@ -160,6 +160,28 @@ public abstract class PaulMath extends FeatureManager {
         return snakey.toString().toUpperCase();
     }
 
+    /**
+     * Convert a kebab-case string to PascalCase.
+     * @param str a string in kebab-case, like "word-a-b-c-d"
+     * @return the same string in PascalCaseAlsoKnownAsUpperCamelCase
+     */
+    public static String kebabToPascal(String str) {
+        String[] words = str.split("-");
+        StringBuilder s = new StringBuilder();
+        for(String w : words) {
+            s.append(capitalize(w));
+        }
+        return s.toString();
+    }
+
+    /**
+     * Make a word into capital-case.
+     * @param word a string with no whitespace
+     * @return the given word, but with the first letter capitalized.
+     */
+    public static String capitalize(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+    }
 
     /**
      * Counts proportional error for PID control.
@@ -355,7 +377,7 @@ public abstract class PaulMath extends FeatureManager {
     /**
      * Normalizes a path to POSIX-esque-ness. Removes repeating slashes and leading slashes; resolves ".." and "." terms;
      * @param path The path to normalize, in some format
-     * @return
+     * @return a normalised path in POSIX format.
      */
     public static String normalizeRelativePath(String path) {
         if(path == null) return "";

@@ -6,12 +6,14 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.AutoautoMathMethodsTable;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.DefunFunction;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.ExistsFunction;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.LengthFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.DelegateFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.TypeofFunction;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.ProvideFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.LogFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.ReturnFunction;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -54,6 +56,7 @@ public class AutoautoRuntimeVariableScope {
         }
     }
 
+    @Nullable
     public AutoautoPrimitive get(String s) {
         if(this.variables.containsKey(s)) return this.variables.get(s).value;
         else if(parentScope != null) return parentScope.get(s);
@@ -114,17 +117,15 @@ public class AutoautoRuntimeVariableScope {
         this.systemSet("Math", new AutoautoMathMethodsTable());
     }
 
-    public void initBuiltinFunctions(AutoautoRuntime runtime) {
+    public void initBuiltinFunctions(AutoautoModule module, FeatureManager[] managers) {
         this.systemSet("log", new LogFunction());
-        this.systemSet("print", new LogFunction());
 
-        DefunFunction defun = new DefunFunction(runtime);
-        defun.setScope(runtime.globalScope);
-        this.systemSet("defun", defun);
+        this.systemSet("return", new ReturnFunction());
 
-        this.systemSet("return", new ReturnFunction(runtime));
-        this.systemSet("length", new LengthFunction());
-        this.systemSet("exists", new ExistsFunction());
+        this.systemSet("typeof", new TypeofFunction());
+
+        this.systemSet("delegate", new DelegateFunction(managers, module.address));
+        this.systemSet("provide", new ProvideFunction());
     }
 
     public boolean isTopLevel() {

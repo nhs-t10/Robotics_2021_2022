@@ -157,8 +157,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 
             var creation = `
             ${typedDefinitions}
-            HashMap<String, Statepath> ${nonce} = new HashMap<String, Statepath>();
-            ${childDefs.map((x, i) => `${nonce}.put(${x.nameNonce}, ${x.varname});`).join("\n")}
+            Statepath[] ${nonce} = new Statepath[] { ${childDefs.map(x=>x.varname)} };
             AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${childDefs[0].nameNonce});
             ${locationSetters.join("")}`;
 

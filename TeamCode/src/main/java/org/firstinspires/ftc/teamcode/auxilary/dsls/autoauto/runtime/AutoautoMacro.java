@@ -9,7 +9,6 @@ public abstract class AutoautoMacro extends Macro {
 
     private AutoautoRuntime runtime = null;
     private boolean forceStop;
-    private boolean started;
 
     public abstract AutoautoProgram generateProgram();
 
@@ -18,14 +17,11 @@ public abstract class AutoautoMacro extends Macro {
         program = generateProgram();
         if(runtime == null) runtime = new AutoautoRuntime(managers);
 
-        runtime.setProgram(program);
-
-        started = true;
+        runtime.setProgram(program, getClass().getCanonicalName());
     }
 
     @Override
     public final void loop() {
-        assert started == true;
         runtime.loop();
     }
 

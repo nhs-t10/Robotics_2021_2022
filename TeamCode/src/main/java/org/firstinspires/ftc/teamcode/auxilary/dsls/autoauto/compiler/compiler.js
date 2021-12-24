@@ -56,7 +56,8 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         .replace(".macro.autoauto", "__macro_autoauto")
         .replace(".autoauto", "__autoauto");
 
-    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) className += "__" + crc(package);
+    var classNameNoConflict = className;
+    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) classNameNoConflict += "__" + crc(package);
 
     if(!alreadyUsedAutoautoFileNames[className]) alreadyUsedAutoautoFileNames[className] = 0;
     alreadyUsedAutoautoFileNames[className]++;
@@ -86,7 +87,7 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         var jsonSettingCode = javaCreationCode.jsonSettingCode;
 
         fs.writeFileSync(resultFile,
-            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration)
+            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
         );
         writtenFiles.push(resultFile);
     } catch(e) {
@@ -136,7 +137,7 @@ function createDirectoryIfNotExist(fileName) {
     }
 }
 
-function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration) {
+function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration, classNameNoConflict) {
     return template
         .replace("public class template", "public class " + className)
         .replace("/*NSERVO_NAMES*/", buildServoNames(frontMatter.servos))
@@ -146,6 +147,7 @@ function processTemplate(template, className, frontMatter, javaStringFileSource,
         .replace("/*CRSERVOS*/", buildCrServos(frontMatter.crServos))
         .replace("/*PACKAGE_DECLARATION*/", packageDeclaration)
         .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
+        .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*TEST_ITERATIONS*/",  (frontMatter.testIterations === undefined ? 3 : frontMatter.testIterations))
         .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", ((TelemetryManager.LogCatcher)telemetry.log()).getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1));

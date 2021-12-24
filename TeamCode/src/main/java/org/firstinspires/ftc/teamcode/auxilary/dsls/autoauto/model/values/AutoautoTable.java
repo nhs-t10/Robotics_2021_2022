@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoatuoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     public AutoautoTable(AutoautoValue[] e) {
         elems = new HashMap<>();
         for(int i = 0; i < e.length; i++) {
-            if(e[i] == null) throw new AutoatuoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
+            if(e[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
             set(new AutoautoNumericValue(i), e[i]);
         }
     }
@@ -143,7 +142,10 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
 
     public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
         String keyStr = key.getString();
-        if(!elems.containsKey(keyStr)) return new AutoautoUndefined();
+        if(!elems.containsKey(keyStr)) {
+            if(keyStr.equals("length")) return new AutoautoNumericValue(arrayLength());
+            return new AutoautoUndefined();
+        }
 
 
         AutoautoValue value = elems.get(keyStr);

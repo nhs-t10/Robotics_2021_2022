@@ -6,4 +6,6 @@ public class AutoautoSystemVariableNames {
     public static final String STATE_COUNT_OF_PREFIX = "__statesInStatepath@";
     public static final String RETURNED_VALUE = "\t@returned";
     public static final String FUNCTION_ARGUMENTS_NAME = "args";
+    public static final String EXPORTS = "\t@exported";
+    public static final String IMPORTED = "\t@imported";
 }

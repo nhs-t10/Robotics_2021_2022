@@ -62,7 +62,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import java.util.HashMap;
 
 @SuppressWarnings("WrongPackageStatement")
-@Autonomous
+@Autonomous(name = "/*NO_CONFLICT_NAME*/")
 public class template extends AutoautoOpmode {
     MovementManager driver;
     ManipulationManager limbs;
@@ -111,12 +111,12 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
+        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
 
         AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
         telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
-        telemetryManager.autoauto.setGlobalScope(runtime.globalScope);
+        telemetryManager.autoauto.setGlobalScope(runtime.rootModule.globalScope);
     }
 
     boolean shouldActuallyDoThings = true;
