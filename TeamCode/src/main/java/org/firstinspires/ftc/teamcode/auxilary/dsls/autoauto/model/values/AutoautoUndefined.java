@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoUndefined extends AutoautoPrimitive {
@@ -36,6 +37,7 @@ public class AutoautoUndefined extends AutoautoPrimitive {
         this.location = location;
     }
 
+    @NotNull
     @Override
     public String getString() {
         return "undefined";
@@ -60,5 +62,21 @@ public class AutoautoUndefined extends AutoautoPrimitive {
     }
     public String toString() {
         return "undefined";
+    }
+
+    //make sure people don't try to set properties on undefined
+    public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
+        throw new AutoautoArgumentException("Could not get property " + key.getString() + " of undefined");
+    }
+    public boolean hasProperty(AutoautoPrimitive key) {
+        throw new AutoautoArgumentException("Could not get property " + key.getString() + " of undefined");
+    }
+
+    public void setProperty(AutoautoPrimitive key, AutoautoPrimitive value) {
+        throw new AutoautoArgumentException("Could not set property " + key.getString() + " of undefined");
+    }
+
+    public void deleteProperty(AutoautoPrimitive key) {
+        throw new AutoautoArgumentException("Could not set property " + key.getString() + " of undefined");
     }
 }

@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCallableValue {
     private State body;
@@ -26,6 +27,7 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
         this.defaultArgValues = defaultArgValues;
     }
 
+    @NotNull
     @Override
     public String getString() {
         return "<anonymous function>() {" + body.toString() + "}";

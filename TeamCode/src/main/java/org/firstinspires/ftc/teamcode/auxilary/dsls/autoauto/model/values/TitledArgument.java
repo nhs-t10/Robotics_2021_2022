@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
 
 public class TitledArgument extends AutoautoValue {
@@ -29,7 +30,17 @@ public class TitledArgument extends AutoautoValue {
         }
     }
 
+    @Override
+    public void init() {}
 
+    @Override
+    public void loop() throws AutoautoNameException {
+        this.title.loop();
+        this.value.loop();
+    }
+
+
+    @NotNull
     @Override
     public String getString() {
         return value.getString();
@@ -60,5 +71,9 @@ public class TitledArgument extends AutoautoValue {
     @Override
     public AutoautoValue clone() {
         return new TitledArgument(title.clone(), value.clone());
+    }
+
+    public String toString() {
+        return title.toString() + " = " + value.toString();
     }
 }

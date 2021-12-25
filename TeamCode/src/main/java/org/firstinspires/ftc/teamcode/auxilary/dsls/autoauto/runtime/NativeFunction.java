@@ -36,8 +36,9 @@ public abstract class NativeFunction extends AutoautoPrimitive implements Autoau
         this.scope = scope;
     }
 
+    @NotNull
     public String getString() {
-        return null;
+        return "<native autoauto function " + getClass().getSimpleName() + ">";
     }
 
     @Override

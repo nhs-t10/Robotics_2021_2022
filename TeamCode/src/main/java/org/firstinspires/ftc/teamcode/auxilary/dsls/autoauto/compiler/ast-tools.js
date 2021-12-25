@@ -25,13 +25,13 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     State: "A",
     "Statement[]": "A",
     NextStatement: "N",
-    FunctionCallStatement: "F",
+    ValueStatement: "F",
     AfterStatement: "W",
     FunctionCall: "M",
     ArithmeticValue: "O",
     AutoautoNumericValue: "C",
     AutoautoString: "U",
-    AutoautoTable: "K",
+    AutoautoTableLiteral: "K",
     AutoautoUnitValue: "E",
     GotoStatement: "G",
     LetStatement: "D",
@@ -42,6 +42,7 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     FunctionDefStatement: "J",
     TitledArgument: "V",
     AutoatuoTailedValue: "Z",
+    AutoautoFunctionLiteral: "Q",
     
     "AutoautoValue[]" : "%"
 };
@@ -61,7 +62,7 @@ var PRIMITIVENESS_OF_TYPE = {
 
     NextStatement: 1.9,
     LetStatement: 1.8,
-    FunctionCallStatement: 1.7,
+    ValueStatement: 1.7,
     GotoStatement: 1.6,
     AfterStatement: 1.5,
     IfStatement: 1.4,
@@ -152,21 +153,17 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                     x.replace(/ ?(\W) ?/g, "$1")
                 ).trim()
             ) //remove extra whitespace, if it's not a string
-            .join("") //join into one string
             
                 
-            var creation = `
-            ${typedDefinitions}
-            Statepath[] ${nonce} = new Statepath[] { ${childDefs.map(x=>x.varname)} };
-            AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${childDefs[0].nameNonce});
-            ${locationSetters.join("")}`;
+            var creationStatements = typedDefinitions.concat([
+                `Statepath[] ${nonce} = new Statepath[] { ${childDefs.map(x=>x.varname)} };`,
+                `AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${childDefs[0].nameNonce});`
+            ]).concat(locationSetters);
 
             result = "";
-            var creationStatements = (creation).split(",");
             var line = "";
             for(var i = 0; i < creationStatements.length; i++) {
                 if(creationStatements[i] != "") line += creationStatements[i];
-                if(i + 1 < creationStatements.length) line += ",";
 
                 if(line.length >= COLUMN_THRESHOLD) {
                     result += line + "\n";
@@ -277,6 +274,21 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 varname: nonce
             };
             break;
+        case "FunctionLiteral":
+            var args = process(ast.args);
+            var body = process(ast.body);
+
+            addDepthMappedDefinition({
+                depth: depth,
+                self: nonce,
+                depends: [args.varname, body.varname],
+                definition: `AutoautoFunctionLiteral ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoFunctionLiteral}(${args.varname}, ${body.varname});`
+            });
+
+            result = {
+                varname: nonce
+            };
+            break;
         case "Block":
             var b = process(ast.state).varname;
             result = {
@@ -291,14 +303,14 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 noLocation: true
             };
             break;
-        case "FunctionCallStatement":
+        case "ValueStatement":
             var call = process(ast.call);
 
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
                 depends: [call.varname],
-                definition: `FunctionCallStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.FunctionCallStatement}(${call.varname});`
+                definition: `ValueStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.ValueStatement}(${call.varname});`
             });
 
             result = {
@@ -421,7 +433,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 depth: depth,
                 self: nonce,
                 depends: [args.varname],
-                definition: `AutoautoTable ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoTable}(${args.varname});`
+                definition: `AutoautoTableLiteral ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoTableLiteral}(${args.varname});`
             });
 
             result = {

@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.absNativeFunction;
@@ -42,17 +43,17 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunct
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.tanNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.tanhNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.truncNativeFunction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class AutoautoMathMethodsTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
-    private AutoautoRuntimeVariableScope scope;
-    private Location location;
-
-    private HashMap<String, AutoautoPrimitive> methods;
-
+public class AutoautoMathMethodsTable extends AutoautoTable {
     public AutoautoMathMethodsTable() {
-        this.methods = new HashMap<>();
+        super(makeMethodsMap());
+    }
+
+    private static HashMap<String, AutoautoPrimitive> makeMethodsMap() {
+        HashMap<String, AutoautoPrimitive> methods = new HashMap<>();
 
         methods.put("E", new AutoautoNumericValue(Math.E));
         methods.put("LN2", new AutoautoNumericValue(0.6931471805599453));
@@ -99,55 +100,6 @@ public class AutoautoMathMethodsTable extends AutoautoPrimitive implements Autoa
         methods.put("tanh", new tanhNativeFunction());
         methods.put("trunc", new truncNativeFunction());
 
-    }
-
-    @Override
-    public AutoautoPrimitive getProperty(AutoautoPrimitive prop) {
-        if(hasProperty(prop)) return methods.get(prop.getString());
-        else return new AutoautoUndefined();
-    }
-
-    @Override
-    public boolean hasProperty(AutoautoPrimitive prop) {
-        return methods.containsKey(prop.getString());
-    }
-
-    @Override
-    public String getJSONString() {
-        return PaulMath.JSONify(getString());
-    }
-
-    @Override
-    public String getString() {
-        return "[native table Math]";
-    }
-
-    @Override
-    public AutoautoRuntimeVariableScope getScope() {
-        return scope;
-    }
-
-    @Override
-    public void setScope(AutoautoRuntimeVariableScope scope) {
-        this.scope = scope;
-    }
-
-    @Override
-    public Location getLocation() {
-        return this.location;
-    }
-
-    @Override
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    @Override
-    public AutoautoPrimitive clone() {
-        return new AutoautoMathMethodsTable();
-    }
-
-    public String toString() {
-        return "Math";
+        return methods;
     }
 }

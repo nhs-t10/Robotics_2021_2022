@@ -5,17 +5,17 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
-public class FunctionCallStatement extends Statement {
+public class ValueStatement extends Statement {
     public AutoautoValue function;
 
     AutoautoRuntimeVariableScope scope;
     Location location;
 
-    public static FunctionCallStatement F(AutoautoValue f) {
-        return new FunctionCallStatement(f);
+    public static ValueStatement F(AutoautoValue f) {
+        return new ValueStatement(f);
     }
 
-    public FunctionCallStatement(AutoautoValue f) {
+    public ValueStatement(AutoautoValue f) {
         this.function = f;
     }
 
@@ -34,8 +34,8 @@ public class FunctionCallStatement extends Statement {
     }
 
     @Override
-    public FunctionCallStatement clone() {
-        FunctionCallStatement c = new FunctionCallStatement(function.clone());
+    public ValueStatement clone() {
+        ValueStatement c = new ValueStatement(function.clone());
         c.setLocation(location);
         return c;
     }

@@ -55,17 +55,17 @@ multiStatement = _ OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
 }
 
 singleStatement =
-  _  s:(functionCallStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
+  _  s:(valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
 
   { return s; }
 
 afterStatement =
  AFTER _ u:value _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
 
-functionCallStatement =
- f:value { return { type: "FunctionCallStatement", location: location(), call: f } }
+valueStatement =
+ f:value { return { type: "ValueStatement", location: location(), call: f } }
 
-funcDefStatement = (FUNCTION / FUNC) _
+funcDefStatement = FUNCTION _
 	name:(IDENTIFIER/dynamicValue) _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
     { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
@@ -145,7 +145,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / variableReference / valueInParens) _ {
+ _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
    return x;
  }
  
@@ -163,7 +163,7 @@ baseExpression = a:atom _ t:tail* _ {
 
 tail = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } } /
 	OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } } /
-    DOT a:variableReference { return {type: "TailedValue", head: null, tail: a, location: location() }; }
+    DOT a:variableReference { return {type: "TailedValue", head: null, tail: a.variable, location: location() }; }
 
 variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
@@ -175,6 +175,9 @@ arrayLiteral =
    elems: a || {type:"ArgumentList",args:[], location: location()}
  }
 }
+
+functionLiteral = FUNC _ name:IDENTIFIER? _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
+    { return { type: "FunctionLiteral", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
 boolean =
  l:arithmeticValue o:comparisonOperator r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; }
@@ -229,7 +232,7 @@ COMMA =
     ","
 AFTER =
     "after"
-FUNC = "func "
+FUNC = "func"
 FUNCTION = "function"
 GOTO =
     "goto"

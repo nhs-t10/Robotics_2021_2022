@@ -1,2 +1,11 @@
+$
+testIterations: 1,
+errorStackTraceHeight: 20
+$
+
 #i:
-log("this is the value from the child " + delegate("delegation/test.autoauto"))
+log(
+    (
+        func (e) { return(Math.log(e)) }
+    )(3)
+)

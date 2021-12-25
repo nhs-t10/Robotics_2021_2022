@@ -117,6 +117,7 @@ public class BooleanOperator extends AutoautoValue {
         }
     }
 
+    @NotNull
     @Override
     public String getString() {
         return resolvedValue.getString();

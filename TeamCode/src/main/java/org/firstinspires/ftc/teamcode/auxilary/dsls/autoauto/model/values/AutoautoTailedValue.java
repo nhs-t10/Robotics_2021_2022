@@ -41,17 +41,12 @@ public class AutoautoTailedValue extends AutoautoValue{
     @Override
     public AutoautoPrimitive getResolvedValue() {
         AutoautoPrimitive resolvedHead = head.getResolvedValue();
-        if(!(resolvedHead instanceof AutoautoPropertyBearingObject)) throw new AutoautoNameException("`"
-                + resolvedHead.toString()
-                + "` is not a property-bearing object"
-                + AutoautoProgram.formatStack(location));
-
-        AutoautoPropertyBearingObject propertyBearingObject = (AutoautoPropertyBearingObject)resolvedHead;
 
         AutoautoPrimitive resolvedTail = tail.getResolvedValue();
-        return propertyBearingObject.getProperty(resolvedTail);
+        return resolvedHead.getProperty(resolvedTail);
     }
 
+    @NotNull
     @Override
     public String getString() {
         return tail.getString();
@@ -82,5 +77,9 @@ public class AutoautoTailedValue extends AutoautoValue{
     @Override
     public AutoautoTailedValue clone() {
         return new AutoautoTailedValue(head.clone(), tail.clone());
+    }
+
+    public String toString() {
+        return head.toString() + "[" + tail.toString() + "]";
     }
 }

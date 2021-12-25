@@ -73,6 +73,7 @@ public class ArithmeticValue extends AutoautoValue {
         }
     }
 
+    @NotNull
     @Override
     public String getString() {
         return returnValue.getString();

@@ -23,6 +23,8 @@ public class VariableReference extends AutoautoValue {
         return name;
     }
 
+    public void init() {}
+
     public void loop() {
         this.resolvedValue = scope.get(this.name);
         if(this.resolvedValue == null) this.resolvedValue = new AutoautoUndefined(AutoautoUndefined.NONEXISTENT_VARIABLE);
@@ -33,6 +35,7 @@ public class VariableReference extends AutoautoValue {
         return resolvedValue;
     }
 
+    @NotNull
     @Override
     public String getString() {
         return resolvedValue.getString();
