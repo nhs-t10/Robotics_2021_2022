@@ -16,6 +16,12 @@ var path = require("path");
  var STROKE_WIDTH = 1;
  var VERTICAL_SPACING = 200;
 
+
+//create the tree container directory if it doesn't exist.
+ if(!fs.existsSync(path.join(__dirname, "trees"))) {
+    fs.mkdirSync(path.join(__dirname, "trees"));
+ }
+
 /**
  * 
  * @param {ClassedGraphNode[]} nodes 
@@ -27,7 +33,7 @@ module.exports = function(nodes) {
     var svgFile = `<svg width="${svg.width + NODE_DOT_DIAMETER/2}" height="${svg.height + NODE_DOT_DIAMETER/2}" xmlns="http://www.w3.org/2000/svg">`
     + svg.xml
     + `</svg>`;
-    fs.writeFileSync(path.join(__dirname, "trees", (m++) + "tree.svg"), svgFile);
+    fs.writeFileSync(path.join(__dirname, "trees", (m++) + "tree.svg"), svgFile); //SAFE
     
 }
 

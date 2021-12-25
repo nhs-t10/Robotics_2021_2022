@@ -14,6 +14,9 @@ var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
+if(rootDirectory == "" || rootDirectory == path.sep ||
+    srcDirectory == "" || srcDirectory == path.sep) throw "Unexpected directory structure";
+
 //update gitignore with build history files
 var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
 var gitignoreLines = gitignore.split(/\r?\n/);
@@ -23,7 +26,7 @@ for(var i = 0; i < GITIGNORED.length; i++) {
 }
 
 gitignore = gitignoreLines.join("\n");
-fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore);
+fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore); //SAFE
 
 var mac = "";
 
@@ -40,8 +43,8 @@ try {
  var familyTreeRecordsDirectory = path.join(__dirname, "genealogy");
  var familyLineFile = path.join(familyTreeRecordsDirectory, computerHash + ".json");
 
- if(!fs.existsSync(familyTreeRecordsDirectory)) fs.mkdirSync(familyTreeRecordsDirectory);
- if(!fs.existsSync(familyLineFile)) fs.writeFileSync(familyLineFile, "{}");
+ if(!fs.existsSync(familyTreeRecordsDirectory)) fs.mkdirSync(familyTreeRecordsDirectory, { recursive: true});
+ if(!fs.existsSync(familyLineFile)) fs.writeFileSync(familyLineFile, "{}"); //SAFE
 
  var familyLine = require("./genealogy/" + computerHash + ".json");
 
@@ -77,7 +80,7 @@ try {
 
     familyLine.lastBuildTimeUnixMs = Date.now();
 
-    fs.writeFileSync(familyLineFile, JSON.stringify(familyLine, null, 4));
+    fs.writeFileSync(familyLineFile, JSON.stringify(familyLine, null, 4)); //SAFE
 
     var history = fs.readdirSync(familyTreeRecordsDirectory) //get files in the geneology
         .filter(x=>x.endsWith(".json")) //only load JSON files
@@ -94,7 +97,11 @@ try {
 
 function updateTemplate(familyLine, time, name, history, hash, phrase, pngFileAddress, buildNumber, phraseLong) {
     var template = fs.readFileSync(path.join(__dirname, "not_BuildHistory.notjava")).toString();
-    fs.writeFileSync(path.join(__dirname, "BuildHistory.java"), template
+
+    var resPath = path.join(__dirname, "BuildHistory.java");
+    fs.mkdirSync(path.dirname(resPath), { recursive: true});
+
+    fs.writeFileSync(resPath, template //SAFE
                                 .replace("BUILDER_BROWSER_FINGERPRINT", familyLine.browser)
                                 .replace("BUILD_TIME_ISO", time)
                                 .replace("BUILD_NAME", name)

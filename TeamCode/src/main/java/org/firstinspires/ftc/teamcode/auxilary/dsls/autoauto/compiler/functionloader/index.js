@@ -12,7 +12,7 @@ var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
 
 var cacheFile = path.join(__dirname, ".cache/managers.json");
-if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "{}");
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, "{}"); //SAFE
 
 var cacheManagers = require(cacheFile);
 
@@ -58,6 +58,8 @@ for (var i = 0; i < managers.length; i++) {
 deleteUnusedMethodClasses(methods.map(x=>x[1].map(y=>y[1])).flat());
 
 var robotFunctionLoaderAddress = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/RobotFunctionLoader.java");
+if(!fs.existsSync(path.dirname(robotFunctionLoaderAddress))) fs.mkdirSync(path.dirname(robotFunctionLoaderAddress), { recursive: true });
+
 var robotFunctionsTemplate = require("./render-rfl.js");
 var robotFunctionLoader = robotFunctionsTemplate(
     methods
@@ -67,9 +69,9 @@ var robotFunctionLoader = robotFunctionsTemplate(
         )).flat(),
     Object.entries(managerArgs),
 );
-fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
+fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader); //SAFE
 
-fs.writeFileSync(cacheFile, JSON.stringify(cacheManagers));
+fs.writeFileSync(cacheFile, JSON.stringify(cacheManagers)); //SAFE
 
 function makeManagerName(name) {
     if(name == "") return "";

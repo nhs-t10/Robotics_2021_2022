@@ -11,7 +11,7 @@ var PHI = 1.61803399;
 
 
 var cacheFile = path.join(__dirname, "last-build-pixels.json");
-if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"}));
+if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"})); //SAFE
 
 module.exports = function(buildNumber, hash, pixelStrategySeed) {
     console.log("percep hash: `" + hash + "`");

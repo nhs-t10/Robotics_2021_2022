@@ -16,7 +16,7 @@ for(var i = 0; i < RENDER_HEIGHT; i++) {
 var png = new PngFile(pixels, RENDER_WIDTH);
 //for(var i = 0; i < 1666; i++) png.addOptionalChunk("TEXT", makeFullTextChunk());
 
-fs.writeFileSync(__dirname + "/test.png", png.toBuffer());
+fs.writeFileSync(__dirname + "/test.png", png.toBuffer()); //SAFE
 
 function makeFullTextChunk() {
     var c = String.fromCharCode(Math.floor(Math.random() * 26) + 65);

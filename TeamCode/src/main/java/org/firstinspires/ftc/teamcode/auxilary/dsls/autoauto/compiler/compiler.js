@@ -31,7 +31,7 @@ for(var i = 0; i < GITIGNORED.length; i++) {
 }
 
 gitignore = gitignoreLines.join("\n");
-fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore);
+fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore); //SAFE
 
 var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
@@ -95,7 +95,7 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         var programModelGeneration = javaCreationCode.genCode;
         var jsonSettingCode = javaCreationCode.jsonSettingCode;
 
-        fs.writeFileSync(resultFile,
+        fs.writeFileSync(resultFile, //SAFE
             processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
         );
         writtenFiles.push(resultFile);
