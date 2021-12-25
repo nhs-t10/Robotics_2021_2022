@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation;
 
-import com.qualcomm.robotcore.robot.Robot;
-
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.RobotFunctionLoader;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class AutoautoModule {
     public AutoautoRuntimeVariableScope globalScope;

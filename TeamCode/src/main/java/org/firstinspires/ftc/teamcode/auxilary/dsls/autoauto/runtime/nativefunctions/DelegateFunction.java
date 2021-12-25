@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.RobotFuncti
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class DelegateFunction extends NativeFunction {
     @Override
