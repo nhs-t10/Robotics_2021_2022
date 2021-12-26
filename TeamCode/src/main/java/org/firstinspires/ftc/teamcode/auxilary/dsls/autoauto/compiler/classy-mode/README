@@ -1,0 +1,2 @@
+This is the "classy mode" compiler. It's classy because it directly creates the class files & JVM bytecode.
+It's in a VERY unfinished mode right now.
