@@ -35,9 +35,11 @@ module.exports = {
 
         var dataGreenColor = cssVariables.getPropertyValue("--data-green");
 
-        if(!config.xAxis || !config.yAxis) return;
+        if(!config.xAxis || !config.yAxis) return console.log(config);
         var xCoord = data.fields[config.xAxis];
         var yCoord = data.fields[config.yAxis];
+
+        console.log(xCoord, yCoord);
 
         try {
             xCoord = eval("((x,y)=>" + config.xFormula + ")")(xCoord, yCoord);
@@ -68,6 +70,7 @@ module.exports = {
         }
 
         ctx.strokeStyle = dataGreenColor;
+        ctx.fillStyle = dataGreenColor;
         ctx.lineWidth = 2;
 
 
@@ -136,11 +139,16 @@ function drawPath(points, minX, maxX, minY, maxY) {
         var y = height - Math.floor(scaled.y * height);
 
         if(i == 0) ctx.moveTo(x, y);
-
-        ctx.lineTo(x, y);
+        else ctx.lineTo(x, y);
     }
 
     ctx.stroke();
+
+    //make a circle at the latest point
+    ctx.clearRect(x - 4, y - 4, 8, 8); //clear the area around the circle so it's prominent
+    ctx.beginPath();
+    ctx.ellipse(x, y, 3, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function scalePoint(point, minX, maxX, minY, maxY) {
