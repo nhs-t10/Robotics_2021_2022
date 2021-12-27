@@ -3,9 +3,4 @@ testIterations: 1,
 errorStackTraceHeight: 20
 $
 
-#i:
-log(
-    (
-        func (e) { return(Math.log(e)) }
-    )(3)
-)
+#i: delegate("delegation/test.autoauto", "foo")

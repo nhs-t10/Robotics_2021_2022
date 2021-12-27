@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.feature;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -9,6 +10,7 @@ public class Logger {
     private Telemetry.Log backend;
     private PrintStream fallbackBackend;
     private boolean usesFallback;
+    private boolean addStackTrace;
     public void setBackend(Telemetry.Log log) {
         backend = log;
         usesFallback = false;
@@ -17,13 +19,23 @@ public class Logger {
     public void setBackend(PrintStream log) {
         fallbackBackend = log;
         usesFallback = true;
+        addStackTrace = true;
     }
 
-    public Logger() {this.fallbackBackend = System.out; this.usesFallback = true;}
+    public Logger() {
+        this.fallbackBackend = System.out;
+        this.usesFallback = true;
+        addStackTrace = true;
+    }
 
     public Logger(Telemetry.Log log) { this.backend = log;}
 
-    public void log(String l) {
+    public void log(String a) {
+        //make it into a local variable so Android Studio doesn't complain
+        String l = a;
+        if(addStackTrace) {
+            l += PaulMath.leftPad(160 - l.length(), getLastNonLoggerStackElement());
+        }
         if(l == null) {
             log("null");
         } else {
@@ -31,6 +43,20 @@ public class Logger {
             else backend.add(l);
         }
     }
+
+    private String getLastNonLoggerStackElement() {
+        String selfClassName = getClass().getCanonicalName();
+        StackTraceElement[] stackTrace = (new Error()).getStackTrace();
+        for(StackTraceElement e : stackTrace) {
+            String element = e.toString();
+            if(!element.startsWith(selfClassName)) {
+                String matchingStartTrimmed = PaulMath.trimMatchingStart(element, selfClassName);
+                return matchingStartTrimmed.substring(matchingStartTrimmed.indexOf('.') + 1);
+            }
+        }
+        return stackTrace[stackTrace.length - 1].toString();
+    }
+
     public void log(String n, Object l) {
         if(!usesFallback) backend.add(n, l);
     }

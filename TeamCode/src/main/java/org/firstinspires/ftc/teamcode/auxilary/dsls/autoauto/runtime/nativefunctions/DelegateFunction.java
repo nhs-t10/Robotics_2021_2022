@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunc
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoOpmode;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
@@ -45,6 +46,12 @@ public class DelegateFunction extends NativeFunction {
             }
             delegatedModule = new AutoautoModule(program, address, hardwareAccess);
         }
+
+        //put everything AFTER the first argument into a table. Give that table to the module.
+        AutoautoPrimitive[] moduleArgs = new AutoautoPrimitive[args.length - 1];
+        System.arraycopy(args, 1, moduleArgs, 0, args.length - 1);
+
+        delegatedModule.globalScope.systemSet(AutoautoSystemVariableNames.MODULE_ARGS, new AutoautoTable(moduleArgs));
 
         delegatedModule.loop();
 

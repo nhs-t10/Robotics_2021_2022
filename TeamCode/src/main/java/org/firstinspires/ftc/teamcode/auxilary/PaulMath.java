@@ -388,4 +388,30 @@ public abstract class PaulMath extends FeatureManager {
                 .replaceAll("(^|[^/]+)/\\.\\./", "")
                 .replaceAll("^/", "");
     }
+
+    /**
+     * Trims from the start of {@code toTrim} until its start DOESN'T match {@code trimBy}
+     * @param toTrim
+     * @param trimBy
+     * @return the trimmed string
+     */
+    public static String trimMatchingStart(String toTrim, String trimBy) {
+        if(trimBy == null) return toTrim;
+        if(toTrim == null) return "";
+
+        char[] toTrimArr = toTrim.toCharArray(), trimByArr = trimBy.toCharArray();
+        int trimIndex = 0;
+        int len = Math.min(toTrim.length(), trimBy.length());
+        for(int i = 0; i < len; i++) {
+            if(toTrimArr[i] == trimByArr[i]) trimIndex = i;
+        }
+        return toTrim.substring(trimIndex);
+    }
+
+    public static String leftPad(int l, String n) {
+        int initialLength = n.length();
+        StringBuilder s = new StringBuilder(n);
+        for(int i = initialLength; i < l; i++) s.insert(0, " ");
+        return s.toString();
+    }
 }

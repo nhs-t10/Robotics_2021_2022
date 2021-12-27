@@ -1,2 +1,2 @@
 #b:
-provide(3), log("hehehehe i'm secret!")
+log(module_args[0] + " 33!")

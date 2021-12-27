@@ -41,12 +41,13 @@ public abstract class UselessClassForNativeJavadoc {
      * If {@code delegate("helpful-module.autoauto")} is called in {@code a.autoauto}, it will cause an error. You need to use {@code delegate("folder1/helpful-module.autoauto")}. <br>
      * Meanwhile, {@code b.autoauto} can NOT have access to {@code helpful-module.autoauto}. Be careful with your directory structures! There's no way to go "up" the folder structure.
      *
-     * @param id a file address, relative to the current file.
+     * @param id a file address, relative to the current file
+     * @param params zero or more extra parameters to the module. These are put into the {@code module_args} variable of the child file.
      * @return the value that the other file {@link #provide(AutoautoValue) provide}d, or {@code undefined} if it didn't.
      * @see #provide(AutoautoValue) 
      */
     @AutoautoNativeJavadoc(name = "delegate")
-    public abstract AutoautoValue delegate(AutoautoString id);
+    public abstract AutoautoValue delegate(AutoautoString id, AutoautoValue... params);
 
     /**
      *

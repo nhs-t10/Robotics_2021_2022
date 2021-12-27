@@ -7,5 +7,5 @@ public class AutoautoSystemVariableNames {
     public static final String RETURNED_VALUE = "\t@returned";
     public static final String FUNCTION_ARGUMENTS_NAME = "args";
     public static final String EXPORTS = "\t@exported";
-    public static final String IMPORTED = "\t@imported";
+    public static final String MODULE_ARGS = "module_args";
 }

@@ -29,7 +29,12 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         elems = new HashMap<>();
         for(int i = 0; i < e.length; i++) {
             if(e[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-            elems.put(i + "", e[i]);
+
+            if(e[i] instanceof ResolvedTitledArg) {
+                elems.put(((ResolvedTitledArg)e[i]).title.getString(), ((ResolvedTitledArg)e[i]).value);
+            } else {
+                elems.put(i + "", e[i]);
+            }
         }
     }
 

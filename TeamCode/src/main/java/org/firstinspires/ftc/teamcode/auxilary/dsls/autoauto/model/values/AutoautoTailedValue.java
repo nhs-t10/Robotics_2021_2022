@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoTailedValue extends AutoautoValue{
@@ -43,6 +44,8 @@ public class AutoautoTailedValue extends AutoautoValue{
         AutoautoPrimitive resolvedHead = head.getResolvedValue();
 
         AutoautoPrimitive resolvedTail = tail.getResolvedValue();
+        FeatureManager.logger.log(resolvedHead.toString());
+        FeatureManager.logger.log(resolvedTail.toString());
         return resolvedHead.getProperty(resolvedTail);
     }
 
