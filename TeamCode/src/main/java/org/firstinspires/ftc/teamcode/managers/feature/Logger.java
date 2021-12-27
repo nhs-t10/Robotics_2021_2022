@@ -2,15 +2,32 @@ package org.firstinspires.ftc.teamcode.managers.feature;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 
 import java.io.PrintStream;
 import java.util.Arrays;
 
 public class Logger {
+    private static int CONSOLE_WIDTH = 180;
+
     private Telemetry.Log backend;
     private PrintStream fallbackBackend;
     private boolean usesFallback;
+
     private boolean addStackTrace;
+
+    private boolean recordLogHistory;
+    private String logHistory = "";
+
+    public String getLogHistory() {
+        return logHistory;
+    }
+    public void setRecordLogHistory(boolean recordLogHistory) {
+        this.recordLogHistory = recordLogHistory;
+        //erase old history if we don't need it
+        if(!recordLogHistory) logHistory = "";
+    }
+
     public void setBackend(Telemetry.Log log) {
         backend = log;
         usesFallback = false;
@@ -31,10 +48,16 @@ public class Logger {
     public Logger(Telemetry.Log log) { this.backend = log;}
 
     public void log(String a) {
+        log(a, null);
+    }
+    //allow the user to specify a location so autoauto can get first-class logging
+    public void log(String a, Location location) {
+        if(recordLogHistory) logHistory += a + "\n";
         //make it into a local variable so Android Studio doesn't complain
         String l = a;
         if(addStackTrace) {
-            l += PaulMath.leftPad(160 - l.length(), getLastNonLoggerStackElement());
+            if(location == null) l += PaulMath.leftPad(CONSOLE_WIDTH - l.length(), getLastNonLoggerStackElement());
+            else l += PaulMath.leftPad(CONSOLE_WIDTH - l.length(), location.toString());
         }
         if(l == null) {
             log("null");
@@ -50,8 +73,7 @@ public class Logger {
         for(StackTraceElement e : stackTrace) {
             String element = e.toString();
             if(!element.startsWith(selfClassName)) {
-                String matchingStartTrimmed = PaulMath.trimMatchingStart(element, selfClassName);
-                return matchingStartTrimmed.substring(matchingStartTrimmed.indexOf('.') + 1);
+                return PaulMath.classBasename(element);
             }
         }
         return stackTrace[stackTrace.length - 1].toString();

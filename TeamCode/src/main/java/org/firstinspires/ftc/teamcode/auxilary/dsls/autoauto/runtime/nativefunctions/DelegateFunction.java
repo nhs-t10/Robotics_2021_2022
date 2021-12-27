@@ -30,7 +30,7 @@ public class DelegateFunction extends NativeFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
-        if(args.length == 0) throw new AutoautoArgumentException("You must give at least 1 argument to delegate()! "  + AutoautoProgram.formatStack(getLocation()));
+        if(args.length == 0) throw new AutoautoArgumentException("You must give at least 1 argument to delegate()! "  + formatStack());
 
         String rawAddress = args[0].getString();
         String address = pathnameToClassname(rawAddress, currentModuleAddress);
@@ -42,7 +42,7 @@ public class DelegateFunction extends NativeFunction {
                 Class<AutoautoOpmode> p = (Class<AutoautoOpmode>) Class.forName(address);
                 program = (AutoautoProgram) p.getMethod("generateProgram").invoke(null);
             } catch (Exception e) {
-                throw new AutoautoArgumentException("No such module `" + address + "`"+ AutoautoProgram.formatStack(getLocation()));
+                throw new AutoautoArgumentException("No such module `" + address + "`"+ formatStack());
             }
             delegatedModule = new AutoautoModule(program, address, hardwareAccess);
         }

@@ -162,7 +162,7 @@ function processTemplate(template, className, frontMatter, javaStringFileSource,
         .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*TEST_ITERATIONS*/",  (frontMatter.testIterations === undefined ? 3 : frontMatter.testIterations))
-        .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", ((TelemetryManager.LogCatcher)telemetry.log()).getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
+        .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", FeatureManager.logger.getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
         .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1);
 }

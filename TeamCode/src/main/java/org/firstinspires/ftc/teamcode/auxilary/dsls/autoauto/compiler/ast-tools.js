@@ -382,13 +382,12 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 varname: nonce
             }
             break;
+        case "ComparisonOperator":
         case "OperatorExpression":
             var left = process(ast.left);
+            var right = process(ast.right);
 
             var operatorName = getStringNonce(ast.operator, depth);
-
-
-            var right = process(ast.right);
 
             addDepthMappedDefinition({
                 depth: depth,
@@ -497,23 +496,6 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 self: nonce,
                 depends: [conditional.varname, statement.varname],
                 definition: `IfStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.IfStatement}(${conditional.varname}, ${statement.varname});`
-            });
-
-            result = {
-                varname: nonce
-            }
-            break;
-        case "ComparisonOperator":
-            var left = process(ast.left);
-            var right = process(ast.right);
-
-            var operatorName = getStringNonce(ast.operator, depth);
-
-            addDepthMappedDefinition({
-                depth: depth,
-                self: nonce,
-                depends: [left.varname, right.varname, operatorName],
-                definition: `BooleanOperator ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.BooleanOperator}(${left.varname}, ${right.varname}, ${operatorName});`
             });
 
             result = {

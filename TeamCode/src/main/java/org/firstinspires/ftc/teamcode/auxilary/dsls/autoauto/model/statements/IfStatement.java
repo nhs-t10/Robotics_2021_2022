@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.BooleanOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 public class IfStatement extends Statement {
-    BooleanOperator conditional;
+    AutoautoValue check;
     State subject;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
@@ -21,7 +20,7 @@ public class IfStatement extends Statement {
     }
 
     public IfStatement(AutoautoValue v, State s) {
-        conditional = new BooleanOperator(v, new AutoautoBooleanValue(false), "!=");
+        check = v;
         subject = s;
     }
 
@@ -30,7 +29,7 @@ public class IfStatement extends Statement {
     }
 
     public void init() {
-        conditional.init();
+        check.init();
         subject.init();
     }
     public void stepInit() {
@@ -39,19 +38,19 @@ public class IfStatement extends Statement {
 
     @Override
     public IfStatement clone() {
-        IfStatement c = new IfStatement(conditional.clone(), subject.clone());
+        IfStatement c = new IfStatement(check.clone(), subject.clone());
         c.setLocation(location);
         return c;
     }
 
     public void loop() {
-        conditional.loop();
-        if(conditional.getBoolean() == true) {
+        check.loop();
+        if(AutoautoBooleanValue.isTruthy(check.getResolvedValue())) {
             subject.loop();
         }
     }
     public String toString() {
-        return "if (" + conditional.toString() + ") " + subject.toString();
+        return "if (" + check.toString() + ") " + subject.toString();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class IfStatement extends Statement {
     @Override
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
-        conditional.setScope(scope);
+        check.setScope(scope);
         subject.setScope(scope);
     }
 

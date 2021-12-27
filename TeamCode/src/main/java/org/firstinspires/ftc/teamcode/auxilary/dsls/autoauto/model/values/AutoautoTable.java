@@ -185,4 +185,11 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
 
         return table;
     }
+
+    public boolean isEmpty() {
+        return elems.isEmpty();
+    }
+    public int size() {
+        return elems.size();
+    }
 }

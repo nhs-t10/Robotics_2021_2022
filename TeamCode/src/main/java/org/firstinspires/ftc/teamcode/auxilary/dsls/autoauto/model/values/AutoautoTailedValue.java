@@ -44,8 +44,7 @@ public class AutoautoTailedValue extends AutoautoValue{
         AutoautoPrimitive resolvedHead = head.getResolvedValue();
 
         AutoautoPrimitive resolvedTail = tail.getResolvedValue();
-        FeatureManager.logger.log(resolvedHead.toString());
-        FeatureManager.logger.log(resolvedTail.toString());
+
         return resolvedHead.getProperty(resolvedTail);
     }
 

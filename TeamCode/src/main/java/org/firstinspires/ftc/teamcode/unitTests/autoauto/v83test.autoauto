@@ -1,6 +1,18 @@
 $
 testIterations: 1,
-errorStackTraceHeight: 20
+errorStackTraceHeight: 20,
+expectedTestOutput: "3 number\n3\n0\nInfinity\ntrue\ntrue\ntrue\nfalse\nhahaha\n-3\nfoo 33!\n"
 $
 
-#i: delegate("delegation/test.autoauto", "foo")
+#i:
+log(3 + " number"), //should log "3 number"
+log(3 * true), //should log 3
+log(3 * false), //should log 0
+log(3 / 0), //should log Infinity
+log(22 > 0), //should log true
+log(22 > false), //should log true
+log(true <= 1), //should log true
+log(true * 2 <= 1), //should log false
+log("ha" * 3), //should log "hahaha"
+log(0 - 3), //should log -3
+delegate("delegation/test.autoauto", "foo") //should log "foo 33!"

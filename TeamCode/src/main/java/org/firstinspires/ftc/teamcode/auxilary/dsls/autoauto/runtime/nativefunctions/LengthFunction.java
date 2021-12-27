@@ -22,7 +22,7 @@ public class LengthFunction extends NativeFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive[] args) {
-        if(args.length == 0) throw new AutoautoArgumentException("0 arguments provided to length(); 1 argument required" + AutoautoProgram.formatStack(getLocation()));
+        if(args.length == 0) throw new AutoautoArgumentException("0 arguments provided to length(); 1 argument required" + formatStack());
 
         AutoautoPrimitive arg = args[0];
 

@@ -60,12 +60,15 @@ public class FunctionCall extends AutoautoValue {
 
         AutoautoPrimitive val = functionName.getResolvedValue();
 
-        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + val.toString() + "` is not a function" + AutoautoProgram.formatStack(location));
+        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + val.toString() + "` is not a function" + formatStack());
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;
 
         //set scope! this makes nested functions work
         val.setScope(scope);
+
+        //set location for error reporting purposes
+        val.setLocation(location);
 
         for(AutoautoValue v : args) v.loop();
 

@@ -414,4 +414,50 @@ public abstract class PaulMath extends FeatureManager {
         for(int i = initialLength; i < l; i++) s.insert(0, " ");
         return s.toString();
     }
+
+    /**
+     * Repeat the string s a given time.
+     * @param s the string to repeat
+     * @param t the number of times to repeat it
+     * @return the repeated string
+     */
+    public static String repeat(String s, int t) {
+        if(t <= 0) return "";
+
+        StringBuilder r = new StringBuilder();
+        for(int i = t; i > 0; i--) r.append(s);
+        return r.toString();
+    }
+
+    /**
+     * Remove the package from a fully-qualified class
+     * @param fullyQualifiedClass a fully-qualified (with package) Java class name
+     * @return the unqualified (without package) Java class name
+     */
+    public static String classBasename(String fullyQualifiedClass) {
+        if(fullyQualifiedClass == null) return null;
+
+        int lengthCached = fullyQualifiedClass.length();
+        int index = 0;
+        for(int i = 0; i < lengthCached; i++) {
+            if(Character.isUpperCase(fullyQualifiedClass.charAt(i))) {
+                index = i;
+                break;
+            }
+        }
+        return fullyQualifiedClass.substring(index);
+    }
+
+    /**
+     * Return the "basename" of a file-- essentially, remove the folder.
+     * @param fileName a directory path, in either linux or windows format.
+     * @return the last term in the path
+     */
+    public static String basename(String fileName) {
+        int idx = Math.max(
+                fileName.lastIndexOf('/'),
+                fileName.lastIndexOf('\\') //support both windows and linux
+        );
+        return fileName.substring(idx + 1);
+    }
 }

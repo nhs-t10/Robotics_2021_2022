@@ -297,26 +297,15 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
         private String logged;
 
-        private String logHistory = "";
-        private boolean recordLogHistory;
-
         public LogCatcher(Log backend) {
             this.backend = backend;
             this.logged = "";
-        }
-
-        public String getLogHistory() {
-            return logHistory;
         }
 
         public String readLog() {
             String log = logged;
             this.logged = "";
             return log;
-        }
-
-        public void setRecordLogHistory(boolean b) {
-            this.recordLogHistory = b;
         }
 
         @Override
@@ -342,7 +331,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         @Override
         public void add(String entry) {
             logged += entry + "\n";
-            if(recordLogHistory) logHistory += entry + "\n";
 
             backend.add(entry);
         }
@@ -350,7 +338,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         @Override
         public void add(String format, Object... args) {
             logged += String.format(format, args) + "\n";
-            if(recordLogHistory) logHistory += String.format(format, args) + "\n";
 
             backend.add(format, args);
         }

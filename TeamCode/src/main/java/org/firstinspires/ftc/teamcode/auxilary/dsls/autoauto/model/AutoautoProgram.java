@@ -25,10 +25,6 @@ public class AutoautoProgram implements AutoautoProgramElement {
     private StoredAutoautoVariable currentStatepathVariable;
 
 
-    public static String formatStack(Location location) {
-        return "\n\tat " + fileName + ":" + location.line + ":" + location.col + "\n\tat " + location.statepath + ", state " + location.stateNumber;
-    }
-
     public static AutoautoProgram P(Statepath[] s, String initialPathName) {
         LinkedHashMap<String, Statepath> paths = new LinkedHashMap<>();
         for(Statepath p : s) paths.put(p.name, p);

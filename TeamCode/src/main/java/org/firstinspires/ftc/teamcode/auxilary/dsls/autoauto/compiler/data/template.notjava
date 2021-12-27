@@ -51,7 +51,6 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.GotoStatement.G;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.LetStatement.D;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.IfStatement.I;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.BooleanOperator.T;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference.H;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue.B;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionDefStatement.J;
@@ -114,7 +113,6 @@ public class template extends AutoautoOpmode {
 
         runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
 
-        AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
         telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
         telemetryManager.autoauto.setGlobalScope(runtime.rootModule.globalScope);
@@ -146,7 +144,7 @@ public class template extends AutoautoOpmode {
         this.telemetry = new DummyTelemetry();
 
         this.init();
-        ((TelemetryManager.LogCatcher)telemetry.log()).setRecordLogHistory(true);
+        FeatureManager.logger.setRecordLogHistory(true);
         int TEST_ITERATIONS = /*TEST_ITERATIONS*/;
         //noinspection ConstantConditions
         for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();
@@ -161,6 +159,8 @@ public class template extends AutoautoOpmode {
     /*USER_DEFINED_FUNCTIONS*/
 
     public static AutoautoProgram generateProgram() {
+    AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
+
 /*JAVA_CREATION_CODE*/
     }
 }
