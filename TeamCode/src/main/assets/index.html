@@ -113,6 +113,7 @@
             "debug.alldata": require("./widget-types/debug-alldata.js"),
             "chart.bar": require("./widget-types/chart-bar.js"),
             "chart.line": require("./widget-types/chart-line.js"),
+            "chart.oscilloscope": require("./widget-types/chart-oscilloscope.js"),
             "number.single": require("./widget-types/number-single.js"),
             "number.delta": require("./widget-types/number-delta.js"),
             "string.stringfield": require("./widget-types/string-stringfield.js"),
@@ -751,7 +752,7 @@
                 console.error(data);
                 console.error(e);
             }
-            //if it's a streamid setter, do that first
+            //if it's a streamid setter, do that & don't dispatch the data
             if(dataObject.streamID) {
                 Object.assign(configGlobals, dataObject);
                 return;
@@ -1068,6 +1069,7 @@
             padding: 0.5em;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .widget--content h3 {

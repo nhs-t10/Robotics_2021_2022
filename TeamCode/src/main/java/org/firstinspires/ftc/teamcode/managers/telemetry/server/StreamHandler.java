@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
@@ -30,10 +31,7 @@ public class StreamHandler {
                 + "Transfer Encoding: chunked" + HTTP_LINE_SEPARATOR
                 + HTTP_LINE_SEPARATOR);
 
-        printChunk("{\"streamID\": \"" + streamID + "\""
-                + ",\"autoautoProgram\": " + dataSource.autoauto.getProgramJson()
-                + ",\"sendsPerSecond\": " + sendPerSecond
-                + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
+        sendStreamConfig();
 
         long streamStartedAt = System.currentTimeMillis();
         while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
@@ -67,6 +65,14 @@ public class StreamHandler {
         }
         printChunk("");
         writer.flush();
+    }
+
+    public void sendStreamConfig() {
+        printChunk("{\"streamID\": \"" + streamID + "\""
+                + ",\"autoautoProgram\": " + dataSource.autoauto.getProgramJson()
+                + ",\"sendsPerSecond\": " + sendPerSecond
+                + ",\"buildHistoryInfo\": " + BuildHistory.getJSON()
+                + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
     }
 
     public void setStreamID(String streamID) {

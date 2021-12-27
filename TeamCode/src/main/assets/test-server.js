@@ -10,16 +10,9 @@ var server = http.createServer((req, res) => {
             var message = "";
             if(!newData()) message = fakeLatencyBuffer + "h\n";
             else message = fakeLatencyBuffer + createSampleObj() + "\n";
-            
-            if(Math.random() > 0.4) {
-                var latencySliceIndex = Math.floor(Math.random() * message.length);
-                fakeLatencyBuffer = message.substring(latencySliceIndex);
-                message = message.substring(0, latencySliceIndex);
-            } else {
-                fakeLatencyBuffer = "";
-            }
 
-            res.write(message);
+            var length = Buffer.from(message).length;
+            res.write(length.toString(16).toUpperCase() + "\r\n" + message + "\r\n");
         }, 1000/30);
     } else if(req.url.includes("/fallible-hardware-devices")) {
         res.setHeader("Content-Type", "application/json");

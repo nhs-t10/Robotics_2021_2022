@@ -71,7 +71,7 @@ module.exports = {
         if (state.fill) state.fill.setAttribute("d", "");
     },
     ondata: function (data, parent, state, config) {
-        var num = data.fields[config.field];
+        var num = data.fields[config.yAxis];
 
         try {
             num = eval("(x=>" + config.formula + ")")(num);
@@ -108,7 +108,7 @@ module.exports = {
     },
     config: [
         {
-            name: "field",
+            name: "yAxis",
             type: "select",
             value: "field"
         },
