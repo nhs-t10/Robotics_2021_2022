@@ -36,13 +36,11 @@ public class Logger {
     public void setBackend(PrintStream log) {
         fallbackBackend = log;
         usesFallback = true;
-        addStackTrace = true;
     }
 
     public Logger() {
         this.fallbackBackend = System.out;
         this.usesFallback = true;
-        addStackTrace = true;
     }
 
     public Logger(Telemetry.Log log) { this.backend = log;}

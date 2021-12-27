@@ -252,6 +252,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry.addData("Pos Y (encoders)", driver.getMeters());
         telemetry.addData("Theta (imu)", imu.getThirdAngleOrientation());
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
+        telemetry.addData("Claw Open Position", clawPosition.getClawOpenish());
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));

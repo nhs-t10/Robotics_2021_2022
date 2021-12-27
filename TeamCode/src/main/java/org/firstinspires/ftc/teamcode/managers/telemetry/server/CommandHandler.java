@@ -10,9 +10,12 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public class CommandHandler {
-    public static String handle(String[] args, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
+    public static String handle(String[] args, TelemetryManager dataSource, WeakHashMap<String, StreamHandler> streamRegistry) {
+        if(dataSource == null) return HttpStatusCodeReplies.Bad_Gateway("No FeatureManager registered with the server");
+
         if(args.length == 0) return HttpStatusCodeReplies.Bad_Request("No arguments read!");
         if(args[0] == null) return HttpStatusCodeReplies.Bad_Request("args[0] is null!");
         if(args.length == 1) return HttpStatusCodeReplies.Unauthorized;

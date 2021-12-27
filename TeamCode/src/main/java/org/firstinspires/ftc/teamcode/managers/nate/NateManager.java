@@ -217,4 +217,8 @@ public class NateManager extends FeatureManager {
     public boolean isFound() {
         return found;
     }
+
+    public double getClawOpenish() {
+        return hands.getServoPosition("nateClaw");
+    }
 }

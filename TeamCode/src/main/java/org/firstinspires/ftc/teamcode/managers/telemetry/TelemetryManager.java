@@ -56,7 +56,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.backend = backend;
         this.backendLog = new LogCatcher(backend.log());
 
-        if((config & BITMASKS.WEBSERVER) != 0) this.server = new Server(this);
+        if((config & BITMASKS.WEBSERVER) != 0) this.server = Server.getServer();
+        server.setDataSource(this);
 
         this.autoauto = new AutoautoTelemetry();
         this.opmode = opMode;
@@ -86,7 +87,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     }
 
     public TelemetryManager(Telemetry backend, OpMode opMode) {
-        this(backend, opMode, BITMASKS.ALL);
+        this(backend, opMode, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
     }
 
     @Override

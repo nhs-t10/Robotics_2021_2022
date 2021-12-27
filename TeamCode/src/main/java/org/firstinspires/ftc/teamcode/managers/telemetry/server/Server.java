@@ -1,34 +1,61 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
+import org.firstinspires.ftc.teamcode.auxilary.UpdatableWeakReference;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public class Server {
     public int port;
     private boolean loaded;
-    public Server(TelemetryManager manager) {
-        new Thread(new ServerThread(manager, this)).start();
+    private ServerThread thread;
+
+    private Server() {
+        //add a shutdown hook so the server can shut down itself when Java's over
+        Runtime.getRuntime().addShutdownHook(new FratricideCommitterThread());
+
+        thread = new ServerThread(this);
+        thread.start();
     }
+
+    public static boolean serverIsRunning = true;
+
+    private final static Server INSTANCE = new Server();
+    public static Server getServer() {
+        return INSTANCE;
+    }
+
 
     public boolean blockUntilLoaded() {
         while(!loaded) {}
         return true;
     }
 
-    private static class ServerThread implements Runnable {
+    public void setDataSource(TelemetryManager m) {
+        thread.setDataSource(m);
+    }
+
+    private static class ServerThread extends Thread {
         int port;
         ServerSocket serverSocket;
-        TelemetryManager dataSource;
+        UpdatableWeakReference<TelemetryManager> dataSource;
 
-        private HashMap<String, StreamHandler> streamRegistry = new HashMap<>();
+        public boolean running = true;
 
-        public ServerThread(TelemetryManager d, Server parentProcess) {
-            this.dataSource = d;
+        private WeakHashMap<String, StreamHandler> streamRegistry = new WeakHashMap<>();
+
+        public void setDataSource(TelemetryManager dataSource) {
+            this.dataSource.set(dataSource);
+        }
+
+        public ServerThread(Server parentProcess) {
+            this.dataSource = new UpdatableWeakReference<>();
             this.port = 5564;
             while(port < 5664 && serverSocket == null) {
                 try {
@@ -37,22 +64,20 @@ public class Server {
                     port++;
                 }
             }
-            if(serverSocket == null) d.addData("dashboard status","Could not reserve TCP port");
-            else {
+            if(serverSocket == null) {
+                FeatureManager.logger.log("Could not reserve TCP port");
+            } else {
                 parentProcess.port = this.port;
                 FeatureManager.logger.add("Go to http://192.168.43.1:" + port);
-                d.addData("dashboard status", "Go to http://192.168.43.1:" + port);
             }
 
             parentProcess.loaded = true;
-
-            if(!FeatureManager.isOpModeRunning) FeatureManager.logger.log("TELEMETRY SERVER WARNING: FeatureManager.isOpModeRunning has not been set to true. Server will immediately exit.");
+            
         }
         @Override
         public void run() {
-            new Thread(new FratricideCommitterThread(serverSocket)).start();
             try {
-                while (FeatureManager.isOpModeRunning) {
+                while (serverIsRunning) {
                     Socket socket = serverSocket.accept();
 
                     RequestHandlerThread rht = new RequestHandlerThread(socket, dataSource, streamRegistry);
@@ -60,8 +85,14 @@ public class Server {
                 }
                 serverSocket.close();
             } catch(Exception e) {
-                dataSource.log().add("dashboard status" + e.toString());
+                FeatureManager.logger.log("dashboard status" + e.toString());
             }
+        }
+    }
+    private static class FratricideCommitterThread extends Thread {
+        @Override
+        public void run() {
+            serverIsRunning = false;
         }
     }
 }
