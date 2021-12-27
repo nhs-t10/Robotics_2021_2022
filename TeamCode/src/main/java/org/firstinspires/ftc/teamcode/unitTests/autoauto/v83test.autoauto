@@ -1,11 +1,11 @@
 $
 testIterations: 1,
 errorStackTraceHeight: 20,
-expectedTestOutput: "3 number\n3\n0\nInfinity\ntrue\ntrue\ntrue\nfalse\nhahaha\n-3\nfoo 33!\n"
+expectedTestOutput: "number 3\n3\n0\nInfinity\ntrue\ntrue\ntrue\nfalse\nhahaha\n-3\nfoo 33!\n"
 $
 
 #i:
-log(3 + " number"), //should log "3 number"
+log("n" + ("u" * 1) + "mber " + 3), //should log "3 number"
 log(3 * true), //should log 3
 log(3 * false), //should log 0
 log(3 / 0), //should log Infinity

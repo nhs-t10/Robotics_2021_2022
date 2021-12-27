@@ -24,8 +24,8 @@ public class Logger {
     }
     public void setRecordLogHistory(boolean recordLogHistory) {
         this.recordLogHistory = recordLogHistory;
-        //erase old history if we don't need it
-        if(!recordLogHistory) logHistory = "";
+        //erase old history; we don't need it
+        logHistory = "";
     }
 
     public void setBackend(Telemetry.Log log) {

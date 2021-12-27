@@ -16,6 +16,13 @@ public class Server {
     private boolean loaded;
     private ServerThread thread;
 
+    public static boolean serverIsRunning = true;
+
+    private final static Server SERVER = new Server();
+    public static Server getServer() {
+        return SERVER;
+    }
+
     private Server() {
         //add a shutdown hook so the server can shut down itself when Java's over
         Runtime.getRuntime().addShutdownHook(new FratricideCommitterThread());
@@ -24,12 +31,7 @@ public class Server {
         thread.start();
     }
 
-    public static boolean serverIsRunning = true;
 
-    private final static Server INSTANCE = new Server();
-    public static Server getServer() {
-        return INSTANCE;
-    }
 
 
     public boolean blockUntilLoaded() {
