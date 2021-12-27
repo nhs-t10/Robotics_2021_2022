@@ -38,7 +38,7 @@ public class PIDlessEncoderMovementThread extends Thread {
                     double power = Math.signum(delta);
 
                     double coef = powerCoefs[i];
-                    if(Math.abs(delta) < slowRange) coef *= (Math.abs(delta) / slowRange);
+                    if(Math.abs(delta) < slowRange) coef *= (Math.abs(delta) * 0.005);
 
                     motors[i].setPower(power * coef);
 

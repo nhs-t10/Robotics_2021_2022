@@ -267,11 +267,11 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void encodeMoveToPosition(String name, int position) {
-        encodeMoveToPosition(name,position, 0.5);
+        encodeMoveToPosition(name,position, 1);
     }
 
     public void encodeMoveToPosition(int index, int position) {
-        encodeMoveToPosition(index, position, 0.5);
+        encodeMoveToPosition(index, position, 1);
     }
 
     //monitors whether the lift motor has been given RUN_TO_POSITION

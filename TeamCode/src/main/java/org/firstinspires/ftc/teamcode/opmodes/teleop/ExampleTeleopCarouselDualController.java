@@ -70,6 +70,9 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
+
+        FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 = hardwareMap.get(DcMotor.class, "ClawMotor");
+
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
@@ -240,6 +243,14 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
         telemetry.addData("BL Power", driver.backRight.getPower());
+        telemetry.addData("Pos X (imu)", imu.getPositionX());
+        telemetry.addData("Pos Y (imu)", imu.getPositionY());
+        telemetry.addData("Vel X (imu)", imu.getVelocityX());
+        telemetry.addData("Vel Y (imu)", imu.getVelocityY());
+        telemetry.addData("Acc X (imu)", imu.getAccelerationX());
+        telemetry.addData("Acc Y (imu)", imu.getAccelerationY());
+        telemetry.addData("Pos Y (encoders)", driver.getMeters());
+        telemetry.addData("Theta (imu)", imu.getThirdAngleOrientation());
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));

@@ -39,11 +39,19 @@ module.exports = {
         var xCoord = data.fields[config.xAxis];
         var yCoord = data.fields[config.yAxis];
 
-        console.log(xCoord, yCoord);
+        var xScaleMin = 0;
+        var xScaleMax = 0;
+        var yScaleMin = 0;
+        var yScaleMax = 0;
 
         try {
             xCoord = eval("((x,y)=>" + config.xFormula + ")")(xCoord, yCoord);
             yCoord = eval("((x,y)=>" + config.yFormula + ")")(xCoord, yCoord);
+
+            xScaleMin = eval("((x,y)=>" + config.xScaleMin + ")")(xCoord, yCoord);
+            xScaleMax = eval("((x,y)=>" + config.xScaleMax + ")")(xCoord, yCoord);
+            yScaleMin = eval("((x,y)=>" + config.yScaleMin + ")")(xCoord, yCoord);
+            yScaleMax = eval("((x,y)=>" + config.yScaleMax + ")")(xCoord, yCoord);
         } catch(e) {}
 
         state.datapoints.push({
@@ -78,7 +86,7 @@ module.exports = {
         if(state.datapoints.length == 0) return;
 
         //draw the new points
-        drawPath(state.datapoints, config.xScaleMin, config.xScaleMax, config.yScaleMin, config.yScaleMax);
+        drawPath(state.datapoints, xScaleMin, xScaleMax, yScaleMin, yScaleMax);
     },
     config: [
         {
@@ -88,12 +96,12 @@ module.exports = {
         },
         {
             name: "xScaleMin",
-            type: "number",
+            type: "text",
             default: -1
         },
         {
             name: "xScaleMax",
-            type: "number",
+            type: "text",
             default: 1
         },
         {
@@ -108,12 +116,12 @@ module.exports = {
         },
         {
             name: "yScaleMin",
-            type: "number",
+            type: "text",
             default: -1
         },
         {
             name: "yScaleMax",
-            type: "number",
+            type: "text",
             default: 1
         },
         {

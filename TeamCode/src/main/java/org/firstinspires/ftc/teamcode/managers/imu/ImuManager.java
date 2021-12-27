@@ -20,7 +20,7 @@ public class ImuManager extends FeatureManager {
         this.imu = imu;
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.mode = BNO055IMU.SensorMode.NDOF;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.useExternalCrystal = true;
@@ -28,9 +28,7 @@ public class ImuManager extends FeatureManager {
         parameters.loggingTag = "Imu";
 
         imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(DistanceUnit.CM, 0.0, 0.0, 0.0, System.nanoTime()),
-                new Velocity(DistanceUnit.CM, 0.0, 0.0, 0.0, System.nanoTime()),
-                0);
+        imu.startAccelerationIntegration(null, null,0);
     }
 
     /**
@@ -47,6 +45,25 @@ public class ImuManager extends FeatureManager {
 
     public Position getPosition() {
         return imu.getPosition();
+    }
+    //we use Z for Y because the rev hub is rotated
+    public double getPositionX() {
+        return imu.getPosition().x;
+    }
+    public double getPositionY() {
+        return imu.getPosition().z;
+    }
+    public double getVelocityY() {
+        return imu.getVelocity().zVeloc;
+    }
+    public double getVelocityX() {
+        return imu.getVelocity().xVeloc;
+    }
+    public double getAccelerationX() {
+        return imu.getAcceleration().xAccel;
+    }
+    public double getAccelerationY() {
+        return imu.getAcceleration().zAccel;
     }
 
     public Acceleration getLinearAcceleration() {

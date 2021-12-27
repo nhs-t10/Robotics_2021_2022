@@ -6,20 +6,23 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
-public class DummyDcMotor implements DcMotor {
-    private double power;
-    private Direction direction;
-    private RunMode runMode;
-    private int target;
-    private boolean hasTargetSet;
-    private double currentPosition;
+import java.lang.ref.WeakReference;
 
-    private double ticksPerRot;
+public class DummyDcMotor implements DcMotor {
+    protected double power;
+    protected Direction direction;
+    protected RunMode runMode;
+    protected int target;
+    protected boolean hasTargetSet;
+    protected double currentPosition;
+
+    protected double ticksPerRot;
 
     private static int dummyIDcounter;
 
     public DummyDcMotor() {
         this.ticksPerRot = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
+        (new DummyMotorMovementThread(this)).start();
     }
 
     @Override
@@ -107,9 +110,6 @@ public class DummyDcMotor implements DcMotor {
     @Override
     public void setPower(double p) {
         this.power = p;
-        if(this.runMode == RunMode.RUN_TO_POSITION) {
-            (new RunToPositionAdjusterThread()).start();
-        }
     }
 
     @Override
@@ -145,14 +145,5 @@ public class DummyDcMotor implements DcMotor {
     @Override
     public void close() {
 
-    }
-
-    private class RunToPositionAdjusterThread extends Thread {
-        public void run() {
-            while(Math.abs(target - currentPosition) > 0.25) {
-                double delta = target - currentPosition;
-                currentPosition += Math.min(delta, ticksPerRot) * 0.1;
-            }
-        }
     }
 }

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.managers.movement;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -257,6 +256,8 @@ public class MovementManager extends FeatureManager {
      * @return a general measurement of total movement
      */
     public int getTicks() {
+//        if(FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 == null) return 0;
+//        return FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021.getCurrentPosition();
         return backRight.getCurrentPosition();
     }
 
