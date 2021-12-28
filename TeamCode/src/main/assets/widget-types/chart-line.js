@@ -1,3 +1,5 @@
+var evaluateFormula = require("../helper-scripts/evaluate-formula.js");
+
 module.exports = {
     init: function (parent, state, config, box) {
         //use object.assign to avoid mutation of original box
@@ -74,7 +76,10 @@ module.exports = {
         var num = data.fields[config.yAxis];
 
         try {
-            num = eval("(x=>" + config.formula + ")")(num);
+            num = evaluateFormula(config.formula, {
+                data: state.datapoints,
+                values: [num]
+            });
         } catch(e) {}
 
         state.datapoints.push({

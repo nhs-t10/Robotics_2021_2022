@@ -60,8 +60,10 @@
     window.require = function(src, parent) {
         if(window.__moduleExports === undefined) window.__moduleExports = {};
         
-        parent = parent || "";
-        src = parent + "/" + src;
+        parent = parent || window.location;
+        src = (new URL(src, parent)).toString();
+
+        console.log(src);
         
         if(src.endsWith(".js")) src = src;
         else if(src.endsWith("/")) src += "index.js";
@@ -662,7 +664,8 @@
             if (config[key] === undefined) {
                 config[key] = defaultValue || "";
             }
-            var input = document.createElement("input");
+            var input = document.createElement("textarea");
+            input.setAttribute("rows", 1);
             input.value = config[key];
             input.addEventListener("change", function () {
                 config[key] = input.value;
@@ -1159,6 +1162,15 @@
 
         .sidebar--config-fields label {
             display: block;
+        }
+
+        .sidebar--config-fields textarea {
+            box-sizing: content-box;
+            
+            height: 1em;
+            min-height: 1em;
+
+            resize:vertical;
         }
 
         .sidebar--config-fields.no-settings {

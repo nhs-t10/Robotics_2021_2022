@@ -1,3 +1,5 @@
+var evaluateFormula = require("../helper-scripts/evaluate-formula.js");
+
 module.exports = {
     init: function (parent, state) {
         state.num = document.createElement("h3");
@@ -20,7 +22,7 @@ module.exports = {
         var num = data.fields[config.field];
 
         try {
-            num = eval("(x=>" + config.formula + ")")(num);
+            num = evaluateFormula(config.formula, num);
         } catch(e) {}
 
         var numRounded = config.base10Precision ? (Math.round(num / config.base10Precision) * config.base10Precision).toString() : num.toString();

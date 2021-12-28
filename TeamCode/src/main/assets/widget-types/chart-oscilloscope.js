@@ -1,6 +1,7 @@
 
 var WIDGET_PADDING = 5;
 
+var evaluateFormula = require("../helper-scripts/evaluate-formula.js");
 
 var canvas, ctx, width, height, cssVariables;
 
@@ -45,13 +46,18 @@ module.exports = {
         var yScaleMax = 0;
 
         try {
-            xCoord = eval("((x,y)=>" + config.xFormula + ")")(xCoord, yCoord);
-            yCoord = eval("((x,y)=>" + config.yFormula + ")")(xCoord, yCoord);
+            var formulaArgs = {
+                values: [xCoord, yCoord], 
+                data: state.datapoints
+            }
 
-            xScaleMin = eval("((x,y)=>" + config.xScaleMin + ")")(xCoord, yCoord);
-            xScaleMax = eval("((x,y)=>" + config.xScaleMax + ")")(xCoord, yCoord);
-            yScaleMin = eval("((x,y)=>" + config.yScaleMin + ")")(xCoord, yCoord);
-            yScaleMax = eval("((x,y)=>" + config.yScaleMax + ")")(xCoord, yCoord);
+            xCoord = evaluateFormula(config.xFormula, formulaArgs);
+            yCoord = evaluateFormula(config.yFormula, formulaArgs);
+
+            xScaleMin = evaluateFormula(config.xScaleMin, formulaArgs);
+            xScaleMax = evaluateFormula(config.xScaleMax, formulaArgs);
+            yScaleMin = evaluateFormula(config.yScaleMin, formulaArgs);
+            yScaleMax = evaluateFormula(config.yScaleMax, formulaArgs);
         } catch(e) {}
 
         state.datapoints.push({

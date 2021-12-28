@@ -382,8 +382,8 @@ public abstract class PaulMath extends FeatureManager {
     public static String normalizeRelativePath(String path) {
         if(path == null) return "";
         return path
-                .replace("\\", "/")
-                .replace("/+", "/")
+                .replace('\\', '/')
+                .replaceAll("/+", "/")
                 .replaceAll("(^|/)\\./", "/")
                 .replaceAll("(^|[^/]+)/\\.\\./", "")
                 .replaceAll("^/", "");
