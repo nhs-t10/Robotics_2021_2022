@@ -27,7 +27,8 @@ frontMatterKeyValue =
 commentOpportunity = _
 
 labeledStatepath =
- _ l:STATEPATH_LABEL_ID COLON _ s:statepath _  {
+ _ l:STATEPATH_LABEL_ID COLON _ s:statepath _ SEMICOLON? _ //if the user left a semicolon, forgive them and just discard it
+  {
    return { type: "LabeledStatepath", location: location(), statepath: s, label: l }
  }
 
@@ -76,7 +77,7 @@ ifStatement =
  (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement { return { type: "IfStatement", location: location(), conditional: t, statement: s } }
 
 letStatement =
- LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
+ LET _ v:baseExpression _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
 
 nextStatement =
  NEXT { return { type: "NextStatement", location: location() }   }

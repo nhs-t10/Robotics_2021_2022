@@ -18,4 +18,4 @@ log(0)`;
 
 var ast = require("../aa-parser").parse(testFile);
 
-console.log(makeClassBuffer(ast));
+makeClassBuffer(ast);

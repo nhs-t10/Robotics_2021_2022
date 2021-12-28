@@ -1,0 +1,22 @@
+$
+testIterations: 10000,
+errorStackTraceHeight: 7
+$
+
+
+#init:
+    let lastprime = 2, let composites = [], let primes = [], goto sieve
+#setup:
+    goto sieve;
+#findnextprime:
+    let i = lastprime, next;
+    let i = i + 1, if(composites[i] == false) next;
+    let primes[i] = true, let lastprime = i, goto sieve;
+#sieve:
+    let i = 2, next;
+    let composites[lastprime * i] = true, let i = i + 1, if(i >= 121) next;
+    if(lastprime >= 113) goto finished, goto findnextprime;
+
+#finished:
+    log(primes);
+
