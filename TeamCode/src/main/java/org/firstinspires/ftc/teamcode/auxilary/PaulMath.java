@@ -15,12 +15,12 @@ import java.util.Arrays;
 
 public abstract class PaulMath extends FeatureManager {
 
-    public static float highestValue(float[] array) {
+    public static float highestMagnitude(float[] array) {
         int arrayLength = array.length;
-        float highest = -1000000;
+        float highest = Float.MIN_VALUE;
         for (int i = 0; i < arrayLength; i++) {
-            if (array[i] > highest) {
-                highest = array[i];
+            if (Math.abs(array[i]) > highest) {
+                highest = Math.abs(array[i]);
             }
         }
         return highest;
@@ -51,7 +51,7 @@ public abstract class PaulMath extends FeatureManager {
 
     public static float[] normalizeArray(float[] array) {
         int arrayLength = array.length;
-        float highest = highestValue(array);
+        float highest = highestMagnitude(array);
         for (int i = 0; i < arrayLength; i++) {
             array[i] = array[i] / highest;
         }
@@ -73,6 +73,13 @@ public abstract class PaulMath extends FeatureManager {
         return new float[] {(float)x, (float)y };
     }
 
+    /**
+     * Calculates motor powers
+     * @param verticalPower desired vertical movement, from -1 to 1
+     * @param horizontalPower desired horizontal movement, from -1 to 1
+     * @param rotationalPower desired rotational movement, from -1 to 1
+     * @return motor powers, in the order fl, fr, br, bl.
+     */
     public static float[] omniCalc(float verticalPower, float horizontalPower, float rotationalPower) {
         float v = Range.clip(verticalPower, -1, 1);
         float h = Range.clip(horizontalPower, -1, 1);
@@ -101,11 +108,64 @@ public abstract class PaulMath extends FeatureManager {
             sum[i] = vertical[i] + horizontal[i] + rotational[i];
         }
         //This makes sure that no value is greater than 1 by dividing all of them by the maximum
-        float highest = highestValue(sum);
+        float highest = highestMagnitude(sum);
         if (highest > 1) {
             sum = normalizeArray(sum);
             return sum;
         }
+        return sum;
+    }
+    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl) {
+        return omniCalcInverse(_fl, _fr, _br, _bl, false);
+    }
+
+    /**
+     *
+     * @param _fl
+     * @param _fr
+     * @param _br
+     * @param _bl
+     * @param isRawMotorPowers
+     * @return the omni coefficients, in VHR order.
+     */
+    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl, boolean isRawMotorPowers) {
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+
+        //undo motor-level coefficients, if requested
+        //ugh i don't like android studio's "ooh don't modify parameters" rule >:(
+        float fl = isRawMotorPowers ? _fl / configuration.motorCoefficients.fl : _fl;
+        float fr = isRawMotorPowers ? _fr / configuration.motorCoefficients.fr : _fr;
+        float bl = isRawMotorPowers ? _bl / configuration.motorCoefficients.bl : _bl;
+        float br = isRawMotorPowers ? _br / configuration.motorCoefficients.br : _br;
+
+        //for each motor, divide its coefficients (expected full power) with the given motor powers (actual power).
+        float[] flPercentages = {
+                fl / configuration.omniComponents.ver.fl,
+                fl / configuration.omniComponents.hor.fl,
+                fl / configuration.omniComponents.rot.fl
+        };
+        float[] frPercentages = {
+                fr / configuration.omniComponents.ver.fr,
+                fr / configuration.omniComponents.hor.fr,
+                fr / configuration.omniComponents.rot.fr
+        };
+        float[] brPercentages = {
+                br / configuration.omniComponents.ver.br,
+                br / configuration.omniComponents.hor.br,
+                br / configuration.omniComponents.rot.br
+        };
+        float[] blPercentages = {
+                bl / configuration.omniComponents.ver.bl,
+                bl / configuration.omniComponents.hor.bl,
+                bl / configuration.omniComponents.rot.bl
+        };
+
+        float[] sum = {
+                blPercentages[0] + brPercentages[0] + frPercentages[0] + flPercentages[0],
+                blPercentages[1] + brPercentages[1] + frPercentages[1] + flPercentages[1],
+                blPercentages[2] + brPercentages[2] + frPercentages[2] + flPercentages[2],
+        };
+
         return sum;
     }
 
