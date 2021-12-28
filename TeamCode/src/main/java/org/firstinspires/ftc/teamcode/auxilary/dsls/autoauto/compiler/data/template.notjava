@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.managers.*;
 import org.firstinspires.ftc.teamcode.managers.CV.CVManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
+import org.firstinspires.ftc.teamcode.managers.localization.LocalizationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -106,12 +107,14 @@ public class template extends AutoautoOpmode {
             );
 
             imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
+            posMonitor = new LocalizationManager(driver, imu);
+
         StringBuilder programJson = new StringBuilder();
         String simpleProgramJson = "";
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
+        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv, posMonitor);
 
         telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);

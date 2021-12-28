@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
+import org.firstinspires.ftc.teamcode.managers.localization.LocalizationManager;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -43,6 +44,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
     public ImuManager imu;
     public MacroManager macroManager;
     public NateManager clawPosition;
+    public LocalizationManager posMonitor;
     private boolean precision = false;
     private boolean dashing = false;
 
@@ -73,6 +75,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
 
         FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 = hardwareMap.get(DcMotor.class, "ClawMotor");
 
+        posMonitor = new LocalizationManager(driver, imu);
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
