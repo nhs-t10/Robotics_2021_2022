@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -106,6 +107,8 @@ public class AfterStatement extends Statement {
                 double targetDifference = wait.baseAmount;
                 float referPoint = stepStartTick;
                 float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+
+                FeatureManager.logger.log("curpos " + (Math.abs(currentPosition)));
 
                 if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
                 break;

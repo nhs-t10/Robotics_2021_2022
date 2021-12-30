@@ -17,9 +17,9 @@ module.exports = function(formula, args, oldData) {
         args.data = (typeof oldData === "number") ? [oldData] : oldData;
     }
 
-    var functionSrc = `return ((${args.values.map((x,i)=>varLetterIndex(i)).join(",")},datapoints, time)=>${formula}));`;
+    var functionSrc = `return ((${args.values.map((x,i)=>varLetterIndex(i)).join(",")},datapoints, time)=>${formula});`;
 
-    return (new Function(functionSrc))().call(null, args.values.concat([args.data, Date.now() / 1000]));
+    return (new Function(functionSrc))().call(null, ...args.values.concat([args.data, Date.now() / 1000]));
 }
 
 var varLetters = ["x", "y", "z", "a", "b", "c", "d", "e", "f", "g", "h"];

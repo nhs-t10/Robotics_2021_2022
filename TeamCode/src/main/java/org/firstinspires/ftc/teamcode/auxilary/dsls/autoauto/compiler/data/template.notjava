@@ -71,6 +71,7 @@ public class template extends AutoautoOpmode {
     ImuManager imu;
     CVManager cv;
     NateManager clawPosition;
+    LocalizationManager posMonitor;
 
     public static AutoautoProgram program = generateProgram();
 
@@ -82,11 +83,12 @@ public class template extends AutoautoOpmode {
         telemetry = telemetryManager;
         
         FeatureManager.logger.setBackend(telemetry.log());
+        FeatureManager.setIsOpModeRunning(true, true);
 
         driver = new MovementManager(hardwareMap.get(DcMotor.class, "fl"),
                 hardwareMap.get(DcMotor.class, "fr"),
-                hardwareMap.get(DcMotor.class, "bl"),
-                hardwareMap.get(DcMotor.class, "br"));
+                hardwareMap.get(DcMotor.class, "br"),
+                hardwareMap.get(DcMotor.class, "bl"));
         limbs = new ManipulationManager(
                                 hardwareMap,
                                 new String[] { "nateMoverLeft", "nateMoverRight"},
@@ -97,9 +99,6 @@ public class template extends AutoautoOpmode {
         clawPosition = new NateManager(limbs, hardwareMap.get(TouchSensor.class, "limit"));
 
         cv = new CVManager(hardwareMap);
-
-        driver.resetEncoders();
-        driver.runWithOutEncoders();
 
          sense = new SensorManager(
                     new ColorSensor[] {},

@@ -45,20 +45,21 @@ module.exports = {
         var yScaleMin = 0;
         var yScaleMax = 0;
 
-        try {
-            var formulaArgs = {
-                values: [xCoord, yCoord], 
-                data: state.datapoints
-            }
 
-            xCoord = evaluateFormula(config.xFormula, formulaArgs);
-            yCoord = evaluateFormula(config.yFormula, formulaArgs);
+        var formulaArgs = {
+            values: [xCoord, yCoord],
+            data: state.datapoints
+        }
 
-            xScaleMin = evaluateFormula(config.xScaleMin, formulaArgs);
-            xScaleMax = evaluateFormula(config.xScaleMax, formulaArgs);
-            yScaleMin = evaluateFormula(config.yScaleMin, formulaArgs);
-            yScaleMax = evaluateFormula(config.yScaleMax, formulaArgs);
-        } catch(e) {}
+        xCoord = evaluateFormula(config.xFormula, formulaArgs);
+        yCoord = evaluateFormula(config.yFormula, formulaArgs);
+
+        console.log(xCoord, yCoord);
+
+        xScaleMin = evaluateFormula(config.xScaleMin, formulaArgs);
+        xScaleMax = evaluateFormula(config.xScaleMax, formulaArgs);
+        yScaleMin = evaluateFormula(config.yScaleMin, formulaArgs);
+        yScaleMax = evaluateFormula(config.yScaleMax, formulaArgs);
 
         state.datapoints.push({
             x: xCoord,
@@ -208,7 +209,7 @@ function makeBackgroundCanvas() {
 
     //clear cross-points
     var crossPointClearSize = Math.floor(Math.min(width, height) / 32);
-    console.log(crossPointClearSize);
+
     for(var x = 0; x <= 1; x += lineIncrementDecimal) {
         for(var y = 0; y <= 1; y += lineIncrementDecimal) {
             ctx.clearRect(width * x - crossPointClearSize, height * y - crossPointClearSize, crossPointClearSize * 2, crossPointClearSize * 2);

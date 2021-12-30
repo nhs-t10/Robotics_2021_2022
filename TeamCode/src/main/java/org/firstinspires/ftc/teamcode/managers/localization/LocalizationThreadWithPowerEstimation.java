@@ -40,6 +40,7 @@ public class LocalizationThreadWithPowerEstimation extends Thread {
 
         float sensedMotorPower = (float) driver.backRight.getPower();
 
+        if(sensedMotorPower == 0) return new float[4];
 
         return new float[] {
                 (float) ((driver.frontLeft.getPower() /  sensedMotorPower) * sensedMotorDelta),

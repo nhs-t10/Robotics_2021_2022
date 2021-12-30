@@ -14,6 +14,6 @@ public class LocalizationManager extends FeatureManager {
     public LocalizationManager(MovementManager driver, ImuManager imu) {
         this.driver = driver;
         this.imu = imu;
-        (new LocalizationThreadWithTrig(driver, imu, this)).start();
+        (new LocalizationThreadWithPowerEstimation(driver, imu, this)).start();
     }
 }
