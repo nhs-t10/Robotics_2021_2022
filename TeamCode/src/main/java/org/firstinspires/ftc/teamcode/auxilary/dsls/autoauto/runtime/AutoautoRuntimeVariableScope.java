@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.AutoautoMathMethodsTable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.AutoautoTimeMethodsTable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.DelegateFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.TypeofFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.ProvideFunction;
@@ -54,6 +55,14 @@ public class AutoautoRuntimeVariableScope {
             };
             value.value = v;
         }
+    }
+
+    public void put(AutoautoPrimitive s, AutoautoPrimitive v) {
+        put(s.getString(), v);
+    }
+
+    public AutoautoPrimitive get(AutoautoPrimitive s) {
+        return get(s.getString());
     }
 
     @Nullable
@@ -115,6 +124,7 @@ public class AutoautoRuntimeVariableScope {
         this.systemSet("delete", new AutoautoUndefined());
 
         this.systemSet("Math", new AutoautoMathMethodsTable());
+        this.systemSet("Time", new AutoautoTimeMethodsTable());
     }
 
     public void initBuiltinFunctions(AutoautoModule module, RobotFunctionLoader robotFunctions) {

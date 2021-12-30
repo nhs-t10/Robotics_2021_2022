@@ -59,15 +59,12 @@ public class LetStatement extends Statement {
 
         //if it's a tailed value, drill down so we can set the variable as a property instead of in the current scope.
         if(variable instanceof AutoautoTailedValue) {
-            AutoautoTailedValue settingContext = (AutoautoTailedValue) variable;
-            while (true) {
-                AutoautoValue t = settingContext.tail;
-                if (t instanceof AutoautoTailedValue) settingContext = (AutoautoTailedValue) t;
-                else break;
-            }
-            settingContext.head.loop();
-            settingContext.tail.loop();
-            settingContext.head.getResolvedValue().setProperty(settingContext.tail.getResolvedValue(), value.getResolvedValue());
+            AutoautoValue settingContext = ((AutoautoTailedValue) variable).head;
+            AutoautoValue property = ((AutoautoTailedValue) variable).tail;
+
+            settingContext.loop();
+            property.loop();
+            settingContext.getResolvedValue().setProperty(property.getResolvedValue(), value.getResolvedValue());
         } else {
             this.scope.put(this.variable.getResolvedValue().getString(), value.getResolvedValue());
         }
