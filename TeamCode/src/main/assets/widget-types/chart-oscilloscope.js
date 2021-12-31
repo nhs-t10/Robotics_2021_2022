@@ -16,7 +16,7 @@ module.exports = {
         canvas = document.createElement("canvas");
         canvas.style.position = "absolute";
 
-        width = canvas.width = box.height * gridSize - WIDGET_PADDING * 2;
+        width = canvas.width = box.width * gridSize - WIDGET_PADDING * 2;
         height = canvas.height = box.height * gridSize - WIDGET_PADDING * 2;
 
         ctx = canvas.getContext("2d");
@@ -54,7 +54,6 @@ module.exports = {
         xCoord = evaluateFormula(config.xFormula, formulaArgs);
         yCoord = evaluateFormula(config.yFormula, formulaArgs);
 
-        console.log(xCoord, yCoord);
 
         xScaleMin = evaluateFormula(config.xScaleMin, formulaArgs);
         xScaleMax = evaluateFormula(config.xScaleMax, formulaArgs);
@@ -77,10 +76,11 @@ module.exports = {
                 break;
             }
         }
-        
+        //erase old canvas
+        ctx.clearRect(0, 0, width, height);
+
         //don't perform slicing if all points are valid
         if(firstValidIndex > 0) {
-            ctx.clearRect(0, 0, width, height);            
             state.datapoints = state.datapoints.slice(firstValidIndex);
         }
 
