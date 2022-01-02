@@ -14,14 +14,14 @@ public class StreamHandler {
     private static final String HTTP_LINE_SEPARATOR = RequestHandlerThread.HTTP_LINE_SEPARATOR;
 
     private final PrintWriter writer;
-    private final UpdatableWeakReference<TelemetryManager> dataSource;
+    private final TelemetryManager dataSource;
     private final Socket socket;
     private volatile String streamID;
 
     public int programJsonSendingFlag = 2;
     public float sendPerSecond = ControlCodes.STREAM_SENDS_PERSEC;
 
-    public StreamHandler(PrintWriter writer, UpdatableWeakReference<TelemetryManager> dataSource, Socket socket) {
+    public StreamHandler(PrintWriter writer, TelemetryManager dataSource, Socket socket) {
         this.writer = writer;
         this.dataSource = dataSource;
         this.socket = socket;
@@ -36,8 +36,8 @@ public class StreamHandler {
         boolean sentStreamConfig = false;
 
         long streamStartedAt = System.currentTimeMillis();
-        while(socket.isConnected() && !socket.isClosed() && Server.serverIsRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
-            TelemetryManager dataSource = this.dataSource.get();
+        while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
+
             if(dataSource == null) {
                 Thread.yield();
                 continue;
@@ -71,7 +71,7 @@ public class StreamHandler {
                 writer.flush();
             }
         }
-        if(!Server.serverIsRunning) {
+        if(FeatureManager.isOpModeRunning) {
             printChunk(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
         } else {
             printChunk(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);

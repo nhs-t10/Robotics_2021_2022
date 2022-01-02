@@ -175,13 +175,13 @@ public abstract class PaulMath extends FeatureManager {
 
     /**
      * Converts a number of ticks to centimeters
-     * @param distance Number of ticks
+     * @param ticks Number of ticks
      * @return Centimeters covered by the robot in the given number of ticks
      */
-    public static int encoderDistanceCm(double distance) {
+    public static float encoderDistanceCm(double ticks) {
         RobotConfiguration config = FeatureManager.getRobotConfiguration();
-        double rotations = distance / config.encoderTicksPerRotation;
-        return (int) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
+        double rotations = ticks / config.encoderTicksPerRotation;
+        return (float) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
     }
 
     public static float delta(float one, float two) {

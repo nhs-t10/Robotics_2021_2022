@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.feature;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.auxilary.EncodedMotor;
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.OmniCalcComponents;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
@@ -20,8 +17,6 @@ public class FeatureManager {
     public static final Logger logger = new Logger();
 
     public static final int DOUBLE_CLICK_TIME_MS = 300;
-
-    public static DcMotor DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 = null;
 
     public static boolean isOpModeRunning = false;
 
@@ -48,7 +43,7 @@ public class FeatureManager {
 
     public static void reconfigureForTeleop() {
         FeatureManager.logger.log("I am teleop");
-        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,1,-1);
+        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,-1, 1);
     }
     public static void reconfigureForAuto() {
         FeatureManager.logger.log("I am auto");

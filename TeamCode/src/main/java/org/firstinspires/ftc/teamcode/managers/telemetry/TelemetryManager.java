@@ -57,8 +57,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.backendLog = new LogCatcher(backend.log());
 
         if((config & BITMASKS.WEBSERVER) != 0) {
-            this.server = Server.getServer();
-            server.setDataSource(this);
+            this.server = new Server(this);
         }
 
         this.autoauto = new AutoautoTelemetry();

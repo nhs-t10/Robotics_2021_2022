@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
+import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.ButtonHandle;
 
 public class ButtonNode extends InputManagerInputNode {
+    private ButtonHandle keyHandle;
     private final String key;
     private InputManager boss;
     private final InputManagerNodeResult result = new InputManagerNodeResult();
@@ -14,7 +16,7 @@ public class ButtonNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
+        this.keyHandle = boss.getButtonHandle(key);
     }
 
     @Override
@@ -24,7 +26,7 @@ public class ButtonNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
-        this.result.setFloat(boss.getKey(key));
+        this.result.setFloat(keyHandle.get());
         return result;
     }
 

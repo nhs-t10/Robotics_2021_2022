@@ -1,3 +1,3 @@
 #i:
-driveOmni(1, 0, 0), after 20in next;
+driveOmni(0.5, 0, 0), after 2in next;
 stopDrive()

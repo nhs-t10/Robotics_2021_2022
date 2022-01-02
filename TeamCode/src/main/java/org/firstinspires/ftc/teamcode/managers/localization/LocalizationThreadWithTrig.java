@@ -28,6 +28,8 @@ public class LocalizationThreadWithTrig extends Thread {
 
             parent.posX += Math.cos(imuRadians) * deltaDistance;
             parent.posY += Math.sin(imuRadians) * deltaDistance;
+
+            Thread.yield();
         }
     }
 }

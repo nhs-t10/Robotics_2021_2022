@@ -29,6 +29,8 @@ public class LocalizationThreadWithPowerEstimation extends Thread {
 
             parent.posY += v;
             parent.posX += h;
+
+            Thread.yield();
         }
     }
     private float oldMeters;
@@ -38,7 +40,7 @@ public class LocalizationThreadWithPowerEstimation extends Thread {
         float sensedMotorDelta = sensedMotorMeters - oldMeters;
         oldMeters = sensedMotorMeters;
 
-        float sensedMotorPower = (float) driver.backRight.getPower();
+        float sensedMotorPower = (float) driver.getGeneralMeasurementMotor().getPower();
 
         if(sensedMotorPower == 0) return new float[4];
 

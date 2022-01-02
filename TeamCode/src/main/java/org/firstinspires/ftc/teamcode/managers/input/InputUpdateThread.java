@@ -1,29 +1,29 @@
 package org.firstinspires.ftc.teamcode.managers.input;
 
+import android.graphics.drawable.Animatable;
+
+import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.WebServer;
+
+import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
+import org.firstinspires.ftc.robotserver.internal.webserver.websockets.FtcWebSocketServer;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 
-import java.util.ArrayList;
-
 public class InputUpdateThread extends Thread {
-    private final ArrayList<InputManagerInputNode> nodes;
-    public InputUpdateThread() {
-        nodes = new ArrayList<>();
+    private final InputManagerInputNode node;
+
+    public InputUpdateThread(InputManagerInputNode node) {
+        this.node = node;
     }
-    public void addNode(InputManagerInputNode node) {
-        nodes.add(node);
-    }
-    @Override
+
     public void run() {
         while(FeatureManager.isOpModeRunning) {
-            synchronized (this) {
-            for (InputManagerInputNode node : nodes) {
-                    node.update();
-                }
-            }
+            node.update();
             Clocktower.time(ClocktowerCodes.INPUT_NODE_UPDATER_THREAD);
+            yield();
         }
     }
 }

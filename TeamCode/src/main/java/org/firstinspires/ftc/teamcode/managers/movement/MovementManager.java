@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.managers.movement;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -9,12 +10,24 @@ import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotC
 
 public class MovementManager extends FeatureManager {
 
+
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
 
     private float scale = 0.6f;
+
+    /**
+     * Create a MovementManager with a hardware map.
+     * @param hardwareMap hardware map that includes fl, fr, br, and bl
+     */
+    public MovementManager(HardwareMap hardwareMap) {
+        this(hardwareMap.get(DcMotor.class, "fl"),
+                hardwareMap.get(DcMotor.class, "fr"),
+                hardwareMap.get(DcMotor.class, "br"),
+                hardwareMap.get(DcMotor.class, "bl"));
+    }
 
     /**
      * Create a MovementManager with four motors.
@@ -34,10 +47,10 @@ public class MovementManager extends FeatureManager {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
     /**
@@ -261,10 +274,11 @@ public class MovementManager extends FeatureManager {
      * @return a general measurement of total movement
      */
     public int getTicks() {
-//        if(FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 == null) return 0;
-//        return FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021.getCurrentPosition();
-        FeatureManager.logger.log("called getTicks() " + backLeft.getCurrentPosition());
-        return backLeft.getCurrentPosition();
+        return getGeneralMeasurementMotor().getCurrentPosition();
+    }
+
+    public DcMotor getGeneralMeasurementMotor() {
+        return backLeft;
     }
 
     /**
@@ -293,7 +307,7 @@ public class MovementManager extends FeatureManager {
      * @return a measurement of total movement, in meters
      */
     public float getMeters(){
-        return (PaulMath.encoderDistanceCm(getTicks()) / 100f);
+        return getCentimeters() / 100f;
     }
     /**
      * Get a general measurement of the robot's total movement, in centimeters, since it started. This will be correct for local straight-line movement, but may be off when the robot's moves are complex.

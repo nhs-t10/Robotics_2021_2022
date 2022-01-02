@@ -52,7 +52,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
     public void init() {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
@@ -72,8 +72,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
-
-        FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 = hardwareMap.get(DcMotor.class, "ClawMotor");
 
         posMonitor = new LocalizationManager(driver, imu);
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
@@ -208,14 +206,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             else {
                 clawPosition.setClawOpen(false);
             }
-//            if (input.getBool("ClawShiftIn") == true){
-//                hands.setServoPower("nateMoverLeft", 1.0);
-//                hands.setServoPower("nateMoverRight", -1.0);
-//            }
-//            if (input.getBool("ClawShiftOut") == true){
-//                hands.setServoPower("nateMoverRight", 1.0);
-//                hands.setServoPower("nateMoverLeft", -1.0);
-//            } Removed for safety, an accidental activation would be bad.
             if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
                 hands.setServoPower("nateMoverRight", 0.0);
                 hands.setServoPower("nateMoverLeft", 0.0);

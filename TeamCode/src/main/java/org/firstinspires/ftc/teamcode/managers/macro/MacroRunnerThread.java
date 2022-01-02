@@ -17,6 +17,7 @@ public class MacroRunnerThread extends Thread {
         while(running) {
             Clocktower.time(ClocktowerCodes.MACRO_RUNNER_THREAD);
             macro.loop();
+            Thread.yield();
         }
     }
 

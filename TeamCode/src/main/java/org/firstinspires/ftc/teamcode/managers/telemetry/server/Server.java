@@ -16,18 +16,13 @@ public class Server {
     private boolean loaded;
     private ServerThread thread;
 
-    public static boolean serverIsRunning = true;
+    public boolean serverIsRunning = true;
 
-    private final static Server SERVER = new Server();
-    public static Server getServer() {
-        return SERVER;
-    }
-
-    private Server() {
+    public Server(TelemetryManager dataSource) {
         //add a shutdown hook so the server can shut down itself when Java's over
-        Runtime.getRuntime().addShutdownHook(new FratricideCommitterThread());
+        (new FratricideCommitterThread()).start();
 
-        thread = new ServerThread(this);
+        thread = new ServerThread(this, dataSource);
         thread.start();
     }
 
@@ -39,25 +34,17 @@ public class Server {
         return true;
     }
 
-    public void setDataSource(TelemetryManager m) {
-        thread.setDataSource(m);
-    }
-
-    private static class ServerThread extends Thread {
+    private class ServerThread extends Thread {
         int port;
         ServerSocket serverSocket;
-        UpdatableWeakReference<TelemetryManager> dataSource;
+        TelemetryManager dataSource;
 
         public boolean running = true;
 
         private WeakHashMap<String, StreamHandler> streamRegistry = new WeakHashMap<>();
 
-        public void setDataSource(TelemetryManager dataSource) {
-            this.dataSource.set(dataSource);
-        }
-
-        public ServerThread(Server parentProcess) {
-            this.dataSource = new UpdatableWeakReference<>();
+        public ServerThread(Server parentProcess, TelemetryManager dataSource) {
+            this.dataSource = dataSource;
             this.port = 5564;
             while(port < 5664 && serverSocket == null) {
                 try {
@@ -91,9 +78,10 @@ public class Server {
             }
         }
     }
-    private static class FratricideCommitterThread extends Thread {
+    private class FratricideCommitterThread extends Thread {
         @Override
         public void run() {
+            while(FeatureManager.isOpModeRunning) yield();
             serverIsRunning = false;
         }
     }

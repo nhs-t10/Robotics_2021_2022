@@ -46,6 +46,7 @@ public class PIDlessEncoderMovementThread extends Thread {
                 }
             }
             Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);
+            Thread.yield();
         }
     }
 

@@ -12,7 +12,8 @@ public enum ClocktowerCodes {
     MACRO_RUNNER_THREAD,
     INPUT_NODE_UPDATER_THREAD,
     TELEMETRY_STREAM_SENDER_THREAD,
-    CV_UPDATE_LOOP;
+    CV_UPDATE_LOOP,
+    MOVEMENT_MOTOR_ACCELERATION_FINDER;
 
     public static String[] getCodes() {
         ClocktowerCodes[] v = values();

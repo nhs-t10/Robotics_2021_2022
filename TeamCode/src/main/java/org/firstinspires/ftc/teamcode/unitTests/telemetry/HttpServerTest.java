@@ -29,8 +29,7 @@ public class HttpServerTest {
 
         TelemetryManager telManNoFeat = new TelemetryManager(new DummyTelemetry(), new DummyOpmode(), TelemetryManager.BITMASKS.NONE);
 
-        Server server = Server.getServer();
-        server.setDataSource(telManNoFeat);
+        Server server = new Server(telManNoFeat);
 
         server.blockUntilLoaded();
 

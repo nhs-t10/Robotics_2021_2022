@@ -26,10 +26,10 @@ public class RequestHandlerThread extends Thread {
     private final WeakHashMap<String, StreamHandler> streamRegistry;
 
     private Socket socket;
-    UpdatableWeakReference<TelemetryManager> dataSource;
+    TelemetryManager dataSource;
     private String streamID;
 
-    public RequestHandlerThread(Socket socket, UpdatableWeakReference<TelemetryManager> dataSource, WeakHashMap<String, StreamHandler> streamRegistry) {
+    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, WeakHashMap<String, StreamHandler> streamRegistry) {
         this.socket = socket;
         this.dataSource = dataSource;
         this.streamRegistry = streamRegistry;
@@ -82,15 +82,14 @@ public class RequestHandlerThread extends Thread {
 
                 String[] commaSepValues = command.split(",");
 
-                writer.print(CommandHandler.handle(commaSepValues, dataSource.get(), streamRegistry));
+                writer.print(CommandHandler.handle(commaSepValues, dataSource, streamRegistry));
             } else if(path.equals("/build-history")) {
                 writer.print("HTTP/1.1 200 OK" + HTTP_LINE_SEPARATOR
                         + "Content-Type: " + "application/json" + HTTP_LINE_SEPARATOR
                         + HTTP_LINE_SEPARATOR);
                 writer.print(BuildHistory.getJSON());
             } else if(path.equals("/fallible-hardware-devices")) {
-                if(dataSource.get() == null) writer.print(HttpStatusCodeReplies.Bad_Gateway("No TelemetryManager registered with the server"));
-                else writer.print(FallableHardwareMapHttpFormatty.summarizeHardwareDevices(dataSource.get()));
+                writer.print(FallableHardwareMapHttpFormatty.summarizeHardwareDevices(dataSource));
             } else {
                 try (InputStream file = ServerFiles.getAssetStream(path)) {
                     if (file == null) {
