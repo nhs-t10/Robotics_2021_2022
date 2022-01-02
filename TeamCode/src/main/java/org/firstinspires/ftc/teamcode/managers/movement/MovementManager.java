@@ -263,7 +263,7 @@ public class MovementManager extends FeatureManager {
     public int getTicks() {
 //        if(FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021 == null) return 0;
 //        return FeatureManager.DELETE_ME_LATER_IM_NOT_GOOD_PRACTICE_DONT_BELIEVE_CHLOE_IF_THEY_TELL_YOU_NOT_TO_IM_NOT_OLD_CODE_I_WAS_CREATED_ON_DECEMBER_27_2021.getCurrentPosition();
-        FeatureManager.logger.log("called getTicks() " + backLeft.getCurrentPosition());
+//        FeatureManager.logger.log("called getTicks() " + backLeft.getCurrentPosition());
         return backLeft.getCurrentPosition();
     }
 
