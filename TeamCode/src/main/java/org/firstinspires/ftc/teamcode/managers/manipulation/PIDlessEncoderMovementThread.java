@@ -41,7 +41,7 @@ public class PIDlessEncoderMovementThread extends Thread {
                     if(Math.abs(delta) < slowRange) coef *= (Math.abs(delta) * 0.005);
 
                     motors[i].setPower(power * coef);
-move
+
                     if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
                 }
             }
