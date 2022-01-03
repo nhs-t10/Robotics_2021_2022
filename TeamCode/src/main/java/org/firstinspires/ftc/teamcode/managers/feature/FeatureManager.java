@@ -39,7 +39,7 @@ public class FeatureManager {
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
             ),
-            0.03f, 1680, 1, 8.9, 0.5, 3f);
+            0.03f, 1680, 1, 8.9, 1, 3f);
 
     public static void reconfigureForTeleop() {
         FeatureManager.logger.log("I am teleop");

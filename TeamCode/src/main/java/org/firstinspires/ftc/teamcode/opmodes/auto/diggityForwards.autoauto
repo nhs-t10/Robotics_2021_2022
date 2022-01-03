@@ -1,3 +1,4 @@
 #i:
-driveOmni(0.5, 0, 0), after 2in next;
+//let turn = 90, let delta = Math.abs(getThirdAngleOrientation() - turn)/turn, driveOmni(0, delta*0.5, 0), after 90deg next;
+let delta = (1.5*getThirdAngleOrientation() - 90)/(1.5*90), log(delta), driveOmni(0, 1*delta, 0), if(getThirdAngleOrientation() == 90) next, after 20s next;
 stopDrive()
