@@ -106,12 +106,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
     var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
 
      fs.mkdirSync(path.dirname(ourPath), { recursive: true});
-
-     fs.writeFileSync(ourPath, template);
-
-
-
-
+     fs.writeFileSync(ourPath, template); //SAFE
 
     return {
         shimClassFunction: [noConflictName, classname],

@@ -51,6 +51,7 @@ public class DummyHardwareMap extends HardwareMap {
             case "DcMotor": return classOrInterface.cast(new DummyDcMotor());
             case "CRServo": return classOrInterface.cast(new DummyCrServo());
             case "Servo": return classOrInterface.cast(new DummyServo());
+            case "TouchSensor": return classOrInterface.cast(new DummyTouchSensor());
         }
         throw new IllegalArgumentException(String.format("Unable to find a hardware device with name \"%s\" and type %s", deviceName, classOrInterface.getSimpleName()));
     }

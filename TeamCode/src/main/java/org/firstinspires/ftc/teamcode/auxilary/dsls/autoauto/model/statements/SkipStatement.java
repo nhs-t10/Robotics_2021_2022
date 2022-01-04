@@ -4,7 +4,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class SkipStatement extends Statement {

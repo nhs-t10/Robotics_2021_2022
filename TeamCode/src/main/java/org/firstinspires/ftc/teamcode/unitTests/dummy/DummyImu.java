@@ -48,47 +48,47 @@ public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
 
     @Override
     public AngularVelocity getAngularVelocity() {
-        return null;
+        return new AngularVelocity();
     }
 
     @Override
     public Acceleration getLinearAcceleration() {
-        return null;
+        return new Acceleration();
     }
 
     @Override
     public Acceleration getGravity() {
-        return null;
+        return new Acceleration();
     }
 
     @Override
     public Temperature getTemperature() {
-        return null;
+        return new Temperature();
     }
 
     @Override
     public MagneticFlux getMagneticFieldStrength() {
-        return null;
+        return new MagneticFlux();
     }
 
     @Override
     public Quaternion getQuaternionOrientation() {
-        return null;
+        return new Quaternion();
     }
 
     @Override
     public Position getPosition() {
-        return null;
+        return new Position();
     }
 
     @Override
     public Velocity getVelocity() {
-        return null;
+        return new Velocity();
     }
 
     @Override
     public Acceleration getAcceleration() {
-        return null;
+        return new Acceleration();
     }
 
     @Override
@@ -103,42 +103,42 @@ public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
 
     @Override
     public SystemStatus getSystemStatus() {
-        return null;
+        return SystemStatus.RUNNING_FUSION;
     }
 
     @Override
     public SystemError getSystemError() {
-        return null;
+        return SystemError.NO_ERROR;
     }
 
     @Override
     public CalibrationStatus getCalibrationStatus() {
-        return null;
+        return new CalibrationStatus(0b1111_1111);
     }
 
     @Override
     public boolean isSystemCalibrated() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isGyroCalibrated() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccelerometerCalibrated() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isMagnetometerCalibrated() {
-        return false;
+        return true;
     }
 
     @Override
     public CalibrationData readCalibrationData() {
-        return null;
+        return new CalibrationData();
     }
 
     @Override

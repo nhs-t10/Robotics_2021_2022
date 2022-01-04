@@ -31,11 +31,20 @@ for(var i = 0; i < GITIGNORED.length; i++) {
 }
 
 gitignore = gitignoreLines.join("\n");
-fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore);
+fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore); //SAFE
 
 var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
-var compiledResultDirectory = path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledautoauto");
-if(!fs.existsSync(compiledResultDirectory)) fs.mkdirSync(compiledResultDirectory);
+
+//Clean up old folders
+var oldCompileDirectories = [
+    path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledautoauto"),
+    path.join(srcDirectory, "main/java/org/firstinspires/ftc/teamcode/__compiledcontrols")
+];
+//if the folder exists, delete it!
+oldCompileDirectories.forEach(x=> fs.existsSync(x) ? deleteRecursive(x) : false);
+
+var compiledResultDirectory = path.join(srcDirectory, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
+createDirectoryIfNotExist(compiledResultDirectory)
 
 var autoautoFiles = loadAutoautoFilesFromFolder(srcDirectory);
 var alreadyUsedAutoautoFileNames = {};
@@ -56,7 +65,8 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         .replace(".macro.autoauto", "__macro_autoauto")
         .replace(".autoauto", "__autoauto");
 
-    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) className += "__" + crc(package);
+    var classNameNoConflict = className;
+    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) classNameNoConflict += "__" + crc(package);
 
     if(!alreadyUsedAutoautoFileNames[className]) alreadyUsedAutoautoFileNames[className] = 0;
     alreadyUsedAutoautoFileNames[className]++;
@@ -85,8 +95,8 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         var programModelGeneration = javaCreationCode.genCode;
         var jsonSettingCode = javaCreationCode.jsonSettingCode;
 
-        fs.writeFileSync(resultFile,
-            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration)
+        fs.writeFileSync(resultFile, //SAFE
+            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
         );
         writtenFiles.push(resultFile);
     } catch(e) {
@@ -136,7 +146,11 @@ function createDirectoryIfNotExist(fileName) {
     }
 }
 
-function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration) {
+function deleteRecursive(folder) {
+    clearDirectory(folder, []);
+}
+
+function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration, classNameNoConflict) {
     return template
         .replace("public class template", "public class " + className)
         .replace("/*NSERVO_NAMES*/", buildServoNames(frontMatter.servos))
@@ -146,9 +160,11 @@ function processTemplate(template, className, frontMatter, javaStringFileSource,
         .replace("/*CRSERVOS*/", buildCrServos(frontMatter.crServos))
         .replace("/*PACKAGE_DECLARATION*/", packageDeclaration)
         .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
+        .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*TEST_ITERATIONS*/",  (frontMatter.testIterations === undefined ? 3 : frontMatter.testIterations))
-        .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", ((TelemetryManager.LogCatcher)telemetry.log()).getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
-        .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1));
+        .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", FeatureManager.logger.getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
+        .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
+        .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1);
 }
 
 function buildServoNames(servos) {

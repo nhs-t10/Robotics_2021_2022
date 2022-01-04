@@ -12,7 +12,7 @@
 
 #Position1:
     positionOne(), when (liftMovementFinished()) { log("1"), next };
-    foo("boo", c = 30), next;
+    foo("boo", c = 30), Math.foo.fee(), next;
     goto finalMovement
 
 #Position2:

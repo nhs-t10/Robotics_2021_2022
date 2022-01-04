@@ -58,17 +58,17 @@ public class FunctionCall extends AutoautoValue {
     public void loop() throws AutoautoNameException {
         functionName.loop();
 
-        AutoautoValue val = functionName.getResolvedValue();
+        AutoautoPrimitive val = functionName.getResolvedValue();
 
-        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + val.toString() + "` is not a function" + AutoautoProgram.formatStack(location));
+        if(!(val instanceof AutoautoCallableValue)) throw new AutoautoNameException("`" + val.toString() + "` is not a function" + formatStack());
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;
 
         //set scope! this makes nested functions work
-        ((AutoautoValue)fn).setScope(scope);
+        val.setScope(scope);
 
-        //set the location that it's being called from. for error logging purposes
-        if(val.getLocation() == null) val.setLocation(this.location);
+        //set location for error reporting purposes
+        val.setLocation(location);
 
         for(AutoautoValue v : args) v.loop();
 
@@ -81,6 +81,8 @@ public class FunctionCall extends AutoautoValue {
             } else {
                 argsResolved[i] = new AutoautoUndefined();
             }
+            //set the location it's being called from, for error reporting purposes
+            if(argsResolved[i].getLocation() == null) argsResolved[i].setLocation(this.location);
         }
         boolean titledArgExists = false;
         //copy in titledarguments to their positions
@@ -98,9 +100,11 @@ public class FunctionCall extends AutoautoValue {
         this.returnValue = fn.call(argsResolved);
     }
 
+    @NotNull
     @Override
     public String getString() {
-        return returnValue.getString();
+        if(returnValue == null) return "null";
+        else return returnValue.getString();
     }
 
     @Override
@@ -126,7 +130,8 @@ public class FunctionCall extends AutoautoValue {
             if(arg == null) str.append("<null>");
             else str.append(arg.toString() + ", ");
         }
-        str.append(")");
-        return str.toString();
+        String string = str.toString();
+
+        return string.substring(0, string.length() - 2) + ")";
     }
 }

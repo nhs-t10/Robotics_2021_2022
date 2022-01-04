@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers.input;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.*;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 
@@ -20,14 +21,10 @@ public class InputManager extends FeatureManager {
 
     private final HashMap<String, InputManagerInputNode> nodes;
 
-    private final InputUpdateThread updateThread;
-//
     public InputManager(Gamepad _gamepad, Gamepad _gamepad2) {
         this.gamepad = _gamepad;
         this.gamepad2 = _gamepad2;
         nodes = new HashMap<>();
-        updateThread = new InputUpdateThread();
-        updateThread.start();
     }
 
     public Gamepad getGamepad() {
@@ -48,9 +45,7 @@ public class InputManager extends FeatureManager {
         node.init(this);
         nodes.put(key.toLowerCase(), node);
         rebuildOverlaps();
-        synchronized (updateThread) {
-            updateThread.addNode(node);
-        }
+        (new InputUpdateThread(node)).start();
     }
 
 
@@ -58,157 +53,75 @@ public class InputManager extends FeatureManager {
         return nodes.get(key.toLowerCase());
     }
 
-    public float getKey(String key) {
+    public ButtonHandle getButtonHandle(String key) {
         String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
+
+        //remove 'gamepad1'
+        if(normalizedKey.startsWith("gamepad1")) normalizedKey = normalizedKey.replace("gamepad1", "");
+
         switch(normalizedKey) {
-            case "dpadup":
-            case "gamepad1dpadup":
-                return gamepad.dpad_up?1f:0f;
-            case "dpaddown":
-            case "gamepad1dpaddown":
-                return gamepad.dpad_down?1f:0f;
-            case "dpadleft":
-            case "gamepad1dpadleft":
-                return gamepad.dpad_left?1f:0f;
-            case "dpadright":
-            case "gamepad1dpadright":
-                return gamepad.dpad_right?1f:0f;
-            case "a":
-            case "gamepad1a":
-                return gamepad.a?1f:0f;
-            case "b":
-            case "gamepad1b":
-                return gamepad.b?1f:0f;
-            case "x":
-            case "gamepad1x":
-                return gamepad.x?1f:0f;
-            case "y":
-            case "gamepad1y":
-                return gamepad.y?1f:0f;
+            case "dpadup": return new DpadUpButtonHandle(gamepad);
+            case "dpaddown": return new DpadDownButtonHandle(gamepad);
+            case "dpadleft": return new DpadLeftButtonHandle(gamepad);
+            case "dpadright": return new DpadRightButtonHandle(gamepad);
+            case "a": return new AButtonHandle(gamepad);
+            case "b": return new BButtonHandle(gamepad);
+            case "x": return new XButtonHandle(gamepad);
+            case "y": return new YButtonHandle(gamepad);
             case "guide":
-            case "select":
-            case "gamepad1guide":
-                return gamepad.guide?1f:0f;
-            case "start":
-            case "gamepad1start":
-                return gamepad.start?1f:0f;
-            case "back":
-            case "gamepad1back":
-                return gamepad.back?1f:0f;
-            case "leftbumper":
-            case "gamepad1leftbumper":
-                return gamepad.left_bumper?1f:0f;
-            case "rightbumper":
-            case "gamepad1rightbumper":
-                return gamepad.right_bumper?1f:0f;
-            case "leftstickbutton":
-            case "gamepad1leftstickbutton":
-                return gamepad.left_stick_button?1f:0f;
-            case "rightstickbutton":
-            case "gamepad1rightstickbutton":
-                return gamepad.right_stick_button?1f:0f;
-            case "circle":
-            case "gamepad1circle":
-                return gamepad.circle?1f:0f;
-            case "cross":
-            case "gamepad1cross":
-                return gamepad.cross?1f:0f;
-            case "triangle":
-            case "gamepad1triangle":
-                return gamepad.triangle?1f:0f;
-            case "square":
-            case "gamepad1square":
-                return gamepad.square?1f:0f;
-            case "share":
-            case "gamepad1share":
-                return gamepad.share?1f:0f;
-            case "options":
-            case "gamepad1options":
-                return gamepad.options?1f:0f;
-            case "touchpad":
-            case "gamepad1touchpad":
-                return gamepad.touchpad?1f:0f;
-            case "ps":
-            case "gamepad1ps":
-                return gamepad.ps?1f:0f;
-            case "leftstickx":
-            case "gamepad1leftstickx":
-                return gamepad.left_stick_x;
-            case "leftsticky":
-            case "gamepad1leftsticky":
-                return gamepad.left_stick_y;
-            case "rightstickx":
-            case "gamepad1rightstickx":
-                return gamepad.right_stick_x;
-            case "rightsticky":
-            case "gamepad1rightsticky":
-                return gamepad.right_stick_y;
-            case "lefttrigger":
-            case "gamepad1lefttrigger":
-                return gamepad.left_trigger;
-            case "righttrigger":
-            case "gamepad1righttrigger":
-                return gamepad.right_trigger;
-            case "gamepad2leftstickx":
-                return gamepad2.left_stick_x;
-            case "gamepad2leftsticky":
-                return gamepad2.left_stick_y;
-            case "gamepad2rightstickx":
-                return gamepad2.right_stick_x;
-            case "gamepad2rightsticky":
-                return gamepad2.right_stick_y;
-            case "gamepad2lefttrigger":
-                return gamepad2.left_trigger;
-            case "gamepad2righttrigger":
-                return gamepad2.right_trigger;
-            case "gamepad2dpadup":
-                return gamepad2.dpad_up?1f:0f;
-            case "gamepad2dpaddown":
-                return gamepad2.dpad_down?1f:0f;
-            case "gamepad2dpadleft":
-                return gamepad2.dpad_left?1f:0f;
-            case "gamepad2dpadright":
-                return gamepad2.dpad_right?1f:0f;
-            case "gamepad2a":
-                return gamepad2.a?1f:0f;
-            case "gamepad2b":
-                return gamepad2.b?1f:0f;
-            case "gamepad2x":
-                return gamepad2.x?1f:0f;
-            case "gamepad2y":
-                return gamepad2.y?1f:0f;
+            case "select": return new GuideButtonHandle(gamepad);
+            case "start": return new StartButtonHandle(gamepad);
+            case "back": return new BackButtonHandle(gamepad);
+            case "leftbumper": return new LeftBumperButtonHandle(gamepad);
+            case "rightbumper": return new RightBumperButtonHandle(gamepad);
+            case "leftstickbutton": return new LeftStickButtonButtonHandle(gamepad);
+            case "rightstickbutton": return new RightStickButtonButtonHandle(gamepad);
+            case "circle": return new CircleButtonHandle(gamepad);
+            case "cross": return new CrossButtonHandle(gamepad);
+            case "triangle": return new TriangleButtonHandle(gamepad);
+            case "square": return new SquareButtonHandle(gamepad);
+            case "share": return new ShareButtonHandle(gamepad);
+            case "options": return new OptionsButtonHandle(gamepad);
+            case "touchpad": return new TouchpadButtonHandle(gamepad);
+            case "ps": return new PsButtonHandle(gamepad);
+            case "leftstickx": return new LeftStickXButtonHandle(gamepad);
+            case "leftsticky": return new LeftStickYButtonHandle(gamepad);
+            case "rightstickx": return new RightStickXButtonHandle(gamepad);
+            case "rightsticky": return new RightStickYButtonHandle(gamepad);
+            case "lefttrigger": return new LeftTriggerButtonHandle(gamepad);
+            case "righttrigger": return new RightTriggerButtonHandle(gamepad);
+            case "gamepad2dpadup": return new DpadUpButtonHandle(gamepad2);
+            case "gamepad2dpaddown": return new DpadDownButtonHandle(gamepad2);
+            case "gamepad2dpadleft": return new DpadLeftButtonHandle(gamepad2);
+            case "gamepad2dpadright": return new DpadRightButtonHandle(gamepad2);
+            case "gamepad2a": return new AButtonHandle(gamepad2);
+            case "gamepad2b": return new BButtonHandle(gamepad2);
+            case "gamepad2x": return new XButtonHandle(gamepad2);
+            case "gamepad2y": return new YButtonHandle(gamepad2);
             case "gamepad2guide":
-                return gamepad2.guide?1f:0f;
-            case "gamepad2start":
-                return gamepad2.start?1f:0f;
-            case "gamepad2back":
-                return gamepad2.back?1f:0f;
-            case "gamepad2leftbumper":
-                return gamepad2.left_bumper?1f:0f;
-            case "gamepad2rightbumper":
-                return gamepad2.right_bumper?1f:0f;
-            case "gamepad2leftstickbutton":
-                return gamepad2.left_stick_button?1f:0f;
-            case "gamepad2rightstickbutton":
-                return gamepad2.right_stick_button?1f:0f;
-            case "gamepad2circle":
-                return gamepad2.circle?1f:0f;
-            case "gamepad2cross":
-                return gamepad2.cross?1f:0f;
-            case "gamepad2triangle":
-                return gamepad2.triangle?1f:0f;
-            case "gamepad2square":
-                return gamepad2.square?1f:0f;
-            case "gamepad2share":
-                return gamepad2.share?1f:0f;
-            case "gamepad2options":
-                return gamepad2.options?1f:0f;
-            case "gamepad2touchpad":
-                return gamepad2.touchpad?1f:0f;
-            case "gamepad2ps":
-                return gamepad2.ps?1f:0f;
+            case "gamepad2select": return new GuideButtonHandle(gamepad2);
+            case "gamepad2start": return new StartButtonHandle(gamepad2);
+            case "gamepad2back": return new BackButtonHandle(gamepad2);
+            case "gamepad2leftbumper": return new LeftBumperButtonHandle(gamepad2);
+            case "gamepad2rightbumper": return new RightBumperButtonHandle(gamepad2);
+            case "gamepad2leftstickbutton": return new LeftStickButtonButtonHandle(gamepad2);
+            case "gamepad2rightstickbutton": return new RightStickButtonButtonHandle(gamepad2);
+            case "gamepad2circle": return new CircleButtonHandle(gamepad2);
+            case "gamepad2cross": return new CrossButtonHandle(gamepad2);
+            case "gamepad2triangle": return new TriangleButtonHandle(gamepad2);
+            case "gamepad2square": return new SquareButtonHandle(gamepad2);
+            case "gamepad2share": return new ShareButtonHandle(gamepad2);
+            case "gamepad2options": return new OptionsButtonHandle(gamepad2);
+            case "gamepad2touchpad": return new TouchpadButtonHandle(gamepad2);
+            case "gamepad2ps": return new PsButtonHandle(gamepad2);
+            case "gamepad2leftstickx": return new LeftStickXButtonHandle(gamepad2);
+            case "gamepad2leftsticky": return new LeftStickYButtonHandle(gamepad2);
+            case "gamepad2rightstickx": return new RightStickXButtonHandle(gamepad2);
+            case "gamepad2rightsticky": return new RightStickYButtonHandle(gamepad2);
+            case "gamepad2lefttrigger": return new LeftTriggerButtonHandle(gamepad2);
+            case "gamepad2righttrigger": return new RightTriggerButtonHandle(gamepad2);
         }
-        return -1f;
+        throw new IllegalArgumentException("Bad key " + key);
     }
 
     public void update() {

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.jetbrains.annotations.NotNull;
 
 public class ResolvedTitledArg extends AutoautoPrimitive {
     public AutoautoPrimitive title;
@@ -19,6 +20,7 @@ public class ResolvedTitledArg extends AutoautoPrimitive {
         return "{\"title\":" + title.getJSONString() + ",\"value:\"" + value.getJSONString() + "}";
     }
 
+    @NotNull
     @Override
     public String getString() {
         return value.getString();
@@ -49,5 +51,9 @@ public class ResolvedTitledArg extends AutoautoPrimitive {
     @Override
     public ResolvedTitledArg clone() {
         return new ResolvedTitledArg(title.clone(), value.clone());
+    }
+
+    public String toString() {
+        return title + " = " + value;
     }
 }

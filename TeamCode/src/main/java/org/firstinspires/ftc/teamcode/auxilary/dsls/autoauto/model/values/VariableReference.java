@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
 
 public class VariableReference extends AutoautoValue {
@@ -25,9 +23,11 @@ public class VariableReference extends AutoautoValue {
         return name;
     }
 
+    public void init() {}
+
     public void loop() {
         this.resolvedValue = scope.get(this.name);
-        if(this.resolvedValue == null) throw new AutoautoNameException("Unknown variable name " + this.name + AutoautoProgram.formatStack(location));
+        if(this.resolvedValue == null) this.resolvedValue = new AutoautoUndefined(AutoautoUndefined.NONEXISTENT_VARIABLE);
     }
 
     @NotNull
@@ -35,6 +35,7 @@ public class VariableReference extends AutoautoValue {
         return resolvedValue;
     }
 
+    @NotNull
     @Override
     public String getString() {
         return resolvedValue.getString();

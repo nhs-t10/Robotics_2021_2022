@@ -9,9 +9,10 @@ public abstract class AutoautoValue implements AutoautoProgramElement {
     @NotNull
     public abstract AutoautoPrimitive getResolvedValue();
 
-    public void init() {}
-    public void loop() throws AutoautoNameException {}
+    public abstract void init();
+    public abstract void loop() throws AutoautoNameException;
 
+    @NotNull
     public abstract String getString();
 
     public abstract AutoautoValue clone();
@@ -28,7 +29,7 @@ public abstract class AutoautoValue implements AutoautoProgramElement {
     }
 
 
-    public static AutoautoValue fromJSON(String str) {
+    public static AutoautoPrimitive fromJSON(String str) {
         String trim = str.trim();
 
         if(trim.startsWith("\"")) AutoautoString.fromJSON(trim);

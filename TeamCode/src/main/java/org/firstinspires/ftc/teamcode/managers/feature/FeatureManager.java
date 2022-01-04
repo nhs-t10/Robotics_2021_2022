@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.managers.feature;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.OmniCalcComponents;
@@ -40,21 +39,15 @@ public class FeatureManager {
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
             ),
-            0.03f, 1680, 1, 8.9, 0.9, 3f);
+            0.03f, 1680, 1, 8.9, 1, 3f);
 
     public static void reconfigureForTeleop() {
-        bigBoyConfiguration.omniComponents = new OmniCalcComponents(
-                vertical      (-1f,-1f,-1f,-1f),
-                horizontal    (1f, -1f, 1f, -1f),
-                rotational    (1f,-1f,-1f,1f)
-        );
+        FeatureManager.logger.log("I am teleop");
+        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,-1, 1);
     }
     public static void reconfigureForAuto() {
-        bigBoyConfiguration.omniComponents = new OmniCalcComponents(
-                vertical      (-1f,-1f,1f,1f),
-                horizontal    (1f, -1f, 1f, -1f),
-                rotational    (1f,-1f,-1f,1f)
-        );
+        FeatureManager.logger.log("I am auto");
+        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,-1,1);
     }
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
             W(1, -1, 1, -1),

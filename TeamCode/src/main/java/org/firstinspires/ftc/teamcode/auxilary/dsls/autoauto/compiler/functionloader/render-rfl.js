@@ -6,13 +6,18 @@ module.exports = function(loadFunctionsSrc, margs) {
     import java.util.ArrayList;
     
     public class RobotFunctionLoader {
-    
-        public static void loadFunctions(AutoautoRuntimeVariableScope scope, FeatureManager... managers) {
-${indent(3,margs.map(x=>x[0] + " " + x[1] + " = null;").join("\n"))}
+
+    private NativeRobotFunction ${loadFunctionsSrc.map(x=>x.varname).join(",")};
+
+        public void loadFunctions(AutoautoRuntimeVariableScope scope) {
+            ${loadFunctionsSrc.map(x=>"scope.put(\"" + x.funcname + "\"," + x.varname + ");").join("\n")}
+        }
+        public RobotFunctionLoader(FeatureManager... managers) {
+            ${margs.map(x=>x[0] + " " + x[1] + " = null;").join("\n")}
             for(FeatureManager f : managers) {
-${indent(4,margs.map(x=>"if(f instanceof " + x[0] + ") " + x[1] + " = (" + x[0] + ")f;").join("\n"))}
+                ${margs.map(x=>"if(f instanceof " + x[0] + ") " + x[1] + " = (" + x[0] + ")f;").join("\n")}
             }
-${indent(3, remExcessiveWhitespace(loadFunctionsSrc))}
+${loadFunctionsSrc.map(x=>`${x.varname} = new ${x.classname}(${x.manager});`).join("\n")}
         }
     }
     `;

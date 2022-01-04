@@ -1,3 +1,5 @@
+var evaluateFormula = require("../helper-scripts/evaluate-formula.js");
+
 module.exports = {
     init: function (parent, state) {
         state.num = document.createElement("h3");
@@ -29,7 +31,7 @@ module.exports = {
         var num = data.fields[config.field] || 0;
 
         try {
-            num = eval("(x=>" + config.formula + ")")(num);
+            num = evaluateFormula(config.formula, num, +state.lastNum);
         } catch(e) {}
 
         if (state.lastNum === undefined) state.lastNum = num;

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.UpdatableWeakReference;
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 
 public class StreamHandler {
@@ -30,13 +33,21 @@ public class StreamHandler {
                 + "Transfer Encoding: chunked" + HTTP_LINE_SEPARATOR
                 + HTTP_LINE_SEPARATOR);
 
-        printChunk("{\"streamID\": \"" + streamID + "\""
-                + ",\"autoautoProgram\": " + dataSource.autoauto.getProgramJson()
-                + ",\"sendsPerSecond\": " + sendPerSecond
-                + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
+        boolean sentStreamConfig = false;
 
         long streamStartedAt = System.currentTimeMillis();
         while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
+
+            if(dataSource == null) {
+                Thread.yield();
+                continue;
+            }
+
+            if(!sentStreamConfig) {
+                sendStreamConfig(dataSource);
+                sentStreamConfig = true;
+            }
+
             try {
                 if (dataSource.hasNewData()) {
                     dataSource.autoauto.setProgramJsonSendingFlag(programJsonSendingFlag);
@@ -60,13 +71,21 @@ public class StreamHandler {
                 writer.flush();
             }
         }
-        if(!FeatureManager.isOpModeRunning) {
-            printChunk(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
-        } else {
+        if(FeatureManager.isOpModeRunning) {
             printChunk(ControlCodes.THIS_CONVERSATION_IS_GETTING_LONG_PLEASE_START_A_NEW_ONE);
+        } else {
+            printChunk(ControlCodes.I_AM_DYING_BUT_I_MAY_BE_BACK_LATER);
         }
         printChunk("");
         writer.flush();
+    }
+
+    public void sendStreamConfig(TelemetryManager dataSource) {
+        printChunk("{\"streamID\": \"" + streamID + "\""
+                + ",\"autoautoProgram\": " + dataSource.autoauto.getProgramJson()
+                + ",\"sendsPerSecond\": " + sendPerSecond
+                + ",\"buildHistoryInfo\": " + BuildHistory.getJSON()
+                + ",\"autoautoDataTransferAmount\": " + programJsonSendingFlag +"}\n");
     }
 
     public void setStreamID(String streamID) {

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.nate;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 
 public class NateManager extends FeatureManager {
-    private boolean input;
+    private TouchSensor input;
     private boolean found;
     private int position;
     private int currentPosition;
@@ -18,9 +19,14 @@ public class NateManager extends FeatureManager {
 
     private double resetOffset;
 
-    public NateManager(ManipulationManager hands){
-
+    public NateManager(ManipulationManager hands/*, TouchSensor input*/){
+        /*this.input = input;*/
         this.hands = hands;
+    }
+
+    public NateManager(ManipulationManager hands, TouchSensor input) {
+        this.hands = hands;
+        this.input = input;
     }
 
     //TODO: test and remove untested warning.
@@ -105,9 +111,20 @@ public class NateManager extends FeatureManager {
         }
 
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
+    }
+
+    public void positionNeutral(){
+        if (!found){
+            position = 0;
+        }
+        else {
+            //this value is wrong
+            position = -3470;
+        }
+
+
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -128,9 +145,7 @@ public class NateManager extends FeatureManager {
             position = -5295;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -151,9 +166,7 @@ public class NateManager extends FeatureManager {
             position = -6893;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -174,9 +187,7 @@ public class NateManager extends FeatureManager {
             position = 570;
         }
 
-        hands.setMotorPower("ClawMotor", 1);
-        hands.setMotorTargetPosition("ClawMotor", position);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_TO_POSITION);
+        hands.encodeMoveToPosition("ClawMotor", position);
     }
 
     /**
@@ -185,20 +196,29 @@ public class NateManager extends FeatureManager {
      * <p>This is an asynchronous method, meaning that the method will complete before the action does. Unfortunately, the {@link #liftMovementFinished()}
      * method won't work here. Try using time instead :(</p>
      *
-     * <h2>TODO: <i><u>THIS DOES NOT WORK.</u></i> We should make it work.</h2>
+     * <h2>
      * <p>To do that, we need a sensor connected in the code.</p>
      */
 
-    public void homing(){
+    public boolean homing(){
         //`input` will always be false for now, but we need to replace it with `sensor.isPressed()` or whichever the correct method is
         if (found) {
             hands.encodeMoveToPosition("ClawMotor", 0, 0.25);
-        } else if (input) {
+        } else if (input.isPressed()) {
             found = true;
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         } else {
             hands.setMotorPower("ClawMotor", -0.75);
         }
+        return found;
+    }
+
+    public boolean isFound() {
+        return found;
+    }
+
+    public double getClawOpenish() {
+        return hands.getServoPosition("nateClaw");
     }
 }

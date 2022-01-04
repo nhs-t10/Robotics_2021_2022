@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationM
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.ClawOut__macro_autoauto;
 import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.TurnAround__macro_autoauto;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
+import org.firstinspires.ftc.teamcode.managers.localization.LocalizationManager;
 import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -42,6 +44,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
     public ImuManager imu;
     public MacroManager macroManager;
     public NateManager clawPosition;
+    public LocalizationManager posMonitor;
     private boolean precision = false;
     private boolean dashing = false;
 
@@ -49,11 +52,12 @@ public class ExampleTeleopCarouselDualController extends OpMode {
     public void init() {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         FeatureManager.logger.setBackend(telemetry.log());
+        FeatureManager.setIsOpModeRunning(true);
 
         sensor = new SensorManager(hardwareMap, new String[] {});
 
@@ -68,7 +72,9 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 servo           ("nateClaw", "rampLeft", "rampRight"),
                 motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
-        clawPosition = new NateManager(hands);
+
+        posMonitor = new LocalizationManager(driver, imu);
+        clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         input.registerInput("drivingControls",
@@ -85,6 +91,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
         input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
+        input.registerInput("ClawHoming", new ButtonNode("dpadup"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2x"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2b"));
@@ -149,7 +156,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         }
         if (input.getBool("Failsafe") == false){
             if (input.getBool("Intake")){
-                hands.setMotorPower("noodle", 0.75);
+                hands.setMotorPower("noodle", 0.9);
                 hands.setMotorPower("intake", 1);
                 hands.setServoPosition("rampLeft", 0.50);
                 hands.setServoPosition("rampRight", 0.0);
@@ -199,14 +206,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             else {
                 clawPosition.setClawOpen(false);
             }
-//            if (input.getBool("ClawShiftIn") == true){
-//                hands.setServoPower("nateMoverLeft", 1.0);
-//                hands.setServoPower("nateMoverRight", -1.0);
-//            }
-//            if (input.getBool("ClawShiftOut") == true){
-//                hands.setServoPower("nateMoverRight", 1.0);
-//                hands.setServoPower("nateMoverLeft", -1.0);
-//            } Removed for safety, an accidental activation would be bad.
             if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
                 hands.setServoPower("nateMoverRight", 0.0);
                 hands.setServoPower("nateMoverLeft", 0.0);
@@ -223,6 +222,9 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             if (input.getBool("ClawPosHome") == true) {
                 clawPosition.positionHome();
             }
+            if (input.getBool("ClawHoming") == true) {
+                clawPosition.homing();
+            }
             if (input.getBool("turnAround") == true){
                 macroManager.runMacro("TurnAround");
             }
@@ -234,7 +236,18 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
         telemetry.addData("BL Power", driver.backRight.getPower());
+        telemetry.addData("Pos X (localize)", posMonitor.posX);
+        telemetry.addData("Pos Y (localize)", posMonitor.posY);
+        telemetry.addData("Pos X (imu)", imu.getPositionX());
+        telemetry.addData("Pos Y (imu)", imu.getPositionY());
+        telemetry.addData("Vel X (imu)", imu.getVelocityX());
+        telemetry.addData("Vel Y (imu)", imu.getVelocityY());
+        telemetry.addData("Acc X (imu)", imu.getAccelerationX());
+        telemetry.addData("Acc Y (imu)", imu.getAccelerationY());
+        telemetry.addData("Pos Y (encoders)", driver.getCentimeters());
+        telemetry.addData("Theta (imu)", imu.getThirdAngleOrientation());
         telemetry.addData("WhichBoy", FeatureManager.getRobotName());
+        telemetry.addData("Claw Open Position", clawPosition.getClawOpenish());
         telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
         telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));

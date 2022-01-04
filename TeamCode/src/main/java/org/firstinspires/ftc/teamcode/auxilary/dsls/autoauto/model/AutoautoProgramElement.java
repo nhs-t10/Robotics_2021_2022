@@ -12,4 +12,9 @@ public interface AutoautoProgramElement {
     void setLocation(Location location);
 
     AutoautoProgramElement clone();
+
+    default String formatStack() {
+        Location location = getLocation();
+        return "\n\tat " + AutoautoProgram.fileName + ":" + location.line + ":" + location.col + "\n\tat " + location.statepath + ", state " + location.stateNumber;
+    }
 }

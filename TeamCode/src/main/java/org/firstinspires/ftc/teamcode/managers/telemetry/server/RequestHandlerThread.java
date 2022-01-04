@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.UpdatableWeakReference;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -13,20 +14,22 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public class RequestHandlerThread extends Thread {
     public static final String HTTP_LINE_SEPARATOR = "\r\n";
-    private final HashMap<String, StreamHandler> streamRegistry;
+    private final WeakHashMap<String, StreamHandler> streamRegistry;
 
     private Socket socket;
     TelemetryManager dataSource;
     private String streamID;
 
-    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, HashMap<String, StreamHandler> streamRegistry) {
+    public RequestHandlerThread(Socket socket, TelemetryManager dataSource, WeakHashMap<String, StreamHandler> streamRegistry) {
         this.socket = socket;
         this.dataSource = dataSource;
         this.streamRegistry = streamRegistry;
@@ -107,7 +110,7 @@ public class RequestHandlerThread extends Thread {
 
 
         } catch(Exception e) {
-            dataSource.log().add("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
+            FeatureManager.logger.log("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
         }
     }
 }

@@ -7,6 +7,8 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FallibleHardwareMap;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
@@ -40,9 +42,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
     public Server server;
 
-    private long lastLoopTimeNano = System.nanoTime();
-    private long timeSinceLastLoopNano = 0;
-
     private HashMap<String, String> fields= new HashMap<String, String>();;
 
     private boolean hasNewData;
@@ -57,7 +56,9 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         this.backend = backend;
         this.backendLog = new LogCatcher(backend.log());
 
-        if((config & BITMASKS.WEBSERVER) != 0) this.server = new Server(this);
+        if((config & BITMASKS.WEBSERVER) != 0) {
+            this.server = new Server(this);
+        }
 
         this.autoauto = new AutoautoTelemetry();
         this.opmode = opMode;
@@ -87,7 +88,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     }
 
     public TelemetryManager(Telemetry backend, OpMode opMode) {
-        this(backend, opMode, BITMASKS.ALL);
+        this(backend, opMode, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
     }
 
     @Override
@@ -161,8 +162,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     @Override
     public boolean update() {
         //monitor loop times
-        timeSinceLastLoopNano = System.nanoTime() - lastLoopTimeNano;
-        lastLoopTimeNano = System.nanoTime();
+        Clocktower.time(ClocktowerCodes.MAIN_OPMODE_LOOP);
 
         this.hasNewData = true;
         return backend.update();
@@ -240,7 +240,8 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
                 "\"time\":" + System.currentTimeMillis();
                 r += "," +
                         "\"fields\": {"
-                        + "\"meta.looptimeNs\":" + timeSinceLastLoopNano + ",";
+                        + Clocktower.getTimeJSONFlatFragment() + ",";
+
             for(Map.Entry<String, String> field : fields.entrySet()) {
                 r += "\"" + field.getKey() + "\":";
                 try {
@@ -298,26 +299,15 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
         private String logged;
 
-        private String logHistory = "";
-        private boolean recordLogHistory;
-
         public LogCatcher(Log backend) {
             this.backend = backend;
             this.logged = "";
-        }
-
-        public String getLogHistory() {
-            return logHistory;
         }
 
         public String readLog() {
             String log = logged;
             this.logged = "";
             return log;
-        }
-
-        public void setRecordLogHistory(boolean b) {
-            this.recordLogHistory = b;
         }
 
         @Override
@@ -343,7 +333,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         @Override
         public void add(String entry) {
             logged += entry + "\n";
-            if(recordLogHistory) logHistory += entry + "\n";
 
             backend.add(entry);
         }
@@ -351,7 +340,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         @Override
         public void add(String format, Object... args) {
             logged += String.format(format, args) + "\n";
-            if(recordLogHistory) logHistory += String.format(format, args) + "\n";
 
             backend.add(format, args);
         }

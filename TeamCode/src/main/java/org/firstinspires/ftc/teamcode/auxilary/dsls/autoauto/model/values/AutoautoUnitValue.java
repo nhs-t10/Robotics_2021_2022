@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoautoUnitValue extends AutoautoNumericValue {
     //Attributes
@@ -73,6 +74,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
     }
 
     //Methods
+    @NotNull
     public String getString() {
         return this.baseAmount + this.unit;
     }

@@ -1,3 +1,5 @@
+var lastBuildRegisteredName, addBuildHistory;
+
 module.exports = {
     init: function (parent, state, config, box) {
         var title = document.createElement("h2");
@@ -14,15 +16,13 @@ module.exports = {
         toprow.appendChild(title);
         toprow.appendChild(hash);
 
-        var description = document.createElement("p");
-
         parent.appendChild(toprow);
-        parent.appendChild(description);
         
-        function addBuildHistory(buildHistory) {
+        addBuildHistory = function(buildHistory) {
+            lastBuildRegisteredName = buildHistory.name;
+
             title.textContent = buildHistory.name;
             image.src = buildHistory.img;
-            description.textContent = buildHistory.w3w + ". " + buildHistory.phrase;    
             hash.textContent = buildHistory.hash.substring(0,9);
         }
         if(configGlobals.buildHistoryInfo) {
@@ -38,7 +38,12 @@ module.exports = {
     },
     reset: function () { },
     ondata: function (data, parent, state, config) {
-
+        //if the hash has changed, re-update the display
+        if(configGlobals.buildHistoryInfo){
+            if(configGlobals.buildHistoryInfo.name != lastBuildRegisteredName) {
+                addBuildHistory(configGlobals.buildHistoryInfo);
+            }
+        }
     },
     config: []
 }

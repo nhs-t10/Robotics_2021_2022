@@ -14,10 +14,8 @@ public class ReturnFunction extends NativeFunction {
     public String name = "defun";
     public int argCount = 1;
 
-    private AutoautoRuntime runtime;
 
-    public ReturnFunction(AutoautoRuntime runtime) {
-        this.runtime = runtime;
+    public ReturnFunction() {
     }
 
     @Override

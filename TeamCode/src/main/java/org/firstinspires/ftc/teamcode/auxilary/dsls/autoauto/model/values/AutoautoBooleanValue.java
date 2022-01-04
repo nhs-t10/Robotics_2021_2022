@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgramElement;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoautoBooleanValue extends AutoautoPrimitive {
     public boolean value;
@@ -17,6 +17,20 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
     public AutoautoBooleanValue(boolean value) {
         this.value = value;
     }
+
+    public static boolean isTruthy(AutoautoPrimitive v) {
+        return !isFalsy(v);
+    }
+
+    private static boolean isFalsy(AutoautoPrimitive v) {
+        if(v instanceof AutoautoBooleanValue) return !((AutoautoBooleanValue) v).value;
+        else if (v instanceof AutoautoString) return ((AutoautoString) v).value.length() == 0;
+        else if(v instanceof AutoautoNumericValue) return ((AutoautoNumericValue) v).value == 0;
+        else if(v instanceof AutoautoTable) return !((AutoautoTable) v).isEmpty();
+        else if(v instanceof AutoautoUndefined) return true;
+        else return true;
+    }
+
     public void loop() {}
 
     public boolean getBoolean() {
@@ -47,6 +61,7 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
         this.location = location;
     }
 
+    @NotNull
     @Override
     public String getString() {
         return value + "";

@@ -46,4 +46,12 @@ android {
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
     }
+    sourceSets {
+        main {
+            java.srcDir("gen/")
+        }
+        debug {
+            java.srcDir("gen/")
+        }
+    }
 }

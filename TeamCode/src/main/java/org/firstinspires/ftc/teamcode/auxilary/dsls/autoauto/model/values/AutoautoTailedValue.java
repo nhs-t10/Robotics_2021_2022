@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgr
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoTailedValue extends AutoautoValue{
@@ -41,17 +42,13 @@ public class AutoautoTailedValue extends AutoautoValue{
     @Override
     public AutoautoPrimitive getResolvedValue() {
         AutoautoPrimitive resolvedHead = head.getResolvedValue();
-        if(!(resolvedHead instanceof AutoautoPropertyBearingObject)) throw new AutoautoNameException("`"
-                + resolvedHead.toString()
-                + "` is not a property-bearing object"
-                + AutoautoProgram.formatStack(location));
-
-        AutoautoPropertyBearingObject propertyBearingObject = (AutoautoPropertyBearingObject)resolvedHead;
 
         AutoautoPrimitive resolvedTail = tail.getResolvedValue();
-        return propertyBearingObject.getProperty(resolvedTail);
+
+        return resolvedHead.getProperty(resolvedTail);
     }
 
+    @NotNull
     @Override
     public String getString() {
         return tail.getString();
@@ -82,5 +79,9 @@ public class AutoautoTailedValue extends AutoautoValue{
     @Override
     public AutoautoTailedValue clone() {
         return new AutoautoTailedValue(head.clone(), tail.clone());
+    }
+
+    public String toString() {
+        return head.toString() + "[" + tail.toString() + "]";
     }
 }

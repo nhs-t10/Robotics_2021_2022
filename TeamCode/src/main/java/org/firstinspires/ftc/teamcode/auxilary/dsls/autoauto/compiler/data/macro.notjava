@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 
-import org.firstinspires.ftc.teamcode.auxilary.EncodedMotor;
 import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
@@ -32,19 +31,19 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.Auto
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath.S;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State.A;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.NextStatement.N;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionCallStatement.F;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.ValueStatement.F;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.AfterStatement.W;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.FunctionCall.M;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.ArithmeticValue.O;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue.C;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString.U;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable.K;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTableLiteral.K;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue.E;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.GotoStatement.G;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.LetStatement.D;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.IfStatement.I;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.BooleanOperator.T;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference.H;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoFunctionLiteral.Q;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue.B;
 
 import java.util.HashMap;

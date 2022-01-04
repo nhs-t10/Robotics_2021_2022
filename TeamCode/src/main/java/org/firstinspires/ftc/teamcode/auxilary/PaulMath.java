@@ -15,12 +15,12 @@ import java.util.Arrays;
 
 public abstract class PaulMath extends FeatureManager {
 
-    public static float highestValue(float[] array) {
+    public static float highestMagnitude(float[] array) {
         int arrayLength = array.length;
-        float highest = -1000000;
+        float highest = Float.MIN_VALUE;
         for (int i = 0; i < arrayLength; i++) {
-            if (array[i] > highest) {
-                highest = array[i];
+            if (Math.abs(array[i]) > highest) {
+                highest = Math.abs(array[i]);
             }
         }
         return highest;
@@ -51,7 +51,7 @@ public abstract class PaulMath extends FeatureManager {
 
     public static float[] normalizeArray(float[] array) {
         int arrayLength = array.length;
-        float highest = highestValue(array);
+        float highest = highestMagnitude(array);
         for (int i = 0; i < arrayLength; i++) {
             array[i] = array[i] / highest;
         }
@@ -73,6 +73,13 @@ public abstract class PaulMath extends FeatureManager {
         return new float[] {(float)x, (float)y };
     }
 
+    /**
+     * Calculates motor powers
+     * @param verticalPower desired vertical movement, from -1 to 1
+     * @param horizontalPower desired horizontal movement, from -1 to 1
+     * @param rotationalPower desired rotational movement, from -1 to 1
+     * @return motor powers, in the order fl, fr, br, bl.
+     */
     public static float[] omniCalc(float verticalPower, float horizontalPower, float rotationalPower) {
         float v = Range.clip(verticalPower, -1, 1);
         float h = Range.clip(horizontalPower, -1, 1);
@@ -101,11 +108,64 @@ public abstract class PaulMath extends FeatureManager {
             sum[i] = vertical[i] + horizontal[i] + rotational[i];
         }
         //This makes sure that no value is greater than 1 by dividing all of them by the maximum
-        float highest = highestValue(sum);
+        float highest = highestMagnitude(sum);
         if (highest > 1) {
             sum = normalizeArray(sum);
             return sum;
         }
+        return sum;
+    }
+    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl) {
+        return omniCalcInverse(_fl, _fr, _br, _bl, false);
+    }
+
+    /**
+     *
+     * @param _fl
+     * @param _fr
+     * @param _br
+     * @param _bl
+     * @param isRawMotorPowers
+     * @return the omni coefficients, in VHR order.
+     */
+    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl, boolean isRawMotorPowers) {
+        RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
+
+        //undo motor-level coefficients, if requested
+        //ugh i don't like android studio's "ooh don't modify parameters" rule >:(
+        float fl = isRawMotorPowers ? _fl / configuration.motorCoefficients.fl : _fl;
+        float fr = isRawMotorPowers ? _fr / configuration.motorCoefficients.fr : _fr;
+        float bl = isRawMotorPowers ? _bl / configuration.motorCoefficients.bl : _bl;
+        float br = isRawMotorPowers ? _br / configuration.motorCoefficients.br : _br;
+
+        //for each motor, divide its coefficients (expected full power) with the given motor powers (actual power).
+        float[] flPercentages = {
+                fl / configuration.omniComponents.ver.fl,
+                fl / configuration.omniComponents.hor.fl,
+                fl / configuration.omniComponents.rot.fl
+        };
+        float[] frPercentages = {
+                fr / configuration.omniComponents.ver.fr,
+                fr / configuration.omniComponents.hor.fr,
+                fr / configuration.omniComponents.rot.fr
+        };
+        float[] brPercentages = {
+                br / configuration.omniComponents.ver.br,
+                br / configuration.omniComponents.hor.br,
+                br / configuration.omniComponents.rot.br
+        };
+        float[] blPercentages = {
+                bl / configuration.omniComponents.ver.bl,
+                bl / configuration.omniComponents.hor.bl,
+                bl / configuration.omniComponents.rot.bl
+        };
+
+        float[] sum = {
+                blPercentages[0] + brPercentages[0] + frPercentages[0] + flPercentages[0],
+                blPercentages[1] + brPercentages[1] + frPercentages[1] + flPercentages[1],
+                blPercentages[2] + brPercentages[2] + frPercentages[2] + flPercentages[2],
+        };
+
         return sum;
     }
 
@@ -115,13 +175,13 @@ public abstract class PaulMath extends FeatureManager {
 
     /**
      * Converts a number of ticks to centimeters
-     * @param distance Number of ticks
+     * @param ticks Number of ticks
      * @return Centimeters covered by the robot in the given number of ticks
      */
-    public static int encoderDistanceCm(double distance) {
+    public static float encoderDistanceCm(double ticks) {
         RobotConfiguration config = FeatureManager.getRobotConfiguration();
-        double rotations = distance / config.encoderTicksPerRotation;
-        return (int) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
+        double rotations = ticks / config.encoderTicksPerRotation;
+        return (float) ((config.wheelCircumference * rotations * config.gearRatio) / config.slip);
     }
 
     public static float delta(float one, float two) {
@@ -160,6 +220,28 @@ public abstract class PaulMath extends FeatureManager {
         return snakey.toString().toUpperCase();
     }
 
+    /**
+     * Convert a kebab-case string to PascalCase.
+     * @param str a string in kebab-case, like "word-a-b-c-d"
+     * @return the same string in PascalCaseAlsoKnownAsUpperCamelCase
+     */
+    public static String kebabToPascal(String str) {
+        String[] words = str.split("-");
+        StringBuilder s = new StringBuilder();
+        for(String w : words) {
+            s.append(capitalize(w));
+        }
+        return s.toString();
+    }
+
+    /**
+     * Make a word into capital-case.
+     * @param word a string with no whitespace
+     * @return the given word, but with the first letter capitalized.
+     */
+    public static String capitalize(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+    }
 
     /**
      * Counts proportional error for PID control.
@@ -355,15 +437,87 @@ public abstract class PaulMath extends FeatureManager {
     /**
      * Normalizes a path to POSIX-esque-ness. Removes repeating slashes and leading slashes; resolves ".." and "." terms;
      * @param path The path to normalize, in some format
-     * @return
+     * @return a normalised path in POSIX format.
      */
     public static String normalizeRelativePath(String path) {
         if(path == null) return "";
         return path
-                .replace("\\", "/")
-                .replace("/+", "/")
+                .replace('\\', '/')
+                .replaceAll("/+", "/")
                 .replaceAll("(^|/)\\./", "/")
                 .replaceAll("(^|[^/]+)/\\.\\./", "")
                 .replaceAll("^/", "");
+    }
+
+    /**
+     * Trims from the start of {@code toTrim} until its start DOESN'T match {@code trimBy}
+     * @param toTrim
+     * @param trimBy
+     * @return the trimmed string
+     */
+    public static String trimMatchingStart(String toTrim, String trimBy) {
+        if(trimBy == null) return toTrim;
+        if(toTrim == null) return "";
+
+        char[] toTrimArr = toTrim.toCharArray(), trimByArr = trimBy.toCharArray();
+        int trimIndex = 0;
+        int len = Math.min(toTrim.length(), trimBy.length());
+        for(int i = 0; i < len; i++) {
+            if(toTrimArr[i] == trimByArr[i]) trimIndex = i;
+        }
+        return toTrim.substring(trimIndex);
+    }
+
+    public static String leftPad(int l, String n) {
+        int initialLength = n.length();
+        StringBuilder s = new StringBuilder(n);
+        for(int i = initialLength; i < l; i++) s.insert(0, " ");
+        return s.toString();
+    }
+
+    /**
+     * Repeat the string s a given time.
+     * @param s the string to repeat
+     * @param t the number of times to repeat it
+     * @return the repeated string
+     */
+    public static String repeat(String s, int t) {
+        if(t <= 0) return "";
+
+        StringBuilder r = new StringBuilder();
+        for(int i = t; i > 0; i--) r.append(s);
+        return r.toString();
+    }
+
+    /**
+     * Remove the package from a fully-qualified class
+     * @param fullyQualifiedClass a fully-qualified (with package) Java class name
+     * @return the unqualified (without package) Java class name
+     */
+    public static String classBasename(String fullyQualifiedClass) {
+        if(fullyQualifiedClass == null) return null;
+
+        int lengthCached = fullyQualifiedClass.length();
+        int index = 0;
+        for(int i = 0; i < lengthCached; i++) {
+            if(Character.isUpperCase(fullyQualifiedClass.charAt(i))) {
+                index = i;
+                break;
+            }
+        }
+        return fullyQualifiedClass.substring(index);
+    }
+
+    /**
+     * Return the "basename" of a file-- essentially, remove the folder.
+     * @param fileName a directory path, in either linux or windows format.
+     * @return the last term in the path
+     */
+    public static String basename(String fileName) {
+        int idx = Math.max(
+                fileName.lastIndexOf('/'),
+                fileName.lastIndexOf('\\') //support both windows and linux
+        );
+        return fileName.substring(idx + 1);
     }
 }

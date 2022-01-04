@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.managers.CV;
 
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
+import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
@@ -25,8 +28,8 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     /*
      * Some color constants
      */
-    static final Scalar YCRCB_RED = new Scalar(0, 128, 0);
-    static final Scalar YCRCB_ORIGIN = new Scalar(255, 255, 128);
+    static final Scalar YCRCB_MIN = new Scalar(0, 95, 190);
+    static final Scalar YCRCB_MAX = new Scalar(125, 105, 250);
 
 
     // Working variables. Because of memory concerns, we're not allowed to make ANY non-primitive variables within the `processFrame` method.
@@ -52,18 +55,20 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     @Override
     public Mat processFrame(Mat input)
     {
+        //report how long CV processing is taking
+        Clocktower.time(ClocktowerCodes.CV_UPDATE_LOOP);
         //convert the input to YCrCb, which is better for analysis than the default bgr.
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_BGR2YCrCb);
 
         //filter the image to ONLY redish pixels
-        Core.inRange(YCrCb, YCRCB_RED, YCRCB_ORIGIN, redPixels);
+        Core.inRange(YCrCb, YCRCB_MIN, YCRCB_MAX, redPixels);
 
         //Find the biggest blob of reddish pixels.
         //It likes using a list of Matrices of points instead of something more simple, but that's ok.
         contours = new ArrayList<>();
         Imgproc.findContours(redPixels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        FeatureManager.logger.log("Contour Count: " + contours.size());
+        //FeatureManager.logger.log("Contour Count: " + contours.size());
         //only bother continuing if there were any contours found
         if(contours.size() == 0) return input;
 
@@ -78,6 +83,14 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
         }
 
         biggestContourBoundingRect = Imgproc.boundingRect(biggestContour);
+
+        Imgproc.rectangle(
+                input, // Buffer to draw on
+                new Point(biggestContourBoundingRect.x, biggestContourBoundingRect.y), // First point which defines the rectangle
+                new Point(biggestContourBoundingRect.x + biggestContourBoundingRect.width,
+                        biggestContourBoundingRect.y + biggestContourBoundingRect.height), // Second point which defines the rectangle
+                new Scalar(0.5, 255, 0), // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
 
         largeBlobCenterX = biggestContourBoundingRect.x + (biggestContourBoundingRect.width / 2);
         inputWidth = input.width();

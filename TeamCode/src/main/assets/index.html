@@ -60,8 +60,10 @@
     window.require = function(src, parent) {
         if(window.__moduleExports === undefined) window.__moduleExports = {};
         
-        parent = parent || "";
-        src = parent + "/" + src;
+        parent = parent || window.location;
+        src = (new URL(src, parent)).toString();
+
+        console.log(src);
         
         if(src.endsWith(".js")) src = src;
         else if(src.endsWith("/")) src += "index.js";
@@ -113,6 +115,7 @@
             "debug.alldata": require("./widget-types/debug-alldata.js"),
             "chart.bar": require("./widget-types/chart-bar.js"),
             "chart.line": require("./widget-types/chart-line.js"),
+            "chart.oscilloscope": require("./widget-types/chart-oscilloscope.js"),
             "number.single": require("./widget-types/number-single.js"),
             "number.delta": require("./widget-types/number-delta.js"),
             "string.stringfield": require("./widget-types/string-stringfield.js"),
@@ -661,7 +664,8 @@
             if (config[key] === undefined) {
                 config[key] = defaultValue || "";
             }
-            var input = document.createElement("input");
+            var input = document.createElement("textarea");
+            input.setAttribute("rows", 1);
             input.value = config[key];
             input.addEventListener("change", function () {
                 config[key] = input.value;
@@ -751,7 +755,7 @@
                 console.error(data);
                 console.error(e);
             }
-            //if it's a streamid setter, do that first
+            //if it's a streamid setter, do that & don't dispatch the data
             if(dataObject.streamID) {
                 Object.assign(configGlobals, dataObject);
                 return;
@@ -1068,6 +1072,7 @@
             padding: 0.5em;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .widget--content h3 {
@@ -1157,6 +1162,15 @@
 
         .sidebar--config-fields label {
             display: block;
+        }
+
+        .sidebar--config-fields textarea {
+            box-sizing: content-box;
+            
+            height: 1em;
+            min-height: 1em;
+
+            resize:vertical;
         }
 
         .sidebar--config-fields.no-settings {

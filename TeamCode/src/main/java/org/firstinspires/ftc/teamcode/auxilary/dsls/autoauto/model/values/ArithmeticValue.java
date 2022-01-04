@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.AutoautoOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
 public class ArithmeticValue extends AutoautoValue {
-    String operator;
+    AutoautoOperator operator;
     AutoautoValue right;
     AutoautoValue left;
 
@@ -21,7 +23,7 @@ public class ArithmeticValue extends AutoautoValue {
 
     public ArithmeticValue(AutoautoValue left, String operator, AutoautoValue right) {
         this.left = left;
-        this.operator = operator;
+        this.operator = AutoautoOperator.get(operator);
         this.right = right;
     }
     @Override
@@ -34,45 +36,13 @@ public class ArithmeticValue extends AutoautoValue {
         left.loop();
         right.loop();
 
-        AutoautoValue leftRes = left.getResolvedValue();
-        AutoautoValue rightRes = right.getResolvedValue();
+        AutoautoPrimitive leftRes = left.getResolvedValue();
+        AutoautoPrimitive rightRes = right.getResolvedValue();
 
-        if(!(leftRes instanceof AutoautoNumericValue) || !(rightRes instanceof AutoautoNumericValue)) {
-            if(operator.equals("+")) concatenate(left.asString(), right.asString());
-            else throw new AutoautoNameException("[AUTOAUTO ERROR] Bad operator " + operator + "on incompatible value types "
-                    + leftRes.getClass().getSimpleName() + "; " + rightRes.getClass().getSimpleName());
-            return;
-        }
-
-        float a = ((AutoautoNumericValue)leftRes).getFloat();
-        float b = ((AutoautoNumericValue)rightRes).getFloat();
-
-        switch(operator) {
-            case "%":
-                this.returnValue = new AutoautoNumericValue(a % b);
-                break;
-            case "^":
-            case "**":
-                this.returnValue = new AutoautoNumericValue((float) Math.pow(a, b));
-                break;
-            case "*":
-                this.returnValue = new AutoautoNumericValue(a * b);
-                break;
-            case "/":
-                this.returnValue = new AutoautoNumericValue(a / b);
-                break;
-            case "+":
-                this.returnValue = new AutoautoNumericValue(a + b);
-                break;
-            case "-":
-                this.returnValue = new AutoautoNumericValue(a - b);
-                break;
-            default:
-                this.returnValue = new AutoautoNumericValue(a);
-                break;
-        }
+        this.returnValue = operator.eval(leftRes, rightRes, true);
     }
 
+    @NotNull
     @Override
     public String getString() {
         return returnValue.getString();
@@ -80,13 +50,9 @@ public class ArithmeticValue extends AutoautoValue {
 
     @Override
     public ArithmeticValue clone() {
-        ArithmeticValue c = new ArithmeticValue(left.clone(), operator, right.clone());
+        ArithmeticValue c = new ArithmeticValue(left.clone(), operator.getOperatorStr(), right.clone());
         c.setLocation(location);
         return c;
-    }
-
-    private void concatenate(AutoautoString a, AutoautoString b) {
-        this.returnValue = new AutoautoString(a.getString() + b.getString());
     }
 
     @NotNull
@@ -109,6 +75,7 @@ public class ArithmeticValue extends AutoautoValue {
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
         left.setScope(scope);
+        operator.setScope(scope);
         right.setScope(scope);
     }
 
@@ -120,5 +87,6 @@ public class ArithmeticValue extends AutoautoValue {
     @Override
     public void setLocation(Location location) {
         this.location = location;
+        operator.setLocation(location);
     }
 }

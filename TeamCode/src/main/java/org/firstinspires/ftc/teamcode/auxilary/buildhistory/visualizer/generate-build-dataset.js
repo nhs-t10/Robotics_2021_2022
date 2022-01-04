@@ -23,7 +23,7 @@ for(var i = 0; i < objects.length; i++) {
     getBuildsFromFileHash(objects[i], objectToCommitMap[objects[i]]);
 }
 
-fs.writeFileSync(__dirname + "/allBuilds.json", JSON.stringify(Object.values(builds), null, 2));
+fs.writeFileSync(__dirname + "/allBuilds.json", JSON.stringify(Object.values(builds), null, 2)); //SAFE
 
 function getBuildsFromFileHash(hash, commit) {
     var file = cp.execSync(`git cat-file blob ${hash}`).toString();

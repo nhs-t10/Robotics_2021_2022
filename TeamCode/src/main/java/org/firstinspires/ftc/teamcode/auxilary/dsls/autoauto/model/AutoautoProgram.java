@@ -5,17 +5,18 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.StoredAutoautoVariable;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AutoautoProgram implements AutoautoProgramElement {
     public static String fileName;
     private String initialPathName;
     private String oldPathName;
-    public HashMap<String, Statepath> paths;
+    public LinkedHashMap<String, Statepath> paths;
     public Statepath currentPath;
 
     AutoautoRuntimeVariableScope scope;
@@ -24,22 +25,14 @@ public class AutoautoProgram implements AutoautoProgramElement {
     private StoredAutoautoVariable currentStatepathVariable;
 
 
-    public static String formatStack(Location location) {
-        return "\n\tat " + fileName + ":" + location.line + ":" + location.col + "\n\tat " + location.statepath + ", state " + location.stateNumber;
-    }
-
-    public static AutoautoProgram P(HashMap<String, Statepath> s, String initialPathName) {
-        return new AutoautoProgram(s, initialPathName);
-    }
-
-    public static AutoautoProgram P(Statepath[] s) {
-        HashMap<String, Statepath> paths = new HashMap<>();
+    public static AutoautoProgram P(Statepath[] s, String initialPathName) {
+        LinkedHashMap<String, Statepath> paths = new LinkedHashMap<>();
         for(Statepath p : s) paths.put(p.name, p);
 
-        return new AutoautoProgram(paths, s[0].name);
+        return new AutoautoProgram(paths, initialPathName);
     }
 
-    public AutoautoProgram(HashMap<String, Statepath> s, String initialPathName) {
+    public AutoautoProgram(LinkedHashMap<String, Statepath> s, String initialPathName) {
         this.paths = s;
         this.initialPathName = initialPathName;
         this.currentPath = paths.get(initialPathName);
@@ -64,6 +57,7 @@ public class AutoautoProgram implements AutoautoProgramElement {
             scope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(0));
 
             this.currentPath = this.paths.get(currentStatepathName);
+            if(this.currentPath == null) throw new AutoautoNameException(currentStatepathName + " is not a defined statepath. Make sure you didn't make a typo, Paul Max Braverman!");
             this.currentPath.stepInit();
             this.oldPathName = currentStatepathName;
         }
@@ -108,7 +102,7 @@ public class AutoautoProgram implements AutoautoProgramElement {
 
     @Override
     public AutoautoProgram clone() {
-        HashMap<String, Statepath> pathsCloned = new HashMap<>();
+        LinkedHashMap<String, Statepath> pathsCloned = new LinkedHashMap<>();
         for(String p : paths.keySet()) {
             pathsCloned.put(p, paths.get(p).clone());
         }

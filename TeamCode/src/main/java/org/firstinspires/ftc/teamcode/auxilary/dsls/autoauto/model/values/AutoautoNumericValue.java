@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgramElement;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoautoNumericValue extends AutoautoPrimitive {
     public float value;
@@ -53,6 +53,7 @@ public class AutoautoNumericValue extends AutoautoPrimitive {
         this.location = location;
     }
 
+    @NotNull
     @Override
     public String getString() {
         if((int)value == value) return (int)value + "";

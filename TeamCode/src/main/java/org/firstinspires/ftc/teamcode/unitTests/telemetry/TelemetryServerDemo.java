@@ -24,7 +24,7 @@ public class TelemetryServerDemo {
         } catch(Throwable onNonPortableProblemIgnore) {
             //ignore the problem
         }
-        long TEST_TIME_MS = 1_200_000;
+        long TEST_TIME_MS = 9_600_000;
 
         long start = System.currentTimeMillis();
 
