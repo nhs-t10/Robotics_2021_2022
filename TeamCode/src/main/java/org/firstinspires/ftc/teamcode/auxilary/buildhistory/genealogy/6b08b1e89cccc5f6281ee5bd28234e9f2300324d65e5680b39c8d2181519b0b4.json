@@ -3,15 +3,6 @@
     "cognomen": "Allmaner",
     "builds": [
         {
-            "name": "Tripp Allmaner",
-            "time": "2021-12-02T20:55:41.407Z",
-            "buildHash": "bf7d10477040ad435ca3b8da10e52731016e79337b841c1f1db4e28c936b3a1f",
-            "w3w": "flashing consist abbey",
-            "phrase": "Forgive us that rattled again and vivid, and clothe the ground. “You know quite well.” “Well, I dare say.” The painter laughed.",
-            "perceptualHash": "81b92f2fe",
-            "colors": "#3780cd,#dfe77e"
-        },
-        {
             "name": "Creed Allmaner",
             "time": "2021-12-02T20:57:40.265Z",
             "buildHash": "bf7d10477040ad435ca3b8da10e52731016e79337b841c1f1db4e28c936b3a1f",
@@ -901,8 +892,17 @@
             "phrase": "Gwendolen, not Buonarotti who act well. Indeed, the butler, coming in.” You became absurdly nervous staccato signs of Les Cent Nouvelles, bound to take. Her shallow people.",
             "perceptualHash": "",
             "colors": ""
+        },
+        {
+            "name": "Ramona Allmaner",
+            "time": "2022-01-04T23:37:30.950Z",
+            "buildHash": "f9682666b08c0aca362b1f39a2a069b0823dcdecee612038d07178ca0cd6b641",
+            "w3w": "influx check-in assembly",
+            "phrase": "Think of gilt of joy when the garden. he always what people immensely, I wonder if there was true, all costs.",
+            "perceptualHash": "",
+            "colors": ""
         }
     ],
-    "buildCount": 142,
-    "lastBuildTimeUnixMs": 1640132405231
+    "buildCount": 143,
+    "lastBuildTimeUnixMs": 1641339453083
 }
