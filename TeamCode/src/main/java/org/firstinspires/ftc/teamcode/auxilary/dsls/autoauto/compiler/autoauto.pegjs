@@ -33,7 +33,7 @@ labeledStatepath =
 
 
 statepath =
-  _ head:state tail:(SEMICOLON state)* _ {
+  _ head:state tail:(SEMICOLON state)* _ (SEMICOLON _)? {
   	return {
       type: "Statepath", location: location(),
       states: [head].concat(tail.map(x=>x[1]))
