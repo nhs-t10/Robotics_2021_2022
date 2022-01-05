@@ -97,16 +97,8 @@ public class RockTeleop extends OpMode {
             }
             //This makes sure that no value is greater than 1 by dividing all of them by the maximum
             float highest = -1000000;
-            for (int i = 0; i < 4; i++) {
-                if (Math.abs(sum2[i]) > highest) {
-                    highest = Math.abs(sum2[i]);
-                }
-            }
-            if (highest > 1) {
-                for (int i = 0; i < 4; i++) {
-                    sum2[i] = sum2[i] / highest;
-                }
-            }
+            for (int i = 0; i < 4; i++) if (Math.abs(sum2[i]) > highest) highest = Math.abs(sum2[i]);
+            if (highest > 1) for (int i = 0; i < 4; i++) sum2[i] = sum2[i] / highest;
 
 
             fl.setPower(sum2[0]);
@@ -115,18 +107,18 @@ public class RockTeleop extends OpMode {
             bl.setPower(-sum2[3]);
         }
 
-        if (gamepad1.y) { Carousel.setPower(0.75);
-        } else if (gamepad1.a) { Carousel.setPower(-0.75);
-        } else {Carousel.setPower(0);}
+        if (gamepad1.y) Carousel.setPower(0.75);
+        else if (gamepad1.a) Carousel.setPower(-0.75);
+        else Carousel.setPower(0);
 
         //INTAKE CODE
-        if (gamepad1.right_trigger > 0 || gamepad2.right_trigger > 0) {intake.setPower(1);}
-        else if (gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) { intake.setPower(-.5);}
-        else {intake.setPower(0);}
+        if (gamepad1.right_trigger > 0 || gamepad2.right_trigger > 0) intake.setPower(1);
+        else if (gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) intake.setPower(-.5);
+        else intake.setPower(0);
 
-        if (gamepad1.right_trigger > 0 || gamepad2.right_trigger > 0) {noodle.setPower(0.9);}
-        else if (gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) { noodle.setPower(-.5);}
-        else {noodle.setPower(0);}
+        if (gamepad1.right_trigger > 0 || gamepad2.right_trigger > 0) noodle.setPower(0.9);
+        else if (gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) noodle.setPower(-.5);
+        else noodle.setPower(0);
 
         if (gamepad1.right_trigger > 0 || gamepad2.right_trigger > 0) {rampLeft.setPosition(0.5); rampRight.setPosition(0);}
         else if (gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) {rampLeft.setPosition(0.5); rampRight.setPosition(0);}
@@ -189,12 +181,8 @@ public class RockTeleop extends OpMode {
         }
 
         if(gamepad2.left_bumper){
-            if(nateClaw.getPosition()==0){
-                nateClaw.setPosition(1);
-            }
-            if(nateClaw.getPosition()==1){
-                nateClaw.setPosition(0);
-            } else {nateClaw.setPosition(0);}
+            if(nateClaw.getPosition()==0) nateClaw.setPosition(1);
+            else nateClaw.setPosition(0);
         }
 
         telemetry.addData("Claw Motor Position: ", ClawMotor.getCurrentPosition());
