@@ -35,6 +35,12 @@ public class RockTeleop extends OpMode {
         rampLeft = hardwareMap.get(Servo.class, "rampLeft");
         rampRight = hardwareMap.get(Servo.class, "rampRight");
 
+        ClawMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
     }
 
@@ -131,27 +137,52 @@ public class RockTeleop extends OpMode {
         if(gamepad2.x){
             ClawMotor.setTargetPosition(2537);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.75);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.75);
+            } else {
+                ClawMotor.setPower(-0.75);
+            }
+
         } else if(gamepad2.y){
             ClawMotor.setTargetPosition(-1337);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.75);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.75);
+            } else {
+                ClawMotor.setPower(-0.75);
+            }
         } else if(gamepad2.b){
             ClawMotor.setTargetPosition(-3024);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.75);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.75);
+            } else {
+                ClawMotor.setPower(-0.75);
+            }
         } else if(gamepad2.a){
             ClawMotor.setTargetPosition(-4679);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.75);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.75);
+            } else {
+                ClawMotor.setPower(-0.75);
+            }
         } else if(gamepad2.dpad_up){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()+100);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.5);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.5);
+            } else {
+                ClawMotor.setPower(-0.5);
+            }
         } else if(gamepad2.dpad_down){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()-100);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ClawMotor.setPower(0.5);
+            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
+                ClawMotor.setPower(0.5);
+            } else {
+                ClawMotor.setPower(-0.5);
+            }
         } else {
             ClawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             ClawMotor.setPower(0);
@@ -165,6 +196,11 @@ public class RockTeleop extends OpMode {
                 nateClaw.setPosition(0);
             } else {nateClaw.setPosition(0);}
         }
+
+        telemetry.addData("Claw Motor Position: ", ClawMotor.getCurrentPosition());
+        telemetry.addData("Claw Motor Target: ", ClawMotor.getTargetPosition());
+        telemetry.addData("Claw Motor Power: ", ClawMotor.getPower());
+
 
 
 
