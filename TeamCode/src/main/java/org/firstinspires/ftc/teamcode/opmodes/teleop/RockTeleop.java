@@ -128,30 +128,55 @@ public class RockTeleop extends OpMode {
         //CLAW MOVING
         if(gamepad2.x){
             ClawMotor.setTargetPosition(2537);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
+
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else if(gamepad2.y){
             ClawMotor.setTargetPosition(-1337);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else if(gamepad2.b){
             ClawMotor.setTargetPosition(-3024);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else if(gamepad2.a){
             ClawMotor.setTargetPosition(-4679);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else if(gamepad2.dpad_up){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()+100);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.5);
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else if(gamepad2.dpad_down){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()-100);
-            ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.5);
+            //mode running variable THIS IS A TEST DELETE ME IF IM BAD
+            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.runToPosition);
+            }
         } else {
-            ClawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            //ClawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //we dont need this ((I think))
             ClawMotor.setPower(0);
         }
 
