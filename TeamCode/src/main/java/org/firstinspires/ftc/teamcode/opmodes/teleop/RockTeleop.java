@@ -138,43 +138,23 @@ public class RockTeleop extends OpMode {
         } else if(gamepad2.y){
             ClawMotor.setTargetPosition(-1337);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.75);
-            } else {
-                ClawMotor.setPower(-0.75);
-            }
+            ClawMotor.setPower(0.75);
         } else if(gamepad2.b){
             ClawMotor.setTargetPosition(-3024);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.75);
-            } else {
-                ClawMotor.setPower(-0.75);
-            }
+            ClawMotor.setPower(0.75);
         } else if(gamepad2.a){
             ClawMotor.setTargetPosition(-4679);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.75);
-            } else {
-                ClawMotor.setPower(-0.75);
-            }
+            ClawMotor.setPower(0.75);
         } else if(gamepad2.dpad_up){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()+100);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.5);
-            } else {
-                ClawMotor.setPower(-0.5);
-            }
+            ClawMotor.setPower(0.5);
         } else if(gamepad2.dpad_down){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()-100);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.5);
-            } else {
-                ClawMotor.setPower(-0.5);
-            }
+            ClawMotor.setPower(0.5);
         } else {
             ClawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             ClawMotor.setPower(0);
@@ -188,6 +168,7 @@ public class RockTeleop extends OpMode {
         telemetry.addData("Claw Motor Position: ", ClawMotor.getCurrentPosition());
         telemetry.addData("Claw Motor Target: ", ClawMotor.getTargetPosition());
         telemetry.addData("Claw Motor Power: ", ClawMotor.getPower());
+        telemetry.addData("Claw Motor Mode: ", ClawMotor.getMode());
 
 
 
