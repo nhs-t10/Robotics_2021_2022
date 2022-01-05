@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-
-import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.ClawOut__macro_autoauto;
-import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.macro.TurnAround__macro_autoauto;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -39,11 +36,7 @@ public class TeleopStripped extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;
-    public SensorManager sensor;
-    public ImuManager imu;
-    public MacroManager macroManager;
     public NateManager clawPosition;
-    public LocalizationManager posMonitor;
     private boolean precision = false;
     private boolean dashing = false;
 
