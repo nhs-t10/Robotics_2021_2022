@@ -32,15 +32,14 @@ public class PIDlessEncoderMovementThread extends Thread {
         while(FeatureManager.isOpModeRunning) {
             for(int i = 0; i < motors.length; i++) {
                 if(shouldMove[i]) {
+                    if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                     int currentPos = motors[i].getCurrentPosition();
                     int delta = targets[i] - currentPos;
 
-                    double power = Math.signum(delta);
+                    double power = -1 * delta * powerCoefs[i] * 0.01;
 
-                    double coef = powerCoefs[i];
-                    if(Math.abs(delta) < slowRange) coef *= (Math.abs(delta) * 0.005);
-
-                    motors[i].setPower(power * coef);
+                    motors[i].setPower(power);
 
                     if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
                 }

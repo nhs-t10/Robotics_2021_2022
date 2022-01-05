@@ -114,6 +114,8 @@ public class template extends AutoautoOpmode {
 
         runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv, posMonitor);
 
+        limbs.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
         telemetryManager.autoauto.setGlobalScope(runtime.rootModule.globalScope);

@@ -1,0 +1,6 @@
+#i:
+positionOne(), when (liftMovementFinished()) next;
+positionTwo(), when (liftMovementFinished()) next;
+positionThree(), when (liftMovementFinished()) next;
+positionHome(), when (liftMovementFinished()) next;
+log("done!");
