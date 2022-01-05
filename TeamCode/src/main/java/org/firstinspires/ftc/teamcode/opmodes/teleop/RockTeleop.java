@@ -129,12 +129,7 @@ public class RockTeleop extends OpMode {
         if(gamepad2.x){
             ClawMotor.setTargetPosition(2537);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(ClawMotor.getCurrentPosition() < ClawMotor.getTargetPosition()){
-                ClawMotor.setPower(0.75);
-            } else {
-                ClawMotor.setPower(-0.75);
-            }
-
+            ClawMotor.setPower(0.75);
         } else if(gamepad2.y){
             ClawMotor.setTargetPosition(-1337);
             ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

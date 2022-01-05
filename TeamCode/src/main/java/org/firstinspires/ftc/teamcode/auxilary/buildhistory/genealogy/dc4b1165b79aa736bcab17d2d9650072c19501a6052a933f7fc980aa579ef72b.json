@@ -3,15 +3,6 @@
     "cognomen": "Rotfean",
     "builds": [
         {
-            "name": "Princeton Rotfean",
-            "time": "2021-12-23T19:37:35.789Z",
-            "buildHash": "89c8906fe48a360d0189faf437c284a50ce4e63e6839b22c01e192428d8e5623",
-            "w3w": "culprit freestyle cyclone",
-            "phrase": "May that some measure it where she may think so.” “I will tell you.” Then he did but the self-denial that weeps tears for himself, and, shuddering, crushed with wild, tear-dimmed eyes lovelier.”",
-            "perceptualHash": "fef3f6f9f77",
-            "colors": "#803c4f,#8280b7"
-        },
-        {
             "name": "Irene Rotfean",
             "time": "2021-12-23T19:38:28.817Z",
             "buildHash": "ddca83679611d996cc87d18e299687d42752e36f83380d891b891f76e90b973d",
@@ -901,8 +892,17 @@
             "phrase": "Browning writes about after him. With subtle affinity between men are suddenly became unbearable, and fully. When I saw it all my horse round the lad, though I thought.” “You thought so. She dragged a sonnet-sequence?",
             "perceptualHash": "f3fc1fbbf9fb",
             "colors": "#7880c0,#0a7c80"
+        },
+        {
+            "name": "Lennox Rotfean",
+            "time": "2022-01-05T01:21:09.931Z",
+            "buildHash": "bf2310a6babc537a45e53d397ea2536fbf94b57c41817f78b56e0f05de67df28",
+            "w3w": "flashing arrow abbey",
+            "phrase": "Mr. “My dear Lady Branksome. She will the senses rot.",
+            "perceptualHash": "127148fcc3fe4ebfa26fef3a5fdf5fefc7fc16f5662c8b8f9",
+            "colors": "#a2c648,#7c0e80,#8e9fd4,#8709c9,#db4a8f,#468112,#84f7bb,#b7f9be,#87fa6e"
         }
     ],
-    "buildCount": 151,
-    "lastBuildTimeUnixMs": 1641345078510
+    "buildCount": 152,
+    "lastBuildTimeUnixMs": 1641345670223
 }
