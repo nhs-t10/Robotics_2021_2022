@@ -71,10 +71,7 @@ public class NateManager extends FeatureManager {
      * @see #positionHome()
      */
     public void emergencyStop(){
-//        currentPos = hands.getMotorPosition("ClawMotor");
-//        currentPosition = (int) Math.round(currentPos);
-//        hands.encodeMoveToPosition("ClawMotor", currentPosition, 0.75);
-        hands.cancelEncodedMovement("ClawMotor");
+        hands.encodeMoveToPosition("ClawMotor", (int)hands.getMotorPosition("ClawMotor"), 0);
     }
 
     /**
