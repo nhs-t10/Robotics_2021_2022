@@ -59,9 +59,9 @@ for(var i = 0; i < autoautoFiles.length; i++) {
     var packageDeclaration = "package org.firstinspires.ftc.teamcode.__compiledautoauto." + package.replace(/\/|\\/g, ".") + ";";
 
     var fileName = autoautoFiles[i].substring(autoautoFiles[i].lastIndexOf(path.sep) + 1);
-    var templateUsed = fileName.includes(".macro") ? "macro" : "template";
+    if (fileName.includes(".macro")) throw "Macro is a bad idea you idiots!";
+    var templateUsed = "template";
     var className = jClassIfy(fileName)
-        .replace(".macro.autoauto", "__macro_autoauto")
         .replace(".autoauto", "__autoauto");
 
     var classNameNoConflict = className;
