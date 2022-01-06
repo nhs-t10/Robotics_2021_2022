@@ -1,4 +1,0 @@
-#init:
-    log("First state"), next;
-    log("Second state"), stopMacro(), log("Second state, after stopMacro()"), next;
-    log("failed :( we got to the next state despite stopping")

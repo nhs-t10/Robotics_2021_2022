@@ -88,7 +88,6 @@ lint/tmp/
 # lint/reports/
 
 *__autoauto.java
-*__macro_autoauto.java
 *__controls.java
 *__controls3.java
 **/buildhistory/BuildHistory.java

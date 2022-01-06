@@ -1,6 +1,0 @@
-#init:
-goto SpinTaunt
-
-#SpinTaunt:
- driveRaw (1,-1,1,-1), after 3600degs next;
- stopMacro()
