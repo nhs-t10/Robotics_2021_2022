@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.TimeNode;
-import org.firstinspires.ftc.teamcode.managers.macro.Macro;
-import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
@@ -41,7 +39,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
     private InputManager input;
     private SensorManager sensor;
     private ImuManager imu;
-    private MacroManager macroManager;
     private NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
@@ -72,7 +69,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         );
         clawPosition = new NateManager(hands);
         input = new InputManager(gamepad1, gamepad2);
-        macroManager = new MacroManager(imu, (TelemetryManager)telemetry, hands, driver, input, sensor, clawPosition);
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
@@ -227,9 +223,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         }
         if (input.getBool("ClawPosHome") == true) {
             clawPosition.positionHome();
-        }
-        if (input.getBool("turnAround") == true){
-            macroManager.runMacro("TurnAround");
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());

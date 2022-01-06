@@ -15,8 +15,7 @@ var DEFAULT_CRSERVOS = [];
 var directory = __dirname.split(path.sep);
 
 var templates = {
-    "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString(),
-    "macro": fs.readFileSync(path.join(__dirname, "data" + path.sep + "macro.notjava")).toString()
+    "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
 }
 
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);

@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoOpmode;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoMacro;
 import org.firstinspires.ftc.teamcode.managers.*;
 import org.firstinspires.ftc.teamcode.managers.CV.CVManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;

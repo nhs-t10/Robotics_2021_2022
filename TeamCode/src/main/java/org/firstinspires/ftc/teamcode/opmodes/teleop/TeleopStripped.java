@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
-import org.firstinspires.ftc.teamcode.managers.macro.MacroManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
