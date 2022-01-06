@@ -82,7 +82,7 @@ public class RockTeleop extends OpMode {
 //            br.setPower(scale * sum[2]);
 //            bl.setPower(-scale * sum[3]);
 
-        //THIS IS OMNI CODE Gamepad2
+            //THIS IS OMNI CODE Gamepad2
             float v2 = scale2*gamepad2.left_stick_y;
             float h2 = scale2*gamepad2.left_stick_x;
             float r2 = scale2*gamepad2.right_stick_x;
@@ -132,48 +132,48 @@ public class RockTeleop extends OpMode {
             ClawMotor.setPower(0.75);
 
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else if(gamepad2.y){
             ClawMotor.setTargetPosition(-1337);
             //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else if(gamepad2.b){
             ClawMotor.setTargetPosition(-3024);
             //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else if(gamepad2.a){
             ClawMotor.setTargetPosition(-4679);
             //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.75);
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else if(gamepad2.dpad_up){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()+100);
             //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.5);
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else if(gamepad2.dpad_down){
             ClawMotor.setTargetPosition(ClawMotor.getCurrentPosition()-100);
             //ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ClawMotor.setPower(0.5);
             //mode running variable THIS IS A TEST DELETE ME IF IM BAD
-            if(!ClawMotor.getMode.equals(DcMotor.RUN_TO_POSITION)){
-                ClawMotor.setMode(DcMotor.runToPosition);
+            if(!ClawMotor.getMode().equals(DcMotor.RunMode.RUN_TO_POSITION)){
+                ClawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
         } else {
             //ClawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //we dont need this ((I think))
@@ -194,7 +194,7 @@ public class RockTeleop extends OpMode {
 
 
 
-        }
-
-
     }
+
+
+}
