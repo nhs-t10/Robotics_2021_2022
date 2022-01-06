@@ -81,10 +81,10 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
         input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
         input.registerInput("ClawHoming", new ButtonNode("dpadup"));
-        input.registerInput("ClawPos1", new ButtonNode ("gamepad2x"));
-        input.registerInput("ClawPos2", new ButtonNode ("gamepad2y"));
-        input.registerInput("ClawPos3", new ButtonNode ("gamepad2b"));
-        input.registerInput("ClawPosHome", new ButtonNode("gamepad2a"));
+        input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
+        input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
+        input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
+        input.registerInput("ClawPosHome", new ButtonNode("gamepad2x"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
