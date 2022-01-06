@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -110,12 +112,15 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
+
+        PriorityAsyncOpmodeComponent.start(() -> {
+            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+        });
     }
 
     @Override
     public void loop() {
         input.update();
-        driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
 
         if (input.getBool("precisionDriving") == true && precision == false) {
             driver.downScale(0.5f);
