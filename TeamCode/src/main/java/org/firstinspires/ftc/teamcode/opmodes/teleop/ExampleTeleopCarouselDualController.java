@@ -100,8 +100,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 ));
         input.registerInput("EmergencyStop",
                 new EitherNode(
-                        new ButtonNode("select"),
-                        new ButtonNode("gamepad2select")
+                        new ButtonNode("dpadright"),
+                        new ButtonNode("gamepad2dpadright")
                 ));
         input.registerInput("Failsafe",
                 new EitherNode(
