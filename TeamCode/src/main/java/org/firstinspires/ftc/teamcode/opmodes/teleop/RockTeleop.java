@@ -41,6 +41,7 @@ public class RockTeleop extends OpMode {
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        ClawMotor.setDirection(DcMotor.Direction.REVERSE);
 
     }
 
