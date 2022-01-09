@@ -1,4 +1,5 @@
 const makeClassBuffer = require("./make-class-buffer");
+var fs = require("fs");
 
 var testFile = `$
 testIterations: 3801,
@@ -28,4 +29,7 @@ $
 
 var ast = require("../aa-parser").parse(testFile);
 
-makeClassBuffer(ast);
+
+var buf = makeClassBuffer(ast);
+
+fs.writeFileSync(__dirname + "/test.class", Buffer.from(buf));

@@ -200,7 +200,7 @@ var astToBytecodeTypes = {
         bytecode = bytecode.concat(op[0]);
         finalizationFunctions = finalizationFunctions.concat(op[1]);
 
-        var jumpInstr = [instructions.IF_NONZERO_JUMP, null];
+        var jumpInstr = [instructions.IF_NONZERO_JUMP_STATIC, null];
         bytecode.push(jumpInstr);
 
         var stmt = astToBytecode(statement.statement, context);

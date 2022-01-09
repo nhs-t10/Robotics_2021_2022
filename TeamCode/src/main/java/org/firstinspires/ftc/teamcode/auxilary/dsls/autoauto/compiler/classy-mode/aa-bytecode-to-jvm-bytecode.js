@@ -3,7 +3,9 @@ const jvmBytecodeInstructions = require("./jvm-bytecode-instructions");
 var aaInstructions = require("./aa-instructions");
 
 
-var constantPool = [];
+var makeConstantPool = require("./jvm/constant-pool");
+
+var constantPool;
 var finalizationFunctions = [];
 var thisClass;
 
@@ -12,14 +14,13 @@ var thisClass;
  * @param {bcodeline[]} bytecode 
  */
 module.exports = function(bytecode, tClass) {
-    constantPool = [];
+    constantPool = makeConstantPool();
     finalizationFunctions = [];
     thisClass = tClass;
 
     if(bytecode[bytecode.length - 1][0] != aaInstructions.NOOP) bytecode.push([aaInstructions.NOOP]);
 
     var jvmBytecode = bytecode.map(x=>aaBytecodeToJvmBytecode(x));
-    console.log(jvmBytecode);
 
     finalizationFunctions.forEach(x=>x(jvmBytecode));
 
@@ -32,16 +33,9 @@ module.exports = function(bytecode, tClass) {
 var PROPERTY_BEARING_OBJECT_CLASSNAME = "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject";
 var AUTOAUTO_PRIMITIVE_CLASSNAME = "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive";
 var CALLABLE_VALUE_CLASSNAME = "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue";
+var AUTOAUTO_OPERATOR_CLASSNAME = "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.AutoautoOperator";
 
-var structures = {
-    CONSTANT_Utf8: 1,
-    CONSTANT_Float: 4,
-    CONSTANT_Class: 7,
-    CONSTANT_String: 8,
-    CONSTANT_Fieldref: 9,
-    CONSTANT_Methodref: 10,
-    CONSTANT_NameAndType: 12,
-};
+
 
 /**
  * 
@@ -54,10 +48,10 @@ function aaBytecodeToJvmBytecode(bytecode) {
                 : "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue";
             var argClass = (typeof bytecode[1] === "string") ? "java.lang.String" : "float";
 
-            var t = indexBytes(addClass(primClass));
-            var method = indexBytes(addMethod(primClass, "<init>", "void", [argClass]));
+            var t = indexBytes(constantPool.addClass(primClass));
+            var method = indexBytes(constantPool.addMethod(primClass, "<init>", "void", [argClass]));
 
-            var arg = indexBytes(addConstant(bytecode[1]));
+            var arg = indexBytes(constantPool.addConstant(bytecode[1]));
 
             return [ jvmBytecodeInstructions.new(t[0], t[1]),
                     jvmBytecodeInstructions.dup(),
@@ -74,8 +68,8 @@ function aaBytecodeToJvmBytecode(bytecode) {
         case aaInstructions.PUSH_EMPTY_TABLE_REF:
             var primClass = "org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable";
 
-            var t = indexBytes(addClass(primClass));
-            var method = indexBytes(addMethod(primClass, "<init>", "void", []));
+            var t = indexBytes(constantPool.addClass(primClass));
+            var method = indexBytes(constantPool.addMethod(primClass, "<init>", "void", []));
 
             return [ jvmBytecodeInstructions.new(t[0], t[1]),
                 jvmBytecodeInstructions.dup(),
@@ -83,14 +77,14 @@ function aaBytecodeToJvmBytecode(bytecode) {
                 jvmBytecodeInstructions.pop() //pop the void
             ]
         case aaInstructions.GET_VAR_STATIC:
-            var method = indexBytes(addMethod("org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope",
+            var method = indexBytes(constantPool.addMethod("org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope",
                     "get", AUTOAUTO_PRIMITIVE_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME]));
             return makeVarscopeGetter().concat([
                 aaBytecodeToJvmBytecode([aaInstructions.PUSH_CONST, bytecode[1]]),
                 jvmBytecodeInstructions.invokevirtual(method[0], method[1])
             ])
         case aaInstructions.SET_VAR_STATIC:
-            var method = indexBytes(addMethod("org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope",
+            var method = indexBytes(constantPool.addMethod("org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope",
                     "put", "void", [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME]));
             return makeVarscopeGetter().concat([
                 aaBytecodeToJvmBytecode([aaInstructions.PUSH_CONST, bytecode[1]]),
@@ -98,13 +92,13 @@ function aaBytecodeToJvmBytecode(bytecode) {
                 jvmBytecodeInstructions.pop() //pop the void
             ])
         case aaInstructions.GET_PROP:
-            var method = indexBytes(addMethod(PROPERTY_BEARING_OBJECT_CLASSNAME,
+            var method = indexBytes(constantPool.addMethod(PROPERTY_BEARING_OBJECT_CLASSNAME,
                     "getProperty", AUTOAUTO_PRIMITIVE_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME]));
             return [
                 jvmBytecodeInstructions.invokeinterface(method[0], method[1], 1, 0)
             ]
         case aaInstructions.SET_PROP:
-            var method = indexBytes(addMethod(PROPERTY_BEARING_OBJECT_CLASSNAME,
+            var method = indexBytes(constantPool.addMethod(PROPERTY_BEARING_OBJECT_CLASSNAME,
                     "setProperty", "void", [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME]));
             return [
                 jvmBytecodeInstructions.invokeinterface(method[0], method[1], 2, 0),
@@ -112,8 +106,8 @@ function aaBytecodeToJvmBytecode(bytecode) {
             ]
         case aaInstructions.CALL_FUNC:
             var argCount = bytecode[1];
-            var componentClass = indexBytes(addClass(AUTOAUTO_PRIMITIVE_CLASSNAME));
-            var method = indexBytes(addMethod(CALLABLE_VALUE_CLASSNAME,
+            var componentClass = indexBytes(constantPool.addClass(AUTOAUTO_PRIMITIVE_CLASSNAME));
+            var method = indexBytes(constantPool.addMethod(CALLABLE_VALUE_CLASSNAME,
                 "call", AUTOAUTO_PRIMITIVE_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME + "[]"]));
 
                 //make new array reference!
@@ -124,7 +118,7 @@ function aaBytecodeToJvmBytecode(bytecode) {
             //put each argument into the array. This is fiddly because the actual value is under the array reference.
             //stack before: value, array
             //stack after: array
-            for(var i = argCount - 1; i >= 0; i++) {
+            for(var i = argCount - 1; i >= 0; i--) {
                 bcRes.push(jvmBytecodeInstructions.dup_x1()); //array, value, array
                 bcRes.push(jvmBytecodeInstructions.swap()); //array, array, value
                 bcRes.push(jvmBytecodeInstructions.bipush(i)); //array, array, value, index
@@ -135,10 +129,10 @@ function aaBytecodeToJvmBytecode(bytecode) {
 
             return bcRes;
         case aaInstructions.UPDATE_LOOP_START_STATE_STATIC:
-            var field = indexBytes(addField(thisClass, "s", "int"));
+            var field = indexBytes(constantPool.addField(thisClass, "s", "int"));
             var v = bytecode[1];
             return [
-                jvmBytecodeInstructions.aload_0, //push `this`
+                jvmBytecodeInstructions.aload_0(), //push `this`
                 jvmBytecodeInstructions.sipush((v >>> 8) & 0xff, v & 0xff), //push value
                 jvmBytecodeInstructions.putfield(field[0], field[1])
             ];
@@ -146,24 +140,101 @@ function aaBytecodeToJvmBytecode(bytecode) {
             var eL = [
                 jvmBytecodeInstructions.goto(null, null)
             ];
-            finalizationFunctions.push(function(jvmBytecode) {
-                var selfIndex = jvmBytecode.indexOf(eL);
-                var selfByteIndex = jvmBytecode.slice(0, selfIndex).flat().length;
-                var byteOffset = (jvmBytecode.flat().length - 1) - selfByteIndex;
+            finalizationFunctions.push(updateGotoInstruction(Infinity, eL[0], eL));
+            return eL;
+        case aaInstructions.ADD:
+            var evalMethod = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+                "eval", AUTOAUTO_OPERATOR_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME, "boolean"]));
 
-                if(byteOffset >= Math.pow(2, 15)) throw "bad offset-- get someone to implement goto_w";
+            return makeOperatorGetter("+").concat([
+                jvmBytecodeInstructions.dup_x2(),
+                jvmBytecodeInstructions.pop(),
+                jvmBytecodeInstructions.invokevirtual(evalMethod[0], evalMethod[1])
+            ]);
+        case aaInstructions.MULTIPLY:
+            var evalMethod = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+                "eval", AUTOAUTO_OPERATOR_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME, "boolean"]));
 
-                var buf = new ArrayBuffer(2);
-                (new Int16Array(buf))[0] = byteOffset;
-                var bytes = (new Uint16Array(buf))[0];
+            return makeOperatorGetter("*").concat([
+                jvmBytecodeInstructions.dup_x2(),
+                jvmBytecodeInstructions.pop(),
+                jvmBytecodeInstructions.invokevirtual(evalMethod[0], evalMethod[1])
+            ]);
+        case aaInstructions.GREATER_THAN_EQUALS:
+            var evalMethod = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+                "eval", AUTOAUTO_OPERATOR_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME, "boolean"]));
 
-                eL[0][1] = (bytes >>> 8) & 0xff;
-                eL[0][2] = bytes & 0xff;
-            });
+            return makeOperatorGetter(">=").concat([
+                jvmBytecodeInstructions.dup_x2(),
+                jvmBytecodeInstructions.pop(),
+                jvmBytecodeInstructions.invokevirtual(evalMethod[0], evalMethod[1])
+            ]);
+        case aaInstructions.SUBTRACT:
+            var evalMethod = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+                "eval", AUTOAUTO_OPERATOR_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME, "boolean"]));
+
+            return makeOperatorGetter("-").concat([
+                jvmBytecodeInstructions.dup_x2(),
+                jvmBytecodeInstructions.pop(),
+                jvmBytecodeInstructions.invokevirtual(evalMethod[0], evalMethod[1])
+            ]);
+        case aaInstructions.EQUAL_TO:
+            var evalMethod = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+                "eval", AUTOAUTO_OPERATOR_CLASSNAME, [AUTOAUTO_PRIMITIVE_CLASSNAME, AUTOAUTO_PRIMITIVE_CLASSNAME, "boolean"]));
+
+            return makeOperatorGetter("==").concat([
+                jvmBytecodeInstructions.dup_x2(),
+                jvmBytecodeInstructions.pop(),
+                jvmBytecodeInstructions.invokevirtual(evalMethod[0], evalMethod[1])
+            ]);
+        case aaInstructions.IF_NONZERO_JUMP_STATIC:
+            var isTruthyMethod = indexBytes(constantPool.addMethod("org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue",
+                "isTruthy", "boolean", [AUTOAUTO_PRIMITIVE_CLASSNAME]));
+
+            var eL = [
+                jvmBytecodeInstructions.invokestatic(isTruthyMethod[0], isTruthyMethod[1]),
+                jvmBytecodeInstructions.ifne(null, null)
+            ];
+            finalizationFunctions.push(updateGotoInstruction(bytecode[1], eL[1], eL));
             return eL;
         default: 
             throw "can't convert " + Object.entries(aaInstructions).find(x=>x[1]==bytecode[0])[0] + " to Java!";
     }
+}
+
+function updateGotoInstruction(tIndex, jvmGotoInstr, jvmInstructionParent) {
+    return function(jvmBytecode) {
+        var selfIndex = jvmBytecode.indexOf(jvmInstructionParent || jvmGotoInstr);
+        var selfByteIndex = jvmBytecode.slice(0, selfIndex).flat(Infinity).length;
+
+        var targetIndex = Math.max(0, Math.min(tIndex, jvmBytecode.length - 1));
+        var targetByteIndex = jvmBytecode.slice(0, targetIndex).flat(Infinity).length;
+
+        var byteOffset = targetByteIndex - selfByteIndex;
+
+        if(byteOffset >= Math.pow(2, 15)) throw "bad offset-- get someone to implement goto_w";
+
+        var buf = new ArrayBuffer(2);
+        var view = new DataView(buf);
+        view.setInt16(0, byteOffset, false);
+        
+
+        jvmGotoInstr[1] = view.getUint8(0);
+        jvmGotoInstr[2] = view.getUint8(1);
+    }
+}
+
+function makeOperatorGetter(op) {
+
+    var opStr = indexBytes(constantPool.addConstant(op));
+    var method = indexBytes(constantPool.addMethod(AUTOAUTO_OPERATOR_CLASSNAME,
+        "get", AUTOAUTO_OPERATOR_CLASSNAME, ["java.lang.String"]));
+
+
+    return [
+        jvmBytecodeInstructions.ldc_w(opStr[0], opStr[1]),
+        jvmBytecodeInstructions.invokestatic(method[0], method[1])
+    ];
 }
 
 function makeVarscopeGetter() {
@@ -175,143 +246,6 @@ function makeVarscopeGetter() {
 function indexBytes (i) {
     i.toString();
     return [(i >>> 8) & 0b1111_1111, i & 0b1111_1111];
-}
-
-function addClass(classname) {
-    var internalName = getInternalName(classname);
-    
-    var nameIndex = addUTF8(internalName);
-
-    var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_Class && x.name_index == nameIndex);
-    
-    if(c > -1) return c;
-
-    constantPool.push({tag: structures.CONSTANT_Class, name_index: nameIndex });
-    return constantPool.length - 1;
-}
-
-function getInternalName(classname) {
-    var arrDepth = 0;
-    while(classname.endsWith("[]")) {
-        arrDepth++;
-        classname = classname.slice(0, -2);
-    }
-    var javaPrimitives = {
-        "byte": "B",
-        "char": "C",
-        "double": "D",
-        "float": "F",
-        "double": "D",
-        "int": "I",
-        "long": "J",
-        "short": "S",
-        "boolean": "Z",
-        "void": "V"
-    };
-    return "[".repeat(arrDepth) + (javaPrimitives[classname] || "L" + classname.replace(/\./g, "/") + ";");
-}
-
-function addField(classname, fieldname, fieldtype) {
-    var classIndex = addClass(classname);
-    var nameAndTypeIndex = addNameType(fieldname, fieldtype);
-
-    var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_Fieldref && x.class_index == classIndex && x.name_and_type_index == nameAndTypeIndex);
-    if(c > -1) return c;
-
-    var fieldref = {
-        tag: structures.CONSTANT_Fieldref,
-        class_index: classIndex,
-        name_and_type_index: nameAndTypeIndex
-    }
-    constantPool.push(fieldref);
-    return constantPool.length - 1;
-}
-
-function addMethod(classname, methodname, returntype, argtypes) {
-    var classIndex = addClass(classname);
-    var nameAndTypeIndex = addNameType(methodname, returntype, argtypes);
-
-    var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_Methodref && x.class_index == classIndex && x.name_and_type_index == nameAndTypeIndex);
-    if(c > -1) return c;
-
-    var methodref = {
-        tag: structures.CONSTANT_Methodref,
-        class_index: classIndex,
-        name_and_type_index: nameAndTypeIndex
-    }
-    constantPool.push(methodref);
-    return constantPool.length - 1;
-}
-
-function addNameType(name, type, args) {
-    var nameIndex = addUTF8(name);
-    var descriptorIndex = makeDescriptor(type, args);
-
-    var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_NameAndType && x.name_index == nameIndex && x.descriptor_index == descriptorIndex);
-    if(c > -1) return c;
-
-    constantPool.push({
-        tag: structures.CONSTANT_NameAndType,
-        name_index: nameIndex,
-        descriptor_index: descriptorIndex
-    });
-    return constantPool.length - 1;
-}
-
-function makeDescriptor(type, args) {
-    if(args) {
-        return "(" + args.map(x=>getInternalName(x)).join("") + ")" + getInternalName(type);
-    } else {
-        return getInternalName(type);
-    }
-}
-
-/**
- * 
- * @param {string} s 
- */
-function addUTF8(s) {
-    var bytes = Buffer.from(s, "utf-8");
-    
-    var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_Utf8 && x.str == s);
-
-    if(c > -1) return c;
-
-    constantPool.push({ tag: structures.CONSTANT_Utf8, str: s, length: bytes.length, bytes: bytes });
-    return constantPool.length - 1;
-}
-
-function addConstant(v) {
-    if(typeof v === "string") {
-        var sIndex = addUTF8(v);
-        var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_String && x.string_index == sIndex);
-        if(c > -1) return c;
-        
-        constantPool.push({tag: structures.CONSTANT_String, string_index: sIndex});
-        return constantPool.length - 1;
-    } else if(typeof v === "number") {
-        var fBytes = floatBytes(v);
-        var c = constantPool.findIndex(x=>x.tag == structures.CONSTANT_Float && x.num == v);
-        if(c > -1) return c;
-
-        constantPool.push({tag: structures.CONSTANT_Float, num: v, bytes: fBytes});
-        return constantPool.length - 1;
-    } else {
-        throw "huh?? " + v;
-    }
-}
-
-function floatBytes(v) {
-    var buf = new ArrayBuffer(4);
-    (new Float32Array(buf))[0] = v;
-    var bytes = (new Uint32Array(buf))[0];
-
-    return [
-        (bytes >>> 24) & 0b1111_1111,
-        (bytes >>> 16) & 0b1111_1111,
-        (bytes >>> 8) & 0b1111_1111,
-        bytes  & 0b1111_1111
-    ];
 }
 
 /**
