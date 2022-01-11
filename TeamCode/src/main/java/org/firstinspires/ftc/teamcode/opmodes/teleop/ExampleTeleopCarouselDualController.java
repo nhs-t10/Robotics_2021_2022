@@ -233,6 +233,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
+        telemetry.addData("Is Found", clawPosition.isFound());
         telemetry.update();
     }
 
