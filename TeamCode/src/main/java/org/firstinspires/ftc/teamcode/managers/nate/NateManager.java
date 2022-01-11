@@ -29,7 +29,7 @@ public class NateManager extends FeatureManager {
         this.input = input;
     }
 
-    //TODO: test and remove untested warning.
+    //TODO: test and fix tested warning.
     /**
      * Make the claw open or close
      *
