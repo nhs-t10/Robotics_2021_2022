@@ -68,8 +68,8 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("drivingControls",
                 new MultiInputNode(
                         new JoystickNode("left_stick_y"),
-                        new JoystickNode("left_stick_x"),
-                        new JoystickNode("right_stick_x")
+                        new JoystickNode("right_stick_x"),
+                        new JoystickNode("left_stick_x")
                 )
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
@@ -77,8 +77,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("dashing", new ButtonNode("x"));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
-        input.registerInput("ClawShiftIn", new ButtonNode("leftbumper"));
-        input.registerInput("ClawShiftOut", new ButtonNode("rightbumper"));
         input.registerInput("ClawHoming", new ButtonNode("dpadup"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));

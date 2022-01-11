@@ -47,7 +47,6 @@ public class AutoautoProgram implements AutoautoProgramElement {
     }
 
     public void loop() {
-        //TODO: Investigate how loop() can be called before init(). It seems impossible, but MacroManager can do it somehow???
 
         String currentStatepathName = this.currentStatepathVariable.value.getString();
 
