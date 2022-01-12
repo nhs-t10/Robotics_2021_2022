@@ -5,52 +5,61 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
 public class BothNode extends InputManagerInputNode {
-    private final InputManagerInputNode input1;
+    private final InputManagerInputNode[] inputs;
     private InputManager boss;
-
-    private InputManagerInputNode input2;
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
-    public BothNode(InputManagerInputNode input1, InputManagerInputNode input2) {
-        this.input1 = input1;
-        this.input2 = input2;
+    public BothNode(InputManagerInputNode... inputs) {
+        this.inputs = inputs;
     }
 
     @Override
     public void init(InputManager boss) {
         this.boss = boss;
-        input1.init(boss);
-        input2.init(boss);
+        for(InputManagerInputNode node : inputs) node.init(boss);
     }
 
     @Override
     public void update() {
-        input1.update();
-        input2.update();
+        for(InputManagerInputNode n :inputs) n.update();
     }
 
     @Override
     public InputManagerNodeResult getResult() {
-        boolean input1Check = input1.getResult().getBool();
-        boolean input2Check = input2.getResult().getBool();
-        result.setBool(input1Check && input2Check);
-
+        boolean isTrue = true;
+        for(InputManagerInputNode b : inputs) {
+            if(b.getResult().getBool() == false){
+                isTrue = false;
+                break;
+            }
+        }
+        if (isTrue) result.setBool(true);
+        else if (isTrue == false) result.setBool(false);
         return result;
     }
 
     @Override
     public int complexity() {
-        return input1.complexity() + input2.complexity() + 1;
+        int r = 0;
+        for(InputManagerInputNode n : inputs) r += n.complexity();
+        return r + 1;
     }
 
     @Override
     public String[] getKeysUsed() {
-        return PaulMath.concatArrays(input1.getKeysUsed(), input2.getKeysUsed());
+        String[][] keylists = new String[inputs.length][];
+        for(int i = 0; i < inputs.length; i++) {
+            keylists[i] = inputs[i].getKeysUsed();
+        }
+        return PaulMath.concatArrays(keylists);
     }
 
     @Override
     public boolean usesKey(String s) {
-        return input1.usesKey(s) || input2.usesKey(s);
+        for(InputManagerInputNode n : inputs) {
+            if(n.usesKey(s)) return true;
+        }
+        return false;
     }
 }
