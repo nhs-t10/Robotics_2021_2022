@@ -107,11 +107,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                                 new ButtonNode("gamepad2dpadright")
                         )
                 ));
-        input.registerInput("Failsafe",
-                new EitherNode(
-                        new ButtonNode("start"),
-                        new ButtonNode("gamepad2start")
-                ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -147,78 +142,77 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         } else {
             dashing = false;
         }
-        if (input.getBool("Failsafe") == false){
-            if (input.getBool("Intake")){
-                hands.setMotorPower("noodle", 0.9);
-                hands.setMotorPower("intake", 1);
-                hands.setServoPosition("rampLeft", 0.50);
-                hands.setServoPosition("rampRight", 0.0);
-            }
-            else if (input.getBool("Anti-Intake")){
-                hands.setMotorPower("noodle", -0.50);
-                hands.setMotorPower("intake", -0.50);
-                hands.setServoPosition("rampLeft", 0.50);
-                hands.setServoPosition("rampRight", 0.0);
-            }
-            else {
-                hands.setMotorPower("noodle", 0.0);
-                hands.setMotorPower("intake", 0.0);
-                hands.setServoPosition("rampLeft", 0.0);
-                hands.setServoPosition("rampRight", 0.35);
-            }
-            if (input.getBool("EmergencyStop")){
-                clawPosition.emergencyStop();
-            }
-            if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-                hands.setMotorPower("Carousel", 0.75);
-            }
-            else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-                hands.setMotorPower("Carousel", -0.75);
-            }
-            else {
-                hands.setMotorPower("Carousel", 0.0);
-            }
+        if (input.getBool("Intake")){
+            hands.setMotorPower("noodle", 0.9);
+            hands.setMotorPower("intake", 1);
+            hands.setServoPosition("rampLeft", 0.50);
+            hands.setServoPosition("rampRight", 0.0);
+        }
+        else if (input.getBool("Anti-Intake")){
+            hands.setMotorPower("noodle", -0.50);
+            hands.setMotorPower("intake", -0.50);
+            hands.setServoPosition("rampLeft", 0.50);
+            hands.setServoPosition("rampRight", 0.0);
+        }
+        else {
+            hands.setMotorPower("noodle", 0.0);
+            hands.setMotorPower("intake", 0.0);
+            hands.setServoPosition("rampLeft", 0.0);
+            hands.setServoPosition("rampRight", 0.35);
+        }
+        if (input.getBool("EmergencyStop")){
+            clawPosition.emergencyStop();
+        }
+        if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
+            hands.setMotorPower("Carousel", 0.75);
+        }
+        else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
+            hands.setMotorPower("Carousel", -0.75);
+        }
+        else {
+            hands.setMotorPower("Carousel", 0.0);
+        }
 
-            if (hands.hasEncodedMovement("ClawMotor") == false) {
-                if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    hands.setMotorPower("ClawMotor", -0.25);
-                }
-                if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    hands.setMotorPower("ClawMotor", 0.25);
-                }
-                if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false) {
-                    hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-                    hands.setMotorPower("ClawMotor", 0.0);
-                }
+        if (hands.hasEncodedMovement("ClawMotor") == false) {
+            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                hands.setMotorPower("ClawMotor", -0.25);
             }
-            if (input.getBool("ToggleClaw") == true){
-                clawPosition.setClawOpen(true);
+            if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                hands.setMotorPower("ClawMotor", 0.25);
             }
-            else {
-                clawPosition.setClawOpen(false);
-            }
-            if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
-                hands.setServoPower("nateMoverRight", 0.0);
-                hands.setServoPower("nateMoverLeft", 0.0);
-            }
-            if (input.getBool("ClawPos1") == true) {
-                clawPosition.positionOne();
-            }
-            if (input.getBool("ClawPos2") == true) {
-                clawPosition.positionTwo();
-            }
-            if (input.getBool("ClawPos3") == true) {
-                clawPosition.positionThree();
-            }
-            if (input.getBool("ClawPosHome") == true) {
-                clawPosition.positionHome();
-            }
-            if (input.getBool("ClawHoming") == true) {
-                clawPosition.homing();
+            if (input.getBool("ClawUp") == false && input.getBool("ClawDown") == false) {
+                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
+                hands.setMotorPower("ClawMotor", 0.0);
             }
         }
+        if (input.getBool("ToggleClaw") == true){
+            clawPosition.setClawOpen(true);
+        }
+        else {
+            clawPosition.setClawOpen(false);
+        }
+        if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
+            hands.setServoPower("nateMoverRight", 0.0);
+            hands.setServoPower("nateMoverLeft", 0.0);
+        }
+        if (input.getBool("ClawPos1") == true) {
+            clawPosition.positionOne();
+        }
+        if (input.getBool("ClawPos2") == true) {
+            clawPosition.positionTwo();
+        }
+        if (input.getBool("ClawPos3") == true) {
+            clawPosition.positionThree();
+        }
+        if (input.getBool("ClawPosHome") == true) {
+            clawPosition.positionHome();
+        }
+        if (input.getBool("ClawHoming") == true) {
+            clawPosition.homing();
+        }
+
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
