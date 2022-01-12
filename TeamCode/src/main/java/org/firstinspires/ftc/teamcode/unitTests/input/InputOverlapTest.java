@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.unitTests.input;
 
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.AllNode;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyInputNode;
 import org.junit.Test;
@@ -20,7 +19,7 @@ public class InputOverlapTest {
 
         InputManager manager = new InputManager(new DummyGamepad(), new DummyGamepad());
 
-        BothNode both = new BothNode(inB, inA2);
+        AllNode both = new AllNode(inB, inA2);
         manager.registerInput("lessComplex", inA);
         manager.registerInput("moreComplex", both);
 

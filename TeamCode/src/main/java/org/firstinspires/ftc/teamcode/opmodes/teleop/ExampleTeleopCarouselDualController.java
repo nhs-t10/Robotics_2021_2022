@@ -11,12 +11,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
@@ -24,7 +22,6 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
-import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
@@ -94,22 +91,22 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Intake",
-                new EitherNode(
+                new AnyNode(
                         new ButtonNode("righttrigger"),
                         new ButtonNode("gamepad2righttrigger")
                 ));
         input.registerInput("Anti-Intake",
-                new EitherNode(
+                new AnyNode(
                         new ButtonNode("lefttrigger"),
                         new ButtonNode("gamepad2lefttrigger")
                 ));
         input.registerInput("EmergencyStop",
-                new EitherNode(
-                        new EitherNode(
+                new AnyNode(
+                        new AnyNode(
                                 new ButtonNode("dpadleft"),
                                 new ButtonNode("gamepad2dpadleft")
                         ),
-                        new EitherNode(
+                        new AnyNode(
                                 new ButtonNode("dpadright"),
                                 new ButtonNode("gamepad2dpadright")
                         )
