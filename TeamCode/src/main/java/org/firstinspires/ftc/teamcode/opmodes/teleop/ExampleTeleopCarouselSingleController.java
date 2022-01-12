@@ -8,14 +8,10 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.BothNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.AllNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ComboNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.TimeNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
@@ -81,22 +77,22 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1",
-                new BothNode(
+                new AllNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("x")
                     ));
         input.registerInput("ClawPos2",
-                new BothNode(
+                new AllNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("y")
                 ));
         input.registerInput("ClawPos3",
-                new BothNode(
+                new AllNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode ("b")
                 ));
         input.registerInput("ClawPosHome",
-                new BothNode(
+                new AllNode(
                         new ButtonNode("leftbumper"),
                         new ButtonNode("a")
                 ));

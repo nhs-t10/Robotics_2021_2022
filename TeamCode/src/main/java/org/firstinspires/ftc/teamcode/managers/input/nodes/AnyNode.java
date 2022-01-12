@@ -4,13 +4,13 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
-public class EitherNode extends InputManagerInputNode {
+public class AnyNode extends InputManagerInputNode {
     private final InputManagerInputNode[] inputs;
     private InputManager boss;
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
-    public EitherNode(InputManagerInputNode... inputs) {
+    public AnyNode(InputManagerInputNode... inputs) {
         this.inputs = inputs;
     }
 
@@ -30,7 +30,7 @@ public class EitherNode extends InputManagerInputNode {
     public InputManagerNodeResult getResult() {
         boolean isTrue = false;
         for(InputManagerInputNode b : inputs) {
-            if(b.getResult().getBool() == true){
+            if(b.getResult().getBool()){
                 isTrue = true;
                 break;
             }

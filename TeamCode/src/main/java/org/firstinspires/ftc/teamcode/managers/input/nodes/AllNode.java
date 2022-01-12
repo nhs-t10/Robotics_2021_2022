@@ -4,13 +4,13 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
-public class BothNode extends InputManagerInputNode {
+public class AllNode extends InputManagerInputNode {
     private final InputManagerInputNode[] inputs;
     private InputManager boss;
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
-    public BothNode(InputManagerInputNode... inputs) {
+    public AllNode(InputManagerInputNode... inputs) {
         this.inputs = inputs;
     }
 
