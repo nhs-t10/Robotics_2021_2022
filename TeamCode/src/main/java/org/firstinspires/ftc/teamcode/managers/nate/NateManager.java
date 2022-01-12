@@ -101,7 +101,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionOne(){
         if (!found){
-            position = 1337;
+            position = 945;
         }
         else {
             position = -3470;
@@ -137,7 +137,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionTwo(){
         if(!found) {
-            position = 3024;
+            position = 2483;
         } else{
             position = -5295;
         }
@@ -158,7 +158,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionThree(){
         if(!found) {
-            position = 4679;
+            position = 4253;
         } else {
             position = -6893;
         }
@@ -179,7 +179,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionHome(){
         if(!found){
-            position = -2871;
+            position = -2750;
         } else {
             position = 570;
         }
