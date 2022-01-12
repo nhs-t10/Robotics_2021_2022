@@ -8,6 +8,7 @@ public class BButtonHandle extends ButtonHandle {
         this.g = g;
     }
     public float get() {
+        if (g.start) return 0;
         return g.b?1f:0f;
     }
 }
