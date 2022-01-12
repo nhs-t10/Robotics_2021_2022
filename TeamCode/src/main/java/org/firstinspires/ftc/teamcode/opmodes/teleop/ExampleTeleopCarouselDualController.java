@@ -216,10 +216,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         else {
             clawPosition.setClawOpen(false);
         }
-        if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
-            hands.setServoPower("nateMoverRight", 0.0);
-            hands.setServoPower("nateMoverLeft", 0.0);
-        }
         if (input.getBool("ClawPos1") == true) {
             clawPosition.positionOne();
         }
@@ -232,9 +228,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         if (input.getBool("ClawPosHome") == true) {
             clawPosition.positionHome();
         }
-        if (input.getBool("ClawHoming") == true) {
-            clawPosition.homing();
-        }
+
 
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
