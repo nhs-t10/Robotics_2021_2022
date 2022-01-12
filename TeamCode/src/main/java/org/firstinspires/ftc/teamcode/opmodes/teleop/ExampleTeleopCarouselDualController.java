@@ -65,17 +65,17 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         input = new InputManager(gamepad1, gamepad2);
         input.registerInput("drivingControls",
                 new MultiInputNode(
-                        new JoystickNode("left_stick_y"),
-                        new JoystickNode("right_stick_x"),
-                        new JoystickNode("left_stick_x")
+                        new ScaleNode(new JoystickNode("left_stick_y"), 1),
+                        new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
+                        new ScaleNode(new JoystickNode("left_stick_x"), 1)
                 )
         );
         input.registerInput("drivingControlsMicro",
-                new ScaleNode(new MultiInputNode(
-                        new JoystickNode("gamepad2left_stick_y"),
-                        new JoystickNode("gamepad2right_stick_x"),
-                        new JoystickNode("gamepad2left_stick_x")
-                ), 0.4f)
+                new MultiInputNode(
+                        new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
+                        new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
+                        new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
+                )
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
@@ -187,12 +187,12 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", -0.25);
             }
-            if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
                 hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", 0.25);
             }
             else {
-                clawPosition.setClawOpen(false);
+                hands.setMotorPower("ClawMotor", 0);
             }
             if (input.getBool("ClawPos1") == true) {
                 clawPosition.positionOne();
