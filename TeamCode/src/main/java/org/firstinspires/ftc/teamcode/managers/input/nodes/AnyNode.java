@@ -35,8 +35,7 @@ public class AnyNode extends InputManagerInputNode {
                 break;
             }
         }
-        if (isTrue) result.setBool(true);
-        else if (isTrue == false) result.setBool(false);
+        result.setBool(isTrue);
         return result;
     }
 
