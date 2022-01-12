@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.*;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.constraints.InputManagerNodeConstraint;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,11 +21,13 @@ public class InputManager extends FeatureManager {
     public InputOverlapResolutionMethod overlapResolutionMethod = InputOverlapResolutionMethod.BOTH_CHILDREN_CAN_SPEAK;
 
     private final HashMap<String, InputManagerInputNode> nodes;
+    private final HashMap<String, InputUpdateThread> nodeRunnerThreads;
 
     public InputManager(Gamepad _gamepad, Gamepad _gamepad2) {
         this.gamepad = _gamepad;
         this.gamepad2 = _gamepad2;
         nodes = new HashMap<>();
+        nodeRunnerThreads = new HashMap<>();
     }
 
     public Gamepad getGamepad() {
@@ -45,7 +48,20 @@ public class InputManager extends FeatureManager {
         node.init(this);
         nodes.put(key.toLowerCase(), node);
         rebuildOverlaps();
-        (new InputUpdateThread(node)).start();
+
+        InputUpdateThread thread = new InputUpdateThread(node);
+        nodeRunnerThreads.put(key.toLowerCase(), thread);
+        thread.start();
+
+    }
+
+    public void registerConstraint(InputManagerNodeConstraint constraint) {
+        constraint.init(this);
+
+        //for each constrained item, add the constraint to its thread. The constraint stands in-between the node and its relations, making sure that it stays in line with the rules.
+        for(String s : constraint.getConstrainedNames()) {
+            nodeRunnerThreads.get(s).addConstraint(constraint);
+        }
     }
 
 

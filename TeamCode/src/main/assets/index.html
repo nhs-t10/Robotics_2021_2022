@@ -18,7 +18,7 @@
                 else unsentChars.push((i+1) * c);
             }
             r += "$";
-            
+            in
             for(var i = 0; i < unsentChars.length; i++) {
                 r += numToB62(unsentChars[i]) + "Z";
             }
