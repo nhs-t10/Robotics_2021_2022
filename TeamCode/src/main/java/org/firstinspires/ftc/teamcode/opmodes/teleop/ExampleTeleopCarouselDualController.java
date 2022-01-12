@@ -190,12 +190,12 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                 hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", -0.25);
             }
-            if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
                 hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", 0.25);
             }
             else {
-                clawPosition.setClawOpen(false);
+                hands.setMotorPower("ClawMotor", 0);
             }
             if (input.getBool("ClawPos1") == true) {
                 clawPosition.positionOne();
