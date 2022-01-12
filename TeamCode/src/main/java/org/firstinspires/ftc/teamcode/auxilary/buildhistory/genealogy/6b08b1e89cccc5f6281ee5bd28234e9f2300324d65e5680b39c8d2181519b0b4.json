@@ -3,33 +3,6 @@
     "cognomen": "Allmaner",
     "builds": [
         {
-            "name": "Jason Allmaner",
-            "time": "2021-12-08T01:02:59.816Z",
-            "buildHash": "92900b0a1fc1e387f7b04406b5c5b1f146793607bd30991200a8a15bdc3fb4b6",
-            "w3w": "cynicism cyclone Sister",
-            "phrase": "Usually because Cordelia were posing for myself. There the finest artists I worshipped you, when thought of Valois by wealth, and had always will want people good, and expound to say.",
-            "perceptualHash": "fcbf4faf915b",
-            "colors": "#8043d3,#a661e3"
-        },
-        {
-            "name": "Orion Allmaner",
-            "time": "2021-12-08T01:03:07.438Z",
-            "buildHash": "396e621465908cfb3bfdca72a26b808e58151e194f9c685f38735b66c3e1a6cf",
-            "w3w": "billing clearing cassette",
-            "phrase": "Doge’s barge, that such lilacs since your eyes, his glass with awe.” He shook her voice, and uncouth. As he rushed at work yourself too late. “Killed herself! Good heavens! is hardly believe it?",
-            "perceptualHash": "6c883f4b5",
-            "colors": "#4480e3,#b9a894"
-        },
-        {
-            "name": "Avery Allmaner",
-            "time": "2021-12-08T01:07:06.841Z",
-            "buildHash": "a99abc5ee4fa42041b95e58edd223270043309787e38ac2af5d4c4a7f132fbe7",
-            "w3w": "drilling dialect finale",
-            "phrase": "Country people do. Suddenly we could alter you play Chopin exquisitely. Poor Victoria!",
-            "perceptualHash": "5df87f8254",
-            "colors": "#d980fe,#bc5392"
-        },
-        {
             "name": "Angel Allmaner",
             "time": "2021-12-08T01:07:58.327Z",
             "buildHash": "0f8398c3fec9f25c8202b83ade6645af75b8c59b905d9ddf94adc08333d06054",
@@ -901,8 +874,35 @@
             "phrase": "Letters.” “I beg you remember picking up long will represent the hissing of them, would laugh at all.” “It seems rather the luxury and then got up, went behind him.",
             "perceptualHash": "fdfbfabfbfbfe2fcdf4594f4614fb",
             "colors": "#805e4d,#9f7777,#805726,#65ce84,#cea798"
+        },
+        {
+            "name": "Christian Allmaner",
+            "time": "2022-01-12T00:14:32.558Z",
+            "buildHash": "4199edc577ec0f40e49296495f48c1ff0fb7a3b58e616f42f5d3cd5a15df0b9a",
+            "w3w": "boardroom dentist hello",
+            "phrase": "Ruxton. “You dear young ladies.” “With their charm. No; that sad thing off than those whom “the way their terrible figures that pallid macerated body and sauntered languidly to demand it in love. Don’t forget that.”",
+            "perceptualHash": "4afbfef6fbbf9",
+            "colors": "#d17d80,#77810d,#c26efa"
+        },
+        {
+            "name": "Rafael Allmaner",
+            "time": "2022-01-12T00:26:11.938Z",
+            "buildHash": "c9063abcbca0094365e04daf27c049a065a48f7a5f09b49bec0b4ab00f36ed20",
+            "w3w": "frequency Mayer bingo",
+            "phrase": "Jetant son drove home. Then we could enter it. We degenerate into my sister’s box.”",
+            "perceptualHash": "fc1f3fa163f19fd8fafe2fbf541685afba8f63f8f6f521e1fd283f8f73fefc5fa7f6dfde821df914fafbfcf94f4f7af65b8c",
+            "colors": "#81c0dc,#26db86,#825df9,#80c66e,#a8bcda,#a21233,#833fdb,#84e4bf,#ff80c3,#41e280,#8176d9,#2c6384,#bf8276,#bc4481,#81d242,#ffd284,#b99468"
+        },
+        {
+            "name": "Matilda Allmaner",
+            "time": "2022-01-12T01:07:45.014Z",
+            "buildHash": "b63105bb5b2df8862b2d2bdda5f0b5b6814d1312b96bd3a19d21c585a22d72ff",
+            "w3w": "falls basin Lowry",
+            "phrase": "Alexander VI., visited Louis XII. of mind the old Sevres china, and talk about half-past seven, Francis. Or had absolutely indifferent voice. “But she stood up.",
+            "perceptualHash": "fb35c84f7131f7fef9fce4fc486f97191f455fefa13fafef2662fa1fc7defa5fc",
+            "colors": "#81c851,#42c6ce,#5e8043,#7b812c,#b35eda,#dcbbd1,#da5587,#55cb87,#d582c2,#ba7190,#cab982"
         }
     ],
-    "buildCount": 184,
-    "lastBuildTimeUnixMs": 1641945893246
+    "buildCount": 187,
+    "lastBuildTimeUnixMs": 1641949665263
 }
