@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.EitherNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
@@ -72,12 +73,18 @@ public class ExampleTeleopCarouselDualController extends OpMode {
                         new JoystickNode("left_stick_x")
                 )
         );
+        input.registerInput("drivingControlsMicro",
+                new ScaleNode(new MultiInputNode(
+                        new JoystickNode("gamepad2left_stick_y"),
+                        new JoystickNode("gamepad2right_stick_x"),
+                        new JoystickNode("gamepad2left_stick_x")
+                ), 0.4f)
+        );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
-        input.registerInput("ClawHoming", new ButtonNode("dpadup"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
@@ -115,9 +122,14 @@ public class ExampleTeleopCarouselDualController extends OpMode {
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+            driver.driveOmni(input.getFloatArrayOfInput("drivingControls")[0]+input.getFloatArrayOfInput("drivingControlsMicro")[0],
+                            input.getFloatArrayOfInput("drivingControls")[1]+input.getFloatArrayOfInput("drivingControlsMicro")[1],
+                            input.getFloatArrayOfInput("drivingControls")[2]+input.getFloatArrayOfInput("drivingControlsMicro")[2]);
         });
+
+
     }
 
     @Override
@@ -199,10 +211,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             else {
                 clawPosition.setClawOpen(false);
             }
-            if (input.getBool("ClawShiftIn") == false && input.getBool("ClawShiftOut") == false){
-                hands.setServoPower("nateMoverRight", 0.0);
-                hands.setServoPower("nateMoverLeft", 0.0);
-            }
             if (input.getBool("ClawPos1") == true) {
                 clawPosition.positionOne();
             }
@@ -214,9 +222,6 @@ public class ExampleTeleopCarouselDualController extends OpMode {
             }
             if (input.getBool("ClawPosHome") == true) {
                 clawPosition.positionHome();
-            }
-            if (input.getBool("ClawHoming") == true) {
-                clawPosition.homing();
             }
         }
         telemetry.addData("FL Power", driver.frontLeft.getPower());
