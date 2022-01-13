@@ -60,6 +60,9 @@ public class InputManager extends FeatureManager {
         if(normalizedKey.startsWith("gamepad1")) normalizedKey = normalizedKey.replace("gamepad1", "");
 
         switch(normalizedKey) {
+            case "touchpadfinger1": return new TouchpadFinger1ButtonHandle(gamepad);
+            case "touchpadfinger2": return new TouchpadFinger2ButtonHandle(gamepad);
+            //Add 1xy and 2xy
             case "dpadup": return new DpadUpButtonHandle(gamepad);
             case "dpaddown": return new DpadDownButtonHandle(gamepad);
             case "dpadleft": return new DpadLeftButtonHandle(gamepad);
