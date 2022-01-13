@@ -26,16 +26,15 @@
     if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto thirdPosition
 
 #firstPosition:
-    setMotorPower("deposit", 1), after 10cm setMotorPower("deposit", 0), next;
+    positionOne(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     goto towerDropOff
 
-
 #secondPosition:
-    setMotorPower("deposit", 1), after 20cm setMotorPower("deposit", 0), next;
+    positionTwo(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     goto towerDropOff
 
 #thirdPosition:
-    setMotorPower("deposit", 1), after 30cm setMotorPower("deposit", 0), next;
+    positionThree(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     goto towerDropOff
 
 #towerDropOff:
@@ -44,9 +43,10 @@
 
 #finalMovement:
     driveOmni(-1,0,0), after 10cm next;
-    driveRaw(-1, 1, -1, 1), after 30cm next;
-    spinCarousell(), after 3s stopCarousell(), next;
-    driveRaw(1, -1, 1, -1), after 60cm driveRaw(0, 0, 0, 0), goto parking
+    setClawOpen(false), next;
+    driveOmni(0,0,1), after 90degs next;
+    driveOmni(1,0,0), after 30cm next;
+    positionNeutral(), goto parking
 
 #parking:
-    driveRaw(0,0,0,0), stopAllMotors()
+    driveRaw(0,0,0,0)
