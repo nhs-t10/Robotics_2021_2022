@@ -15,13 +15,10 @@ import java.util.Arrays;
 
 public abstract class PaulMath extends FeatureManager {
 
-    public static float highestMagnitude(float[] array) {
-        int arrayLength = array.length;
-        float highest = Float.MIN_VALUE;
-        for (int i = 0; i < arrayLength; i++) {
-            if (Math.abs(array[i]) > highest) {
-                highest = Math.abs(array[i]);
-            }
+    public static float highestMagnitude(float[] unknown) {
+        float highest = unknown[0];
+        for (int i = 1; i < unknown.length; i++) {
+            highest = Math.max(highest,Math.abs(unknown[i]));
         }
         return highest;
     }
@@ -49,13 +46,12 @@ public abstract class PaulMath extends FeatureManager {
         return new float[] { h, s, l };
     }
 
-    public static float[] normalizeArray(float[] array) {
-        int arrayLength = array.length;
-        float highest = highestMagnitude(array);
-        for (int i = 0; i < arrayLength; i++) {
-            array[i] = array[i] / highest;
+    public static float[] normalizeArray(float[] arrray) { //yes the 3 r's is intentional
+        float highest = highestMagnitude(arrray);
+        for (int i = 0; i < arrray.length; i++) {
+            arrray[i] = arrray[i] / highest;
         }
-        return array;
+        return arrray;
     }
 
     public static float[] cartesianToPolar(float x, float y) {
