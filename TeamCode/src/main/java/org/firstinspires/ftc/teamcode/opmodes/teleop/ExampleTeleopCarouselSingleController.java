@@ -50,8 +50,6 @@ public class ExampleTeleopCarouselSingleController extends OpMode {
 
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
-        sensor = new SensorManager(hardwareMap, new String[] {});
-
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");

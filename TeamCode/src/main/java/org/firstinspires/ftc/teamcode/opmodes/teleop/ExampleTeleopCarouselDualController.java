@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
+import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
@@ -36,6 +37,7 @@ public class ExampleTeleopCarouselDualController extends OpMode {
     public ManipulationManager hands;
     public InputManager input;
     public NateManager clawPosition;
+    public SensorManager sensor;
     private boolean precision = false;
     private boolean dashing = false;
 

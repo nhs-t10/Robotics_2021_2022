@@ -1,36 +1,52 @@
 package org.firstinspires.ftc.teamcode.managers.sensor;
 
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
+import org.firstinspires.ftc.teamcode.auxilary.BasicMapEntry;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.Sensor;
-import org.firstinspires.ftc.teamcode.managers.CV.CVManager;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class SensorManager extends FeatureManager {
     public Sensor[] sensors;
-
     public String[] sensorNames;
 
-    public SensorManager(HardwareMap hardwareMap, String[] _sensorNames) {
-        this.sensorNames = _sensorNames;
+    /**
+     * Make a SensorManager by only specifying the names. The constructor uses the given HardwareMap to resolve each name by itself.
+     * <h3>Usage Example:</h3>
+     * <pre><code>
+     *      new SensorManager(
+     *                 hardwareMap,
+     *                 SensorManager.colorSensor("colorSensorA", "colorSensorB"),
+     *                 SensorManager.touchSensor("touchSensorA", "touchSensorB"),
+     *                 SensorManager.distanceSensor("distanceSensorA", "distanceSensorB")
+     *         );
+     * @param _hardwareMap a hardware map that contains <u>all</u> of the listed hardware devices.
+     * @param args A series of at least 3 map entries.
+     */
 
-        Sensor[] sensors = new Sensor[_sensorNames.length];
-        for(int i = 0; i < sensors.length; i++) sensors[i] = new ColorSensor(hardwareMap.get(NormalizedColorSensor.class, _sensorNames[i]));
-        this.sensors = sensors;
+
+    public SensorManager(HardwareMap _hardwareMap, Map.Entry<String, String[]>... args) {
+        String[] _colorSensor = new String[0], _touchSensor = new String[0], _distanceSensor = new String[0];
+        for (Map.Entry<String, String[]> a : args) {
+            if (a.getKey().equals("crservo")) _colorSensor = a.getValue();
+            else if (a.getKey().equals("servo")) _touchSensor = a.getValue();
+            else if (a.getKey().equals("motor")) _distanceSensor = a.getValue();
+        }
     }
-
-    public SensorManager(Sensor[] _sensors, String[] _sensorNames) {
-        if(_sensorNames.length != _sensors.length) throw new IllegalArgumentException("Sensor Names must be the same length as Sensors");
-        this.sensors = _sensors;
-        this.sensorNames = _sensorNames;
+    public static BasicMapEntry<String, String[]> colorSensor(String... names) {
+        return new BasicMapEntry<String, String[]>("colorSensor", names);
+    }
+    public static BasicMapEntry<String, String[]> touchSensor(String... names) {
+        return new BasicMapEntry<String, String[]>("touchSensor", names);
+    }
+    public static BasicMapEntry<String, String[]> distanceSensor(String... names) {
+        return new BasicMapEntry<String, String[]>("distanceSensor", names);
     }
 
 
@@ -71,7 +87,7 @@ public class SensorManager extends FeatureManager {
     }
     public boolean isSpecial1(int index) {
         updateSensor(index);
-        return ((ColorSensor)this.sensors[index]).isSpecial1();
+        return ((ColorSensor)this.sensors[index]).isSpecial();
     }
 
 
