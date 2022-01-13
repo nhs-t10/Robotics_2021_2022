@@ -32,8 +32,17 @@ public class FeatureManager {
         }
     }
 
+    public static final RobotConfiguration tankBoyConfiguration = new RobotConfiguration(
+            W(1,1,1,1), W(1,1,1,1),
+            new OmniCalcComponents(
+                    vertical      (1f,1f,1f,1f),
+                    horizontal    (0f, 0f, 0f, 0f),
+                    rotational    (1f,-1f,1f,-1f)
+            ),
+            0.03f, 1680, 1, 8.9, 1, 3f);
+
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
-            W(1,1,1,-1),
+            W(1,1,1,-1), W(1,1,-1,1),
             new OmniCalcComponents(
                 vertical      (-1f,-1f,-1f,-1f),
                 horizontal    (1f, -1f, 1f, -1f),
@@ -43,14 +52,14 @@ public class FeatureManager {
 
     public static void reconfigureForTeleop() {
         FeatureManager.logger.log("I am teleop");
-        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,-1, 1);
+        getRobotConfiguration().motorCoefficients = getRobotConfiguration().teleOpMotorCoefficients;
     }
     public static void reconfigureForAuto() {
         FeatureManager.logger.log("I am auto");
-        bigBoyConfiguration.motorCoefficients = new WheelCoefficients(1,1,-1,1);
+        getRobotConfiguration().motorCoefficients = getRobotConfiguration().autoMotorCoefficients;
     }
     public static final RobotConfiguration littleBoyConfiguration = new RobotConfiguration(
-            W(1, -1, 1, -1),
+            W(1, -1, 1, -1), W(1,-1,1,-1),
             new OmniCalcComponents(
                 vertical      (-1f,-1f,-1f,-1f),
                 horizontal    (-1f,1f,1f,-1f),
@@ -76,6 +85,8 @@ public class FeatureManager {
                 return "bigBoy";
             case RobotConfiguration.littleBoyFileContent:
                 return "smallBoy";
+            case RobotConfiguration.tankBoyFileContent:
+                return "tankBoy";
             default:
                 return "mysteryBoy";
         }

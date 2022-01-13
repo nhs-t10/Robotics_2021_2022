@@ -7,10 +7,14 @@ public class RobotConfiguration {
     public final static String fileName = "configuration";
     public final static String bigBoyFileContent = "bigBoy";
     public final static String littleBoyFileContent = "littleBoy";
+    public final static String tankBoyFileContent = "tankBoy";
 
     public WheelCoefficients motorCoefficients;
+    public WheelCoefficients autoMotorCoefficients;
+    public WheelCoefficients teleOpMotorCoefficients;
 
     public OmniCalcComponents omniComponents;
+
 
 
     /**
@@ -38,8 +42,10 @@ public class RobotConfiguration {
     public float exponentialScalar;
 
 
-    public RobotConfiguration(WheelCoefficients motorCoefficients, OmniCalcComponents omniComponents, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
-        this.motorCoefficients = motorCoefficients;
+    public RobotConfiguration(WheelCoefficients teleOpMotorCoefficients, WheelCoefficients autoMotorCoefficients, OmniCalcComponents omniComponents, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
+        this.motorCoefficients = teleOpMotorCoefficients;
+        this.teleOpMotorCoefficients = teleOpMotorCoefficients;
+        this.autoMotorCoefficients = autoMotorCoefficients;
         this.omniComponents = omniComponents;
         this.encoderTicksPerRotation = encoderTicksPerRotation;
         this.gearRatio = gearRatio;
@@ -48,4 +54,5 @@ public class RobotConfiguration {
         this.wheelCircumference = Math.PI * wheelDiameterCm;
         this.exponentialScalar = exponentialScalar;
     }
+
 }
