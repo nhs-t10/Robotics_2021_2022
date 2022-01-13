@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.unitTests.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.ExampleTeleopCarouselSingleController;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.SingleControler;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 public class ExampleTeleopCarouselHangingTest {
     @Test
     public void runTest() {
-        ExampleTeleopCarouselSingleController opmode = new ExampleTeleopCarouselSingleController();
+        SingleControler opmode = new SingleControler();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();
         opmode.gamepad2 = new DummyGamepad();
