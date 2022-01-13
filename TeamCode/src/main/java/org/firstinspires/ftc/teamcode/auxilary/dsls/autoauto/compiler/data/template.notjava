@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.auxilary.ColorSensor;
+import org.firstinspires.ftc.teamcode.managers.sensor.ColorSensor;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
@@ -64,7 +64,6 @@ import java.util.HashMap;
 public class template extends AutoautoOpmode {
     MovementManager driver;
     ManipulationManager limbs;
-    SensorManager sense;
     ImuManager imu;
     CVManager cv;
     NateManager clawPosition;
@@ -96,11 +95,6 @@ public class template extends AutoautoOpmode {
 
         cv = new CVManager(hardwareMap);
 
-         sense = new SensorManager(
-                    new ColorSensor[] {},
-                    new String[] {}
-            );
-
             imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
         StringBuilder programJson = new StringBuilder();
@@ -108,7 +102,7 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, sense, telemetryManager, clawPosition, cv);
+        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, telemetryManager, clawPosition, cv);
 
         limbs.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
