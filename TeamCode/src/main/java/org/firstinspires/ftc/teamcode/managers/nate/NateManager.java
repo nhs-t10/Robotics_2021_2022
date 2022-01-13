@@ -111,18 +111,7 @@ public class NateManager extends FeatureManager {
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 
-    public void positionNeutral(){
-        if (!found){
-            position = 0;
-        }
-        else {
-            //this value is wrong
-            position = -3470;
-        }
 
-
-        hands.encodeMoveToPosition("ClawMotor", position);
-    }
 
     /**
      * <p>Move the claw's lift to position 2, the middle position.</p>
@@ -163,6 +152,11 @@ public class NateManager extends FeatureManager {
             position = -6893;
         }
 
+        hands.encodeMoveToPosition("ClawMotor", position);
+    }
+
+    public void positionNeutral() {
+        position = 0;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 

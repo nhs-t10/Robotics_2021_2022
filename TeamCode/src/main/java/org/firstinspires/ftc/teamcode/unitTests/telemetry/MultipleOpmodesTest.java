@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityDrive__autoauto;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.ExampleTeleopCarouselDualController;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.DualControler;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
@@ -27,7 +25,7 @@ public class MultipleOpmodesTest {
         a.stop();
     }
     private void runTeleop() {
-        ExampleTeleopCarouselDualController a = new ExampleTeleopCarouselDualController();
+        DualControler a = new DualControler();
         a.telemetry = new DummyTelemetry();
         a.hardwareMap = new DummyHardwareMap();
         a.gamepad1 = new DummyGamepad();

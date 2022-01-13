@@ -32,7 +32,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 @TeleOp
-public class ExampleTeleopCarouselDualController extends OpMode {
+public class DualControler extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;

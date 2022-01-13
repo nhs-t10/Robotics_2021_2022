@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.unitTests.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.ExampleTeleopCarouselDualController;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.ExampleTeleopCarouselSingleController;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.DualControler;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
@@ -19,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class ExampleTeleopCarouselPressingAllDualControllerControlsTest {
     @Test
     public void runTest() {
-        ExampleTeleopCarouselDualController opmode = new ExampleTeleopCarouselDualController();
+        DualControler opmode = new DualControler();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();
         opmode.gamepad2 = new DummyGamepad();
@@ -37,15 +35,15 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTest {
     private static final long HUMAN_REACTION_TIME = 265;
 
     private static class TestInputterThread extends Thread {
-        private final ExampleTeleopCarouselDualController opmode;
+        private final DualControler opmode;
         private final LoopRunnerThread tested;
 
-        public TestInputterThread(ExampleTeleopCarouselDualController opmode, LoopRunnerThread tested) {
+        public TestInputterThread(DualControler opmode, LoopRunnerThread tested) {
             this.opmode = opmode;
             this.tested = tested;
         }
 
-        public void inputTests(ExampleTeleopCarouselDualController opmode) throws InterruptedException {
+        public void inputTests(DualControler opmode) throws InterruptedException {
             //give 20s for everything to finish setup
             //probably overkill, but eih
             sleep(20_000);

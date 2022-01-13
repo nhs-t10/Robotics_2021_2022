@@ -18,6 +18,9 @@ if(rootDirectory == "" || rootDirectory == path.sep ||
     srcDirectory == "" || srcDirectory == path.sep) throw "Unexpected directory structure";
 
 //update gitignore with build history files
+if(!fs.existsSync(path.join(rootDirectory, ".gitignore"))) {
+    fs.writeFileSync(path.join(rootDirectory, ".gitignore"), "");
+}
 var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
 var gitignoreLines = gitignore.split(/\r?\n/);
 

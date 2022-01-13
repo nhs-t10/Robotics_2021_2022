@@ -22,6 +22,9 @@ var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.
 
 
 //update gitignore with autoauto files
+if(!fs.existsSync(path.join(rootDirectory, ".gitignore"))) {
+    fs.writeFileSync(path.join(rootDirectory, ".gitignore"), "");
+}
 var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
 var gitignoreLines = gitignore.split(/\r?\n/);
 
