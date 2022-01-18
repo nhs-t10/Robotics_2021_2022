@@ -26,11 +26,12 @@ public class SensorManager extends FeatureManager {
      *                 SensorManager.touchSensor("touchSensorA", "touchSensorB"),
      *                 SensorManager.distanceSensor("distanceSensorA", "distanceSensorB")
      *         );
+     * @see #colorSensor(String...)
+     * @see #touchSensor(String...) 
+     * @see #distanceSensor(String...)
      * @param _hardwareMap a hardware map that contains <u>all</u> of the listed hardware devices.
      * @param args A series of at least 3 map entries.
      */
-
-
     public SensorManager(HardwareMap _hardwareMap, Map.Entry<String, String[]>... args) {
         String[] _colorSensor = new String[0], _touchSensor = new String[0], _distanceSensor = new String[0];
         for (Map.Entry<String, String[]> a : args) {
@@ -38,56 +39,91 @@ public class SensorManager extends FeatureManager {
             else if (a.getKey().equals("servo")) _touchSensor = a.getValue();
             else if (a.getKey().equals("motor")) _distanceSensor = a.getValue();
         }
+        sensors = new Sensor[_colorSensor.length + _touchSensor.length + _distanceSensor.length];
+        sensorNames = PaulMath.concatArrays(_colorSensor, _touchSensor, _distanceSensor);
+
+        for(int i = 0; i < sensorNames.length; i++) {
+            if(i < _colorSensor.length) {
+                sensors[i] = new ColorSensor(_hardwareMap.get(NormalizedColorSensor.class, sensorNames[i]));
+            } else if(i < _colorSensor.length + _touchSensor.length) {
+                sensors[i] = new TouchSensor(_hardwareMap.get(com.qualcomm.robotcore.hardware.TouchSensor.class, sensorNames[i]));
+            } else {
+                sensors[i] = new DistanceSensor(_hardwareMap.get(com.qualcomm.robotcore.hardware.DistanceSensor.class, sensorNames[i]));
+            }
+        }
     }
+
+    /**
+     * A helper method, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     * @param names ColorSensor names
+     * @return A map entry, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     */
     public static BasicMapEntry<String, String[]> colorSensor(String... names) {
         return new BasicMapEntry<String, String[]>("colorSensor", names);
     }
+    /**
+     * A helper method, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     * @param names TouchSensor names
+     * @return A map entry, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     */
     public static BasicMapEntry<String, String[]> touchSensor(String... names) {
         return new BasicMapEntry<String, String[]>("touchSensor", names);
     }
+    /**
+     * A helper method, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     * @param names DistanceSensor names
+     * @return A map entry, for use in {@link #SensorManager(HardwareMap, Map.Entry[])}
+     */
     public static BasicMapEntry<String, String[]> distanceSensor(String... names) {
         return new BasicMapEntry<String, String[]>("distanceSensor", names);
     }
 
-
-    public float[] getHSL(String name) {
-        int index = (Arrays.asList(sensorNames)).indexOf(name);
-        if(index == -1) throw new IllegalArgumentException("ColorSensor " + name + " does not exist or is not registered in SensorManager");
-        return getHSL(index);
-    }
-
-    public float[] getHSL(int index) {
-        updateSensor(index);
-        NormalizedRGBA color = ((ColorSensor)this.sensors[index]).getNormalizedColors();
-        return PaulMath.rgbToHsl(color.red, color.green, color.blue);
-    }
-
+    /**
+     * Update all sensors. The "update" operation isn't necessarily meaningful for every sensor.
+     */
     public void updateAllSensors() {
         for(Sensor s : sensors) {
             s.update();
         }
     }
 
+    /**
+     * Update a given sensor. The "update" operation isn't necessarily meaningful for every sensor.
+     * @param index
+     */
     public void updateSensor(int index) {
         this.sensors[index].update();
     }
 
-    public int getColorInteger(int index) {
-        updateSensor(index);
-        NormalizedRGBA color = ((ColorSensor)this.sensors[index]).getNormalizedColors();
-        float scale = 256; int min = 0, max = 255;
-        return (Range.clip((int)(color.alpha * scale), min, max) << 24) |
-                (Range.clip((int)(color.red   * scale), min, max) << 16) |
-                (Range.clip((int)(color.alpha * scale), min, max) << 8) |
-                Range.clip((int)(color.blue  * scale), min, max);
+    /**
+     * Get the index of the given sensor's name in the internal sensor array
+     * @param name The sensor to look up
+     * @return THe internal name.
+     */
+    public int indexOf(String name) {
+        for(int i = 0; i < sensorNames.length; i++) {
+            if(sensorNames[i].equals(name)) return i;
+        }
+        throw new IllegalArgumentException("Sensor `" + name + "` is not registered in the SensorManager!");
     }
 
-    public boolean isSpecial(int index) {
-        return isSpecial1(index);
+    /**
+     * For color sensors, return the Android color integer. For non-color sensors, return some other number.
+     * @param name the name of the sensor to get
+     * @return the color integer, if it's a sensor; otherwise, some undefined number
+     */
+    public int getColorInteger(String name) {
+        return (int) sensors[indexOf(name)].getNumberValue();
     }
-    public boolean isSpecial1(int index) {
-        updateSensor(index);
-        return ((ColorSensor)this.sensors[index]).isSpecial();
+
+    /**
+     * Check whether a sensor is currently special.
+     * The "special check" is different for each sensor type-- see the sensor class for more info.
+     * @param name The name of the sensor to check
+     * @return Whether the given sensor is special.
+     */
+    public boolean isSpecial(String name) {
+        return sensors[indexOf(name)].isSpecial();
     }
 
 
