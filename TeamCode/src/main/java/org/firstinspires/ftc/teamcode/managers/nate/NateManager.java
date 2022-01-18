@@ -205,11 +205,34 @@ public class NateManager extends FeatureManager {
         return found;
     }
 
+    /**
+     * Checks whether or not the homing process has completed.
+     *
+     * @see #homing()
+     * @return whether the finding process has completed
+     */
     public boolean isFound() {
         return found;
     }
 
+    /**
+     * Get how open the claw is.
+     * @return how open the claw is, with {@code 0} being "Completely Shut" and {@code 1} being "Completely Open"
+     */
     public double getClawOpenish() {
         return hands.getServoPosition("nateClaw");
+    }
+
+    /**
+     * Get the current position of the lift.
+     * @return 0 for the "home position"; 1 for the top, 2 for the middle; 3 for the bottom. If the claw's at none of the above, returns -1.
+     */
+    public int getClawPosition() {
+        if(position == -2750) return 0;
+        else if(position == 945) return 1;
+        else if(position == 2483) return 2;
+        else if(position == 4253) return 3;
+
+        return -1;
     }
 }
