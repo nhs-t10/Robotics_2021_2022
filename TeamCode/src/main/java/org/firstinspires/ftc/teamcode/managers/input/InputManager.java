@@ -62,7 +62,10 @@ public class InputManager extends FeatureManager {
         switch(normalizedKey) {
             case "touchpadfinger1": return new TouchpadFinger1ButtonHandle(gamepad);
             case "touchpadfinger2": return new TouchpadFinger2ButtonHandle(gamepad);
-            //Add 1xy and 2xy
+            case "touchpadfinger1x": return new TouchpadFinger1XButtonHandle(gamepad);
+            case "touchpadfinger1y": return new TouchpadFinger1YButtonHandle(gamepad);
+            case "touchpadfinger2x": return new TouchpadFinger2XButtonHandle(gamepad);
+            case "touchpadfinger2y": return new TouchpadFinger2YButtonHandle(gamepad);
             case "dpadup": return new DpadUpButtonHandle(gamepad);
             case "dpaddown": return new DpadDownButtonHandle(gamepad);
             case "dpadleft": return new DpadLeftButtonHandle(gamepad);
@@ -123,6 +126,12 @@ public class InputManager extends FeatureManager {
             case "gamepad2rightsticky": return new RightStickYButtonHandle(gamepad2);
             case "gamepad2lefttrigger": return new LeftTriggerButtonHandle(gamepad2);
             case "gamepad2righttrigger": return new RightTriggerButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger1": return new TouchpadFinger1ButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger2": return new TouchpadFinger2ButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger1x": return new TouchpadFinger1XButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger1y": return new TouchpadFinger1YButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger2x": return new TouchpadFinger2XButtonHandle(gamepad2);
+            case "gamepad2touchpadfinger2y": return new TouchpadFinger2YButtonHandle(gamepad2);
         }
         throw new IllegalArgumentException("Bad key " + key);
     }
