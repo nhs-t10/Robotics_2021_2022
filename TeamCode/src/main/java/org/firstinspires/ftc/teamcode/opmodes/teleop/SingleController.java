@@ -29,7 +29,7 @@ import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationM
 import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager.servo;
 
 @TeleOp
-public class SingleControler extends OpMode {
+public class SingleController extends OpMode {
     private MovementManager driver;
     private ManipulationManager hands;
     private InputManager input;
