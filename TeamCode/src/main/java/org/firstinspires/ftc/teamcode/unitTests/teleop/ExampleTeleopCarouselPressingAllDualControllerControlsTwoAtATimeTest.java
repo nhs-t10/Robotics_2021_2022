@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.DualControler;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.DualController;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTest {
     @Test
     public void runTest() {
-        DualControler opmode = new DualControler();
+        DualController opmode = new DualController();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();
         opmode.gamepad2 = new DummyGamepad();
@@ -36,10 +36,10 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
     private static final long HUMAN_REACTION_TIME = 265;
 
     private static class TestInputterThread extends Thread {
-        private final DualControler opmode;
+        private final DualController opmode;
         private final LoopRunnerThread tested;
 
-        public TestInputterThread(DualControler opmode, LoopRunnerThread tested) {
+        public TestInputterThread(DualController opmode, LoopRunnerThread tested) {
             this.opmode = opmode;
             this.tested = tested;
         }

@@ -32,7 +32,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 @TeleOp
-public class DualControler extends OpMode {
+public class DualController extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;

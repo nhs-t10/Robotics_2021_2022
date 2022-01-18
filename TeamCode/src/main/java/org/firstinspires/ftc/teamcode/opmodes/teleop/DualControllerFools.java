@@ -31,7 +31,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 @TeleOp
-public class DualControlerFools extends OpMode {
+public class DualControllerFools extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;
