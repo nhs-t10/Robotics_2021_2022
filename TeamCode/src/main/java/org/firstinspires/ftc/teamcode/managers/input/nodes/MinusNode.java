@@ -11,9 +11,11 @@ public class MinusNode extends InputManagerInputNode {
 
     /**
      * Second array value is always subtracted from the first array value. <br>
-     * If the first array is null at that index, it will be 0 - the second array value.
-     * @param input1
-     * @param input2
+     * If the first array is null at a given index, it will be 0 - the second array value. <br>
+     * If the second array is null at a given index, it will be the first array value - 0. <br>
+     * @param input1 The first input listed in the Minus Node
+     * @param input2 The second input listed in the Minus Node (always subtracted from the first input)
+     * @see PlusNode#PlusNode(InputManagerInputNode, InputManagerInputNode) PlusNode
      */
     public MinusNode(InputManagerInputNode input1, InputManagerInputNode input2) {
         this.input1 = input1;

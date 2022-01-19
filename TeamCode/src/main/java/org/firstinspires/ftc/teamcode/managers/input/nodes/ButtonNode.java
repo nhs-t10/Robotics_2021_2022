@@ -10,6 +10,11 @@ public class ButtonNode extends InputManagerInputNode {
     private InputManager boss;
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
+    /**
+     * Takes the name of a specified button on the controller. <br>
+     * If the button is pressed, it returns true. If the button is not pressed, it returns false. <br>
+     * @param key The name of the button, in any format. It's not picky.
+     */
     public ButtonNode(String key) {
         this.key = key;
     }

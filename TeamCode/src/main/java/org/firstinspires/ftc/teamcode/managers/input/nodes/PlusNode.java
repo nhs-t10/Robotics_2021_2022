@@ -13,8 +13,9 @@ public class PlusNode extends InputManagerInputNode {
      * Combines two values or two arrays. <br>
      * Array example: The value at index 0 in array 1 + the value of index 0 in array 2, is placed into index 0 of array 3. Array 3 is returned from PlusNode. <br>
      * If there is no value at a certain index in one of the arrays, it defaults to 0
-     * @param input1
-     * @param input2
+     * @param input1 The first input listed in the PlusNode
+     * @param input2 The second input listed in the PlusNode
+     * @see MinusNode#MinusNode(InputManagerInputNode, InputManagerInputNode) MinusNode
      */
     public PlusNode(InputManagerInputNode input1, InputManagerInputNode input2) {
         this.input1 = input1;

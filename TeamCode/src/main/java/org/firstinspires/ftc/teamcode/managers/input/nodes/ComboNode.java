@@ -12,6 +12,12 @@ public class ComboNode extends InputManagerInputNode {
     private boolean comboMatch;
     private InputManagerNodeResult lastChildResult;
 
+    /**
+     * Detects if an button combo is being pressed.
+     * The ComboNode returns true if and only if the buttons are pressed in the order that they are declared in the ComboNode. If they are pressed in any other order, or they are not all pressed, it will return false<br>
+     * If you do not want a specific order of inputs, I recommend using an {@link AllNode#AllNode(InputManagerInputNode...) AllNode} instead, which doesn't care about order. <br>
+     * @param conditionals An array of the inputs included in this ComboNode
+     */
     public ComboNode(InputManagerInputNode... conditionals) {
         this.conditionals = conditionals;
 
