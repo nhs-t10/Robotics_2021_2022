@@ -145,6 +145,19 @@ public class MovementManager extends FeatureManager {
         driveBlue(sum[0], sum[1], sum[2], sum[3]);
     }
 
+    public double getFLMotorPower(){
+        return this.frontLeft.getPower();
+    }
+    public double getBLMotorPower(){
+        return this.backLeft.getPower();
+    }
+    public double getFRMotorPower(){
+        return this.frontRight.getPower();
+    }
+    public double getBRMotorPower(){
+        return this.backRight.getPower();
+    }
+
 
     /**
      * Get the internal array of DCMotors.

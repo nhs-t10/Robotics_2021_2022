@@ -3,27 +3,31 @@
 
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` folds out the arms to their full extent.
 #clawout:
-    log(2.3s), next;
+    driveOmni(0.5,0,0),after 5cm next;
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
-    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+    setServoPower("nateMoverLeft", -0.5), setServoPower("nateMoverRight", 0.5), after 3500ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
     goto sampling
 
 
 //uses CV, saves CV reading to `value`, moves 10cm forwards so later steps won't bump up against wall
 #sampling:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
-    driveRaw(1, 1, 1, 1), after 10cm driveRaw(0,0,0,0), goto duckSpin
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2s next;
+    goto duckSpin
 
 //drive left, turn left, spin carousel for 3sec, drive right
 #duckSpin:
-    driveOmni(0,-1,0), after 20in driveOmni(0,0,-1), after 90degs next;
-    setMotorPower("Carousel", 1), after 3s setMotorPower("Carousel", 0), next;
-    driveOmni(0,0,1), after 90degs driveOmni(0, 1, 0), after 60in next;
+    driveOmni(0,0,0.7),after 20cm next;
+    driveOmni(0,-0.7,0), after 78degs next;
+    driveOmni(0.7,0,0), after 24cm next;
+    setMotorPower("Carousel", -0.7), after 3s next;
+    setMotorPower("Carousel", 0), next;
+    driveOmni(-0.7, 0, 0), after 30cm next;
+    driveOmni(0,0.7,0), after 80degs next;
     driveOmni(0,0,0), goto split
 
 #split:
-    if(value == 0) goto firstPosition, if(value == 1) goto secondPosition, if(value == 2) goto thirdPosition
+    if(value == 0) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 2) goto firstPosition
 
 #firstPosition:
     positionOne(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
@@ -38,13 +42,14 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(1,0,0), after 20in driveOmni(0,0,0), next;
+    driveOmni(0.7,0,0), after 10cm next;
     setClawOpen(true), after 3s goto finalMovement;
 
 #finalMovement:
+    goto parking;
     driveOmni(-1,0,0), after 10cm next;
     setClawOpen(false), next;
-    driveOmni(0,0,1), after 90degs next;
+    driveOmni(0,1,0), after 90degs next;
     driveOmni(1,0,0), after 30cm next;
     positionNeutral(), goto parking
 
