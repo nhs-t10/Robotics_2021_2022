@@ -12,7 +12,7 @@ public class URIEncoding {
 
         for(int i = 0; i < str.length(); i++) {
             if(str.charAt(i) == '%') {
-                if(str.charAt(i + 1) == 'u') {
+                if(i + 1 < str.length() && str.charAt(i + 1) == 'u') {
                     FeatureManager.logger.log("What the heck!?!??!?! The %uxxxx format isn't specified anywhere, it's not standard, it's nEVER supported ANYWHERE. Why do you think you can use it here?!?!?!?!");
                     FeatureManager.logger.log("I'm skipping this character");
                     i += 5;
