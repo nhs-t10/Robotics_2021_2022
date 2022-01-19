@@ -10,7 +10,7 @@ public class MinusNode extends InputManagerInputNode {
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     /**
-     * Second array value is always subtracted from the first array value.
+     * Second array value is always subtracted from the first array value. <br>
      * If the first array is null at that index, it will be 0 - the second array value.
      * @param input1
      * @param input2

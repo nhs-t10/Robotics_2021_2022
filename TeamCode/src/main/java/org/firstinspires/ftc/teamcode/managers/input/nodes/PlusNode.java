@@ -10,8 +10,9 @@ public class PlusNode extends InputManagerInputNode {
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     /**
-     * Combines two values or two arrays <br>
-     * The value of one array at a given index will be added to the value of the other array at the same index.
+     * Combines two values or two arrays. <br>
+     * Array example: The value at index 0 in array 1 + the value of index 0 in array 2, is placed into index 0 of array 3. Array 3 is returned from PlusNode. <br>
+     * If there is no value at a certain index in one of the arrays, it defaults to 0
      * @param input1
      * @param input2
      */
