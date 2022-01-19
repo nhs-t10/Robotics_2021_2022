@@ -14,7 +14,8 @@ public class AllNode extends InputManagerInputNode {
      * Takes an array of multiple inputs <br>
      * If any of the inputs evaluate false, the AllNode will evaluate false.<br>
      * It returns true if and only if all of the inputs individually evaluate to true.
-     * @param inputs
+     * @param inputs The list of inputs included in the AllNode
+     * @see AnyNode#AnyNode(InputManagerInputNode...) AnyNode
      */
     public AllNode(InputManagerInputNode... inputs) {
         this.inputs = inputs;
