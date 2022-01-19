@@ -9,6 +9,12 @@ public class PlusNode extends InputManagerInputNode {
     private final InputManagerInputNode input2;
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
+    /**
+     * Combines two values or two arrays <br>
+     * The value of one array at a given index will be added to the value of the other array at the same index.
+     * @param input1
+     * @param input2
+     */
     public PlusNode(InputManagerInputNode input1, InputManagerInputNode input2) {
         this.input1 = input1;
         this.input2 = input2;

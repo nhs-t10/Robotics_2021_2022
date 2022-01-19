@@ -10,6 +10,11 @@ public class AnyNode extends InputManagerInputNode {
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
+    /**
+     * Takes an array of multiple inputs and returns true if any of the inputs individually evaluate to true. <br>
+     * If and only if all of the inputs evaluate false, the AnyNode will evaluate false.
+     * @param inputs
+     */
     public AnyNode(InputManagerInputNode... inputs) {
         this.inputs = inputs;
     }
