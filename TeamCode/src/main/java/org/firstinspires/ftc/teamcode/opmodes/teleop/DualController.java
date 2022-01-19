@@ -40,6 +40,8 @@ public class DualController extends OpMode {
     public SensorManager sensor;
     private boolean precision = false;
     private boolean dashing = false;
+    private double clawCheck;
+    private int clawPos;
 
     @Override
     public void init() {
@@ -47,7 +49,6 @@ public class DualController extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
-
         FeatureManager.logger.setBackend(telemetry.log());
         FeatureManager.setIsOpModeRunning(true);
 
@@ -91,7 +92,6 @@ public class DualController extends OpMode {
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
-        input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Intake",
                 new AnyNode(
                         new ButtonNode("righttrigger"),
@@ -154,7 +154,14 @@ public class DualController extends OpMode {
             dashing = false;
         }
         if (input.getBool("Intake")){
-            hands.setMotorPower("noodle", 0.9);
+            clawCheck = clawPosition.getClawOpenish();
+            clawPos = clawPosition.getClawPosition();
+            if (clawCheck == 1.0 && clawPos == 0) {
+                hands.setMotorPower("noodle", 0.9);
+            }
+            else {
+                hands.setMotorPower("noodle", 0.0);
+            }
             hands.setMotorPower("intake", 1);
             hands.setServoPosition("rampLeft", 0.50);
             hands.setServoPosition("rampRight", 0.0);

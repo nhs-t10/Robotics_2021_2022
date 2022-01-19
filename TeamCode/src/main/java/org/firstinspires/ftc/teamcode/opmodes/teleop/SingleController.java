@@ -38,6 +38,8 @@ public class SingleController extends OpMode {
     private NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
+    private double clawCheck;
+    private int clawPos;
 
     @Override
     public void init() {
@@ -137,9 +139,16 @@ public class SingleController extends OpMode {
         }
 
         if (input.getBool("Intake")){
-            hands.setMotorPower("noodle", 1);
+            clawCheck = clawPosition.getClawOpenish();
+            clawPos = clawPosition.getClawPosition();
+            if (clawCheck == 1.0 && clawPos == 0) {
+                hands.setMotorPower("noodle", 0.9);
+            }
+            else {
+                hands.setMotorPower("noodle", 0.0);
+            }
             hands.setMotorPower("intake", 1);
-            hands.setServoPosition("rampLeft", 0.5);
+            hands.setServoPosition("rampLeft", 0.50);
             hands.setServoPosition("rampRight", 0.0);
         }
         else {
