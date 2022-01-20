@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
@@ -67,19 +68,19 @@ public class DualController extends OpMode {
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         input.registerInput("drivingControls",
-                new MultiInputNode(
-                        new ScaleNode(new JoystickNode("left_stick_y"), 1),
-                        new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
-                        new ScaleNode(new JoystickNode("left_stick_x"), 1)
+                new PlusNode(
+                        new MultiInputNode(
+                            new ScaleNode(new JoystickNode("left_stick_y"), 1),
+                            new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
+                            new ScaleNode(new JoystickNode("left_stick_x"), 1)
+                        ),
+                        new MultiInputNode(
+                            new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
+                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
+                            new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
                 )
-        );
-        input.registerInput("drivingControlsMicro",
-                new MultiInputNode(
-                        new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
-                        new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
-                        new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
                 )
-        );
+            );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
@@ -118,9 +119,7 @@ public class DualController extends OpMode {
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls")[0]+input.getFloatArrayOfInput("drivingControlsMicro")[0],
-                            input.getFloatArrayOfInput("drivingControls")[1]+input.getFloatArrayOfInput("drivingControlsMicro")[1],
-                            input.getFloatArrayOfInput("drivingControls")[2]+input.getFloatArrayOfInput("drivingControlsMicro")[2]);
+            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
 
