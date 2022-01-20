@@ -50,8 +50,6 @@ public class ScaleNode extends InputManagerInputNode {
             scaled[i] = resultNumbers[i] * scaleFactor;
         }
 
-        FeatureManager.logger.log(scaled);
-
         result.setFloatArray(scaled);
         return result;
     }
