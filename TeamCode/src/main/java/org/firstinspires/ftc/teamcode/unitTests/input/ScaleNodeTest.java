@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.unitTests.input;
 
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.SwitchNode;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyInputNode;
 import org.junit.Test;
 

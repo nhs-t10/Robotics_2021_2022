@@ -21,19 +21,27 @@ public class InputManager extends FeatureManager {
 
     private final HashMap<String, InputManagerInputNode> nodes;
 
+    /**
+     * Make an InputManager with 2 gamepads
+     * @param _gamepad the first gamepad
+     * @param _gamepad2 the second gamepad
+     */
     public InputManager(Gamepad _gamepad, Gamepad _gamepad2) {
         this.gamepad = _gamepad;
         this.gamepad2 = _gamepad2;
         nodes = new HashMap<>();
     }
 
-    public Gamepad getGamepad() {
-        return this.gamepad;
-    }
-    public Gamepad getGamepad2() {
-        return this.gamepad2;
-    }
-
+    /**
+     * Register a new InputNode. The Manager takes care of updating it, ensuring overlaps resolve correctly, etc.
+     * <h3>Usage Example</h3>
+     * <pre><code>
+     * input.registerInput("face button A", new ButtonNode("a"));
+     * </code></pre>
+     * @see #setOverlapResolutionMethod(InputOverlapResolutionMethod)
+     * @param key The name to associate with the node
+     * @param registerNodes Nodes to register. If you give multiple nodes, it will automatically make it into an array-ish.
+     */
     public void registerInput(String key, InputManagerInputNode... registerNodes) {
         InputManagerInputNode node = null;
         if(registerNodes.length == 0) throw new IllegalArgumentException("Must have more than 0 args");
@@ -48,11 +56,34 @@ public class InputManager extends FeatureManager {
         (new InputUpdateThread(node)).start();
     }
 
-
+    /**
+     * Get a given input node. Don't use this unless you know what you're doing!
+     * @see #registerInput(String, InputManagerInputNode...)
+     * @param key The name of the node, as registered before.
+     * @return The pre-registered node, or `null` if there's no such node.
+     */
     public InputManagerInputNode getInputNode(String key) {
         return nodes.get(key.toLowerCase());
     }
 
+    /**
+     * Get a ButtonHandle for a given button. The button handle can be reused to prevent lag!
+     * If you're writing an {@link InputManagerInputNode InputNode}, please use this & save the result in a field!
+     * Examples of valid button formats:
+     * <ul>
+     *     <li>gamepad 1 dpad up</li>
+     *     <li>dpad up</li>
+     *     <li>gamepad 2 X</li>
+     *     <li>x</li>
+     *     <li>y</li>
+     *     <li>RightStickButton</li>
+     *     <li>left_stick_y</li>
+     *     <li>RIGHT_STICK_X</li>
+     * </ul>
+     * @see ButtonHandle#get()
+     * @param key The name of the button, in any format. It's not picky.
+     * @return A ButtonHandle that's been "bound" to that button.
+     */
     public ButtonHandle getButtonHandle(String key) {
         String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
 
@@ -136,23 +167,59 @@ public class InputManager extends FeatureManager {
         throw new IllegalArgumentException("Bad key " + key);
     }
 
+    /**
+     * Update the manager. Not used right now, but kept for compatibility.
+     */
     public void update() {
     }
 
+    /**
+     * Grab the result of the given node, as a float array.
+     * <h3>If the given node is an number, it returns a 1-element array holding that number</h3>
+     * <br>
+     * <h3>If the given node is a boolean, it returns [1] if it's true; otherwise, [0].</h3>
+     *
+     * @param key the registered node to check
+     * @return the result (converted to a float array).
+     */
     public float[] getFloatArrayOfInput(String key) {
         if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
         return nodes.get(key.toLowerCase()).getOverlappedResult().getFloatArray();
     }
 
+    /**
+     * Grab the result of the given node, as a boolean.
+     * <h3>If the given node is an array-like, it returns true if the first element IS NOT 0</h3>
+     * <br>
+     * <h3>If the given node is a number, it returns true if the number IS NOT 0</h3>
+     *
+     * @param key the registered node to check
+     * @return the result (converted to a boolean).
+     */
     public boolean getBool(String key) {
         if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
         return nodes.get(key.toLowerCase()).getOverlappedResult().getBool();
     }
+
+    /**
+     * Grab the result of the given node, as a float.
+     * <h3>If the given node is an array-like, it returns the first element</h3>
+     * <br>
+     * <h3>If the given node is a boolean, it returns 1 for true; 0 for false</h3>
+     *
+     * @param key the registered node to check
+     * @return the result (converted to a float).
+     */
     public float getFloat(String key) {
         if(!nodes.containsKey(key.toLowerCase())) throw new IllegalArgumentException("No control `" + key.toLowerCase() + "` registered");
         return nodes.get(key.toLowerCase()).getOverlappedResult().getFloat();
     }
 
+    /**
+     * Choose whether less-complicated nodes or more-complicated nodes are prioritised.
+     * @see #registerInput(String, InputManagerInputNode...)
+     * @param newMethod the new method to use.
+     */
     public void setOverlapResolutionMethod(InputOverlapResolutionMethod newMethod) {
         this.overlapResolutionMethod = newMethod;
         rebuildOverlaps();
@@ -165,6 +232,11 @@ public class InputManager extends FeatureManager {
         }
     }
 
+    /**
+     * Get all nodes that were registered
+     * @see #registerInput(String, InputManagerInputNode...)
+     * @return all nodes registered with this manager
+     */
     public Collection<InputManagerInputNode> getNodes() {
         return nodes.values();
     }
