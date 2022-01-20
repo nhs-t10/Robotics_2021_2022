@@ -15,11 +15,13 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
@@ -82,8 +84,16 @@ public class DualController extends OpMode {
                 )
             );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("precisionDriving", new ButtonNode("b"));
-        input.registerInput("dashing", new ButtonNode("x"));
+        input.registerInput("precisionDriving", new IfNode(
+                new ToggleNode(new ButtonNode("b")),
+                new StaticValueNode(0.1f),
+                new StaticValueNode(1f)
+        ));
+        input.registerInput("dashing", new IfNode(
+                new ToggleNode(new ButtonNode("x")),
+                new StaticValueNode(1f),
+                new StaticValueNode(0.6f)
+        ));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
@@ -128,18 +138,7 @@ public class DualController extends OpMode {
     @Override
     public void loop() {
         input.update();
-
-        if (input.getBool("precisionDriving") == true && precision == false) {
-            driver.downScale(0.5f);
-            precision = true;
-        } else if (input.getBool("precisionDriving") == true && precision == true) {
-            precision = true;
-        } else if (input.getBool("precisionDriving") == false && precision == true) {
-            driver.upScale(0.5f);
-            precision = false;
-        } else {
-            precision = false;
-        }
+        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         if (input.getBool("dashing") == true && dashing == false) {
             driver.upScale(0.4f);

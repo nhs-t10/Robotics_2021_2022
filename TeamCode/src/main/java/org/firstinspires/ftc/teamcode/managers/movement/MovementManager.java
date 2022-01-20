@@ -252,9 +252,7 @@ public class MovementManager extends FeatureManager {
      *
      * @param ScaleFactor An amount to <u>increase</u> the scale factor by. <u>For historical reasons, this may be negative.</u>
      */
-    public void upScale(float ScaleFactor){
-        scale+=ScaleFactor;
-    }
+    public void upScale(float ScaleFactor){scale+=ScaleFactor;}
     /**
      * Decrease the internal scale factor that {@link #driveOmni(float[]) driveOmni} uses. By default, it is {@code 0.6}.
      * <u>IMPORTANT NOTE: No other methods use the scale.</u>
@@ -263,10 +261,9 @@ public class MovementManager extends FeatureManager {
      *
      * @param ScaleFactor An amount to <u>decrease</u> the scale factor by. <u>For historical reasons, this may be negative.</u>
      */
-    public void downScale(float ScaleFactor){
-        scale-=ScaleFactor;
-    }
+    public void downScale(float ScaleFactor){scale-=ScaleFactor;}
 
+    public void setScale(float ScaleValue){scale = ScaleValue;}
     /**
      * Get the positions of each motor, as reported by encoders.
      * @return An array of positions, in the following order: frontRight, frontLeft, backRight, backLeft.
