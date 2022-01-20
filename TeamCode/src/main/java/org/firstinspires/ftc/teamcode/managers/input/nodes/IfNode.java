@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
-public class SwitchNode extends InputManagerInputNode {
+public class IfNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
     private final InputManagerInputNode nodeIfOff;
     private final InputManagerInputNode nodeIfOn;
@@ -15,7 +15,7 @@ public class SwitchNode extends InputManagerInputNode {
     private boolean toggledOn;
     private boolean on;
 
-    public SwitchNode(InputManagerInputNode onOff, InputManagerInputNode ifOn, InputManagerInputNode ifOff) {
+    public IfNode(InputManagerInputNode onOff, InputManagerInputNode ifOn, InputManagerInputNode ifOff) {
         this.node = onOff;
         this.nodeIfOn = ifOn;
         this.nodeIfOff = ifOff;
