@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.ButtonHandle;
@@ -31,6 +32,9 @@ public class ButtonNode extends InputManagerInputNode {
 
     @Override
     public InputManagerNodeResult getResult() {
+        if(keyHandle == null) {
+            FeatureManager.logger.log(key);
+        }
         this.result.setFloat(keyHandle.get());
         return result;
     }

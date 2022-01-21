@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
 public class ToggleNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
-    private InputManager boss;
 
     private boolean wasPressed;
     private boolean toggledOn;
@@ -17,7 +16,7 @@ public class ToggleNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
+        node.init(boss);
     }
 
     @Override

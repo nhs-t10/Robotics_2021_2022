@@ -9,8 +9,6 @@ public class IfNode extends InputManagerInputNode {
     private final InputManagerInputNode nodeIfOff;
     private final InputManagerInputNode nodeIfOn;
 
-    private InputManager boss;
-
     private boolean wasPressed;
     private boolean toggledOn;
     private boolean on;
@@ -23,7 +21,9 @@ public class IfNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
+        node.init(boss);
+        nodeIfOff.init(boss);
+        nodeIfOn.init(boss);
     }
 
     @Override
