@@ -1,13 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoTable;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.absNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.acosNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.acoshNativeFunction;
@@ -43,7 +38,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunct
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.tanNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.tanhNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.truncNativeFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 

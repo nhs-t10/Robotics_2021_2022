@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.jetbrains.annotations.NotNull;
 
 public class PassStatement extends Statement {

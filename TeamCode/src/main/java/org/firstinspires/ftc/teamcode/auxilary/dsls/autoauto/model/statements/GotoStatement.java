@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;

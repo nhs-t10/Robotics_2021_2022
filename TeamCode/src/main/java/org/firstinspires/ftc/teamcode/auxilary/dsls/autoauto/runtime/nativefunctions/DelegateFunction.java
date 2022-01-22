@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunc
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTable;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoTable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoOpmode;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;

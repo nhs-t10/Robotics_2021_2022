@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
 
 public interface AutoautoCallableValue {

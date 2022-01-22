@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.jetbrains.annotations.NotNull;

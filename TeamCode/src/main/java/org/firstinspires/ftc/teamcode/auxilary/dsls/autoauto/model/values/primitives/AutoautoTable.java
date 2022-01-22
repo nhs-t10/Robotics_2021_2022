@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
     private HashMap<String, AutoautoPrimitive> elems;
@@ -30,8 +31,8 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         for(int i = 0; i < e.length; i++) {
             if(e[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
 
-            if(e[i] instanceof ResolvedTitledArg) {
-                elems.put(((ResolvedTitledArg)e[i]).title.getString(), ((ResolvedTitledArg)e[i]).value);
+            if(e[i] instanceof AutoautoRelation) {
+                elems.put(((AutoautoRelation)e[i]).title.getString(), ((AutoautoRelation)e[i]).value);
             } else {
                 elems.put(i + "", e[i]);
             }

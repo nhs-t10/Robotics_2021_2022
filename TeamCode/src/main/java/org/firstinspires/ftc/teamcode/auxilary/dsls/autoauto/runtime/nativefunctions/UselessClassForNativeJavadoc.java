@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-
-import java.lang.annotation.Annotation;
 
 /**
  * I don't know how to make Autoauto generate its own Javadocs :'( so this is a stopgap.

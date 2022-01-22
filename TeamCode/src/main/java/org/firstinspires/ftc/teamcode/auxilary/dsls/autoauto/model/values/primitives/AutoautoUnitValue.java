@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import androidx.annotation.NonNull;
 

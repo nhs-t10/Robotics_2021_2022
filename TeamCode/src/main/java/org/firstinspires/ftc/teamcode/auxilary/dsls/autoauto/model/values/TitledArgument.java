@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoRelation;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
@@ -16,18 +18,16 @@ public class TitledArgument extends AutoautoValue {
     }
 
     public TitledArgument(AutoautoValue title, AutoautoValue value) {
-        this.title = title;
+        if(title instanceof VariableReference) this.title = new AutoautoString(((VariableReference) title).name);
+        else this.title = title;
+
         this.value = value;
     }
 
     @NotNull
     @Override
-    public ResolvedTitledArg getResolvedValue() {
-        if(title instanceof VariableReference) {
-            return new ResolvedTitledArg(new AutoautoString(((VariableReference)title).name), value.getResolvedValue());
-        } else {
-            return new ResolvedTitledArg(title.getResolvedValue(), value.getResolvedValue());
-        }
+    public AutoautoRelation getResolvedValue() {
+        return new AutoautoRelation(title.getResolvedValue(), value.getResolvedValue());
     }
 
     @Override

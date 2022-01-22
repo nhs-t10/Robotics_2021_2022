@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoUndefined extends AutoautoPrimitive {

@@ -1,15 +1,15 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoTable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoRelation;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class AutoautoTableLiteral extends AutoautoValue {
     private AutoautoValue[] elems;
@@ -35,9 +35,9 @@ public class AutoautoTableLiteral extends AutoautoValue {
             AutoautoPrimitive key = new AutoautoNumericValue(i);
             AutoautoPrimitive value = elems[i].getResolvedValue();
 
-            if(value instanceof ResolvedTitledArg) {
-                key = ((ResolvedTitledArg)value).title;
-                value = ((ResolvedTitledArg)value).value;
+            if(value instanceof AutoautoRelation) {
+                key = ((AutoautoRelation)value).title;
+                value = ((AutoautoRelation)value).value;
             }
 
             if(value == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
