@@ -66,17 +66,17 @@ public class AutoautoUndefined extends AutoautoPrimitive {
 
     //make sure people don't try to set properties on undefined
     public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
-        throw new AutoautoArgumentException("Could not get property " + key.getString() + " of undefined");
+        return this;
     }
     public boolean hasProperty(AutoautoPrimitive key) {
-        throw new AutoautoArgumentException("Could not get property " + key.getString() + " of undefined");
+        return false;
     }
 
     public void setProperty(AutoautoPrimitive key, AutoautoPrimitive value) {
-        throw new AutoautoArgumentException("Could not set property " + key.getString() + " of undefined");
+
     }
 
     public void deleteProperty(AutoautoPrimitive key) {
-        throw new AutoautoArgumentException("Could not set property " + key.getString() + " of undefined");
+
     }
 }

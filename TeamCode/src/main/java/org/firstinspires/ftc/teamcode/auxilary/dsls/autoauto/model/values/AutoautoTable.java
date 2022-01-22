@@ -57,12 +57,23 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     public AutoautoTable clone() {
         HashMap<String, AutoautoPrimitive> clonedElems = new HashMap<>();
         for(String key : elems.keySet()) {
-            clonedElems.put(key, this.elems.get(key));
+            clonedElems.put(key, this.elems.get(key).clone());
         }
 
         AutoautoTable c = new AutoautoTable(clonedElems);
         c.setLocation(location);
         return c;
+    }
+
+    public AutoautoTable combineWith(AutoautoTable other) {
+        HashMap<String, AutoautoPrimitive> combinedElems = new HashMap<>();
+        for(String key : this.elems.keySet()) {
+            combinedElems.put(key, this.elems.get(key));
+        }
+        for(String key : other.elems.keySet()) {
+            combinedElems.put(key, other.elems.get(key));
+        }
+        return new AutoautoTable(combinedElems);
     }
 
     public String toString() {
