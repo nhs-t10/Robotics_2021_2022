@@ -17,7 +17,7 @@ public class TelemetryServerDemo {
     public void test() {
         //don't run this when it's under all tests
         try {
-            if (System.getenv("TEST_TYPE").equalsIgnoreCase("ALL")) {
+            if (!System.getenv("TEST_TYPE").equalsIgnoreCase("DEMO")) {
                 FeatureManager.logger.log("Not running demo; switch to individual configuration for that.");
                 return;
             }

@@ -15,6 +15,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Temperature;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
+    private final DummyImuUpdateyThread updateThread;
+    protected DummyDcMotor frAnalysisMotor, flAnalysisMotor, brAnalysisMotor, blAnalysisMotor;
+
+    public DummyImu() {
+        this.updateThread = new DummyImuUpdateyThread(this);
+        updateThread.start();
+    }
     @Override
     public boolean initialize(@NonNull Parameters parameters) {
         return false;
@@ -33,12 +40,18 @@ public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
 
     @Override
     public Orientation getAngularOrientation() {
-        return new Orientation();
+        return new Orientation(AxesReference.INTRINSIC,
+                AxesOrder.XYZ,
+                org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES,
+                updateThread.orientation,
+                updateThread.orientation,
+                updateThread.orientation, System.nanoTime());
+
     }
 
     @Override
     public Orientation getAngularOrientation(AxesReference reference, AxesOrder order, org.firstinspires.ftc.robotcore.external.navigation.AngleUnit angleUnit) {
-        return new Orientation();
+        return new Orientation(reference, order, angleUnit, updateThread.orientation, updateThread.orientation, updateThread.orientation, System.nanoTime());
     }
 
     @Override
@@ -165,4 +178,9 @@ public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
     public void write(Register register, byte[] data) {
 
     }
+
+    public void setFl(DummyDcMotor m) { this.flAnalysisMotor = m; }
+    public void setFr(DummyDcMotor m) { this.frAnalysisMotor = m; }
+    public void setBl(DummyDcMotor m) { this.blAnalysisMotor = m; }
+    public void setBr(DummyDcMotor m) { this.brAnalysisMotor = m; }
 }
