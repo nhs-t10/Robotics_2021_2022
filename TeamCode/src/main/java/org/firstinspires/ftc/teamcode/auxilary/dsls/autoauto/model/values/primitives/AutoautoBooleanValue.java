@@ -31,8 +31,6 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
         else return true;
     }
 
-    public void loop() {}
-
     public boolean getBoolean() {
         return value;
     }

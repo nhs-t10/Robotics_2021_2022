@@ -17,13 +17,7 @@ public class AutoautoString extends AutoautoPrimitive {
     public AutoautoString(String value) {
         this.value = value;
     }
-    public void loop() {}
 
-    @NotNull
-    @Override
-    public AutoautoPrimitive getResolvedValue() {
-        return this;
-    }
     @NotNull
     public String toString() {
         return PaulMath.JSONify(value);

@@ -61,6 +61,11 @@ public class RotationUnit extends Unit {
         return null;
     }
 
+    @Override
+    public double convertToNaturalUnit(double u) {
+        return convertBetween(this, naturalRotationUnit, u);
+    }
+
     public static String singular(String abbr) {
         if(abbr == null) return null;
         else if(abbr.endsWith("s")) return abbr.substring(0, abbr.length() - 1);

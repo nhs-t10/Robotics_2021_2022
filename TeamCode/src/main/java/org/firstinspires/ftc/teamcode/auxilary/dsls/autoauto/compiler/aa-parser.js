@@ -184,11 +184,11 @@ module.exports = /*
         peg$c9 = function(f) { return { type: "ValueStatement", location: location(), call: f } },
         peg$c10 = function(name, args, b) { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; },
         peg$c11 = function(p) { return { type: "GotoStatement", location: location(), path: p } },
-        peg$c12 = function(t, s, e) { return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e } },
+        peg$c12 = function(t, s, e) { return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e || {type: "PassStatement", location: location()} } },
         peg$c13 = function(s) {
         return s;
         },
-        peg$c14 = function() { return { type: "PassStatement" } },
+        peg$c14 = function() { return { type: "PassStatement", location: location() } },
         peg$c15 = function(v, val) { return { type: "LetStatement", location: location(), variable: v, value: val } },
         peg$c16 = function() { return { type: "NextStatement", location: location() }   },
         peg$c17 = function(s) { return { type: "SkipStatement", location: location(), skip: s }   },

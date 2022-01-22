@@ -23,7 +23,6 @@ public class AutoautoNumericValue extends AutoautoPrimitive {
     public AutoautoNumericValue(double value) {
         this.value = (float)value;
     }
-    public void loop() {}
 
     public float getFloat() {
         return value;

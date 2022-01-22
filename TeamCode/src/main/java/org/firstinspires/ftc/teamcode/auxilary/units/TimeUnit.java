@@ -79,4 +79,9 @@ public class TimeUnit extends Unit {
     public static double convertBetween(TimeUnit unitFrom, TimeUnit unitTo, float fromAmount) {
         return convertBetween(unitFrom, unitTo, (double)fromAmount);
     }
+
+    @Override
+    public double convertToNaturalUnit(double u) {
+        return convertBetween(this, naturalTimeUnit, u);
+    }
 }

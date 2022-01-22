@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.table.TablePrototype;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.universal.UniversalPrototype;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
@@ -19,10 +21,11 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     private Location location;
 
     public AutoautoTable() {
-        this.elems = new HashMap<>();
+        this(new HashMap<>());
     }
 
     public AutoautoTable(HashMap<String, AutoautoPrimitive> elems) {
+        setPrototype(TablePrototype.getMap());
         this.elems = elems;
     }
 
@@ -39,8 +42,6 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         }
     }
 
-    @Override
-    public void loop() {}
 
     @NotNull
     @Override
@@ -137,10 +138,10 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         this.location = location;
     }
 
+    @Override
     public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
         String keyStr = key.getString();
         if(!elems.containsKey(keyStr)) {
-            if(keyStr.equals("length")) return new AutoautoNumericValue(arrayLength());
             return super.getProperty(key);
         }
 
@@ -148,10 +149,12 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         return elems.get(keyStr);
     }
 
+    @Override
     public boolean hasProperty(AutoautoPrimitive key) {
         return elems.containsKey(key.getString());
     }
 
+    @Override
     public final void setProperty(AutoautoPrimitive key, AutoautoPrimitive value) {
         String keyStr = key.getString();
         setProperty(keyStr, value);

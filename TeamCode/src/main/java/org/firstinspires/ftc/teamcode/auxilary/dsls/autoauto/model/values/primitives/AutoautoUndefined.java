@@ -42,12 +42,6 @@ public class AutoautoUndefined extends AutoautoPrimitive {
         return "undefined";
     }
 
-    @NotNull
-    @Override
-    public AutoautoPrimitive getResolvedValue() {
-        return this;
-    }
-
     @Override
     public String getJSONString() {
         return "null";

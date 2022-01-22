@@ -503,9 +503,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
         case "IfStatement":
             var conditional = process(ast.conditional);
             var statement = process(ast.statement);
-            var elseClause;
-            if(ast.elseClause) elseClause = process(ast.elseClause);
-            else elseClause = process({type: "PassStatement"});
+            var elseClause = process(ast.elseClause);
 
             addDepthMappedDefinition({
                 depth: depth,
@@ -595,7 +593,7 @@ function makeLocationSetter(nonce, statepathNonce, stateNumber, line, column) {
 
 function getStringNonce(str, depth, nonce) {
     //first of everything, if the str exists already, just return that nonce.
-    if(stringDefinitions[str]) return stringDefinitions[str];
+    if(objHasProp(stringDefinitions,str)) return stringDefinitions[str];
     
     if(nonce == null) nonce = genNonce();
     if(depth == null) depth = 0;
@@ -612,13 +610,18 @@ function getStringNonce(str, depth, nonce) {
 }
 
 function addDepthMappedDefinition(def) {
-    if(depthMappedDefinitions[def.self]) throw "Already defined!";
+    if(objHasProp(depthMappedDefinitions, def.self)) throw "Already defined!";
     def.depends.forEach(x=> {
-        if(!depthMappedDefinitions[x]) {
+        if(!objHasProp(depthMappedDefinitions, x)) {
             throw "No dependency " + x;
         }
     })
     depthMappedDefinitions[def.self] = def;
+}
+
+//If someone makes a string named `hasOwnProperty` or `toString` or something weird, we need to use this to safely scan the string registry.
+function objHasProp(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 function genNonce() {

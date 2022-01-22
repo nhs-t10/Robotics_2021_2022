@@ -73,13 +73,14 @@ gotoStatement =
  GOTO _ p:(IDENTIFIER/dynamicValue) { return { type: "GotoStatement", location: location(), path: p } }
 
 ifStatement =
- (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? { return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e } }
+ (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? {
+ return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e || {type: "PassStatement", location: location()} } }
 
 elseClause = _ (ELSE / OTHERWISE) _ s:statement {
 return s;
 }
 
-passStatement = _ PASS _ { return { type: "PassStatement" } }
+passStatement = _ PASS _ { return { type: "PassStatement", location: location() } }
 
 letStatement =
  LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }

@@ -15,6 +15,8 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     private String[] argNames;
     private AutoautoPrimitive[] defaultArgValues;
 
+    private AutoautoPrimitive executionContext = new AutoautoUndefined();
+
     public AutoautoFunction(State body) {
         this(body, new String[0]);
     }
@@ -63,6 +65,11 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     }
 
     @Override
+    public void setExecutionContext(AutoautoPrimitive v) {
+        this.executionContext = v;
+    }
+
+    @Override
     public String[] getArgNames() {
         return argNames;
     }
@@ -89,6 +96,8 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
 
         AutoautoTable arglist = new AutoautoTable(args);
         callScope.systemSet(AutoautoSystemVariableNames.FUNCTION_ARGUMENTS_NAME, arglist.clone());
+
+        callScope.systemSet(AutoautoSystemVariableNames.THIS, executionContext);
 
         callScope.systemSet(AutoautoSystemVariableNames.STATE_NUMBER, new AutoautoNumericValue(body.location.stateNumber));
         callScope.systemSet(AutoautoSystemVariableNames.STATEPATH_NAME, new AutoautoString(body.location.statepath));
