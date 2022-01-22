@@ -108,8 +108,6 @@ public class AfterStatement extends Statement {
                 float referPoint = stepStartTick;
                 float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
 
-                FeatureManager.logger.log("curpos " + (Math.abs(currentPosition)));
-
                 if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
                 break;
         }

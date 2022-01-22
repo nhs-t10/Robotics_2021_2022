@@ -54,6 +54,7 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.FunctionDefStatement.J;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.TitledArgument.V;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoFunctionLiteral.Q;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.PassStatement.Y;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTailedValue.Z;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
