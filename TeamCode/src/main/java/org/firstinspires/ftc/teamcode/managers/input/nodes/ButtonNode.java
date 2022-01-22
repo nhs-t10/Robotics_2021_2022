@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.ButtonHandle;
 
+import androidx.annotation.NonNull;
+
 public class ButtonNode extends InputManagerInputNode {
     private ButtonHandle keyHandle;
     private final String key;
@@ -30,6 +32,7 @@ public class ButtonNode extends InputManagerInputNode {
 
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         if(keyHandle == null) {

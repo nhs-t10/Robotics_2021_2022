@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class TimeNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
     private InputManager boss;
@@ -40,11 +42,13 @@ public class TimeNode extends InputManagerInputNode {
                 this.timeTurnedOn = 0;
             }
         }
+        result.setBool(turnedOn);
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
-        return new InputManagerNodeResult(turnedOn);
+        return result;
     }
 
     @Override

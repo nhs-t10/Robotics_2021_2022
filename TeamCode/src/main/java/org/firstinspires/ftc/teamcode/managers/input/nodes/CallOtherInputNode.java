@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class CallOtherInputNode extends InputManagerInputNode {
     private final String target;
     private InputManager boss;
@@ -21,6 +23,7 @@ public class CallOtherInputNode extends InputManagerInputNode {
 
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         InputManagerInputNode targetNode = boss.getInputNode(target);

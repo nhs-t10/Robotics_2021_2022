@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class MinusNode extends InputManagerInputNode {
     private final InputManagerInputNode input1;
     private final InputManagerInputNode input2;
@@ -33,6 +35,7 @@ public class MinusNode extends InputManagerInputNode {
         input2.update();
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         float[] input1Vals = input1.getResult().getFloatArray();

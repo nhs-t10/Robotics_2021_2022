@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class ToggleNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
 
@@ -29,6 +31,7 @@ public class ToggleNode extends InputManagerInputNode {
         wasPressed = isPressed;
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         result.setBool(toggledOn);
