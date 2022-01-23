@@ -15,6 +15,7 @@ public class UniversalPrototype {
     private static void initMap() {
         map = new HashMap<>();
         map.put("toString", new PrototypePropertyDescriptor(new ToStringFunction()));
+        map.put("toJSON", new PrototypePropertyDescriptor(new ToJSONFunction()));
     }
 
 }

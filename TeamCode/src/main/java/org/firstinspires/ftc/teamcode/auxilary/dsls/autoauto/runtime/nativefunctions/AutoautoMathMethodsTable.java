@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunc
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoTable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.PrototypePropertyDescriptor;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.absNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.acosNativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions.math.acoshNativeFunction;
@@ -43,56 +44,56 @@ import java.util.HashMap;
 
 public class AutoautoMathMethodsTable extends AutoautoTable {
     public AutoautoMathMethodsTable() {
-        super(makeMethodsMap());
+        setPrototype(makeMethodsMap());
     }
 
-    private static HashMap<String, AutoautoPrimitive> makeMethodsMap() {
-        HashMap<String, AutoautoPrimitive> methods = new HashMap<>();
+    private static HashMap<String, PrototypePropertyDescriptor> makeMethodsMap() {
+        HashMap<String, PrototypePropertyDescriptor> methods = new HashMap<>();
 
-        methods.put("E", new AutoautoNumericValue(Math.E));
-        methods.put("LN2", new AutoautoNumericValue(0.6931471805599453));
-        methods.put("LN10", new AutoautoNumericValue(2.302585092994046));
-        methods.put("LOG2E", new AutoautoNumericValue(1.4426950408889634));
-        methods.put("LOG10E", new AutoautoNumericValue(0.4342944819032518));
-        methods.put("PI", new AutoautoNumericValue(Math.PI));
-        methods.put("SQRT1_2", new AutoautoNumericValue(Math.sqrt(0.5)));
-        methods.put("SQRT2", new AutoautoNumericValue(Math.sqrt(2)));
+        methods.put("E", new PrototypePropertyDescriptor(new AutoautoNumericValue(Math.E)));
+        methods.put("LN2", new PrototypePropertyDescriptor(new AutoautoNumericValue(0.6931471805599453)));
+        methods.put("LN10", new PrototypePropertyDescriptor(new AutoautoNumericValue(2.302585092994046)));
+        methods.put("LOG2E", new PrototypePropertyDescriptor(new AutoautoNumericValue(1.4426950408889634)));
+        methods.put("LOG10E", new PrototypePropertyDescriptor(new AutoautoNumericValue(0.4342944819032518)));
+        methods.put("PI", new PrototypePropertyDescriptor(new AutoautoNumericValue(Math.PI)));
+        methods.put("SQRT1_2", new PrototypePropertyDescriptor(new AutoautoNumericValue(Math.sqrt(0.5))));
+        methods.put("SQRT2", new PrototypePropertyDescriptor(new AutoautoNumericValue(Math.sqrt(2))));
 
-        methods.put("abs", new absNativeFunction());
-        methods.put("acos", new acosNativeFunction());
-        methods.put("acosh", new acoshNativeFunction());
-        methods.put("asin", new asinNativeFunction());
-        methods.put("asinh", new asinhNativeFunction());
-        methods.put("atan", new atanNativeFunction());
-        methods.put("atanh", new atanhNativeFunction());
-        methods.put("atan2", new atan2NativeFunction());
-        methods.put("cbrt", new cbrtNativeFunction());
-        methods.put("ceil", new ceilNativeFunction());
-        methods.put("clz32", new clz32NativeFunction());
-        methods.put("cos", new cosNativeFunction());
-        methods.put("cosh", new coshNativeFunction());
-        methods.put("exp", new expNativeFunction());
-        methods.put("expm1", new expm1NativeFunction());
-        methods.put("floor", new floorNativeFunction());
-        methods.put("fround", new froundNativeFunction());
-        methods.put("hypot", new hypotNativeFunction());
-        methods.put("imul", new imulNativeFunction());
-        methods.put("log", new logNativeFunction());
-        methods.put("log1p", new log1pNativeFunction());
-        methods.put("log10", new log10NativeFunction());
-        methods.put("log2", new log2NativeFunction());
-        methods.put("max", new maxNativeFunction());
-        methods.put("min", new minNativeFunction());
-        methods.put("pow", new powNativeFunction());
-        methods.put("random", new randomNativeFunction());
-        methods.put("round", new roundNativeFunction());
-        methods.put("sign", new signNativeFunction());
-        methods.put("sin", new sinNativeFunction());
-        methods.put("sinh", new sinhNativeFunction());
-        methods.put("sqrt", new sqrtNativeFunction());
-        methods.put("tan", new tanNativeFunction());
-        methods.put("tanh", new tanhNativeFunction());
-        methods.put("trunc", new truncNativeFunction());
+        methods.put("abs", new PrototypePropertyDescriptor(new absNativeFunction()));
+        methods.put("acos", new PrototypePropertyDescriptor(new acosNativeFunction()));
+        methods.put("acosh", new PrototypePropertyDescriptor(new acoshNativeFunction()));
+        methods.put("asin", new PrototypePropertyDescriptor(new asinNativeFunction()));
+        methods.put("asinh", new PrototypePropertyDescriptor(new asinhNativeFunction()));
+        methods.put("atan", new PrototypePropertyDescriptor(new atanNativeFunction()));
+        methods.put("atanh", new PrototypePropertyDescriptor(new atanhNativeFunction()));
+        methods.put("atan2", new PrototypePropertyDescriptor(new atan2NativeFunction()));
+        methods.put("cbrt", new PrototypePropertyDescriptor(new cbrtNativeFunction()));
+        methods.put("ceil", new PrototypePropertyDescriptor(new ceilNativeFunction()));
+        methods.put("clz32", new PrototypePropertyDescriptor(new clz32NativeFunction()));
+        methods.put("cos", new PrototypePropertyDescriptor(new cosNativeFunction()));
+        methods.put("cosh", new PrototypePropertyDescriptor(new coshNativeFunction()));
+        methods.put("exp", new PrototypePropertyDescriptor(new expNativeFunction()));
+        methods.put("expm1", new PrototypePropertyDescriptor(new expm1NativeFunction()));
+        methods.put("floor", new PrototypePropertyDescriptor(new floorNativeFunction()));
+        methods.put("fround", new PrototypePropertyDescriptor(new froundNativeFunction()));
+        methods.put("hypot", new PrototypePropertyDescriptor(new hypotNativeFunction()));
+        methods.put("imul", new PrototypePropertyDescriptor(new imulNativeFunction()));
+        methods.put("log", new PrototypePropertyDescriptor(new logNativeFunction()));
+        methods.put("log1p", new PrototypePropertyDescriptor(new log1pNativeFunction()));
+        methods.put("log10", new PrototypePropertyDescriptor(new log10NativeFunction()));
+        methods.put("log2", new PrototypePropertyDescriptor(new log2NativeFunction()));
+        methods.put("max", new PrototypePropertyDescriptor(new maxNativeFunction()));
+        methods.put("min", new PrototypePropertyDescriptor(new minNativeFunction()));
+        methods.put("pow", new PrototypePropertyDescriptor(new powNativeFunction()));
+        methods.put("random", new PrototypePropertyDescriptor(new randomNativeFunction()));
+        methods.put("round", new PrototypePropertyDescriptor(new roundNativeFunction()));
+        methods.put("sign", new PrototypePropertyDescriptor(new signNativeFunction()));
+        methods.put("sin", new PrototypePropertyDescriptor(new sinNativeFunction()));
+        methods.put("sinh", new PrototypePropertyDescriptor(new sinhNativeFunction()));
+        methods.put("sqrt", new PrototypePropertyDescriptor(new sqrtNativeFunction()));
+        methods.put("tan", new PrototypePropertyDescriptor(new tanNativeFunction()));
+        methods.put("tanh", new PrototypePropertyDescriptor(new tanhNativeFunction()));
+        methods.put("trunc", new PrototypePropertyDescriptor(new truncNativeFunction()));
 
         return methods;
     }

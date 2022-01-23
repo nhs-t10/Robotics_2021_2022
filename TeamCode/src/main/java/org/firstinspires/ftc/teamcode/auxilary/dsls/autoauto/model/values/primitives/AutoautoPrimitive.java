@@ -58,13 +58,13 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
         PrototypePropertyDescriptor descriptor = prototype.get(keyStr);
 
         //if there's no entry in the prototype, just make a plain one
-        if(descriptor == null) prototype.put(keyStr, new PrototypePropertyDescriptor(value));
+        if(descriptor == null) prototype.put(keyStr, new PrototypePropertyDescriptor(value, true));
 
         //if one exists & it has a setter, invoke it
         else if(descriptor.setter != null) descriptor.setter.call(this, new AutoautoPrimitive[] {value});
 
         //if the descriptor doesn't have a setter, replace it with a new descriptor. This stops weird errors with getters.
-        else prototype.put(keyStr, new PrototypePropertyDescriptor(value));
+        else prototype.put(keyStr, new PrototypePropertyDescriptor(value, descriptor.ownProperty));
     }
 
     public void deleteProperty(AutoautoPrimitive key) {
@@ -76,6 +76,12 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
     public void setPrototype(HashMap<String, PrototypePropertyDescriptor> p) {
         for(String k : p.keySet()) {
             prototype.put(k, p.get(k));
+        }
+    }
+
+    public void setPrototype(AutoautoPrimitive p) {
+        for(String k : p.prototype.keySet()) {
+            prototype.put(k, p.prototype.get(k));
         }
     }
 }

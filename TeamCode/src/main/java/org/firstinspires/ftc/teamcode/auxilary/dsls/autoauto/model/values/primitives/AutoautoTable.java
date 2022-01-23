@@ -11,38 +11,36 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.Auto
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
-    public Map<String, AutoautoPrimitive> elems;
+    private Set<String> ownProperties;
 
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
-    //cached array length
-    private int aLength = -1;
-
     public AutoautoTable() {
-        this(new HashMap<>());
-    }
-
-    public AutoautoTable(HashMap<String, AutoautoPrimitive> elems) {
-        setPrototype(TablePrototype.getMap());
-        this.elems = elems;
+        this(new AutoautoPrimitive[0]);
     }
 
     public AutoautoTable(AutoautoPrimitive[] e) {
-        elems = new HashMap<>();
+        ownProperties = new HashSet<>();
         for(int i = 0; i < e.length; i++) {
-            if(e[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-
             if(e[i] instanceof AutoautoRelation) {
-                elems.put(((AutoautoRelation)e[i]).title.getString(), ((AutoautoRelation)e[i]).value);
+                String title = ((AutoautoRelation)e[i]).title.getString();
+                ownProperties.add(title);
+                setProperty(title, ((AutoautoRelation)e[i]).value);
             } else {
-                elems.put(i + "", e[i]);
+                ownProperties.add(i + "");
+                setProperty(i + "", e[i]);
             }
         }
+        setPrototype(TablePrototype.getMap());
     }
 
 
@@ -50,8 +48,8 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     @Override
     public String getString() {
         StringBuilder strElems = new StringBuilder();
-        for(Map.Entry<String, AutoautoPrimitive> entry : elems.entrySet()) {
-            strElems.append(entry.getKey()).append(" = ").append(entry.getValue().getString()).append(", ");
+        for(String key : ownProperties) {
+            strElems.append(key).append(" = ").append(getProperty(key)).append(", ");
         }
         String str = strElems.toString();
         //use substring() to trim off ending comma & space
@@ -60,31 +58,33 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
 
     @Override
     public AutoautoTable clone() {
-        HashMap<String, AutoautoPrimitive> clonedElems = new HashMap<>();
-        for(String key : elems.keySet()) {
-            clonedElems.put(key, this.elems.get(key).clone());
-        }
-
-        AutoautoTable c = new AutoautoTable(clonedElems);
+        AutoautoTable c = new AutoautoTable();
         c.setLocation(location);
+        c.setPrototype(this);
+        for(String key : ownProperties) c.setProperty(c, getProperty(key).clone());
         return c;
     }
 
     public AutoautoTable combineWith(AutoautoTable other) {
-        HashMap<String, AutoautoPrimitive> combinedElems = new HashMap<>();
-        for(String key : this.elems.keySet()) {
-            combinedElems.put(key, this.elems.get(key));
-        }
-        for(String key : other.elems.keySet()) {
-            combinedElems.put(key, other.elems.get(key));
-        }
-        return new AutoautoTable(combinedElems);
+        Set<String> combinedProperties = new HashSet<>();
+
+        combinedProperties.addAll(ownProperties);
+        combinedProperties.addAll(other.ownProperties);
+
+        AutoautoTable newTable = new AutoautoTable();
+
+        newTable.setPrototype(this);
+        newTable.setPrototype(other);
+
+        newTable.ownProperties.addAll(combinedProperties);
+
+        return newTable;
     }
 
     public String toString() {
         StringBuilder strElems = new StringBuilder();
-        for(String key : elems.keySet()) {
-            strElems.append(key + " = " + this.elems.get(key).toString()).append(", ");
+        for(String key : ownProperties) {
+            strElems.append(key + " = " + getProperty(key).toString()).append(", ");
         }
         String str = strElems.toString();
         //use substring() to trim off ending comma & space
@@ -93,11 +93,11 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
 
     public String getJSONString() {
         StringBuilder strElems = new StringBuilder();
-        for(String key : elems.keySet()) {
+        for(String key : ownProperties) {
             strElems
                 .append(PaulMath.JSONify(key))
                 .append(":")
-                .append(this.elems.get(key) == null ? "\"null\"" : this.elems.get(key).getJSONString())
+                .append(getProperty(key).getJSONString())
                 .append(",");
         }
         String str = strElems.toString();
@@ -113,25 +113,13 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     @Override
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
-        for(String key : elems.keySet()) {
-            this.elems.get(key).setScope(scope);
+        for(String key : ownProperties) {
+            getProperty(key).setScope(scope);
         }
     }
 
-
-    public int arrayLength() {
-        if(aLength != -1) return aLength;
-
-        int length = 0;
-        for(int i = 0; ; i++) {
-            if(elems.containsKey(i + "")) {
-                length++;
-            } else {
-                break;
-            }
-        }
-        aLength = length;
-        return length;
+    public String[] getEnumerableProperties() {
+        return ownProperties.toArray(new String[0]);
     }
 
     @Override
@@ -144,40 +132,25 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         this.location = location;
     }
 
-    @Override
-    public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
-        String keyStr = key.getString();
-        if(!elems.containsKey(keyStr)) {
-            return super.getProperty(key);
-        }
-
-
-        return elems.get(keyStr);
+    public AutoautoPrimitive getProperty(String s) {
+        return super.getProperty(new AutoautoString(s));
     }
 
     @Override
     public boolean hasProperty(AutoautoPrimitive key) {
-        return elems.containsKey(key.getString());
+        return ownProperties.contains(key.getString());
     }
 
     @Override
     public final void setProperty(AutoautoPrimitive key, AutoautoPrimitive value) {
-        String keyStr = key.getString();
-        setProperty(keyStr, value);
+        ownProperties.add(key.getString());
+        super.setProperty(key, value);
     }
-    private void setProperty(String key, AutoautoPrimitive value) {
-        elems.put(key, value);
-        aLength = -1;
+    public void setProperty(String key, AutoautoPrimitive value) {
+        setProperty(new AutoautoString(key), value);
     }
-
-    public final void deleteProperty(AutoautoPrimitive key) {
-        String keyStr = key.getString();
-        elems.remove(keyStr);
-        aLength = -1;
-    }
-
-    public boolean isArray() {
-        return elems.size() == 0 || arrayLength() > 0;
+    public void setPropertyWithoutOwning(String key, AutoautoPrimitive value) {
+        super.setProperty(new AutoautoString(key), value);
     }
 
     public static AutoautoTable fromJSONObject(String str) {
@@ -214,9 +187,9 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     }
 
     public boolean isEmpty() {
-        return elems.isEmpty();
+        return ownProperties.isEmpty();
     }
     public int size() {
-        return elems.size();
+        return ownProperties.size();
     }
 }

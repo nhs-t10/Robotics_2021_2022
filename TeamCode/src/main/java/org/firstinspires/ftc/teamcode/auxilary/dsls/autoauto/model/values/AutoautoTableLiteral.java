@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AutoautoTableLiteral extends AutoautoValue {
@@ -28,23 +29,11 @@ public class AutoautoTableLiteral extends AutoautoValue {
     @NotNull
     @Override
     public AutoautoTable getResolvedValue() {
-        HashMap<String, AutoautoPrimitive> resolved = new HashMap<>();
-        for(int i = 0; i < elems.length; i++) {
-            if(elems[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-
-            AutoautoPrimitive key = new AutoautoNumericValue(i);
-            AutoautoPrimitive value = elems[i].getResolvedValue();
-
-            if(value instanceof AutoautoRelation) {
-                key = ((AutoautoRelation)value).title;
-                value = ((AutoautoRelation)value).value;
-            }
-
-            if(value == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-
-            resolved.put(key.getString(), value);
+        ArrayList<AutoautoPrimitive> resolved = new ArrayList<>();
+        for (AutoautoValue elem : elems) {
+            resolved.add(elem.getResolvedValue());
         }
-        return new AutoautoTable(resolved);
+        return new AutoautoTable(resolved.toArray(new AutoautoPrimitive[0]));
     }
 
     @Override

@@ -9,14 +9,28 @@ public class PrototypePropertyDescriptor {
 
     public final AutoautoPrimitive value;
 
+    public final boolean ownProperty;
+
+    public PrototypePropertyDescriptor(AutoautoPrimitive value, boolean ownProperty) {
+        getter = null;
+        setter = null;
+        this.value = value;
+
+        this.ownProperty = ownProperty;
+    }
+
     public PrototypePropertyDescriptor(AutoautoPrimitive value) {
         getter = null;
         setter = null;
         this.value = value;
+
+        this.ownProperty = false;
     }
     public PrototypePropertyDescriptor(AutoautoCallableValue getter, AutoautoCallableValue setter) {
         this.getter = getter;
         this.setter = setter;
         value = null;
+
+        this.ownProperty = false;
     }
 }

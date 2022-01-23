@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.table;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoBooleanValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.PrototypePropertyDescriptor;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.universal.NoopFunction;
 
@@ -18,12 +19,11 @@ public class TablePrototype {
     private static void initMap() {
         map = new HashMap<>();
         //length has no setter
-        map.put("length", new PrototypePropertyDescriptor(new LengthGetter(),null));
+        map.put("length", new PrototypePropertyDescriptor(new AutoautoNumericValue(0)));
 
         map.put("push", new PrototypePropertyDescriptor(new PushFunction()));
 
         map.put("isTable", new PrototypePropertyDescriptor(new AutoautoBooleanValue(true)));
-        map.put("isArray", new PrototypePropertyDescriptor(new IsArrayGetter(), null));
 
     }
 }
