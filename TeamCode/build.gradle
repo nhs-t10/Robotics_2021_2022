@@ -12,6 +12,7 @@
 // Custom definitions may go here
 plugins {
     id "com.github.node-gradle.node" version "3.0.1"
+    id "org.sonarqube" version "3.3"
 }
 
 // Include common definitions from above.
@@ -34,7 +35,13 @@ task recordBuildHistory(type: NodeTask) {
     script = file("./src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js")
 }
 
-
+sonarqube {
+    properties {
+        property "sonar.projectKey", "nhs-t10_Robotics_2021_2022"
+        property "sonar.organization", "nhs-t10"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
 
 android {
 
