@@ -65,6 +65,12 @@ public class FunctionCall extends AutoautoValue {
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;
 
+        AutoautoPrimitive context = new AutoautoUndefined();
+        //if this function is being called *on* an object (e.g. `foo.bar()`), then that object will be the context!
+        if(functionName instanceof AutoautoTailedValue) {
+            context = ((AutoautoTailedValue)functionName).head.getResolvedValue();
+        }
+
         //set scope! this makes nested functions work
         val.setScope(scope);
 
@@ -97,7 +103,7 @@ public class FunctionCall extends AutoautoValue {
             }
         }
 
-        this.returnValue = fn.call(argsResolved);
+        this.returnValue = fn.call(context, argsResolved);
     }
 
     @NotNull

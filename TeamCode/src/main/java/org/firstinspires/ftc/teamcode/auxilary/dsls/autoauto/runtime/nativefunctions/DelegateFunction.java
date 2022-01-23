@@ -29,7 +29,7 @@ public class DelegateFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         if(args.length == 0) throw new AutoautoArgumentException("You must give at least 1 argument to delegate()! "  + formatStack());
 
         String rawAddress = args[0].getString();

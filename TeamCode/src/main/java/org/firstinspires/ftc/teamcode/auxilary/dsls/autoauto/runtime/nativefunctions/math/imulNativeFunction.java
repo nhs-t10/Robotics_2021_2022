@@ -12,7 +12,7 @@ public class imulNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         int product = 1;
         for(AutoautoPrimitive p : args) {
             if(p instanceof AutoautoNumericValue) {

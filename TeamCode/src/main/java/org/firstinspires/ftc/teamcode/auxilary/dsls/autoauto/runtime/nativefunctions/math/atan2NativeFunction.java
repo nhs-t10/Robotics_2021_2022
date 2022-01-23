@@ -13,7 +13,7 @@ public class atan2NativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         if(args.length < 2) return new AutoautoUndefined();
 
         if(args[0] instanceof AutoautoNumericValue && args[1] instanceof AutoautoNumericValue) {

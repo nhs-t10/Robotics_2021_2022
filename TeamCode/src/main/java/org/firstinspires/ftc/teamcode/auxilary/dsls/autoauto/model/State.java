@@ -72,7 +72,7 @@ public class State implements AutoautoProgramElement {
         if(scope.isTopLevel()) {
             AutoautoCallableValue stopDriveFunction = ((AutoautoCallableValue)scope.get("stopDrive"));
             if(stopDriveFunction == null) throw new AutoautoNameException("Missing essential function `stopDrive`");
-            stopDriveFunction.call(new AutoautoPrimitive[0]);
+            stopDriveFunction.call(new AutoautoUndefined(), new AutoautoPrimitive[0]);
         }
     }
 

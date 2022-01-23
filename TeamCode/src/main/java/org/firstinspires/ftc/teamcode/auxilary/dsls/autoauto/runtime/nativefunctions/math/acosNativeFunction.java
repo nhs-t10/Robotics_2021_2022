@@ -13,7 +13,7 @@ public class acosNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         if(args.length < 1) return new AutoautoUndefined();
         if(args[0] instanceof AutoautoNumericValue) {
             return new AutoautoNumericValue(Math.acos(((AutoautoNumericValue)args[0]).getFloat()));

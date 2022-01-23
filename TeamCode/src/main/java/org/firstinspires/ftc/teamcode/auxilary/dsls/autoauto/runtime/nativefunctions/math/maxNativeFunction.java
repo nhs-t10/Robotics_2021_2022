@@ -12,7 +12,7 @@ public class maxNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         float max = Float.MIN_VALUE;
         for(AutoautoPrimitive p : args) {
             if(p instanceof AutoautoNumericValue) {

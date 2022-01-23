@@ -13,7 +13,7 @@ public class absNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         if(args.length < 1) return new AutoautoNumericValue(0);
         if(args[0] instanceof AutoautoNumericValue) {
             return new AutoautoNumericValue(Math.abs(((AutoautoNumericValue)args[0]).getFloat()));

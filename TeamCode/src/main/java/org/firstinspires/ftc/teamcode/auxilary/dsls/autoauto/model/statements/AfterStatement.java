@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
@@ -91,7 +92,7 @@ public class AfterStatement extends Statement {
             case DISTANCE:
             case ROTATION:
                 getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
-                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
                 break;
         }
     }
@@ -105,7 +106,7 @@ public class AfterStatement extends Statement {
             case ROTATION:
                 double targetDifference = wait.baseAmount;
                 float referPoint = stepStartTick;
-                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
 
                 if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
                 break;

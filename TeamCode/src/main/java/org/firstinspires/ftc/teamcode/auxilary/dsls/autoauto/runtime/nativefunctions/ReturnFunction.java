@@ -19,7 +19,7 @@ public class ReturnFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) {
         AutoautoPrimitive returnedVal = args.length == 0 ? new AutoautoUndefined() : args[0];
 
         getScope().systemSet(AutoautoSystemVariableNames.RETURNED_VALUE, returnedVal);

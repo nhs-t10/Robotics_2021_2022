@@ -23,7 +23,7 @@ public class TypeofFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) {
         if(args.length == 0 || args[0] == null) return new AutoautoUndefined();
 
         AutoautoPrimitive p = args[0];

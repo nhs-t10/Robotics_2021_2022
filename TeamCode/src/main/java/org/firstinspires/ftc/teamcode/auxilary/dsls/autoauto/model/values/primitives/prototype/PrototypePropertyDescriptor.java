@@ -4,16 +4,19 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 
 public class PrototypePropertyDescriptor {
-    public AutoautoCallableValue getter;
-    public AutoautoCallableValue setter;
+    public final AutoautoCallableValue getter;
+    public final AutoautoCallableValue setter;
 
-    public AutoautoPrimitive value;
+    public final AutoautoPrimitive value;
 
     public PrototypePropertyDescriptor(AutoautoPrimitive value) {
+        getter = null;
+        setter = null;
         this.value = value;
     }
     public PrototypePropertyDescriptor(AutoautoCallableValue getter, AutoautoCallableValue setter) {
         this.getter = getter;
         this.setter = setter;
+        value = null;
     }
 }

@@ -11,12 +11,12 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.Mana
 public class LengthGetter extends NativeFunction {
     @Override
     public String[] getArgNames() {
-        return new String[] {"this"};
+        return new String[0];
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
-        if(args[0] instanceof AutoautoTable) return new AutoautoNumericValue(((AutoautoTable) args[0]).arrayLength());
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
+        if(thisArg instanceof AutoautoTable) return new AutoautoNumericValue(((AutoautoTable) thisArg).arrayLength());
         return new AutoautoUndefined();
     }
 }

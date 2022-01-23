@@ -13,7 +13,7 @@ public class ProvideFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         AutoautoPrimitive export = null;
         if(args.length > 0) export = args[0];
 

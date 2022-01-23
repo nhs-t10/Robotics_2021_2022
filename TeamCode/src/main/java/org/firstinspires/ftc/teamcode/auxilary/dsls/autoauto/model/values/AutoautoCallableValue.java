@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primit
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
 
 public interface AutoautoCallableValue {
-    void setExecutionContext(AutoautoPrimitive v);
     String[] getArgNames();
-    AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException;
+    AutoautoPrimitive call(AutoautoPrimitive thisValue, AutoautoPrimitive[] args) throws ManagerSetupException;
 }

@@ -13,7 +13,7 @@ public class ceilNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         if(args.length > 0 && args[0] instanceof AutoautoNumericValue) {
             return new AutoautoNumericValue(Math.ceil(((AutoautoNumericValue)args[0]).getFloat()));
         }

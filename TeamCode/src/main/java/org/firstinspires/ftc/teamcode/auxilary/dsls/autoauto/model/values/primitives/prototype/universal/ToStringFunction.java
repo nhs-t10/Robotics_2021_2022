@@ -7,32 +7,14 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primit
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
 
-public class ToStringFunctionGetter extends NativeFunction {
+public class ToStringFunction extends NativeFunction {
     @Override
     public String[] getArgNames() {
-        return new String[] {"this"};
+        return new String[] {};
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
-        return new ToStringFunction(args[0]);
-    }
-    static class ToStringFunction extends NativeFunction {
-
-        private final AutoautoPrimitive thisArg;
-
-        public ToStringFunction(AutoautoPrimitive arg) {
-            this.thisArg = arg;
-        }
-
-        @Override
-        public String[] getArgNames() {
-            return new String[0];
-        }
-
-        @Override
-        public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
-            return new AutoautoString(thisArg.getString());
-        }
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
+        return new AutoautoString(thisArg.getString());
     }
 }

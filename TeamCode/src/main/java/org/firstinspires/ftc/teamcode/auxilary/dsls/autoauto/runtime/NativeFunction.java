@@ -4,7 +4,6 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class NativeFunction extends AutoautoPrimitive implements AutoautoCallableValue {
@@ -12,7 +11,6 @@ public abstract class NativeFunction extends AutoautoPrimitive implements Autoau
 
     private AutoautoRuntimeVariableScope scope;
     private Location location;
-    private AutoautoPrimitive executionContext = new AutoautoUndefined();
 
     public void setName(String name) {
         this.name = name;
@@ -52,10 +50,5 @@ public abstract class NativeFunction extends AutoautoPrimitive implements Autoau
     @Override
     public NativeFunction clone() {
         return this;
-    }
-
-    @Override
-    public void setExecutionContext(AutoautoPrimitive v) {
-        this.executionContext = v;
     }
 }

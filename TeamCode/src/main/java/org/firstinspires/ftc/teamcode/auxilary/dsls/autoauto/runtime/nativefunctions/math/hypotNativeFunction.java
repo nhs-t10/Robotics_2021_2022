@@ -12,7 +12,7 @@ public class hypotNativeFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) throws ManagerSetupException {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) throws ManagerSetupException {
         float sum = 0;
         for(AutoautoPrimitive p : args) {
             if(p instanceof AutoautoNumericValue) {

@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoTailedValue extends AutoautoValue{
-    private final AutoautoValue head;
-    private final AutoautoValue tail;
+    public final AutoautoValue head;
+    public final AutoautoValue tail;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
