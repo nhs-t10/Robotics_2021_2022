@@ -45,8 +45,7 @@ public class CVManager extends FeatureManager
     OpenCvWebcam webcam;
     PipelineThatExposesSomeAnalysis pipeline;
 
-    public CVManager (HardwareMap hardwareMap)
-    {
+    public CVManager (HardwareMap hardwareMap) {
         //only initialize the webcam if we're NOT unit-testing.
         //Trying to test cv on a laptop doesn't work :'(
         if(hardwareMap.appContext != null) {
