@@ -8,6 +8,12 @@ public abstract class Unit {
     public String[] abbreviations;
     public double coefficient;
 
+    public static Unit UNKNOWN = new Unit("?", new String[]{"?"}, Double.NaN) {
+        public double convertToNaturalUnit(double u) { return Double.NaN; }
+        public Unit getNaturalUnit() { return this; }
+        public String getCommonAbbrev() { return "?"; }
+    };
+
     protected Unit(String name, String[] abbreviations, double coefficient) {
         this.name = name;
         this.abbreviations = abbreviations;
@@ -39,4 +45,8 @@ public abstract class Unit {
     }
 
     public abstract double convertToNaturalUnit(double u);
+
+    public abstract Unit getNaturalUnit();
+
+    public abstract String getCommonAbbrev();
 }

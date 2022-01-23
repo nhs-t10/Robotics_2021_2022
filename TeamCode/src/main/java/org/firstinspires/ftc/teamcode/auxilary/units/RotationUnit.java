@@ -66,6 +66,17 @@ public class RotationUnit extends Unit {
         return convertBetween(this, naturalRotationUnit, u);
     }
 
+    @Override
+    public String getCommonAbbrev() {
+        if(abbreviations.length > 0) return abbreviations[0];
+        else return name;
+    }
+
+    @Override
+    public Unit getNaturalUnit() {
+        return naturalRotationUnit;
+    }
+
     public static String singular(String abbr) {
         if(abbr == null) return null;
         else if(abbr.endsWith("s")) return abbr.substring(0, abbr.length() - 1);

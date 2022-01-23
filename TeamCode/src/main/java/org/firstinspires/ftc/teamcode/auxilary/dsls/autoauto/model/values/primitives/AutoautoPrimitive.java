@@ -40,7 +40,7 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
         if(descriptor == null) return undefined;
 
         //if there's a getter, invoke it with this value as an argument & return that.
-        if(descriptor.getter != null) return descriptor.getter.call(this, new AutoautoPrimitive[]{this});
+        if(descriptor.getter != null) return descriptor.getter.call(this, new AutoautoPrimitive[0]);
 
         //if there's no getter, get the value directly.
         //return undefined instead of a null.
@@ -61,7 +61,7 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
         if(descriptor == null) prototype.put(keyStr, new PrototypePropertyDescriptor(value));
 
         //if one exists & it has a setter, invoke it
-        else if(descriptor.setter != null) descriptor.setter.call(this, new AutoautoPrimitive[] {this, value});
+        else if(descriptor.setter != null) descriptor.setter.call(this, new AutoautoPrimitive[] {value});
 
         //if the descriptor doesn't have a setter, replace it with a new descriptor. This stops weird errors with getters.
         else prototype.put(keyStr, new PrototypePropertyDescriptor(value));

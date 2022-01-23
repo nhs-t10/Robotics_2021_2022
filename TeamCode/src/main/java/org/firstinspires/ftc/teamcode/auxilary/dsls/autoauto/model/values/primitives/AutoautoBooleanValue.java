@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.bool.BooleanPrototype;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,7 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
     }
 
     public AutoautoBooleanValue(boolean value) {
+        setPrototype(BooleanPrototype.getMap());
         this.value = value;
     }
 

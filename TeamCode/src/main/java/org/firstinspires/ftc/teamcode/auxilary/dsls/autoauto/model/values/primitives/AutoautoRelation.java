@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.relation.RelationPrototype;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,7 @@ public class AutoautoRelation extends AutoautoPrimitive {
     private Location location;
 
     public AutoautoRelation(AutoautoPrimitive title, AutoautoPrimitive value) {
+        setPrototype(RelationPrototype.getMap());
         this.title = title;
         this.value = value;
     }

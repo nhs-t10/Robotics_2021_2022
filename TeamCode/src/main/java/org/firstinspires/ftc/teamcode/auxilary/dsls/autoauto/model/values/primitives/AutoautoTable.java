@@ -15,10 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
-    private HashMap<String, AutoautoPrimitive> elems;
+    public Map<String, AutoautoPrimitive> elems;
 
     private AutoautoRuntimeVariableScope scope;
     private Location location;
+
+    //cached array length
+    private int aLength = -1;
 
     public AutoautoTable() {
         this(new HashMap<>());
@@ -117,6 +120,8 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
 
 
     public int arrayLength() {
+        if(aLength != -1) return aLength;
+
         int length = 0;
         for(int i = 0; ; i++) {
             if(elems.containsKey(i + "")) {
@@ -125,6 +130,7 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
                 break;
             }
         }
+        aLength = length;
         return length;
     }
 
@@ -161,11 +167,17 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
     }
     private void setProperty(String key, AutoautoPrimitive value) {
         elems.put(key, value);
+        aLength = -1;
     }
 
     public final void deleteProperty(AutoautoPrimitive key) {
         String keyStr = key.getString();
         elems.remove(keyStr);
+        aLength = -1;
+    }
+
+    public boolean isArray() {
+        return elems.size() == 0 || arrayLength() > 0;
     }
 
     public static AutoautoTable fromJSONObject(String str) {

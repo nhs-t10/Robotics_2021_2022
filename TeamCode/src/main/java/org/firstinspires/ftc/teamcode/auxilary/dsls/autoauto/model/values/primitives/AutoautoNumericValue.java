@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.number.NumericPrototype;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
 import org.jetbrains.annotations.NotNull;
 
-public class AutoautoNumericValue extends AutoautoPrimitive {
+public class AutoautoNumericValue extends AutoautoPrimitive implements AutoautoCallableValue {
     public float value;
 
     private Location location;
@@ -18,10 +21,11 @@ public class AutoautoNumericValue extends AutoautoPrimitive {
     }
 
     public AutoautoNumericValue(float value) {
+        setPrototype(NumericPrototype.getMap());
         this.value = value;
     }
     public AutoautoNumericValue(double value) {
-        this.value = (float)value;
+        this((float)value);
     }
 
     public float getFloat() {
@@ -70,4 +74,14 @@ public class AutoautoNumericValue extends AutoautoPrimitive {
     public String getJSONString() {
         return value + "";
     }
+
+
+    /*
+    * Numbers are callable ONLY so both Java-esque <code>str.length()</code> and JS-esque <code>str.length</code> work. They just return themself.
+    */
+
+    @Override
+    public String[] getArgNames() { return new String[0];}
+    @Override
+    public AutoautoPrimitive call(AutoautoPrimitive thisValue, AutoautoPrimitive[] args) { return this; }
 }

@@ -42,7 +42,7 @@ public class DiggityDriveTest {
         }
 
         public void inputTests(OpMode opmode) throws InterruptedException {
-            sleep(10_000);
+            sleep(60_000);
             seemsGood();
         }
 

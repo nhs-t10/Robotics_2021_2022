@@ -84,4 +84,15 @@ public class TimeUnit extends Unit {
     public double convertToNaturalUnit(double u) {
         return convertBetween(this, naturalTimeUnit, u);
     }
+
+    @Override
+    public String getCommonAbbrev() {
+        if(abbreviations.length > 0) return abbreviations[0];
+        else return name;
+    }
+
+    @Override
+    public Unit getNaturalUnit() {
+        return naturalTimeUnit;
+    }
 }

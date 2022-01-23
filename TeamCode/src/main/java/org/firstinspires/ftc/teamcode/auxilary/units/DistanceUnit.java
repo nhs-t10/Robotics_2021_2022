@@ -89,4 +89,15 @@ public class DistanceUnit extends Unit {
     public double convertToNaturalUnit(double u) {
         return convertBetween(this, naturalDistanceUnit, u);
     }
+
+    @Override
+    public String getCommonAbbrev() {
+        if(abbreviations.length > 0) return abbreviations[0];
+        else return name;
+    }
+
+    @Override
+    public Unit getNaturalUnit() {
+        return naturalDistanceUnit;
+    }
 }

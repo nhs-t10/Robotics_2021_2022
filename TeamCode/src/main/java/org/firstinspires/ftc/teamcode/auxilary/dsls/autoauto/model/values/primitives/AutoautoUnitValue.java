@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primi
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.unitvalue.UnitValuePrototype;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
@@ -35,65 +36,61 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         this.location = location;
     }
 
+    public AutoautoUnitValue convertToNaturalUnit() {
+        if(unit == null) return this;
+        else return new AutoautoUnitValue(unit.convertToNaturalUnit(this.value), unit.getNaturalUnit().getCommonAbbrev());
+    }
+
     public static enum UnitType { TIME, DISTANCE, UNKNOWN, ROTATION };
 
     public UnitType unitType;
-    public double baseAmount;
-    public String unit;
+    public final Unit unit;
+    public final String originalUnitName;
 
     public static AutoautoUnitValue E(double baseAmount, String unit) {
         return new AutoautoUnitValue(baseAmount, unit);
     }
 
     public AutoautoUnitValue(double baseAmount, String unit) {
-        super(getNaturalAmount(baseAmount, unit));
-        this.baseAmount = baseAmount;
-        this.unit = unit;
+        super(baseAmount);
+        setPrototype(UnitValuePrototype.getMap());
+
+        this.originalUnitName = unit;
 
         TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
         DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
         RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
 
         if(timeUnit != null) {
-            this.baseAmount = TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount);
-            this.unit = TimeUnit.naturalTimeUnit.name;
+            this.unit = TimeUnit.naturalTimeUnit;
             this.unitType = UnitType.TIME;
         } else if(distanceUnit != null) {
-            this.baseAmount = DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount);
-            this.unit = DistanceUnit.naturalDistanceUnit.name;
+            this.unit = DistanceUnit.naturalDistanceUnit;
             this.unitType = UnitType.DISTANCE;
         } else if(rotationUnit != null) {
-            this.baseAmount = RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount);
-            this.unit = RotationUnit.naturalRotationUnit.name;
+            this.unit = RotationUnit.naturalRotationUnit;
             this.unitType = UnitType.ROTATION;
         } else {
+            this.unit = Unit.UNKNOWN;
             this.unitType = UnitType.UNKNOWN;
             FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
         }
-
-        super.value = (float) this.baseAmount;
-    }
-
-    private static double getNaturalAmount(double baseAmount, String unit) {
-        Unit u = Unit.forAbbreviation(unit);
-        if(u == null) return (float) baseAmount;
-        else return u.convertToNaturalUnit(baseAmount);
     }
 
     //Methods
     @NotNull
     public String getString() {
-        return this.baseAmount + this.unit;
+        return this.value + this.unit.toString();
     }
 
     public AutoautoUnitValue clone() {
-        AutoautoUnitValue c = new AutoautoUnitValue(baseAmount, unitType == UnitType.TIME ? "ms" : "ticks");
+        AutoautoUnitValue c = new AutoautoUnitValue(this.value, unit.name);
         c.setLocation(location);
         return c;
     }
 
     @NonNull
     public String toString() {
-        return this.baseAmount + this.unit;
+        return this.value + this.unit.toString();
     }
 }
