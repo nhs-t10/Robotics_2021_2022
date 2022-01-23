@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import androidx.annotation.NonNull;
 
@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRun
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
+import org.firstinspires.ftc.teamcode.auxilary.units.Unit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +46,7 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
     }
 
     public AutoautoUnitValue(double baseAmount, String unit) {
-        super(baseAmount);
+        super(getNaturalAmount(baseAmount, unit));
         this.baseAmount = baseAmount;
         this.unit = unit;
 
@@ -71,6 +72,12 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         }
 
         super.value = (float) this.baseAmount;
+    }
+
+    private static double getNaturalAmount(double baseAmount, String unit) {
+        Unit u = Unit.forAbbreviation(unit);
+        if(u == null) return (float) baseAmount;
+        else return u.convertToNaturalUnit(baseAmount);
     }
 
     //Methods

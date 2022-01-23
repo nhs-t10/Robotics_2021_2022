@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class ToggleNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
-    private InputManager boss;
 
     private boolean wasPressed;
     private boolean toggledOn;
@@ -17,7 +18,7 @@ public class ToggleNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
+        node.init(boss);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class ToggleNode extends InputManagerInputNode {
         wasPressed = isPressed;
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         result.setBool(toggledOn);

@@ -41,8 +41,9 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     AutoautoBooleanValue: "B",
     FunctionDefStatement: "J",
     TitledArgument: "V",
-    AutoatuoTailedValue: "Z",
+    AutoautoTailedValue: "Z",
     AutoautoFunctionLiteral: "Q",
+    PassStatement: "Y",
     
     "AutoautoValue[]" : "%"
 };
@@ -252,6 +253,18 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 self: nonce,
                 depends: [],
                 definition: `NextStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.NextStatement}();`
+            });
+
+            result = {
+                varname: nonce
+            }
+            break;
+        case "PassStatement":
+            addDepthMappedDefinition({
+                depth: depth,
+                self: nonce,
+                depends: [],
+                definition: `PassStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.PassStatement}();`
             });
 
             result = {
@@ -490,12 +503,13 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
         case "IfStatement":
             var conditional = process(ast.conditional);
             var statement = process(ast.statement);
+            var elseClause = process(ast.elseClause);
 
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
-                depends: [conditional.varname, statement.varname],
-                definition: `IfStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.IfStatement}(${conditional.varname}, ${statement.varname});`
+                depends: [conditional.varname, statement.varname, elseClause.varname],
+                definition: `IfStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.IfStatement}(${conditional.varname}, ${statement.varname}, ${elseClause.varname});`
             });
 
             result = {
@@ -535,7 +549,7 @@ module.exports = function astToString(ast, programNonce, statepath, stateNumber,
                 depth: depth,
                 self: nonce,
                 depends: [head, tail],
-                definition: `AutoautoTailedValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoatuoTailedValue}(${head}, ${tail});`
+                definition: `AutoautoTailedValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoTailedValue}(${head}, ${tail});`
             });
             
             result = {
@@ -579,7 +593,7 @@ function makeLocationSetter(nonce, statepathNonce, stateNumber, line, column) {
 
 function getStringNonce(str, depth, nonce) {
     //first of everything, if the str exists already, just return that nonce.
-    if(stringDefinitions[str]) return stringDefinitions[str];
+    if(objHasProp(stringDefinitions,str)) return stringDefinitions[str];
     
     if(nonce == null) nonce = genNonce();
     if(depth == null) depth = 0;
@@ -596,13 +610,18 @@ function getStringNonce(str, depth, nonce) {
 }
 
 function addDepthMappedDefinition(def) {
-    if(depthMappedDefinitions[def.self]) throw "Already defined!";
+    if(objHasProp(depthMappedDefinitions, def.self)) throw "Already defined!";
     def.depends.forEach(x=> {
-        if(!depthMappedDefinitions[x]) {
+        if(!objHasProp(depthMappedDefinitions, x)) {
             throw "No dependency " + x;
         }
     })
     depthMappedDefinitions[def.self] = def;
+}
+
+//If someone makes a string named `hasOwnProperty` or `toString` or something weird, we need to use this to safely scan the string registry.
+function objHasProp(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 function genNonce() {

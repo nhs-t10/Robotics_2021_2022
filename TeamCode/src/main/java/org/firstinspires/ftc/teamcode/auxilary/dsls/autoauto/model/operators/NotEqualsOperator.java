@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoBooleanValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 
 public class NotEqualsOperator extends AutoautoOperator {
     @Override

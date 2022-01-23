@@ -1,16 +1,16 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.jetbrains.annotations.NotNull;
 
-public class ResolvedTitledArg extends AutoautoPrimitive {
+public class AutoautoRelation extends AutoautoPrimitive {
     public AutoautoPrimitive title;
     public AutoautoPrimitive value;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
-    public ResolvedTitledArg(AutoautoPrimitive title, AutoautoPrimitive value) {
+    public AutoautoRelation(AutoautoPrimitive title, AutoautoPrimitive value) {
         this.title = title;
         this.value = value;
     }
@@ -49,8 +49,8 @@ public class ResolvedTitledArg extends AutoautoPrimitive {
     }
 
     @Override
-    public ResolvedTitledArg clone() {
-        return new ResolvedTitledArg(title.clone(), value.clone());
+    public AutoautoRelation clone() {
+        return new AutoautoRelation(title.clone(), value.clone());
     }
 
     public String toString() {

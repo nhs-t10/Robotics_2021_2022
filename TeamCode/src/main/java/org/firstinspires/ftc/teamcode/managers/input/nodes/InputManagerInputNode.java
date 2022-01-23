@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public abstract class InputManagerInputNode {
 
     public abstract void init(InputManager boss);
     public abstract void update();
+    @NotNull
     public abstract InputManagerNodeResult getResult();
 
     public abstract int complexity();

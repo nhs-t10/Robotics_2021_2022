@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.unitTests.dummy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.lang.ref.WeakReference;
 
@@ -34,8 +35,10 @@ public class DummyMotorMovementThread extends Thread {
                     double delta = target - currentPosition;
                     motor.currentPosition += Math.min(delta, ticksPerRot) * 0.1;
                 } else {
-                    //if it's not RUN_TO_POSITION, just increment by the power.
-                    motor.currentPosition += motor.power * ticksPerRot * 0.1;
+                    //if it's not RUN_TO_POSITION, just increment by the power (or decrement if it's reverse).
+                    double movement = -1 * motor.power * ticksPerRot * 0.1;
+                    if(motor.direction == DcMotorSimple.Direction.REVERSE) motor.currentPosition -= movement;
+                    else motor.currentPosition += movement;
                 }
                 sleep(10);
             } catch(InterruptedException ignored) {}

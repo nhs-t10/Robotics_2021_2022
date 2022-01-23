@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class StaticValueNode extends InputManagerInputNode {
     private final InputManagerNodeResult result = new InputManagerNodeResult();;
 
@@ -18,6 +20,7 @@ public class StaticValueNode extends InputManagerInputNode {
     public void update() {
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         return result;

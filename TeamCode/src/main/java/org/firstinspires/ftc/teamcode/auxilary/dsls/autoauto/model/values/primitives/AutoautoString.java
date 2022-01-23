@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
@@ -17,13 +17,7 @@ public class AutoautoString extends AutoautoPrimitive {
     public AutoautoString(String value) {
         this.value = value;
     }
-    public void loop() {}
 
-    @NotNull
-    @Override
-    public AutoautoPrimitive getResolvedValue() {
-        return this;
-    }
     @NotNull
     public String toString() {
         return PaulMath.JSONify(value);

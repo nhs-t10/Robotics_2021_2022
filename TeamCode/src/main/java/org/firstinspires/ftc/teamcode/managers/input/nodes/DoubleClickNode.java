@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class DoubleClickNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
     private InputManager boss;
@@ -61,6 +63,7 @@ public class DoubleClickNode extends InputManagerInputNode {
         lastTimeClicked = clickedCheck;
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         result.setBool(currentlyDblClicked);

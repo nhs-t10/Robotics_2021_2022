@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 

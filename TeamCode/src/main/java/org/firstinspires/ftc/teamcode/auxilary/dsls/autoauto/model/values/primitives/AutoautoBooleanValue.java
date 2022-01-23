@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
+package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
@@ -30,8 +30,6 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
         else if(v instanceof AutoautoUndefined) return true;
         else return true;
     }
-
-    public void loop() {}
 
     public boolean getBoolean() {
         return value;

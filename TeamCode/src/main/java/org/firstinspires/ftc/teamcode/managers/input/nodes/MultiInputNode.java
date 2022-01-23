@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class MultiInputNode extends InputManagerInputNode {
     private final InputManagerInputNode[] childs;
 
@@ -22,6 +24,7 @@ public class MultiInputNode extends InputManagerInputNode {
         for(InputManagerInputNode n : childs) n.update();
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         InputManagerNodeResult[] vals = new InputManagerNodeResult[childs.length];

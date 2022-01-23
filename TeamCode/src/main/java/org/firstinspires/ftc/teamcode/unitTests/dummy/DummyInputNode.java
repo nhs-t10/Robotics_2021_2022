@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
+
 import static org.junit.Assert.assertEquals;
 
 public class DummyInputNode extends InputManagerInputNode {
@@ -36,6 +38,7 @@ public class DummyInputNode extends InputManagerInputNode {
 
     }
 
+    @NonNull
     @Override
     public final InputManagerNodeResult getResult() {
         result.setFloat(value);

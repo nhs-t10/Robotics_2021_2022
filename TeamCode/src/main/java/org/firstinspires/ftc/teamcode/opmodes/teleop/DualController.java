@@ -80,14 +80,14 @@ public class DualController extends OpMode {
                             new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
                             new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
                             new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
-                )
+                        )
                 )
             );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new IfNode(
                 new ToggleNode(new ButtonNode("b")),
                 new StaticValueNode(0.1f),
-                new StaticValueNode(1f)
+                new StaticValueNode(0.6f)
         ));
         input.registerInput("dashing", new IfNode(
                 new ToggleNode(new ButtonNode("x")),
@@ -102,7 +102,7 @@ public class DualController extends OpMode {
         input.registerInput("ClawPosHome", new ButtonNode("gamepad2x"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
-        input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
+        input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("Intake",
                 new AnyNode(
                         new ButtonNode("righttrigger"),
@@ -115,14 +115,10 @@ public class DualController extends OpMode {
                 ));
         input.registerInput("EmergencyStop",
                 new AnyNode(
-                        new AnyNode(
                                 new ButtonNode("dpadleft"),
-                                new ButtonNode("gamepad2dpadleft")
-                        ),
-                        new AnyNode(
+                                new ButtonNode("gamepad2dpadleft"),
                                 new ButtonNode("dpadright"),
                                 new ButtonNode("gamepad2dpadright")
-                        )
                 ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
@@ -138,19 +134,9 @@ public class DualController extends OpMode {
     @Override
     public void loop() {
         input.update();
+
         driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
-        if (input.getBool("dashing") == true && dashing == false) {
-            driver.upScale(0.4f);
-            dashing = true;
-        } else if (input.getBool("precisionDriving") == true && dashing == true) {
-            dashing = true;
-        } else if (input.getBool("precisionDriving") == false && dashing == true) {
-            driver.downScale(0.4f);
-            dashing = false;
-        } else {
-            dashing = false;
-        }
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
@@ -214,7 +200,7 @@ public class DualController extends OpMode {
                 clawPosition.positionHome();
             }
         }
-        if (input.getBool("ToggleClaw") == true){
+        if (input.getBool("ClawOpen") == true){
             clawPosition.setClawOpen(true);
         }
         else {
