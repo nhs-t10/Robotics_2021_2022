@@ -37,6 +37,8 @@ try {
     mac = Object.values(os.networkInterfaces()).flat().map(x=>x.mac).filter(x=>x!='00:00:00:00:00:00')[0];
 } catch(e) {}
 
+console.log("Mac address gotten as " + mac);
+
  var computerUniqueIdentifier = ([mac, os.cpus()[0].model, os.hostname(), os.platform()]).join(",");
 
  var computerHash = crypto.createHmac("sha256", HASH_SECRET)
@@ -53,7 +55,7 @@ try {
 
 (async function() {
     if(!familyLine.browser) {
-     familyLine.browser = await require("./fingerprint-user.js")();
+        familyLine.browser = "Removed_for_privacy_reasons_" + Math.round(Math.random() * 0xFF_FF_FF).toString(16);
     }
 
     if(!familyLine.cognomen) familyLine.cognomen = generateCognomen(familyLine.browser);
