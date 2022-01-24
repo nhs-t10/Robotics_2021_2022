@@ -21,6 +21,44 @@ toVarint8: function toVarint8(num) {
     return result;
 },
 
+toVarintBytes: function toVarintBytes(num) {
+    var result = [];
+
+    var sectionsScanned = 0;
+    while(num > 0) {
+        var currentSection = 0b1111_111 & num;
+        num >>>= 7;
+
+        var isLastChunk = sectionsScanned == 0;
+        var encodedChunk = (currentSection << 1) | (isLastChunk ? 1 : 0);
+        result.push(encodedChunk);
+        sectionsScanned++;
+    }
+    return result.reverse();
+},
+
+numberToBytes: function(num) {
+    var buf = new DataView(new ArrayBuffer(8));
+    buf.setFloat64(0, num);
+
+    var b = [];
+    for(var i = 0; i < 8; i++) b.push(buf.getUint8(i));
+    return b;
+},
+
+numberToVarBytes: function(num) {
+    var b = this.numberToBytes(num);
+    while(b[b.length - 1] == 0) b.pop();
+    return b;
+},
+
+numberFromBytes: function(bytes) {
+    var buf = new DataView(new ArrayBuffer(8));
+    for(var i = 0; i < 8; i++) buf.setUint8(bytes[i]||0);
+
+    return buf.getFloat64(0);
+},
+
 numToB62: function numToB62(i) {
     i = Math.round(i);
     var r = "";
