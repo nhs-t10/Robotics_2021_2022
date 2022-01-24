@@ -87,7 +87,7 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
         private void unpressButtons(String[] ks) throws InterruptedException {
             for(String k : ks) {
                 TeleopTestingUtils.setKeyState(k, opmode.gamepad1, opmode.gamepad2, 0);
-                sleep((long) TimeUnit.JIF.milliseconds);
+                sleep((long) TimeUnit.JIF.convertToNaturalUnit(1));
             }
         }
 

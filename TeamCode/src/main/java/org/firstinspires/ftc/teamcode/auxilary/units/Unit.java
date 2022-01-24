@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public abstract class Unit {
     public String name;
+    public String pluralName;
     public String[] abbreviations;
     public double coefficient;
 
@@ -14,10 +15,14 @@ public abstract class Unit {
         public String getCommonAbbrev() { return "?"; }
     };
 
-    protected Unit(String name, String[] abbreviations, double coefficient) {
+    protected Unit(String name, String[] abbreviations, double coefficient, String pluralName) {
         this.name = name;
         this.abbreviations = abbreviations;
         this.coefficient = coefficient;
+        this.pluralName = pluralName;
+    }
+    protected Unit(String name, String[] abbreviations, double coefficient) {
+        this(name, abbreviations, coefficient, name);
     }
 
     public static Unit[] getAllUnits() {
