@@ -37,7 +37,7 @@ function findIndexesOf(str) {
     return idxs;
 }
 
-fs.writeFileSync(__dirname + "/dorian.js", //SAFE `
+fs.writeFileSync(__dirname + "/dorian.js", `
 var dorian = ${JSON.stringify(dissasociatedBody)};
 module.exports = {
     randomStart: function(num) {

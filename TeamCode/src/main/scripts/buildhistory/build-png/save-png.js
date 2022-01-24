@@ -4,8 +4,8 @@ var path = require("path");
 
 var directory = __dirname.split(path.sep);
 
-var mainDirectory = directory.slice(0, directory.indexOf("main") + 1).join(path.sep);
-var assetsDir = path.join(mainDirectory, "assets");
+var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
+var assetsDir = path.join(srcDirectory, "main/assets");
 
 if(!fs.existsSync(path.join(assetsDir, "buildimgs"))) fs.mkdirSync(path.join(assetsDir, "buildimgs"), { recursive: true });
 

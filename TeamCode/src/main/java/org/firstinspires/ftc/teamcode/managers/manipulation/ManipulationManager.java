@@ -38,7 +38,7 @@ public class ManipulationManager extends FeatureManager {
      * </code></pre>
      *
      * <p>The constructor works the same way as {@link #ManipulationManager(HardwareMap, String[], String[], String[]) the other constructor}, but allows you to specify args
-     * in any order with the {@link #crservo(String...) crservo}, {@link #servo(String...) servo}, and {@link #motor(String...) motor} helpers.</p>
+     * in any order with the {@link #crservo(String...) crservo}, {@link #servo(String...) servo}, and {@link #motor(String...) motor} script-helpers.</p>
      * <p>Consider using <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/language/static-import.html">static imports</a> on the helper methods for better readability.</p>
      *
      * @see #crservo(String...) 

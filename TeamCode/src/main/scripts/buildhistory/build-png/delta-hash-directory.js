@@ -1,15 +1,13 @@
 var fs = require("fs");
 var path = require("path");
+var cache = require("../../cache");
 
 var badPerceptualHash = require("./bad-percep-hash");
 
-var cacheFile = path.join(__dirname, "last-build-pixels.json");
-if(!fs.existsSync(cacheFile)) fs.writeFileSync(cacheFile, JSON.stringify({c:"",p:"buildimgs/0.png"})); //SAFE
-
-
 module.exports = function(directory, ignores) {
     var hash = getDirectoryHash(directory, ignores).toString("hex");
-    var oldHash = require(cacheFile);
+    var oldHash = cache.get("last-build-pixels", {c:"",p:"buildimgs/0.png"});
+
     //translate between old cache and new cache
     if(typeof oldHash === "string") {
         oldHash = {

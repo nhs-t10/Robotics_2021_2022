@@ -11,7 +11,7 @@
 
 // Custom definitions may go here
 plugins {
-    id "com.github.node-gradle.node" version "3.1.1"
+    id "com.github.node-gradle.node" version "3.0.1"
     id "org.sonarqube" version "3.3"
 }
 
@@ -26,14 +26,17 @@ dependencies {
     implementation 'org.jetbrains:annotations-java5:23.0.0'
 }
 
+task cleanupOldGeneratedFiles(type: NodeTask) {
+    script = file("src/main/scripts/cleanup/index.js")
+}
+
 task generateAutoautoSources(type: NodeTask) {
-    script = file("src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/compiler/compiler.js")
+    script = file("src/main/scripts/autoauto-compiler/index.js")
 }
 
 
 task recordBuildHistory(type: NodeTask) {
-
-    script = file("src/main/java/org/firstinspires/ftc/teamcode/auxilary/buildhistory/preprocess.js")
+    script = file("src/main/scripts/buildhistory/index.js")
 }
 
 sonarqube {
@@ -51,6 +54,7 @@ android {
         noCompress 'tflite'
     }
     gradle.projectsEvaluated {
+        preBuild.dependsOn(cleanupOldGeneratedFiles)
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
     }
