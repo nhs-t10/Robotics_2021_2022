@@ -3,8 +3,6 @@ var path = require("path");
 
 var punycode = require("../script-helpers/punycode");
 
-var structuredSerialise = require("./structured-serialise");
-
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
 
