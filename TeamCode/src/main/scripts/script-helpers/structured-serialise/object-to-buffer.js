@@ -6,7 +6,7 @@ module.exports = function(obj) {
     var valuePool = [];
     createOrGetIdInValuepool(obj, valuePool);
 
-    return valuePool.map(x=>x.bytes).flat(4);
+    return valuePool.map(x=>x.bytes).flat(6);
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
@@ -26,7 +26,7 @@ function createOrGetIdInValuepool(obj, valuePool) {
         }
     }
 
-    var poolEntry = {value: obj, id: valuePool.length};
+    var poolEntry = {value: obj, id: valuePool.length, bytes: []};
     valuePool.push(poolEntry);
 
     switch(type) {
@@ -42,22 +42,38 @@ function createOrGetIdInValuepool(obj, valuePool) {
         break;
         case "null": poolEntry.bytes = [];
         break;
-        case "wellKnownObject": poolEntry.bytes = [ createOrGetIdInValuepool(cstr, valuePool), getEntriesBytes(obj, valuePool) ];
+        case "wellKnownObject":
+            //wellknownobjects record their constructor so they can be re-constructed later
+            poolEntry.bytes = getWellKnownInfo(cstr, obj, valuePool).concat(getEntriesBytes(obj, valuePool));
     }
 
-    poolEntry.bytes = [typeCodes[type], poolEntry.bytes.length].concat(poolEntry.bytes);
+    poolEntry.bytes.splice(0, 0, typeCodes[type], bitwiseyTools.toVarintBytes(poolEntry.bytes.length));
 
     return poolEntry.id;
 }
 
 function getEntriesBytes(obj, valuePool) {
-    var entries = Object.entries(obj);
+    var propNames = Object.getOwnPropertyNames(obj);
     var b = [];
-    for(var i = 0; i < entries.length; i++) {
-        var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(entries[i][0], valuePool));
-        var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(entries[i][1], valuePool));
+    for(var i = 0; i < propNames.length; i++) {
+        var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(propNames[i], valuePool));
+        var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(obj[propNames[i]], valuePool));
 
         b.push(kB, vB);
     }
-    return b;
+    return b.flat();
+}
+
+function getWellKnownInfo(constructorName, obj, valuePool) {
+    var constructorPoolId = createOrGetIdInValuepool(constructorName, valuePool);
+    var constructorPoolBytes = bitwiseyTools.toVarintBytes(constructorPoolId);
+    
+    var valuePoolId = 0;
+    if(typeof obj.valueOf === "function" && !obj.hasOwnProperty("valueOf")) {
+        var valueOfObj = obj.valueOf();
+        if(valueOfObj != obj) valuePoolId = createOrGetIdInValuepool(valueOfObj, valuePool);
+    }
+    var valuePoolBytes = bitwiseyTools.toVarintBytes(valuePoolId);
+    
+    return constructorPoolBytes.concat(valuePoolBytes);
 }

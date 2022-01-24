@@ -23,6 +23,8 @@ toVarint8: function toVarint8(num) {
 
 toVarintBytes: function toVarintBytes(num) {
     var result = [];
+    
+    if(num == 0) return [1];
 
     var sectionsScanned = 0;
     while(num > 0) {
@@ -54,7 +56,7 @@ numberToVarBytes: function(num) {
 
 numberFromBytes: function(bytes) {
     var buf = new DataView(new ArrayBuffer(8));
-    for(var i = 0; i < 8; i++) buf.setUint8(bytes[i]||0);
+    for(var i = 0; i < 8; i++) buf.setUint8(i, +(bytes[i] & 0xff)||0);
 
     return buf.getFloat64(0);
 },
