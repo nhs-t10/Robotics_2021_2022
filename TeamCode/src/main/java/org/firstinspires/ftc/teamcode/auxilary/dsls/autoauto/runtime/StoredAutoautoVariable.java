@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 
 public class StoredAutoautoVariable {
     public AutoautoPrimitive value;

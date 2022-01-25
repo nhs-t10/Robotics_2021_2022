@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOpmode;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
+import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -16,14 +17,8 @@ public class TelemetryServerDemo {
     @Test
     public void test() {
         //don't run this when it's under all tests
-        try {
-            if (System.getenv("TEST_TYPE").equalsIgnoreCase("ALL")) {
-                FeatureManager.logger.log("Not running demo; switch to individual configuration for that.");
-                return;
-            }
-        } catch(Throwable onNonPortableProblemIgnore) {
-            //ignore the problem
-        }
+        if(!testRunTypeIs("demo")) return;
+
         long TEST_TIME_MS = 9_600_000;
 
         long start = System.currentTimeMillis();

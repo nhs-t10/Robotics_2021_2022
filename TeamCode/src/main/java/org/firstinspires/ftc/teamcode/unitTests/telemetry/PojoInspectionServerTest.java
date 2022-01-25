@@ -37,33 +37,38 @@ public class PojoInspectionServerTest {
 
         assertTrue(connectAddress("localhost", telemetry.server.port));
 
-        InputStream httpReply = getResponseStream("localhost", telemetry.server.port,
-                "GET /stream HTTP/1.1\r\n" +
-                        "Host: localhost\r\n\r\n");
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("localhost", telemetry.server.port), 30_000);
 
-        BufferedReader httpBodyReader = new BufferedReader(new InputStreamReader(httpReply, StandardCharsets.UTF_8));
+            PrintWriter sendWriter = new PrintWriter(socket.getOutputStream());
+            sendWriter.write("GET /stream HTTP/1.1\r\n" +
+                    "Host: localhost\r\n\r\n");
+            sendWriter.flush();
+            InputStream httpReply = socket.getInputStream();
 
-        //discard status line
-        assertEquals("HTTP/1.1 200 OK", httpBodyReader.readLine());
+            BufferedReader httpBodyReader = new BufferedReader(new InputStreamReader(httpReply, StandardCharsets.UTF_8));
 
-        Headers headers = Headers.from(httpBodyReader);
-        assertEquals("text/plain; charset=utf-8", headers.get("Content-Type"));
+            //discard status line
+            assertEquals("HTTP/1.1 200 OK", httpBodyReader.readLine());
+
+            Headers headers = Headers.from(httpBodyReader);
+            assertEquals("text/plain; charset=utf-8", headers.get("Content-Type"));
 
 
-        telemetry.addData("foo", 3);
-        telemetry.log().add("bar");
-        telemetry.update();
+            telemetry.addData("foo", 3);
+            telemetry.log().add("bar");
+            telemetry.update();
 
-        String dataLine = httpBodyReader.readLine();
-        //keep reading until we get data
-        while(!isDataLine(dataLine)) {
-            dataLine = httpBodyReader.readLine();
+            String dataLine = httpBodyReader.readLine();
+            //keep reading until we get data
+            while (!isDataLine(dataLine)) {
+                dataLine = httpBodyReader.readLine();
+            }
+
+            assertThat("Reply data contains pojo data", dataLine, containsString("\"testString\":\"foobar\",\"testInt\":3,\"testFloat\":2.4"));
+
+            httpReply.close();
         }
-
-        assertThat("Reply data contains pojo data", dataLine, containsString("\"testString\":\"foobar\",\"testInt\":3,\"testFloat\":2.4"));
-
-        httpReply.close();
-
         FeatureManager.setIsOpModeRunning(false);
     }
 
@@ -73,20 +78,6 @@ public class PojoInspectionServerTest {
             return true;
         } catch (IOException e) {
             return false; // Either timeout or unreachable or failed DNS lookup.
-        }
-    }
-    private InputStream getResponseStream(String host, int port, String sendBody) {
-        Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress(host, port), 30_000);
-
-            PrintWriter sendWriter = new PrintWriter(socket.getOutputStream());
-            sendWriter.write(sendBody);
-            sendWriter.flush();
-
-            return socket.getInputStream();
-        } catch (IOException e) {
-            return null; // Either timeout or unreachable or failed DNS lookup.
         }
     }
 

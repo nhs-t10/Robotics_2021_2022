@@ -43,12 +43,14 @@ public class DummyHardwareMap extends HardwareMap {
         super(null); //`super(new DummyContext());` won't work bc tests remove the context class
     }
 
+    private DummyImu imu = new DummyImu();
+
     @Override
     public <T> T get(Class<? extends T> classOrInterface, String deviceName) {
         switch(classOrInterface.getSimpleName()) {
             case "NormalizedColorSensor": return classOrInterface.cast(new DummyNormalizedColorSensor());
-            case "BNO055IMU": return classOrInterface.cast(new DummyImu());
-            case "DcMotor": return classOrInterface.cast(new DummyDcMotor());
+            case "BNO055IMU":  return classOrInterface.cast(imu); //only 1 imu per hardware map!
+            case "DcMotor": return classOrInterface.cast(new DummyDcMotor(deviceName, imu));
             case "CRServo": return classOrInterface.cast(new DummyCrServo());
             case "Servo": return classOrInterface.cast(new DummyServo());
             case "TouchSensor": return classOrInterface.cast(new DummyTouchSensor());

@@ -4,25 +4,18 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class RotationUnit extends Unit {
-    public String name;
-    public String[] abbreviations;
-    public double perCircle;
-
-    private RotationUnit(String name, String abbr, double perCircle) {
-        this(name, new String[] {abbr}, perCircle);
+    private RotationUnit(String name, String abbr, double degrees) {
+        this(name, new String[] {abbr}, degrees);
     }
-    private RotationUnit(String name, String[] abbreviations, double perCircle) {
-        super(name, abbreviations, perCircle);
-        this.name = name;
-        this.abbreviations = abbreviations;
-        this.perCircle = perCircle;
+    private RotationUnit(String name, String[] abbreviations, double degrees) {
+        super(name, abbreviations, degrees);
     }
 
-    public final static RotationUnit DEG = new RotationUnit("Degree", new String[] {"deg", "degs"}, 360);
-    public final static RotationUnit RAD = new RotationUnit("Radian", new String[] {"rad", "rads"}, 2 * Math.PI);
-    public final static RotationUnit ROT = new RotationUnit("Full Rotation", new String[] {"rot", "rots"}, 1);
-    public final static RotationUnit TURNY = new RotationUnit("Turny", "tn", 4);
-    public final static RotationUnit HALF_TURNY = new RotationUnit("Half-Turny", "hlftn", 8);
+    public final static RotationUnit DEG = new RotationUnit("Degree", new String[] {"deg", "degs"}, 1);
+    public final static RotationUnit RAD = new RotationUnit("Radian", new String[] {"rad", "rads"}, 180/Math.PI);
+    public final static RotationUnit ROT = new RotationUnit("Full Rotation", new String[] {"rot", "rots"}, 360);
+    public final static RotationUnit TURNY = new RotationUnit("Turny", "tn", 90);
+    public final static RotationUnit HALF_TURNY = new RotationUnit("Half-Turny", "hlftn", 45);
 
     public final static RotationUnit naturalRotationUnit = RotationUnit.DEG;
 
@@ -61,6 +54,22 @@ public class RotationUnit extends Unit {
         return null;
     }
 
+    @Override
+    public double convertToNaturalUnit(double u) {
+        return convertBetween(this, naturalRotationUnit, u);
+    }
+
+    @Override
+    public String getCommonAbbrev() {
+        if(abbreviations.length > 0) return abbreviations[0];
+        else return name;
+    }
+
+    @Override
+    public Unit getNaturalUnit() {
+        return naturalRotationUnit;
+    }
+
     public static String singular(String abbr) {
         if(abbr == null) return null;
         else if(abbr.endsWith("s")) return abbr.substring(0, abbr.length() - 1);
@@ -68,9 +77,9 @@ public class RotationUnit extends Unit {
     }
 
     public static double convertBetween(RotationUnit unitFrom, RotationUnit unitTo, double fromAmount) {
-        return (fromAmount * (unitTo.perCircle / unitFrom.perCircle));
+        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
     }
     public static double convertBetween(RotationUnit unitFrom, RotationUnit unitTo, float fromAmount) {
-        return (fromAmount * (unitTo.perCircle / unitFrom.perCircle));
+        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
     }
 }

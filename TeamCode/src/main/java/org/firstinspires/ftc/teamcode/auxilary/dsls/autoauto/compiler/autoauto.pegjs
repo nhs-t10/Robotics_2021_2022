@@ -55,7 +55,7 @@ multiStatement = _ OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
 }
 
 singleStatement =
-  _  s:(valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
+  _  s:(passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
 
   { return s; }
 
@@ -73,7 +73,14 @@ gotoStatement =
  GOTO _ p:(IDENTIFIER/dynamicValue) { return { type: "GotoStatement", location: location(), path: p } }
 
 ifStatement =
- (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement { return { type: "IfStatement", location: location(), conditional: t, statement: s } }
+ (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? {
+ return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e || {type: "PassStatement", location: location()} } }
+
+elseClause = _ (ELSE / OTHERWISE) _ s:statement {
+return s;
+}
+
+passStatement = _ PASS _ { return { type: "PassStatement", location: location() } }
 
 letStatement =
  LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
@@ -290,6 +297,9 @@ OPEN_CURLY_BRACKET =
 CLOSE_CURLY_BRACKET =
     "}"
 DOT = "."
+PASS = "pass"
+ELSE = "else"
+OTHERWISE = "otherwise"
 IDENTIFIER =
     l:(LETTER / DIGIT)+
     &{

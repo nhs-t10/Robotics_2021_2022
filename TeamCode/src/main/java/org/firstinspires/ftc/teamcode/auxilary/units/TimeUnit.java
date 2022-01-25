@@ -4,20 +4,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class TimeUnit extends Unit {
-    public String name;
-    public String pluralName;
-    public String[] abbreviations;
-    public double milliseconds;
 
     private TimeUnit(String name, String abbr, double perSecond, String pluralName) {
         this(name, new String[] {abbr}, perSecond, pluralName);
     }
     private TimeUnit(String name, String[] abbreviations, double milliseconds, String pluralName) {
-        super(name, abbreviations, milliseconds);
-        this.name = name;
-        this.abbreviations = abbreviations;
-        this.milliseconds = milliseconds;
-        this.pluralName = pluralName;
+        super(name, abbreviations, milliseconds, pluralName);
     }
 
     //Smaller than the natural time unit
@@ -74,9 +66,25 @@ public class TimeUnit extends Unit {
         if(unitFrom == null) throw new IllegalArgumentException("Cannot convert from null");
         if(unitTo == null) throw new IllegalArgumentException("Cannot convert to null");
 
-        return (fromAmount * (unitFrom.milliseconds / unitTo.milliseconds));
+        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
     }
     public static double convertBetween(TimeUnit unitFrom, TimeUnit unitTo, float fromAmount) {
-        return convertBetween(unitFrom, unitTo, (double)fromAmount);
+        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
+    }
+
+    @Override
+    public double convertToNaturalUnit(double u) {
+        return convertBetween(this, naturalTimeUnit, u);
+    }
+
+    @Override
+    public String getCommonAbbrev() {
+        if(abbreviations.length > 0) return abbreviations[0];
+        else return name;
+    }
+
+    @Override
+    public Unit getNaturalUnit() {
+        return naturalTimeUnit;
     }
 }

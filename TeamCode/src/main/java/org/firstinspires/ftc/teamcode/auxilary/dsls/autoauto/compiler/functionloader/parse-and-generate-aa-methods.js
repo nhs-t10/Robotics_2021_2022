@@ -6,25 +6,32 @@ var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.
 var robotFunctionsDirectory = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/robotfunctions");
 
 var parser = require("./javaparser/parser.js");
-var astTools = require("./javaparser/ast-tools.js");
+
+
 
 var processTemplate = require("./template-render.js");
 var functionIndexMaker = require("./function-index-maker.js");
 
+var parserTools = require("../parser-tools");
+
 module.exports = function(javaSource, preexistingNames) {
     try {
-        var ast = parser.parse(javaSource);
+        var sourceWithoutComments = parserTools.stripComments(javaSource);
+        var ast = parser.parse(sourceWithoutComments);
     } catch(e) {
         var classDeclarationIndex = javaSource.indexOf("public class");
-        var classDeclarationIndexEnd = javaSource.indexOf("\n", classDeclarationIndex)
-        throw "Error parsing java source code! Make sure that it's correct: " + javaSource.substring(classDeclarationIndex,classDeclarationIndexEnd);
+        var classDeclarationIndexEnd = javaSource.indexOf("\n", classDeclarationIndex);
+        console.error(e);
+        console.error("Error parsing java source code! Make sure that it's correct: " + javaSource.substring(classDeclarationIndex,classDeclarationIndexEnd));
+
+        return null;
     }
 
     var primaryType = ast.types.find(x=>x.modifiers.find(y=>y.keyword == "public"));
     if(!primaryType) throw "No public type in manager!";
     
     var primaryTypeName = primaryType.name.identifier;
-    var packageName = astTools.astToString(ast.package.name);
+    var packageName = packageNameToString(ast.package.name);
     var fullClassName = packageName + "." + primaryTypeName;
     
     
@@ -33,6 +40,11 @@ module.exports = function(javaSource, preexistingNames) {
 
     var processedMethodClassLocs = overloads.map(x=>generateRobotFunction(x, fullClassName, preexistingNames));
     return [fullClassName, processedMethodClassLocs.map(x=>x.shimClassFunction), processedMethodClassLocs.map(x=>x.cachableFunctionIndexLines)];
+}
+
+function packageNameToString(packageName) {
+    if(packageName.node == "SimpleName") return packageName.identifier;
+    else return packageNameToString(packageName.qualifier) + "." + packageName.name.identifier;
 }
 
 function generateRobotFunction(overload, definedClass, preexistingNames) {
@@ -172,10 +184,9 @@ function equivAutoautoClass(type) {
 }
 
 function findShimableMethods(type) {
-    var bodyStatements = type.bodyDeclarations.statements;
-    var methods = bodyStatements.filter(x=>x.type == "MethodDeclaration");
+    var bodyStatements = type.bodyDeclarations;
+    var methods = bodyStatements.filter(x=>x.node == "MethodDeclaration");
     var publicMethods = methods.filter(x=>x.modifiers.find(y=>y.keyword == "public"));
-
     
     var shimableMethods = publicMethods.filter(x=>!x.constructor && doesMethodHaveShimableArgs(x) && isTypeShimable(x.returnType2));
     
@@ -183,14 +194,15 @@ function findShimableMethods(type) {
 }
 
 function doesMethodHaveShimableArgs(method) {
-    var shimableArgs = method.parameters.filter(x=>!x.varargs && isTypeShimable(x.typeType));
+    var shimableArgs = method.parameters.filter(x=>!x.varargs && isTypeShimable(x.type));
+    
     return shimableArgs.length == method.parameters.length;
 }
 
 function isTypeShimable(returnType) {
-    if(returnType.type == "PrimitiveType") return true;
-    else if(returnType.type == "SimpleType") return isTypeShimable(returnType.name);
-    else if(returnType.type == "SimpleName" &&  returnType.identifier == "String") return true;
+    if(returnType.node == "PrimitiveType") return true;
+    else if(returnType.node == "SimpleType") return isTypeShimable(returnType.name);
+    else if(returnType.node == "SimpleName" &&  returnType.identifier == "String") return true;
     else return false;
 } 
 
@@ -201,14 +213,15 @@ function getTypeCode(type) {
 function getBasicTypeInfo(method) {
     return {
         type: getTypeCode(method.returnType2),
-        args: method.parameters.map(x=>getTypeCode(x.typeType)),
+        args: method.parameters.map(x=>getTypeCode(x.type)),
         argnames: method.parameters.map(x=>x.name.identifier)
     };
 }
 
 function groupMethodsIntoOverloads(methods) {
-    var nameSet = Array.from(new Set(methods.map(x=>x.name.identifier)));
     
+    var nameSet = Array.from(new Set(methods.map(x=>x.name.identifier)));
+
     var entries = [];
     for(var i = 0; i < nameSet.length; i++) {
         var name = nameSet[i];

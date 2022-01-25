@@ -15,10 +15,12 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
@@ -38,6 +40,8 @@ public class DualControllerFools extends OpMode {
     public NateManager clawPosition;
     private boolean precision = false;
     private boolean dashing = false;
+    private double clawCheck;
+    private int clawPos;
 
     @Override
     public void init() {
@@ -90,27 +94,38 @@ public class DualControllerFools extends OpMode {
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
-        input.registerInput("Intake",
-                new AnyNode(
-                        new ButtonNode("righttrigger"),
-                        new ButtonNode("gamepad2righttrigger")
-                ));
         input.registerInput("Anti-Intake",
-                new AnyNode(
-                        new ButtonNode("lefttrigger"),
-                        new ButtonNode("gamepad2lefttrigger")
-                ));
+                new IfNode(
+                    new ToggleNode(
+                            new AnyNode(
+                                new ButtonNode("lefttrigger"),
+                                new ButtonNode("gamepad2lefttrigger")
+                            )
+                    ),
+                new StaticValueNode(-0.5f),
+                new StaticValueNode(0f)
+                )
+        );
+        input.registerInput("Intake",
+                new IfNode(
+                        new ToggleNode(
+                                new AnyNode(
+                                        new ButtonNode("righttrigger"),
+                                        new ButtonNode("gamepad2righttrigger")
+                                )
+                        ),
+                        new StaticValueNode(0.9f),
+                        new StaticValueNode(0f)
+                )
+        );
         input.registerInput("EmergencyStop",
                 new AnyNode(
-                        new AnyNode(
-                                new ButtonNode("dpadleft"),
-                                new ButtonNode("gamepad2dpadleft")
-                        ),
-                        new AnyNode(
-                                new ButtonNode("dpadright"),
-                                new ButtonNode("gamepad2dpadright")
+                        new ButtonNode("dpadleft"),
+                        new ButtonNode("gamepad2dpadleft"),
+                        new ButtonNode("dpadright"),
+                        new ButtonNode("gamepad2dpadright")
                         )
-                ));
+                );
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -151,24 +166,24 @@ public class DualControllerFools extends OpMode {
         } else {
             dashing = false;
         }
-        if (input.getBool("Intake")){
-            hands.setMotorPower("noodle", 0.9);
-            hands.setMotorPower("intake", 1);
-            hands.setServoPosition("rampLeft", 0.50);
-            hands.setServoPosition("rampRight", 0.0);
+        clawCheck = clawPosition.getClawOpenish();
+        clawPos = clawPosition.getClawPosition();
+        if (clawCheck == 1.0 && clawPos == 0) {
+            hands.setMotorPower("noodle", (double) Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")));
         }
-        else if (input.getBool("Anti-Intake")){
-            hands.setMotorPower("noodle", -0.50);
-            hands.setMotorPower("intake", -0.50);
-            hands.setServoPosition("rampLeft", 0.50);
-            hands.setServoPosition("rampRight", 0.0);
+        else hands.setMotorPower("noodle", 0.0);
+
+        hands.setMotorPower("intake", (double) Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")));
+
+        if (Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")) == 0.0f){
+            hands.setServoPosition("rampLeft", 0.0);
+            hands.setServoPosition("rampRight", -0.35);
         }
         else {
-            hands.setMotorPower("noodle", 0.0);
-            hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.35);
+            hands.setServoPosition("rampLeft", 0.50);
+            hands.setServoPosition("rampRight", 0.0);
         }
+
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
         }

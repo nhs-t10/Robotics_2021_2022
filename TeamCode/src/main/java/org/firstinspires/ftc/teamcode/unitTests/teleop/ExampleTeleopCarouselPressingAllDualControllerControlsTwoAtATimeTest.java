@@ -13,11 +13,14 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
 
 public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTest {
     @Test
     public void runTest() {
+        if(!testRunTypeIs("long")) return;
+
         DualController opmode = new DualController();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();
@@ -87,7 +90,7 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
         private void unpressButtons(String[] ks) throws InterruptedException {
             for(String k : ks) {
                 TeleopTestingUtils.setKeyState(k, opmode.gamepad1, opmode.gamepad2, 0);
-                sleep((long) TimeUnit.JIF.milliseconds);
+                sleep((long) TimeUnit.JIF.convertToNaturalUnit(1));
             }
         }
 

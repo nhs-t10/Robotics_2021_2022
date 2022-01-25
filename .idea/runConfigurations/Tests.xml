@@ -2,7 +2,7 @@
   <configuration default="false" name="Tests" type="JUnit" factoryName="JUnit">
     <module name="Robotics_2021_2022.TeamCode" />
     <option name="ALTERNATIVE_JRE_PATH" value="11" />
-    <option name="PACKAGE_NAME" value="org.firstinspires.ftc.teamcode.unitTests" />
+    <option name="PACKAGE_NAME" value="org.firstinspires.ftc.teamcode" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />

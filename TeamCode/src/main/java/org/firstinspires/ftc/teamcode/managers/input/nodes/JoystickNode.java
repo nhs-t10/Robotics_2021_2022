@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import org.firstinspires.ftc.teamcode.managers.input.buttonhandles.ButtonHandle;
 
+import androidx.annotation.NonNull;
+
 public class JoystickNode extends InputManagerInputNode {
     private final String key;
     private ButtonHandle keyHandle;
@@ -24,6 +26,7 @@ public class JoystickNode extends InputManagerInputNode {
 
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         this.result.setFloat(keyHandle.get());

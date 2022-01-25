@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class ComboNode extends InputManagerInputNode {
     InputManagerInputNode[] conditionals;
 
@@ -55,6 +57,7 @@ public class ComboNode extends InputManagerInputNode {
         this.lastChildResult = lastResult;
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         if(comboMatch && lastChildResult != null) {

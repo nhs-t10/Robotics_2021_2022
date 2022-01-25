@@ -3,32 +3,22 @@ package org.firstinspires.ftc.teamcode.managers.input;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 
 public class InputManagerNodeResult {
-    public static final InputManagerNodeResult FALSE = new InputManagerNodeResult(false);
+    public static final InputManagerNodeResult FALSE = new InputManagerNodeResult();
 
     private float value;
-    private InputManagerNodeResult[] childs;
+    private InputManagerNodeResult[] childs = new InputManagerNodeResult[0];
 
     public InputManagerNodeResult(float v) {
         this.value = v;
     }
-    public InputManagerNodeResult(float[] v) {
-        this.childs = new InputManagerNodeResult[v.length];
-        for(int i = 0; i < v.length; i++) childs[i] = new InputManagerNodeResult(v[i]);
-    }
-    public InputManagerNodeResult(InputManagerNodeResult[] v) {
-        this.childs = v;
-    }
 
-    public InputManagerNodeResult(boolean result) {
-        this(result?1f:0f);
-    }
 
     public InputManagerNodeResult() {
         this.value = 0;
     }
 
     public float[] getFloatArray() {
-        if(this.childs == null || this.childs.length == 0) return new float[] {value};
+        if(this.childs.length == 0) return new float[] {value};
 
         float[] values = new float[childs.length];
         for(int i = 0; i < values.length; i++) {
@@ -37,8 +27,9 @@ public class InputManagerNodeResult {
         return values;
     }
     public void setFloatArray(float[] f) {
-        this.childs = new InputManagerNodeResult[f.length];
-        for(int i = 0; i < f.length; i++) childs[i] = new InputManagerNodeResult(f[i]);
+        InputManagerNodeResult[] childCopy = new InputManagerNodeResult[f.length];
+        for(int i = 0; i < f.length; i++) childCopy[i] = new InputManagerNodeResult(f[i]);
+        this.childs = childCopy;
     }
 
     public float getFloat() {
@@ -56,8 +47,9 @@ public class InputManagerNodeResult {
     public String toString() {
         if(childs == null || childs.length == 0) return "" + value;
 
+        InputManagerNodeResult[] ch = childs;
         StringBuilder r = new StringBuilder("[");
-        for(InputManagerNodeResult c : childs) r.append(c).append(",");
+        for(InputManagerNodeResult c : ch) r.append(c).append(",");
         return r.append("]").toString();
     }
 
@@ -70,7 +62,9 @@ public class InputManagerNodeResult {
     }
 
     public void copyValuesFrom(InputManagerNodeResult other) {
-        this.childs = other.childs;
+        InputManagerNodeResult[] oChilds = other.childs;
+        this.childs = new InputManagerNodeResult[oChilds.length];
+        System.arraycopy(oChilds, 0, childs, 0, oChilds.length);
         this.value = other.value;
     }
 

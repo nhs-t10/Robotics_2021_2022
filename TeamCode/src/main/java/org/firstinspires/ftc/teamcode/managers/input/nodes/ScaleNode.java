@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class ScaleNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
     private InputManagerInputNode scale;
@@ -39,6 +41,7 @@ public class ScaleNode extends InputManagerInputNode {
         scale.update();
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         float scaleFactor = scale.getResult().getFloat();

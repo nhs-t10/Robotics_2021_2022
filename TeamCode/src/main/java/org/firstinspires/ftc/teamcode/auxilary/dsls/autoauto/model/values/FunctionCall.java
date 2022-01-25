@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class FunctionCall extends AutoautoValue {
     public AutoautoValue[] args;
@@ -64,6 +65,12 @@ public class FunctionCall extends AutoautoValue {
 
         AutoautoCallableValue fn = (AutoautoCallableValue)val;
 
+        AutoautoPrimitive context = new AutoautoUndefined();
+        //if this function is being called *on* an object (e.g. `foo.bar()`), then that object will be the context!
+        if(functionName instanceof AutoautoTailedValue) {
+            context = ((AutoautoTailedValue)functionName).head.getResolvedValue();
+        }
+
         //set scope! this makes nested functions work
         val.setScope(scope);
 
@@ -76,7 +83,7 @@ public class FunctionCall extends AutoautoValue {
         AutoautoPrimitive[] argsResolved = new AutoautoPrimitive[Math.max(args.length, argNames.length)];
 
         for(int i = 0; i < argsResolved.length; i++) {
-            if(i < args.length && !(args[i] instanceof TitledArgument)) {
+            if(i < args.length) {
                 argsResolved[i] = args[i].getResolvedValue();
             } else {
                 argsResolved[i] = new AutoautoUndefined();
@@ -84,20 +91,19 @@ public class FunctionCall extends AutoautoValue {
             //set the location it's being called from, for error reporting purposes
             if(argsResolved[i].getLocation() == null) argsResolved[i].setLocation(this.location);
         }
-        boolean titledArgExists = false;
         //copy in titledarguments to their positions
+        List<String> argNameList = Arrays.asList(argNames);
         for(int i = 0; i < args.length; i++) {
             if(args[i] instanceof TitledArgument) {
-                titledArgExists = true;
                 String argTitle = ((TitledArgument) args[i]).getResolvedValue().title.getString();
-                int index = Arrays.asList(argNames).indexOf(argTitle);
+                int index = argNameList.indexOf(argTitle);
                 AutoautoPrimitive resolvedArg = ((TitledArgument) this.args[i]).getResolvedValue().value;
 
                 if (index != -1) argsResolved[index] = resolvedArg;
             }
         }
 
-        this.returnValue = fn.call(argsResolved);
+        this.returnValue = fn.call(context, argsResolved);
     }
 
     @NotNull

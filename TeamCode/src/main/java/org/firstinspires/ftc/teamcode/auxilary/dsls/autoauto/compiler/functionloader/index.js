@@ -6,7 +6,7 @@ var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinspires/ftc/teamcode/managers");
 
-var CACHE_VERSION = 1000;
+var CACHE_VERSION = 9001;
 
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
@@ -49,7 +49,9 @@ for (var i = 0; i < managers.length; i++) {
         cacheManagers[manager].javaSha = sha
         var preexistingNames = methods.map(x=>x[1].map(y=>y[0])).flat();
         
-        cacheManagers[manager].methods = generateAaMethods(fileContent, preexistingNames);
+        var generated = generateAaMethods(fileContent, preexistingNames);
+
+        if(generated) cacheManagers[manager].methods = generated;
         
         methods.push(cacheManagers[manager].methods);
     }

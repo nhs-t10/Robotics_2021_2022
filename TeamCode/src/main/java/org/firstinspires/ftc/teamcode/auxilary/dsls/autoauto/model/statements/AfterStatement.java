@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -28,7 +28,7 @@ public class AfterStatement extends Statement {
     }
 
     public AfterStatement(AutoautoUnitValue wait, Statement action) {
-        this.wait = wait;
+        this.wait = wait.convertToNaturalUnit();
         this.action = action;
     }
 
@@ -54,36 +54,28 @@ public class AfterStatement extends Statement {
     }
 
     String[][] unitMethodMapping = new String[][] {
-            {"D", DistanceUnit.naturalDistanceUnit.name, "getCentimeters"},
-            {"D", RotationUnit.naturalRotationUnit.name, "getThirdAngleOrientation"},
-            {"D", "ticks", "getTicks"}
+            {DistanceUnit.naturalDistanceUnit.name, "getCentimeters"},
+            {RotationUnit.naturalRotationUnit.name, "getThirdAngleOrientation"},
+            {"ticks", "getTicks"}
     };
 
     private boolean unitExistsInMethodMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[1].equals(unit)) return true;
+            if(s[0].equals(unit)) return true;
         }
         return false;
     }
     private String getUnitMethodFromMapping(String unit) {
         for(String[] s : unitMethodMapping) {
-            if(s[1].equals(unit)) return s[2];
+            if(s[0].equals(unit)) return s[1];
         }
         throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
-    }
-    private boolean checkUnitIsDistance(String unit) {
-        for(String[] s : unitMethodMapping) {
-            if(s[1].equals(unit)){
-                return s[0].equals("D");
-            }
-        }
-        return false;
     }
 
     @Override
     public void stepInit() {
 
-        if(unitExistsInMethodMapping(wait.unit) && wait.unitType == AutoautoUnitValue.UnitType.UNKNOWN) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+        if(unitExistsInMethodMapping(wait.originalUnitName) && wait.unitType == AutoautoUnitValue.UnitType.UNKNOWN) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
 
         switch (wait.unitType) {
             case TIME:
@@ -91,8 +83,8 @@ public class AfterStatement extends Statement {
                 break;
             case DISTANCE:
             case ROTATION:
-                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
-                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
+                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit.name));
+                this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
                 break;
         }
     }
@@ -100,15 +92,13 @@ public class AfterStatement extends Statement {
     public void loop() {
         switch (wait.unitType) {
             case TIME:
-                if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
+                if (System.currentTimeMillis() >= stepStartTime + wait.value) action.loop();
                 break;
             case DISTANCE:
             case ROTATION:
-                double targetDifference = wait.baseAmount;
+                double targetDifference = wait.value;
                 float referPoint = stepStartTick;
-                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoPrimitive[0])).getFloat();
-
-                FeatureManager.logger.log("curpos " + (Math.abs(currentPosition)));
+                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
 
                 if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
                 break;

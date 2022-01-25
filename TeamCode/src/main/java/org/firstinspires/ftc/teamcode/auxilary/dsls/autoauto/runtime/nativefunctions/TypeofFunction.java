@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions;
 
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoBooleanValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoBooleanValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoFunction;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoNumericValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPrimitive;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoString;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUndefined;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoUnitValue;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.ResolvedTitledArg;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUnitValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoRelation;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunction;
 
 public class TypeofFunction extends NativeFunction {
@@ -24,7 +23,7 @@ public class TypeofFunction extends NativeFunction {
     }
 
     @Override
-    public AutoautoPrimitive call(AutoautoPrimitive[] args) {
+    public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) {
         if(args.length == 0 || args[0] == null) return new AutoautoUndefined();
 
         AutoautoPrimitive p = args[0];
@@ -41,7 +40,7 @@ public class TypeofFunction extends NativeFunction {
         if(p instanceof AutoautoBooleanValue) return "boolean";
         if(p instanceof AutoautoCallableValue) return "function";
         if(p instanceof AutoautoUndefined) return "undefined";
-        if(p instanceof ResolvedTitledArg) return type(((ResolvedTitledArg)p).value);
+        if(p instanceof AutoautoRelation) return type(((AutoautoRelation)p).value);
         return "object";
     }
 }

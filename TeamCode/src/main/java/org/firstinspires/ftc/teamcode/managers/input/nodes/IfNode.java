@@ -4,12 +4,12 @@ import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
+import androidx.annotation.NonNull;
+
 public class IfNode extends InputManagerInputNode {
     private final InputManagerInputNode node;
     private final InputManagerInputNode nodeIfOff;
     private final InputManagerInputNode nodeIfOn;
-
-    private InputManager boss;
 
     private boolean wasPressed;
     private boolean toggledOn;
@@ -23,7 +23,9 @@ public class IfNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
+        node.init(boss);
+        nodeIfOff.init(boss);
+        nodeIfOn.init(boss);
     }
 
     @Override
@@ -35,6 +37,7 @@ public class IfNode extends InputManagerInputNode {
         on = node.getResult().getBool();
     }
 
+    @NonNull
     @Override
     public InputManagerNodeResult getResult() {
         if(on) return nodeIfOn.getResult();

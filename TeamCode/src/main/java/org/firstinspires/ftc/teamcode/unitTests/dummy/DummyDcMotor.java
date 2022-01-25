@@ -20,7 +20,12 @@ public class DummyDcMotor implements DcMotor {
 
     private static int dummyIDcounter;
 
-    public DummyDcMotor() {
+    public DummyDcMotor(String deviceName, DummyImu imu) {
+        if(deviceName.equals("fl")) imu.setFl(this);
+        if(deviceName.equals("fr")) imu.setFr(this);
+        if(deviceName.equals("bl")) imu.setBl(this);
+        if(deviceName.equals("br")) imu.setBr(this);
+
         this.ticksPerRot = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
         (new DummyMotorMovementThread(this)).start();
     }
@@ -109,7 +114,7 @@ public class DummyDcMotor implements DcMotor {
 
     @Override
     public void setPower(double p) {
-        this.power = p;
+        this.power = Math.min(1, Math.max(-1, p));
     }
 
     @Override

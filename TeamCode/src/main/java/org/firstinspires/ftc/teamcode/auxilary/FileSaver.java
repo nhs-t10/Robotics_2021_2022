@@ -79,10 +79,8 @@ public class FileSaver {
     public void overwriteFile(String newContent) {
         if(this.filePathname == null) return;
 
-        try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname));
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(filePathname))) {
             output.write(newContent);
-            output.close();
         } catch (Throwable e) {
             FeatureManager.logger.log(e.toString());
             for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);
@@ -92,11 +90,9 @@ public class FileSaver {
     public void appendLine(String line) {
         if(this.filePathname == null) return;
 
-        try {
-            BufferedWriter output = new BufferedWriter(new FileWriter(filePathname, true));
+        try (BufferedWriter output = new BufferedWriter(new FileWriter(filePathname, true))) {
             output.newLine();
             output.write(line);
-            output.close();
         } catch (Throwable e) {
             FeatureManager.logger.log(e.toString());
             for(StackTraceElement t : e.getStackTrace()) FeatureManager.logger.log(t);

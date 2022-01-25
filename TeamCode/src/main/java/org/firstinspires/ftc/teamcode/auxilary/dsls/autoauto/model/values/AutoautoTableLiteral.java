@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
-import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoTable;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoRelation;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class AutoautoTableLiteral extends AutoautoValue {
     private AutoautoValue[] elems;
@@ -28,23 +29,11 @@ public class AutoautoTableLiteral extends AutoautoValue {
     @NotNull
     @Override
     public AutoautoTable getResolvedValue() {
-        HashMap<String, AutoautoPrimitive> resolved = new HashMap<>();
-        for(int i = 0; i < elems.length; i++) {
-            if(elems[i] == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-
-            AutoautoPrimitive key = new AutoautoNumericValue(i);
-            AutoautoPrimitive value = elems[i].getResolvedValue();
-
-            if(value instanceof ResolvedTitledArg) {
-                key = ((ResolvedTitledArg)value).title;
-                value = ((ResolvedTitledArg)value).value;
-            }
-
-            if(value == null) throw new AutoautoWhatIsGoingOnSomeoneTriedToPutANullIntoATableException("Null element attempted to put into a table");
-
-            resolved.put(key.getString(), value);
+        ArrayList<AutoautoPrimitive> resolved = new ArrayList<>();
+        for (AutoautoValue elem : elems) {
+            resolved.add(elem.getResolvedValue());
         }
-        return new AutoautoTable(resolved);
+        return new AutoautoTable(resolved.toArray(new AutoautoPrimitive[0]));
     }
 
     @Override
