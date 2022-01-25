@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.unitTests.autoauto;
 
+import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,6 +15,8 @@ import org.junit.Test;
 public class DiggityDriveTest {
     @Test
     public void runTest() {
+        if(!testRunTypeIs("long")) return;
+
         DiggityDrive__autoauto opmode = new DiggityDrive__autoauto();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();

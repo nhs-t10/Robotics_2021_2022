@@ -1,22 +1,52 @@
-const arrayReader = require("../array-reader");
-const bitwiseyHelpers = require("../bitwisey-helpers");
 var structuredSerialise = require("./index");
 
 
-var t = [
-    3,
-    "and I'm not sure why?",
-    {fef: 3},
-    [1,2,3],
-    {fef: 3, foof: 2},
-    new Date(1998)
-];
+var t = [];
+
+for(var i = 0; i < 1; i++) {
+    t.push(generateRandomObject());
+}
+
+function generateRandomObject(d) {
+    d = +d || 0;
+    if(d > 10) return "";
+
+    var o = {};
+    var f = Math.random() * 10;
+    for(var i = 0; i < f; i++) {
+        var t = Math.random();
+
+        if(t < 0.2) o[i.toString(16)] = null;
+        else if(t < 0.4) o[i.toString(16)] = Math.random() * 3000;
+        else if(t < 0.6) o[i.toString(16)] = (Math.random() * 3000).toString(16);
+        else if(t < 0.8) o[i.toString(16)] = generateRandomObject(d + 1);
+        else o[i] = Array.from(generateRandomObject(d + 1));
+
+        o.length = i + 1;
+    }
+    return o;
+}
+
+var timeStart = Date.now();
 
 t.forEach(x=> {
-    console.log("===");
-    console.log("Testing", x);
     var p = structuredSerialise.toBuffer(x);
-    console.log("Buffer", p);
-    var r = structuredSerialise.fromBuffer(p);
-    console.log("Re-Deserialised", r);
-})
+    //var r = structuredSerialise.fromBuffer(p);
+});
+
+var structuredSerialiseTime = Date.now() - timeStart;
+
+console.log("===");
+console.log("Structured Serialise: ", structuredSerialiseTime);
+
+timeStart = Date.now();
+
+t.forEach(x=> {
+    var p = JSON.stringify(x);
+    var r = JSON.parse(p);
+});
+
+var jsonTime = Date.now() - timeStart;
+
+console.log("JSON: ", jsonTime);
+console.log("===");

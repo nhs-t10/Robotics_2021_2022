@@ -9,12 +9,15 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
+import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ExampleTeleopCarouselHangingTest {
     @Test
     public void runTest() {
+        if(!testRunTypeIs("long")) return;
+
         SingleController opmode = new SingleController();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();

@@ -8,732 +8,229 @@ import static org.junit.Assert.assertEquals;
 public class DistanceUnitTest {
     @Test
     public void test() {
-        assertEquals(16.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("m"), 16600.0), 0.0166);
-        assertEquals(3.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("m"), 3299.9999999999995), 0.0033);
-        assertEquals(18.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("m"), 18200.0), 0.0182);
 
-        assertEquals(4.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("nm"), 0.000004), 0.004);
-        assertEquals(16.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("nm"), 0.000016100000000000002), 0.0161);
-        assertEquals(8.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("nm"), 0.000008400000000000001), 0.008400000000000001);
-
-        assertEquals(3.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("cm"), 32.0), 0.0032);
-        assertEquals(5.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("cm"), 50.99999999999999), 0.0050999999999999995);
-        assertEquals(17.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("cm"), 178.00000000000003), 0.0178);
-
-        assertEquals(5.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("in"), 149.85999999999999), 0.005900000000000001);
-        assertEquals(10.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("in"), 256.53999999999996), 0.0101);
-        assertEquals(9.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("in"), 248.92), 0.009800000000000001);
-
-        assertEquals(8.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ft"), 2438.4), 0.008);
-        assertEquals(17.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ft"), 5242.56), 0.0172);
-        assertEquals(10.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ft"), 3230.88), 0.0106);
-
-        assertEquals(2.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("yd"), 2011.68), 0.0022);
-        assertEquals(12.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("yd"), 11155.679999999998), 0.012199999999999999);
-        assertEquals(5.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("yd"), 4937.76), 0.0054);
-
-        assertEquals(0.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fathom"), 365.76000000000005), 0.0002);
-        assertEquals(0.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fathom"), 1645.92), 0.0009);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fathom"), 24688.8), 0.0135);
-
-        assertEquals(12.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("km"), 12900000.0), 0.0129);
-        assertEquals(13.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("km"), 13900000.0), 0.013900000000000001);
-        assertEquals(9.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("km"), 9600000.0), 0.0096);
-
-        assertEquals(9.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("mil"), 15610636.8), 0.009699999999999999);
-        assertEquals(18.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("mil"), 30416601.599999998), 0.0189);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("mil"), 13357555.200000001), 0.0083);
-
-        assertEquals(15.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("au"), 2333726782920000.0), 0.0156);
-        assertEquals(17.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("au"), 2573083376040000.0), 0.0172);
-        assertEquals(10.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("au"), 1570777642350000.0), 0.0105);
-
-        assertEquals(2.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fbf"), 317147.85699999996), 0.0029);
-        assertEquals(15.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fbf"), 1651356.0829999999), 0.015099999999999999);
-        assertEquals(18.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("fbf"), 2045056.8709999998), 0.018699999999999998);
-
-        assertEquals(10.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ftcf"), 55961.27999999999), 0.010199999999999999);
-        assertEquals(15.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ftcf"), 83941.92), 0.015300000000000001);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("ftcf"), 83393.27999999998), 0.0152);
-
-        assertEquals(2.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("rbtw"), 1143.0), 0.0025);
-        assertEquals(6.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("rbtw"), 3108.9599999999996), 0.0068);
-        assertEquals(1.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mm"), DistanceUnit.forAbbreviation("rbtw"), 868.6799999999998), 0.0019);
-
-        assertEquals(2.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mm"), 0.0025), 0.0025);
-        assertEquals(9.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mm"), 0.009000000000000001), 0.009);
-        assertEquals(12.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mm"), 0.0128), 0.0128);
-
-        assertEquals(4.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("nm"), 4.4000000000000005e-9), 0.0044);
-        assertEquals(19.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("nm"), 1.93e-8), 0.0193);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("nm"), 1.52e-8), 0.0152);
-
-        assertEquals(0.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("cm"), 0.003), 0.0003);
-        assertEquals(12.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("cm"), 0.128), 0.0128);
-        assertEquals(15.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("cm"), 0.156), 0.0156);
-
-        assertEquals(12.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("in"), 0.30479999999999996), 0.012);
-        assertEquals(13.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("in"), 0.35306), 0.013900000000000001);
-        assertEquals(8.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("in"), 0.22097999999999998), 0.0087);
-
-        assertEquals(6.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ft"), 1.9812), 0.0065);
-        assertEquals(3.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ft"), 1.09728), 0.0036);
-        assertEquals(10.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ft"), 3.2918400000000005), 0.0108);
-
-        assertEquals(15.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("yd"), 14.081760000000001), 0.0154);
-        assertEquals(1.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("yd"), 1.28016), 0.0014);
-        assertEquals(11.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("yd"), 10.5156), 0.0115);
-
-        assertEquals(17.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fathom"), 31.0896), 0.017);
-        assertEquals(4.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fathom"), 8.59536), 0.0047);
-        assertEquals(2.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fathom"), 4.93776), 0.0027);
-
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("km"), 6600.0), 0.0066);
-        assertEquals(15.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("km"), 15700.0), 0.0157);
-        assertEquals(4.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("km"), 4300.0), 0.0043);
-
-        assertEquals(2.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mil"), 4345.228800000001), 0.0027);
-        assertEquals(4.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mil"), 6920.1792), 0.0043);
-        assertEquals(0.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("mil"), 321.8688), 0.0002);
-
-        assertEquals(11.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("au"), 1705415725980.0), 0.0114);
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("au"), 2438445292410.0), 0.016300000000000002);
-        assertEquals(17.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("au"), 2677801885530.0), 0.0179);
-
-        assertEquals(15.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fbf"), 1695.1006149999998), 0.0155);
-        assertEquals(12.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fbf"), 1399.825024), 0.0128);
-        assertEquals(5.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("fbf"), 645.231847), 0.005900000000000001);
-
-        assertEquals(18.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ftcf"), 99.30384000000001), 0.0181);
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ftcf"), 57.05856), 0.0104);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("ftcf"), 74.0664), 0.0135);
-
-        assertEquals(7.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("rbtw"), 3.56616), 0.0078);
-        assertEquals(19.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("rbtw"), 8.77824), 0.0192);
-        assertEquals(13.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("m"), DistanceUnit.forAbbreviation("rbtw"), 6.30936), 0.013800000000000002);
-
-        assertEquals(4.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mm"), 4700000.0), 0.0047);
-        assertEquals(6.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mm"), 6700000.0), 0.0067);
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mm"), 6600000.0), 0.0066);
-
-        assertEquals(15.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("m"), 15099999999.999998), 0.015099999999999999);
-        assertEquals(16.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("m"), 16399999999.999998), 0.016399999999999998);
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("m"), 10400000000.0), 0.0104);
-
-        assertEquals(0.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("cm"), 1000000.0), 0.0001);
-        assertEquals(14.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("cm"), 141999999.99999997), 0.014199999999999999);
-        assertEquals(15.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("cm"), 154000000.0), 0.0154);
-
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("in"), 386079999.99999994), 0.0152);
-        assertEquals(17.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("in"), 452120000.0), 0.0178);
-        assertEquals(11.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("in"), 294639999.99999994), 0.0116);
-
-        assertEquals(18.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ft"), 5577840000.0), 0.0183);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ft"), 4114799999.9999995), 0.0135);
-        assertEquals(16.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ft"), 4907280000.000001), 0.0161);
-
-        assertEquals(5.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("yd"), 5394960000.0), 0.005900000000000001);
-        assertEquals(2.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("yd"), 2103119999.9999995), 0.0023);
-        assertEquals(2.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("yd"), 1828799999.9999998), 0.002);
-
-        assertEquals(1.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fathom"), 1828799999.9999998), 0.001);
-        assertEquals(0.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fathom"), 1097280000.0), 0.0006);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fathom"), 27797759999.999996), 0.0152);
-
-        assertEquals(13.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("km"), 13600000000000.0), 0.0136);
-        assertEquals(5.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("km"), 5000000000000.0), 0.005);
-        assertEquals(12.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("km"), 12900000000000.0), 0.0129);
-
-        assertEquals(17.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mil"), 28807257599999.996), 0.0179);
-        assertEquals(0.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mil"), 1448409600000.0), 0.0009);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("mil"), 21726144000000.0), 0.0135);
-
-        assertEquals(4.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("au"), 628311056940000000000.0), 0.004200000000000001);
-        assertEquals(18.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("au"), 2.7675606079499996e+21), 0.0185);
-        assertEquals(18.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("au"), 2.72268124674e+21), 0.0182);
-
-        assertEquals(2.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fbf"), 229658793000.0), 0.0021000000000000003);
-        assertEquals(3.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fbf"), 415573053999.99994), 0.0038);
-        assertEquals(14.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("fbf"), 1585739284999.9998), 0.0145);
-
-        assertEquals(14.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ftcf"), 81198719999.99998), 0.0148);
-        assertEquals(5.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ftcf"), 30175199999.999996), 0.0055);
-        assertEquals(13.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("ftcf"), 72420480000.0), 0.0132);
-
-        assertEquals(15.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("rbtw"), 7223760000.0), 0.0158);
-        assertEquals(13.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("rbtw"), 5989320000.0), 0.013099999999999999);
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("nm"), DistanceUnit.forAbbreviation("rbtw"), 2194560000.0), 0.0048);
-
-        assertEquals(1.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mm"), 0.11), 0.0011);
-        assertEquals(17.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mm"), 1.77), 0.0177);
-        assertEquals(2.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mm"), 0.21000000000000002), 0.0021000000000000003);
-
-        assertEquals(14.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("m"), 1470.0), 0.0147);
-        assertEquals(10.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("m"), 1000.0), 0.01);
-        assertEquals(6.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("m"), 610.0), 0.0060999999999999995);
-
-        assertEquals(15.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("nm"), 0.00000159), 0.0159);
-        assertEquals(19.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("nm"), 0.00000193), 0.0193);
-        assertEquals(19.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("nm"), 0.0000019500000000000004), 0.0195);
-
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("in"), 41.402), 0.016300000000000002);
-        assertEquals(3.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("in"), 9.652), 0.0038);
-        assertEquals(19.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("in"), 49.022), 0.0193);
-
-        assertEquals(17.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ft"), 524.256), 0.0172);
-        assertEquals(11.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ft"), 347.47200000000004), 0.0114);
-        assertEquals(18.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ft"), 563.8800000000001), 0.0185);
-
-        assertEquals(11.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("yd"), 1051.56), 0.0115);
-        assertEquals(17.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("yd"), 1618.4879999999998), 0.0177);
-        assertEquals(6.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("yd"), 548.64), 0.006);
-
-        assertEquals(7.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fathom"), 1371.6), 0.0075);
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fathom"), 1901.952), 0.0104);
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fathom"), 877.824), 0.0048);
-
-        assertEquals(6.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("km"), 680000.0), 0.0068);
-        assertEquals(10.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("km"), 1080000.0), 0.0108);
-        assertEquals(12.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("km"), 1260000.0), 0.0126);
-
-        assertEquals(14.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mil"), 2349642.2399999998), 0.0146);
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mil"), 1673717.7600000002), 0.0104);
-        assertEquals(8.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("mil"), 1367942.4000000001), 0.0085);
-
-        assertEquals(18.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("au"), 270772145967000.0), 0.0181);
-        assertEquals(17.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("au"), 261796273725000.0), 0.0175);
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("au"), 95742637248000.0), 0.0064);
-
-        assertEquals(5.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fbf"), 55774.27829999999), 0.0050999999999999995);
-        assertEquals(7.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fbf"), 79833.77089999999), 0.0073);
-        assertEquals(3.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("fbf"), 33902.0123), 0.0031);
-
-        assertEquals(20.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ftcf"), 10972.8), 0.02);
-        assertEquals(1.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ftcf"), 1042.416), 0.0019);
-        assertEquals(15.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("ftcf"), 8558.784), 0.0156);
-
-        assertEquals(0.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("rbtw"), 27.432), 0.0006);
-        assertEquals(6.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("rbtw"), 297.18), 0.0065);
-        assertEquals(1.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("cm"), DistanceUnit.forAbbreviation("rbtw"), 64.008), 0.0014);
-
-        assertEquals(19.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mm"), 0.7637795275590552), 0.019399999999999997);
-        assertEquals(17.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mm"), 0.6929133858267718), 0.0176);
-        assertEquals(15.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mm"), 0.6062992125984252), 0.0154);
-
-        assertEquals(2.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("m"), 98.4251968503937), 0.0025);
-        assertEquals(11.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("m"), 464.5669291338583), 0.011800000000000001);
-        assertEquals(3.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("m"), 153.54330708661416), 0.0039);
-
-        assertEquals(2.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("nm"), 8.267716535433073e-8), 0.0021000000000000003);
-        assertEquals(17.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("nm"), 6.811023622047245e-7), 0.0173);
-        assertEquals(2.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("nm"), 7.874015748031497e-8), 0.002);
-
-        assertEquals(13.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("cm"), 5.118110236220473), 0.013);
-        assertEquals(3.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("cm"), 1.535433070866142), 0.0039);
-        assertEquals(19.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("cm"), 7.559055118110237), 0.0192);
-
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ft"), 228.0), 0.019);
-        assertEquals(7.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ft"), 90.0), 0.0075);
-        assertEquals(5.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ft"), 60.0), 0.005);
-
-        assertEquals(18.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("yd"), 648.0), 0.018);
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("yd"), 586.8000000000001), 0.016300000000000002);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("yd"), 547.1999999999999), 0.0152);
-
-        assertEquals(5.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fathom"), 360.0), 0.005);
-        assertEquals(15.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fathom"), 1130.3999999999999), 0.0157);
-        assertEquals(0.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fathom"), 28.800000000000004), 0.0004);
-
-        assertEquals(9.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("km"), 374015.74803149607), 0.0095);
-        assertEquals(11.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("km"), 460629.9212598425), 0.011699999999999999);
-        assertEquals(7.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("km"), 311023.6220472441), 0.0079);
-
-        assertEquals(9.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mil"), 601920.0), 0.0095);
-        assertEquals(10.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mil"), 665280.0000000001), 0.0105);
-        assertEquals(1.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("mil"), 107712.0), 0.0017);
-
-        assertEquals(1.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("au"), 10601423907874.016), 0.0018);
-        assertEquals(17.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("au"), 101891463114566.94), 0.0173);
-        assertEquals(0.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("au"), 1766903984645.6694), 0.0003);
-
-        assertEquals(7.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fbf"), 30138.949212598425), 0.007);
-        assertEquals(19.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fbf"), 83097.38854330708), 0.0193);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("fbf"), 35736.18263779528), 0.0083);
-
-        assertEquals(7.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ftcf"), 1555.2), 0.0072);
-        assertEquals(6.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ftcf"), 1360.8), 0.0063);
-        assertEquals(16.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("ftcf"), 3456.0), 0.016);
-
-        assertEquals(2.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("rbtw"), 36.0), 0.002);
-        assertEquals(15.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("rbtw"), 286.2), 0.0159);
-        assertEquals(8.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("in"), DistanceUnit.forAbbreviation("rbtw"), 144.0), 0.008);
-
-        assertEquals(18.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mm"), 0.05905511811023623), 0.018);
-        assertEquals(1.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mm"), 0.003937007874015747), 0.0012);
-        assertEquals(14.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mm"), 0.04691601049868766), 0.0143);
-
-        assertEquals(9.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("m"), 29.527559055118108), 0.009);
-        assertEquals(18.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("m"), 59.38320209973753), 0.0181);
-        assertEquals(16.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("m"), 54.46194225721785), 0.0166);
-
-        assertEquals(12.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("nm"), 3.9370078740157486e-8), 0.012);
-        assertEquals(6.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("nm"), 2.1981627296587926e-8), 0.0067);
-        assertEquals(11.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("nm"), 3.805774278215223e-8), 0.0116);
-
-        assertEquals(4.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("cm"), 0.14435695538057744), 0.0044);
-        assertEquals(8.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("cm"), 0.28215223097112857), 0.0086);
-        assertEquals(9.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("cm"), 0.3215223097112861), 0.009800000000000001);
-
-        assertEquals(1.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("in"), 0.14166666666666664), 0.0017);
-        assertEquals(11.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("in"), 0.9499999999999998), 0.0114);
-        assertEquals(16.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("in"), 1.3833333333333333), 0.0166);
-
-        assertEquals(4.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("yd"), 12.899999999999999), 0.0043);
-        assertEquals(7.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("yd"), 21.599999999999998), 0.0072);
-        assertEquals(13.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("yd"), 41.4), 0.013800000000000002);
-
-        assertEquals(17.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fathom"), 107.39999999999998), 0.0179);
-        assertEquals(17.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fathom"), 104.39999999999999), 0.0174);
-        assertEquals(3.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fathom"), 21.0), 0.0035);
-
-        assertEquals(13.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("km"), 44619.422572178475), 0.0136);
-        assertEquals(13.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("km"), 44619.422572178475), 0.0136);
-        assertEquals(9.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("km"), 30183.727034120733), 0.0092);
-
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mil"), 54912.00000000001), 0.0104);
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mil"), 25344.0), 0.0048);
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("mil"), 42768.0), 0.0081);
-
-        assertEquals(18.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("au"), 9227165253149.605), 0.0188);
-        assertEquals(11.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("au"), 5742437950098.425), 0.011699999999999999);
-        assertEquals(3.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("au"), 1865065317125.9841), 0.0038);
-
-        assertEquals(5.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fbf"), 2081.022683727034), 0.0058);
-        assertEquals(13.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fbf"), 4700.240889107611), 0.013099999999999999);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("fbf"), 2978.015219816273), 0.0083);
-
-        assertEquals(16.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("ftcf"), 295.19999999999993), 0.016399999999999998);
-        assertEquals(16.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("ftcf"), 291.59999999999997), 0.0162);
-        assertEquals(10.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("ftcf"), 185.4), 0.0103);
-
-        assertEquals(5.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("rbtw"), 8.7), 0.0058);
-        assertEquals(17.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("rbtw"), 26.099999999999998), 0.0174);
-        assertEquals(3.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ft"), DistanceUnit.forAbbreviation("rbtw"), 4.65), 0.0031);
-
-        assertEquals(3.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mm"), 0.00426509186351706), 0.0039);
-        assertEquals(1.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mm"), 0.0016404199475065617), 0.0015);
-        assertEquals(7.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mm"), 0.007655293088363955), 0.007);
-
-        assertEquals(16.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("m"), 18.37270341207349), 0.016800000000000002);
-        assertEquals(9.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("m"), 10.608048993875764), 0.009699999999999999);
-        assertEquals(10.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("m"), 11.482939632545932), 0.0105);
-
-        assertEquals(1.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("nm"), 1.3123359580052494e-9), 0.0012);
-        assertEquals(13.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("nm"), 1.509186351706037e-8), 0.013800000000000002);
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("nm"), 7.217847769028872e-9), 0.0066);
-
-        assertEquals(15.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("cm"), 0.17279090113735784), 0.0158);
-        assertEquals(10.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("cm"), 0.10936132983377078), 0.01);
-        assertEquals(16.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("cm"), 0.17935258092738407), 0.016399999999999998);
-
-        assertEquals(13.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("in"), 0.38333333333333336), 0.013800000000000002);
-        assertEquals(9.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("in"), 0.26944444444444443), 0.009699999999999999);
-        assertEquals(14.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("in"), 0.38888888888888884), 0.014);
-
-        assertEquals(8.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ft"), 2.9), 0.0087);
-        assertEquals(7.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ft"), 2.466666666666667), 0.0074);
-        assertEquals(2.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ft"), 0.9000000000000001), 0.0027);
-
-        assertEquals(13.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fathom"), 26.8), 0.0134);
-        assertEquals(1.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fathom"), 2.0), 0.001);
-        assertEquals(10.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fathom"), 20.0), 0.01);
-
-        assertEquals(2.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("km"), 2952.755905511811), 0.0027);
-        assertEquals(1.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("km"), 1640.4199475065616), 0.0015);
-        assertEquals(8.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("km"), 9186.351706036745), 0.008400000000000001);
-
-        assertEquals(16.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mil"), 29040.0), 0.0165);
-        assertEquals(0.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mil"), 176.0), 0.0001);
-        assertEquals(14.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("mil"), 24640.0), 0.014);
-
-        assertEquals(16.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("au"), 2732157087368.7666), 0.0167);
-        assertEquals(9.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("au"), 1554221097604.9868), 0.0095);
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("au"), 1047054213123.3596), 0.0064);
-
-        assertEquals(5.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fbf"), 597.9950240594926), 0.005);
-        assertEquals(17.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fbf"), 2033.1830818022745), 0.017);
-        assertEquals(6.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("fbf"), 729.5539293525809), 0.0060999999999999995);
-
-        assertEquals(0.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ftcf"), 2.4), 0.0004);
-        assertEquals(6.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ftcf"), 41.400000000000006), 0.006900000000000001);
-        assertEquals(0.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("ftcf"), 5.4), 0.0009);
-
-        assertEquals(10.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("rbtw"), 5.45), 0.0109);
-        assertEquals(4.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("rbtw"), 2.45), 0.004900000000000001);
-        assertEquals(12.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("yd"), DistanceUnit.forAbbreviation("rbtw"), 6.4), 0.0128);
-
-        assertEquals(0.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mm"), 0.00005468066491688539), 0.0001);
-        assertEquals(11.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mm"), 0.006288276465441819), 0.0115);
-        assertEquals(2.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mm"), 0.0015310586176727908), 0.0028);
-
-        assertEquals(10.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("m"), 5.741469816272966), 0.0105);
-        assertEquals(14.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("m"), 7.928696412948382), 0.0145);
-        assertEquals(16.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("m"), 9.186351706036746), 0.016800000000000002);
-
-        assertEquals(15.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("nm"), 8.256780402449694e-9), 0.015099999999999999);
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("nm"), 3.608923884514436e-9), 0.0066);
-        assertEquals(19.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("nm"), 1.0826771653543308e-8), 0.0198);
-
-        assertEquals(7.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("cm"), 0.038823272090988625), 0.0070999999999999995);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("cm"), 0.04538495188101488), 0.0083);
-        assertEquals(1.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("cm"), 0.006561679790026247), 0.0012);
-
-        assertEquals(9.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("in"), 0.1375), 0.0099);
-        assertEquals(11.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("in"), 0.15555555555555553), 0.0112);
-        assertEquals(1.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("in"), 0.018055555555555557), 0.0013);
-
-        assertEquals(1.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ft"), 0.31666666666666665), 0.0019);
-        assertEquals(8.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ft"), 1.45), 0.0087);
-        assertEquals(17.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ft"), 2.9333333333333336), 0.0176);
-
-        assertEquals(8.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("yd"), 4.25), 0.0085);
-        assertEquals(17.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("yd"), 8.85), 0.0177);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("yd"), 6.75), 0.0135);
-
-        assertEquals(1.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("km"), 984.2519685039371), 0.0018);
-        assertEquals(0.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("km"), 218.72265966754156), 0.0004);
-        assertEquals(7.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("km"), 4101.049868766404), 0.0075);
-
-        assertEquals(4.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mil"), 3872.0000000000005), 0.0044);
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mil"), 14344.000000000002), 0.016300000000000002);
-        assertEquals(15.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("mil"), 13728.0), 0.0156);
-
-        assertEquals(0.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("au"), 57260777280.18373), 0.0007);
-        assertEquals(6.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("au"), 564427661761.811), 0.006900000000000001);
-        assertEquals(0.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("au"), 49080666240.15748), 0.0006);
-
-        assertEquals(14.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("fbf"), 849.1529341644793), 0.014199999999999999);
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("fbf"), 484.3759694881889), 0.0081);
-        assertEquals(14.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("fbf"), 843.1729839238845), 0.0141);
-
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ftcf"), 56.99999999999999), 0.019);
-        assertEquals(13.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ftcf"), 41.699999999999996), 0.013900000000000001);
-        assertEquals(4.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("ftcf"), 13.799999999999997), 0.0046);
-
-        assertEquals(14.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("rbtw"), 3.575), 0.0143);
-        assertEquals(6.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("rbtw"), 1.725), 0.006900000000000001);
-        assertEquals(19.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fathom"), DistanceUnit.forAbbreviation("rbtw"), 4.8), 0.0192);
-
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mm"), 0.0000135), 0.0135);
-        assertEquals(16.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mm"), 0.000016100000000000002), 0.0161);
-        assertEquals(17.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mm"), 0.000017100000000000002), 0.0171);
-
-        assertEquals(3.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("m"), 0.0033), 0.0033);
-        assertEquals(16.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("m"), 0.0161), 0.0161);
-        assertEquals(6.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("m"), 0.0063), 0.0063);
-
-        assertEquals(13.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("nm"), 1.3e-11), 0.013);
-        assertEquals(11.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("nm"), 1.1e-11), 0.011);
-        assertEquals(3.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("nm"), 3.700000000000001e-12), 0.0037);
-
-        assertEquals(7.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("cm"), 0.000079), 0.0079);
-        assertEquals(4.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("cm"), 0.000046), 0.0046);
-        assertEquals(0.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("cm"), 0.000009), 0.0009);
-
-        assertEquals(11.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("in"), 0.00028447999999999993), 0.0112);
-        assertEquals(13.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("in"), 0.00033782), 0.013300000000000001);
-        assertEquals(12.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("in"), 0.00032004), 0.0126);
-
-        assertEquals(2.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ft"), 0.00079248), 0.0026);
-        assertEquals(18.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ft"), 0.005699760000000001), 0.018699999999999998);
-        assertEquals(18.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ft"), 0.00557784), 0.0183);
-
-        assertEquals(8.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("yd"), 0.00786384), 0.0086);
-        assertEquals(3.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("yd"), 0.0032918400000000003), 0.0036);
-        assertEquals(6.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("yd"), 0.0059436), 0.0065);
-
-        assertEquals(6.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fathom"), 0.0109728), 0.006);
-        assertEquals(17.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fathom"), 0.03145536), 0.0172);
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fathom"), 0.01170432), 0.0064);
-
-        assertEquals(4.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mil"), 7.563916800000001), 0.0047);
-        assertEquals(14.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mil"), 22.530815999999998), 0.014);
-        assertEquals(6.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("mil"), 9.656064), 0.006);
-
-        assertEquals(18.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("au"), 2812439969.16), 0.0188);
-        assertEquals(17.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("au"), 2662842098.46), 0.0178);
-        assertEquals(8.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("au"), 1271581900.95), 0.0085);
-
-        assertEquals(5.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fbf"), 0.6124234479999999), 0.0056);
-        assertEquals(10.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fbf"), 1.192038497), 0.0109);
-        assertEquals(6.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("fbf"), 0.65616798), 0.006);
-
-        assertEquals(17.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ftcf"), 0.09491472000000001), 0.0173);
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ftcf"), 0.03511296), 0.0064);
-        assertEquals(17.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("ftcf"), 0.09546336), 0.0174);
-
-        assertEquals(12.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("rbtw"), 0.005715), 0.0125);
-        assertEquals(5.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("rbtw"), 0.00237744), 0.0052);
-        assertEquals(9.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("km"), DistanceUnit.forAbbreviation("rbtw"), 0.00452628), 0.0099);
-
-        assertEquals(10.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("mm"), 0.000006710808876163207), 0.0108);
-        assertEquals(1.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("mm"), 0.0000011806052652509345), 0.0019);
-        assertEquals(4.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("mm"), 0.000002609759007396803), 0.004200000000000001);
-
-        assertEquals(2.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("m"), 0.0018019764574882685), 0.0029);
-        assertEquals(3.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("m"), 0.0024233476497256025), 0.0039);
-        assertEquals(16.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("m"), 0.010376898910363476), 0.0167);
-
-        assertEquals(8.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("nm"), 5.530203610912272e-12), 0.0089);
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("nm"), 1.1806052652509346e-11), 0.019);
-        assertEquals(9.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("nm"), 5.716614968583472e-12), 0.0092);
-
-        assertEquals(16.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("cm"), 0.00010190487552692275), 0.016399999999999998);
-        assertEquals(8.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("cm"), 0.000050952437763461375), 0.008199999999999999);
-        assertEquals(19.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("cm"), 0.00012116738248628013), 0.0195);
-
-        assertEquals(1.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("in"), 0.000015782828282828283), 0.001);
-        assertEquals(15.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("in"), 0.0002446338383838384), 0.0155);
-        assertEquals(2.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("in"), 0.00003472222222222222), 0.0022);
-
-        assertEquals(16.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ft"), 0.0030303030303030303), 0.016);
-        assertEquals(18.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ft"), 0.003522727272727273), 0.018600000000000002);
-        assertEquals(14.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ft"), 0.0026515151515151512), 0.014);
-
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("yd"), 0.002727272727272727), 0.0048);
-        assertEquals(19.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("yd"), 0.01130681818181818), 0.019899999999999998);
-        assertEquals(6.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("yd"), 0.003693181818181818), 0.0065);
-
-        assertEquals(14.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fathom"), 0.016022727272727272), 0.0141);
-        assertEquals(19.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fathom"), 0.022272727272727274), 0.019600000000000003);
-        assertEquals(11.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fathom"), 0.013409090909090909), 0.011800000000000001);
-
-        assertEquals(2.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("km"), 1.429153742145868), 0.0023);
-        assertEquals(0.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("km"), 0.0621371192237334), 0.0001);
-        assertEquals(2.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("km"), 1.4912908613696014), 0.0024);
-
-        assertEquals(4.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("au"), 381118809.81940466), 0.0040999999999999995);
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("au"), 446187874.9105225), 0.0048);
-        assertEquals(7.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("au"), 725055296.7295991), 0.0078);
-
-        assertEquals(1.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fbf"), 0.10193097001014076), 0.0015);
-        assertEquals(10.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fbf"), 0.7067213920703094), 0.0104);
-        assertEquals(9.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("fbf"), 0.6115858200608446), 0.009);
-
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ftcf"), 0.021818181818181816), 0.0064);
-        assertEquals(4.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ftcf"), 0.01636363636363636), 0.0048);
-        assertEquals(7.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("ftcf"), 0.02625), 0.0077);
-
-        assertEquals(9.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("rbtw"), 0.002613636363636363), 0.0092);
-        assertEquals(3.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("rbtw"), 0.0008806818181818182), 0.0031);
-        assertEquals(1.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("mil"), DistanceUnit.forAbbreviation("rbtw"), 0.0002840909090909091), 0.001);
-
-        assertEquals(14.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mm"), 9.960034812179983e-14), 0.0149);
-        assertEquals(5.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mm"), 3.342293561134223e-14), 0.005);
-        assertEquals(16.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mm"), 1.1163260494188303e-13), 0.0167);
-
-        assertEquals(10.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("m"), 6.75143299349113e-11), 0.0101);
-        assertEquals(4.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("m"), 2.673834848907378e-11), 0.004);
-        assertEquals(16.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("m"), 1.1029568751742935e-10), 0.0165);
-
-        assertEquals(17.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("nm"), 1.1363798107856358e-19), 0.017);
-        assertEquals(10.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("nm"), 7.152508220827236e-20), 0.0107);
-        assertEquals(13.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("nm"), 8.957346743839717e-20), 0.0134);
-
-        assertEquals(3.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("cm"), 2.6069889776846937e-13), 0.0039);
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("cm"), 5.414515569037441e-13), 0.0081);
-        assertEquals(1.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("cm"), 8.68996325894898e-14), 0.0013);
-
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("in"), 1.3752869545355098e-12), 0.0081);
-        assertEquals(0.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("in"), 1.3583081032449482e-13), 0.0008);
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("in"), 1.3752869545355098e-12), 0.0081);
-
-        assertEquals(16.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ft"), 3.4229364201772696e-11), 0.016800000000000002);
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ft"), 3.321063312433898e-11), 0.016300000000000002);
-        assertEquals(19.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ft"), 3.993425823540148e-11), 0.019600000000000003);
-
-        assertEquals(16.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("yd"), 1.0207685395885785e-10), 0.0167);
-        assertEquals(19.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("yd"), 1.2102525199912486e-10), 0.0198);
-        assertEquals(7.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("yd"), 4.767661442389768e-11), 0.0078);
-
-        assertEquals(15.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fathom"), 1.9437388957435207e-10), 0.0159);
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fathom"), 2.3227068565488612e-10), 0.019);
-        assertEquals(17.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fathom"), 2.1760095813984073e-10), 0.0178);
-
-        assertEquals(17.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("km"), 1.1764873335192463e-7), 0.0176);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("km"), 9.024192615062401e-8), 0.0135);
-        assertEquals(10.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("km"), 6.75143299349113e-8), 0.0101);
-
-        assertEquals(2.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mil"), 2.5818720426479975e-8), 0.0024);
-        assertEquals(14.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mil"), 1.5060920248779983e-7), 0.014);
-        assertEquals(8.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("mil"), 9.57444215815299e-8), 0.0089);
-
-        assertEquals(2.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fbf"), 1.6082777440227297e-9), 0.0022);
-        assertEquals(14.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fbf"), 1.0819323005243818e-8), 0.0148);
-        assertEquals(5.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("fbf"), 4.020694360056824e-9), 0.0055);
-
-        assertEquals(4.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ftcf"), 1.5403213890797712e-10), 0.004200000000000001);
-        assertEquals(11.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ftcf"), 4.3275696169384045e-10), 0.011800000000000001);
-        assertEquals(11.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("ftcf"), 4.3275696169384045e-10), 0.011800000000000001);
-
-        assertEquals(1.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("rbtw"), 3.9730512019914735e-12), 0.0013);
-        assertEquals(13.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("rbtw"), 4.1869847282525524e-11), 0.013699999999999999);
-        assertEquals(15.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("au"), DistanceUnit.forAbbreviation("rbtw"), 4.8287853070357905e-11), 0.0158);
-
-        assertEquals(17.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mm"), 0.0001581911997595494), 0.0173);
-        assertEquals(19.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mm"), 0.00017647919973175165), 0.0193);
-        assertEquals(18.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mm"), 0.00017282159973731117), 0.0189);
-
-        assertEquals(2.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("m"), 0.019202399970812353), 0.0021000000000000003);
-        assertEquals(3.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("m"), 0.030175199954133695), 0.0033);
-        assertEquals(16.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("m"), 0.14721839977622805), 0.0161);
-
-        assertEquals(9.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("nm"), 8.503919987074043e-11), 0.009300000000000001);
-        assertEquals(14.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("nm"), 1.353311997942966e-10), 0.0148);
-        assertEquals(14.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("nm"), 1.2984479980263591e-10), 0.014199999999999999);
-
-        assertEquals(19.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("cm"), 0.0018013679972619207), 0.0197);
-        assertEquals(16.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("cm"), 0.0014630399977761794), 0.016);
-        assertEquals(7.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("cm"), 0.0006949439989436851), 0.0076);
-
-        assertEquals(1.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("in"), 0.00044128943932924007), 0.0019);
-        assertEquals(13.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("in"), 0.0031122518352693774), 0.0134);
-        assertEquals(1.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("in"), 0.00039483791939984634), 0.0017);
-
-        assertEquals(10.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ft"), 0.029264457555518028), 0.0105);
-        assertEquals(17.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ft"), 0.049331514165016105), 0.0177);
-        assertEquals(2.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ft"), 0.006967727989409054), 0.0025);
-
-        assertEquals(16.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("yd"), 0.13963326890775743), 0.0167);
-        assertEquals(11.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("yd"), 0.09197400946019951), 0.011);
-        assertEquals(18.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("yd"), 0.15635581608233917), 0.018699999999999998);
-
-        assertEquals(18.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("fathom"), 0.3060226132948457), 0.0183);
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("fathom"), 0.22575438685685334), 0.0135);
-        assertEquals(15.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("fathom"), 0.25585497177110045), 0.015300000000000001);
-
-        assertEquals(1.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("km"), 10.058399984711233), 0.0011);
-        assertEquals(11.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("km"), 100.58399984711232), 0.011);
-        assertEquals(1.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("km"), 14.630399977761792), 0.0016);
-
-        assertEquals(2.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mil"), 29.431683027263844), 0.002);
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mil"), 279.6009887590065), 0.019);
-        assertEquals(4.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("mil"), 64.74970265998046), 0.0044);
-
-        assertEquals(1.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("au"), 1504715220.361713), 0.0011);
-        assertEquals(5.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("au"), 7797160687.3288765), 0.0057);
-        assertEquals(6.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("au"), 8207537565.609344), 0.006);
-
-        assertEquals(7.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ftcf"), 0.3561902548185908), 0.0070999999999999995);
-        assertEquals(19.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ftcf"), 0.9531851889511584), 0.019);
-        assertEquals(9.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("ftcf"), 0.46154230201845564), 0.0092);
-
-        assertEquals(3.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("rbtw"), 0.013378037739665385), 0.0032);
-        assertEquals(10.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("rbtw"), 0.04222443161581886), 0.0101);
-        assertEquals(0.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("fbf"), DistanceUnit.forAbbreviation("rbtw"), 0.0004180636793645433), 0.0001);
-
-        assertEquals(17.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mm"), 0.0031714785651793527), 0.0174);
-        assertEquals(11.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mm"), 0.0020231846019247595), 0.0111);
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mm"), 0.0012029746281714787), 0.0066);
-
-        assertEquals(7.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("m"), 1.3670166229221348), 0.0075);
-        assertEquals(3.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("m"), 0.6014873140857393), 0.0033);
-        assertEquals(15.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("m"), 2.7340332458442695), 0.015);
-
-        assertEquals(17.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("nm"), 3.226159230096238e-9), 0.0177);
-        assertEquals(3.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("nm"), 5.650335374744825e-10), 0.0031);
-        assertEquals(6.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("nm"), 1.166520851560222e-9), 0.0064);
-
-        assertEquals(0.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("cm"), 0.0009113444152814232), 0.0005);
-        assertEquals(19.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("cm"), 0.03627150772820064), 0.019899999999999998);
-        assertEquals(12.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("cm"), 0.022965879265091863), 0.0126);
-
-        assertEquals(15.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("in"), 0.06944444444444445), 0.015);
-        assertEquals(11.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("in"), 0.05509259259259259), 0.0119);
-        assertEquals(4.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("in"), 0.02175925925925926), 0.0047);
-
-        assertEquals(19.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("ft"), 1.1055555555555556), 0.019899999999999998);
-        assertEquals(13.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("ft"), 0.7555555555555556), 0.0136);
-        assertEquals(3.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("ft"), 0.17222222222222225), 0.0031);
-
-        assertEquals(7.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("yd"), 1.2833333333333334), 0.0077);
-        assertEquals(9.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("yd"), 1.6333333333333335), 0.009800000000000001);
-        assertEquals(17.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("yd"), 2.85), 0.0171);
-
-        assertEquals(5.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fathom"), 1.8666666666666667), 0.0056);
-        assertEquals(5.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fathom"), 1.8), 0.0054);
-        assertEquals(2.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fathom"), 0.7666666666666666), 0.0023);
-
-        assertEquals(8.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("km"), 1622.1930592009332), 0.0089);
-        assertEquals(15.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("km"), 2806.9407990667833), 0.0154);
-        assertEquals(10.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("km"), 1840.9157188684749), 0.0101);
-
-        assertEquals(13.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mil"), 4077.3333333333335), 0.013900000000000001);
-        assertEquals(8.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mil"), 2346.666666666667), 0.008);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("mil"), 4458.666666666667), 0.0152);
-
-        assertEquals(0.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("au"), 5453407360.017498), 0.0002);
-        assertEquals(17.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("au"), 485353255041.5573), 0.0178);
-        assertEquals(4.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("au"), 119974961920.38496), 0.0044);
-
-        assertEquals(18.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fbf"), 370.7569149168854), 0.018600000000000002);
-        assertEquals(5.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fbf"), 103.65247083697871), 0.0052);
-        assertEquals(13.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("fbf"), 271.0910775736366), 0.0136);
-
-        assertEquals(15.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("rbtw"), 1.2583333333333333), 0.015099999999999999);
-        assertEquals(9.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("rbtw"), 0.7583333333333334), 0.0091);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("ftcf"), DistanceUnit.forAbbreviation("rbtw"), 0.6916666666666668), 0.0083);
-
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mm"), 0.02952755905511811), 0.0135);
-        assertEquals(1.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mm"), 0.003937007874015749), 0.0018);
-        assertEquals(11.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mm"), 0.025371828521434818), 0.0116);
-
-        assertEquals(10.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("m"), 23.184601924759406), 0.0106);
-        assertEquals(12.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("m"), 26.684164479440067), 0.012199999999999999);
-        assertEquals(9.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("m"), 21.434820647419073), 0.009800000000000001);
-
-        assertEquals(6.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("nm"), 1.4435695538057744e-8), 0.0066);
-        assertEquals(13.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("nm"), 2.887139107611549e-8), 0.0132);
-        assertEquals(6.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("nm"), 1.4654418197725286e-8), 0.0067);
-
-        assertEquals(1.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("cm"), 0.028433945756780404), 0.0013);
-        assertEquals(13.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("cm"), 0.28652668416447946), 0.013099999999999999);
-        assertEquals(0.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("cm"), 0.010936132983377079), 0.0005);
-
-        assertEquals(10.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("in"), 0.6055555555555555), 0.0109);
-        assertEquals(3.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("in"), 0.17777777777777778), 0.0032);
-        assertEquals(7.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("in"), 0.4388888888888889), 0.0079);
-
-        assertEquals(18.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ft"), 12.066666666666668), 0.0181);
-        assertEquals(4.6, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ft"), 3.066666666666667), 0.0046);
-        assertEquals(8.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ft"), 5.533333333333335), 0.0083);
-
-        assertEquals(2.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("yd"), 4.0), 0.002);
-        assertEquals(13.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("yd"), 27.4), 0.013699999999999999);
-        assertEquals(8.1, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("yd"), 16.2), 0.0081);
-
-        assertEquals(13.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fathom"), 54.0), 0.0135);
-        assertEquals(9.4, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fathom"), 37.6), 0.0094);
-        assertEquals(7.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fathom"), 30.8), 0.0077);
-
-        assertEquals(0.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("km"), 0.0), 0);
-        assertEquals(4.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("km"), 9405.074365704288), 0.0043);
-        assertEquals(9.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("km"), 21434.820647419074), 0.009800000000000001);
-
-        assertEquals(12.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mil"), 42240.0), 0.012);
-        assertEquals(18.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mil"), 66176.00000000001), 0.0188);
-        assertEquals(2.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("mil"), 8096.0), 0.0023);
-
-        assertEquals(12.5, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("au"), 4090055520013.1235), 0.0125);
-        assertEquals(15.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("au"), 4973507512335.958), 0.0152);
-        assertEquals(11.2, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("au"), 3664689745931.759), 0.0112);
-
-        assertEquals(8.0, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fbf"), 1913.5840769903762), 0.008);
-        assertEquals(14.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fbf"), 3420.5315376202975), 0.0143);
-        assertEquals(16.3, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("fbf"), 3898.9275568678913), 0.016300000000000002);
-
-        assertEquals(3.7, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ftcf"), 44.4), 0.0037);
-        assertEquals(1.8, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ftcf"), 21.6), 0.0018);
-        assertEquals(7.9, DistanceUnit.convertBetween(DistanceUnit.forAbbreviation("rbtw"), DistanceUnit.forAbbreviation("ftcf"), 94.8), 0.0079);
+        assertEquals(0.0014739411464704544, DistanceUnit.MM.convertTo(DistanceUnit.M, 1.4739411464704544), 0.014739411464704543);
+        assertEquals(15705776.343516042, DistanceUnit.MM.convertTo(DistanceUnit.NM, 15.705776343516042), 0.15705776343516042);
+        assertEquals(0.905197538466636, DistanceUnit.MM.convertTo(DistanceUnit.CM, 9.05197538466636), 0.0905197538466636);
+        assertEquals(0.5807335943554295, DistanceUnit.MM.convertTo(DistanceUnit.IN, 14.750633296627909), 0.14750633296627907);
+        assertEquals(0.002235727829320764, DistanceUnit.MM.convertTo(DistanceUnit.FT, 0.6814498423769688), 0.006814498423769688);
+        assertEquals(0.0025900243165454194, DistanceUnit.MM.convertTo(DistanceUnit.YD, 2.3683182350491316), 0.023683182350491317);
+        assertEquals(0.000553925704397888, DistanceUnit.MM.convertTo(DistanceUnit.FATHOM, 1.0130193282028577), 0.010130193282028577);
+        assertEquals(0.000015527453016535104, DistanceUnit.MM.convertTo(DistanceUnit.KM, 15.527453016535105), 0.15527453016535106);
+        assertEquals(0.000011897094040263273, DistanceUnit.MM.convertTo(DistanceUnit.MIL, 19.146516911133457), 0.19146516911133457);
+        assertEquals(2.8098761459793278e-14, DistanceUnit.MM.convertTo(DistanceUnit.AU, 4.203574714385074), 0.04203574714385074);
+        assertEquals(0.0002162042523894489, DistanceUnit.MM.convertTo(DistanceUnit.FBF, 19.769716838491206), 0.19769716838491205);
+        assertEquals(0.0010026458842183643, DistanceUnit.MM.convertTo(DistanceUnit.FTCF, 5.500916379175633), 0.055009163791756334);
+        assertEquals(0.03005326201044916, DistanceUnit.MM.convertTo(DistanceUnit.RBTW, 13.740351391177356), 0.13740351391177355);
+        assertEquals(0.03253425231106856, DistanceUnit.MM.convertTo(DistanceUnit.HTDG, 13.221920139218263), 0.13221920139218263);
+        assertEquals(16961.49080782992, DistanceUnit.M.convertTo(DistanceUnit.MM, 16.961490807829918), 0.16961490807829918);
+
+        assertEquals(12079112331.632982, DistanceUnit.M.convertTo(DistanceUnit.NM, 12.079112331632981), 0.12079112331632981);
+        assertEquals(796.4830756708031, DistanceUnit.M.convertTo(DistanceUnit.CM, 7.964830756708032), 0.07964830756708033);
+        assertEquals(8.513138133845326, DistanceUnit.M.convertTo(DistanceUnit.IN, 0.21623370859967128), 0.0021623370859967126);
+        assertEquals(12.76768520847887, DistanceUnit.M.convertTo(DistanceUnit.FT, 3.89159045154436), 0.0389159045154436);
+        assertEquals(10.620500340676804, DistanceUnit.M.convertTo(DistanceUnit.YD, 9.71138551151487), 0.0971138551151487);
+        assertEquals(5.733748845179098, DistanceUnit.M.convertTo(DistanceUnit.FATHOM, 10.485879888063533), 0.10485879888063533);
+        assertEquals(0.0019358203065831692, DistanceUnit.M.convertTo(DistanceUnit.KM, 1.9358203065831692), 0.01935820306583169);
+        assertEquals(0.007367760866335556, DistanceUnit.M.convertTo(DistanceUnit.MIL, 11.85726174367193), 0.1185726174367193);
+        assertEquals(9.29875367224928e-11, DistanceUnit.M.convertTo(DistanceUnit.AU, 13.91093549368492), 0.1391093549368492);
+        assertEquals(0.10743094099602207, DistanceUnit.M.convertTo(DistanceUnit.FBF, 9.823485244676258), 0.09823485244676258);
+        assertEquals(1.2484025081445043, DistanceUnit.M.convertTo(DistanceUnit.FTCF, 6.849235520684007), 0.06849235520684008);
+        assertEquals(23.22580077857976, DistanceUnit.M.convertTo(DistanceUnit.RBTW, 10.618836115966666), 0.10618836115966665);
+        assertEquals(26.425369309654197, DistanceUnit.M.convertTo(DistanceUnit.HTDG, 10.739270087443465), 0.10739270087443466);
+        assertEquals(0.000008363419525011618, DistanceUnit.NM.convertTo(DistanceUnit.MM, 8.363419525011619), 0.08363419525011619);
+        assertEquals(1.61888150619329e-8, DistanceUnit.NM.convertTo(DistanceUnit.M, 16.1888150619329), 0.16188815061932899);
+
+        assertEquals(0.0000012262256674526777, DistanceUnit.NM.convertTo(DistanceUnit.CM, 12.262256674526778), 0.12262256674526778);
+        assertEquals(4.607297091580264e-7, DistanceUnit.NM.convertTo(DistanceUnit.IN, 11.70253461261387), 0.11702534612613871);
+        assertEquals(5.5559427877966486e-8, DistanceUnit.NM.convertTo(DistanceUnit.FT, 16.934513617204185), 0.16934513617204186);
+        assertEquals(1.912382324246518e-8, DistanceUnit.NM.convertTo(DistanceUnit.YD, 17.486823972910162), 0.17486823972910162);
+        assertEquals(3.3189622170085826e-9, DistanceUnit.NM.convertTo(DistanceUnit.FATHOM, 6.069718102465296), 0.060697181024652956);
+        assertEquals(1.9257868275961463e-11, DistanceUnit.NM.convertTo(DistanceUnit.KM, 19.257868275961464), 0.19257868275961465);
+        assertEquals(5.012836700343692e-12, DistanceUnit.NM.convertTo(DistanceUnit.MIL, 8.067378666677918), 0.08067378666677918);
+        assertEquals(7.175792182132677e-20, DistanceUnit.NM.convertTo(DistanceUnit.AU, 10.734985104470486), 0.10734985104470486);
+        assertEquals(1.9163156786866656e-10, DistanceUnit.NM.convertTo(DistanceUnit.FBF, 17.52279056591087), 0.1752279056591087);
+        assertEquals(3.089816697003062e-9, DistanceUnit.NM.convertTo(DistanceUnit.FTCF, 16.9519703264376), 0.169519703264376);
+        assertEquals(6.334874030200363e-9, DistanceUnit.NM.convertTo(DistanceUnit.RBTW, 2.896304406607606), 0.02896304406607606);
+        assertEquals(1.5626922099558194e-8, DistanceUnit.NM.convertTo(DistanceUnit.HTDG, 6.350781141260451), 0.0635078114126045);
+        assertEquals(128.49115880067214, DistanceUnit.CM.convertTo(DistanceUnit.MM, 12.849115880067213), 0.12849115880067213);
+        assertEquals(0.13760405230555756, DistanceUnit.CM.convertTo(DistanceUnit.M, 13.760405230555754), 0.13760405230555756);
+        assertEquals(104974807.98941869, DistanceUnit.CM.convertTo(DistanceUnit.NM, 10.497480798941869), 0.10497480798941869);
+
+        assertEquals(3.425135714105708, DistanceUnit.CM.convertTo(DistanceUnit.IN, 8.699844713828497), 0.08699844713828497);
+        assertEquals(0.6114884334606591, DistanceUnit.CM.convertTo(DistanceUnit.FT, 18.63816745188089), 0.18638167451880888);
+        assertEquals(0.12284533075155063, DistanceUnit.CM.convertTo(DistanceUnit.YD, 11.232977043921789), 0.1123297704392179);
+        assertEquals(0.062693956011863, DistanceUnit.CM.convertTo(DistanceUnit.FATHOM, 11.465470675449506), 0.11465470675449506);
+        assertEquals(0.00014963902556466464, DistanceUnit.CM.convertTo(DistanceUnit.KM, 14.963902556466465), 0.14963902556466466);
+        assertEquals(0.0001241810072629875, DistanceUnit.CM.convertTo(DistanceUnit.MIL, 19.984995895264536), 0.19984995895264535);
+        assertEquals(2.015429705891256e-13, DistanceUnit.CM.convertTo(DistanceUnit.AU, 3.015082840013319), 0.030150828400133188);
+        assertEquals(0.0010455138718871019, DistanceUnit.CM.convertTo(DistanceUnit.FBF, 9.56017884453566), 0.09560178844535659);
+        assertEquals(0.017243946821171415, DistanceUnit.CM.convertTo(DistanceUnit.FTCF, 9.460718983967485), 0.09460718983967485);
+        assertEquals(0.4246874735643233, DistanceUnit.CM.convertTo(DistanceUnit.RBTW, 19.416711291360862), 0.1941671129136086);
+        assertEquals(0.3809936098105679, DistanceUnit.CM.convertTo(DistanceUnit.HTDG, 15.483580302701476), 0.15483580302701477);
+        assertEquals(169.31860281846534, DistanceUnit.IN.convertTo(DistanceUnit.MM, 6.666086725136431), 0.0666608672513643);
+        assertEquals(0.2547770282937666, DistanceUnit.IN.convertTo(DistanceUnit.M, 10.030591665108922), 0.10030591665108922);
+        assertEquals(423766103.43960106, DistanceUnit.IN.convertTo(DistanceUnit.NM, 16.683704859826815), 0.16683704859826815);
+        assertEquals(31.504822339510547, DistanceUnit.IN.convertTo(DistanceUnit.CM, 12.403473362012027), 0.12403473362012027);
+
+        assertEquals(0.19394742210028348, DistanceUnit.IN.convertTo(DistanceUnit.FT, 2.327369065203402), 0.023273690652034017);
+        assertEquals(0.033483740250610516, DistanceUnit.IN.convertTo(DistanceUnit.YD, 1.2054146490219786), 0.012054146490219787);
+        assertEquals(0.03930966765838293, DistanceUnit.IN.convertTo(DistanceUnit.FATHOM, 2.8302960714035708), 0.028302960714035708);
+        assertEquals(0.00011090766298298055, DistanceUnit.IN.convertTo(DistanceUnit.KM, 4.366443424526794), 0.04366443424526793);
+        assertEquals(0.0001770448869555732, DistanceUnit.IN.convertTo(DistanceUnit.MIL, 11.21756403750512), 0.1121756403750512);
+        assertEquals(1.0036944026706742e-12, DistanceUnit.IN.convertTo(DistanceUnit.AU, 5.9115229385642865), 0.05911522938564286);
+        assertEquals(0.0010690841137890514, DistanceUnit.IN.convertTo(DistanceUnit.FBF, 3.848702809640585), 0.03848702809640585);
+        assertEquals(0.06775247561458297, DistanceUnit.IN.convertTo(DistanceUnit.FTCF, 14.634534732749923), 0.14634534732749924);
+        assertEquals(1.0392398828955902, DistanceUnit.IN.convertTo(DistanceUnit.RBTW, 18.706317892120623), 0.18706317892120622);
+        assertEquals(0.5085611692761125, DistanceUnit.IN.convertTo(DistanceUnit.HTDG, 8.1369787084178), 0.081369787084178);
+        assertEquals(1037.4211790890556, DistanceUnit.FT.convertTo(DistanceUnit.MM, 3.4036127922869275), 0.03403612792286927);
+        assertEquals(5.233667167579615, DistanceUnit.FT.convertTo(DistanceUnit.M, 17.170824040615535), 0.17170824040615534);
+        assertEquals(5210148669.006164, DistanceUnit.FT.convertTo(DistanceUnit.NM, 17.093663612224947), 0.17093663612224946);
+        assertEquals(264.09459486282105, DistanceUnit.FT.convertTo(DistanceUnit.CM, 8.66452082883271), 0.0866452082883271);
+        assertEquals(141.41805085748516, DistanceUnit.FT.convertTo(DistanceUnit.IN, 11.784837571457096), 0.11784837571457096);
+
+        assertEquals(4.380150884556144, DistanceUnit.FT.convertTo(DistanceUnit.YD, 13.140452653668433), 0.13140452653668433);
+        assertEquals(3.1789925862281185, DistanceUnit.FT.convertTo(DistanceUnit.FATHOM, 19.07395551736871), 0.1907395551736871);
+        assertEquals(0.0012039704296063658, DistanceUnit.FT.convertTo(DistanceUnit.KM, 3.9500342178686543), 0.039500342178686546);
+        assertEquals(0.002187367340812414, DistanceUnit.FT.convertTo(DistanceUnit.MIL, 11.549299559489544), 0.11549299559489544);
+        assertEquals(1.4017573244733689e-11, DistanceUnit.FT.convertTo(DistanceUnit.AU, 6.88001626447559), 0.0688001626447559);
+        assertEquals(0.016574891047572867, DistanceUnit.FT.convertTo(DistanceUnit.FBF, 4.97246731427186), 0.0497246731427186);
+        assertEquals(0.2299008535545919, DistanceUnit.FT.convertTo(DistanceUnit.FTCF, 4.1382153639826535), 0.04138215363982654);
+        assertEquals(5.836145848735261, DistanceUnit.FT.convertTo(DistanceUnit.RBTW, 8.754218773102892), 0.08754218773102891);
+        assertEquals(0.9500515421105783, DistanceUnit.FT.convertTo(DistanceUnit.HTDG, 1.266735389480771), 0.01266735389480771);
+        assertEquals(13569.926502902328, DistanceUnit.YD.convertTo(DistanceUnit.MM, 14.840252081039292), 0.14840252081039293);
+        assertEquals(16.386166849719153, DistanceUnit.YD.convertTo(DistanceUnit.M, 17.92012997563337), 0.1792012997563337);
+        assertEquals(8407390549.758722, DistanceUnit.YD.convertTo(DistanceUnit.NM, 9.19443410953491), 0.0919443410953491);
+        assertEquals(74.40758129975924, DistanceUnit.YD.convertTo(DistanceUnit.CM, 0.8137312040656086), 0.008137312040656087);
+        assertEquals(439.51276781429056, DistanceUnit.YD.convertTo(DistanceUnit.IN, 12.208687994841405), 0.12208687994841405);
+        assertEquals(34.35298932926305, DistanceUnit.YD.convertTo(DistanceUnit.FT, 11.450996443087686), 0.11450996443087685);
+
+        assertEquals(1.5747405892752497, DistanceUnit.YD.convertTo(DistanceUnit.FATHOM, 3.1494811785504995), 0.03149481178550499);
+        assertEquals(0.014430814160288687, DistanceUnit.YD.convertTo(DistanceUnit.KM, 15.78173027153181), 0.1578173027153181);
+        assertEquals(0.003324141094609868, DistanceUnit.YD.convertTo(DistanceUnit.MIL, 5.850488326513368), 0.05850488326513368);
+        assertEquals(6.907620544271162e-11, DistanceUnit.YD.convertTo(DistanceUnit.AU, 11.301181467880204), 0.11301181467880203);
+        assertEquals(0.17729623845855827, DistanceUnit.YD.convertTo(DistanceUnit.FBF, 17.729623845855826), 0.17729623845855827);
+        assertEquals(2.021951242536786, DistanceUnit.YD.convertTo(DistanceUnit.FTCF, 12.131707455220715), 0.12131707455220715);
+        assertEquals(15.63283021952298, DistanceUnit.YD.convertTo(DistanceUnit.RBTW, 7.81641510976149), 0.0781641510976149);
+        assertEquals(10.900968190903496, DistanceUnit.YD.convertTo(DistanceUnit.HTDG, 4.8448747515126644), 0.04844874751512664);
+        assertEquals(22066.682515888337, DistanceUnit.FATHOM.convertTo(DistanceUnit.MM, 12.066208724785836), 0.12066208724785836);
+        assertEquals(19.525085137379943, DistanceUnit.FATHOM.convertTo(DistanceUnit.M, 10.676446378707318), 0.10676446378707319);
+        assertEquals(15340001779.992113, DistanceUnit.FATHOM.convertTo(DistanceUnit.NM, 8.388014971561741), 0.08388014971561741);
+        assertEquals(1933.1083395860205, DistanceUnit.FATHOM.convertTo(DistanceUnit.CM, 10.570364936493988), 0.10570364936493988);
+        assertEquals(1411.5234528423846, DistanceUnit.FATHOM.convertTo(DistanceUnit.IN, 19.604492400588672), 0.19604492400588672);
+        assertEquals(21.65603150958983, DistanceUnit.FATHOM.convertTo(DistanceUnit.FT, 3.6093385849316384), 0.03609338584931639);
+        assertEquals(29.65446667822965, DistanceUnit.FATHOM.convertTo(DistanceUnit.YD, 14.827233339114825), 0.14827233339114826);
+
+        assertEquals(0.03218909239990589, DistanceUnit.FATHOM.convertTo(DistanceUnit.KM, 17.60120975497916), 0.17601209754979158);
+        assertEquals(0.00706752071220707, DistanceUnit.FATHOM.convertTo(DistanceUnit.MIL, 6.219418226742222), 0.06219418226742222);
+        assertEquals(7.711571466489352e-11, DistanceUnit.FATHOM.convertTo(DistanceUnit.AU, 6.308240875912112), 0.06308240875912112);
+        assertEquals(0.3279697803340348, DistanceUnit.FATHOM.convertTo(DistanceUnit.FBF, 16.39848901670174), 0.1639848901670174);
+        assertEquals(0.07291437307088552, DistanceUnit.FATHOM.convertTo(DistanceUnit.FTCF, 0.21874311921265654), 0.0021874311921265656);
+        assertEquals(68.58965904780752, DistanceUnit.FATHOM.convertTo(DistanceUnit.RBTW, 17.14741476195188), 0.1714741476195188);
+        assertEquals(11.046407212148063, DistanceUnit.FATHOM.convertTo(DistanceUnit.HTDG, 2.4547571582551253), 0.024547571582551254);
+        assertEquals(8632206.119708706, DistanceUnit.KM.convertTo(DistanceUnit.MM, 8.632206119708705), 0.08632206119708705);
+        assertEquals(4990.344782921853, DistanceUnit.KM.convertTo(DistanceUnit.M, 4.990344782921854), 0.04990344782921854);
+        assertEquals(3425863927974.713, DistanceUnit.KM.convertTo(DistanceUnit.NM, 3.4258639279747127), 0.03425863927974713);
+        assertEquals(1455943.7468627312, DistanceUnit.KM.convertTo(DistanceUnit.CM, 14.559437468627312), 0.14559437468627312);
+        assertEquals(49016.477443199394, DistanceUnit.KM.convertTo(DistanceUnit.IN, 1.2450185270572645), 0.012450185270572645);
+        assertEquals(53541.68999975888, DistanceUnit.KM.convertTo(DistanceUnit.FT, 16.319507111926505), 0.16319507111926504);
+        assertEquals(7871.15971142093, DistanceUnit.KM.convertTo(DistanceUnit.YD, 7.197388440123298), 0.07197388440123298);
+        assertEquals(10631.64275144469, DistanceUnit.KM.convertTo(DistanceUnit.FATHOM, 19.443148263842048), 0.19443148263842047);
+
+        assertEquals(5.093668264398655, DistanceUnit.KM.convertTo(DistanceUnit.MIL, 8.19746445930039), 0.0819746445930039);
+        assertEquals(1.0095307721662721e-7, DistanceUnit.KM.convertTo(DistanceUnit.AU, 15.10258035160743), 0.1510258035160743);
+        assertEquals(24.170327760284536, DistanceUnit.KM.convertTo(DistanceUnit.FBF, 2.210134770400418), 0.02210134770400418);
+        assertEquals(403.7357529480174, DistanceUnit.KM.convertTo(DistanceUnit.FTCF, 2.2150558349740024), 0.022150558349740022);
+        assertEquals(10451.083833850153, DistanceUnit.KM.convertTo(DistanceUnit.RBTW, 4.77823552883629), 0.0477823552883629);
+        assertEquals(13945.559194841195, DistanceUnit.KM.convertTo(DistanceUnit.HTDG, 5.667475256783461), 0.05667475256783461);
+        assertEquals(15762009.899874108, DistanceUnit.MIL.convertTo(DistanceUnit.MM, 9.794058883541435), 0.09794058883541436);
+        assertEquals(26907.566356051986, DistanceUnit.MIL.convertTo(DistanceUnit.M, 16.719586586865198), 0.16719586586865198);
+        assertEquals(5870997081343.744, DistanceUnit.MIL.convertTo(DistanceUnit.NM, 3.6480684560564702), 0.036480684560564705);
+        assertEquals(1305526.185960034, DistanceUnit.MIL.convertTo(DistanceUnit.CM, 8.112163626670457), 0.08112163626670457);
+        assertEquals(610195.5389204659, DistanceUnit.MIL.convertTo(DistanceUnit.IN, 9.630611409729575), 0.09630611409729575);
+        assertEquals(65092.47614881472, DistanceUnit.MIL.convertTo(DistanceUnit.FT, 12.32812048273006), 0.12328120482730061);
+        assertEquals(31881.020758561546, DistanceUnit.MIL.convertTo(DistanceUnit.YD, 18.114216340091787), 0.18114216340091788);
+        assertEquals(7196.560822525256, DistanceUnit.MIL.convertTo(DistanceUnit.FATHOM, 8.177910025596882), 0.08177910025596882);
+        assertEquals(28.371378276261133, DistanceUnit.MIL.convertTo(DistanceUnit.KM, 17.629157144936777), 0.17629157144936777);
+
+        assertEquals(4.540723385566391e-8, DistanceUnit.MIL.convertTo(DistanceUnit.AU, 4.220926156749161), 0.04220926156749161);
+        assertEquals(20.835850921414384, DistanceUnit.MIL.convertTo(DistanceUnit.FBF, 1.1838551659894536), 0.011838551659894536);
+        assertEquals(5371.859428319923, DistanceUnit.MIL.convertTo(DistanceUnit.FTCF, 18.313157141999735), 0.18313157141999736);
+        assertEquals(16412.24867018596, DistanceUnit.MIL.convertTo(DistanceUnit.RBTW, 4.662570644939192), 0.04662570644939192);
+        assertEquals(72476.3736738424, DistanceUnit.MIL.convertTo(DistanceUnit.HTDG, 18.302114564101615), 0.18302114564101615);
+        assertEquals(2269028212485480.0, DistanceUnit.AU.convertTo(DistanceUnit.MM, 15.167300885598127), 0.15167300885598128);
+        assertEquals(2130587100102.7043, DistanceUnit.AU.convertTo(DistanceUnit.M, 14.24189238036567), 0.1424189238036567);
+        assertEquals(2.132981148518835e+21, DistanceUnit.AU.convertTo(DistanceUnit.NM, 14.257895377799699), 0.14257895377799698);
+        assertEquals(271660504519926.56, DistanceUnit.AU.convertTo(DistanceUnit.CM, 18.15912463368493), 0.18159124633684928);
+        assertEquals(25326639937830.527, DistanceUnit.AU.convertTo(DistanceUnit.IN, 4.300111326342884), 0.043001113263428835);
+        assertEquals(8739955032435.41, DistanceUnit.AU.convertTo(DistanceUnit.FT, 17.80707415699407), 0.17807074156994068);
+        assertEquals(2198987477179.012, DistanceUnit.AU.convertTo(DistanceUnit.YD, 13.440869980832142), 0.13440869980832143);
+        assertEquals(69075447918.20314, DistanceUnit.AU.convertTo(DistanceUnit.FATHOM, 0.8444196467433818), 0.008444196467433818);
+        assertEquals(1073690616.3756052, DistanceUnit.AU.convertTo(DistanceUnit.KM, 7.177076312671158), 0.07177076312671157);
+        assertEquals(1207625947.1019232, DistanceUnit.AU.convertTo(DistanceUnit.MIL, 12.991213717999983), 0.12991213717999983);
+
+        assertEquals(21616684728.361877, DistanceUnit.AU.convertTo(DistanceUnit.FBF, 13.212765050544185), 0.13212765050544184);
+        assertEquals(522901374179.8224, DistanceUnit.AU.convertTo(DistanceUnit.FTCF, 19.17677873863755), 0.1917677873863755);
+        assertEquals(4159544280503.458, DistanceUnit.AU.convertTo(DistanceUnit.RBTW, 12.712190140683028), 0.12712190140683027);
+        assertEquals(4546496982818.445, DistanceUnit.AU.convertTo(DistanceUnit.HTDG, 12.350911589688609), 0.1235091158968861);
+        assertEquals(28816.603273557535, DistanceUnit.FBF.convertTo(DistanceUnit.MM, 0.3151422055288444), 0.003151422055288444);
+        assertEquals(1718.5557298208996, DistanceUnit.FBF.convertTo(DistanceUnit.M, 18.794354000666008), 0.18794354000666008);
+        assertEquals(558742434791.3832, DistanceUnit.FBF.convertTo(DistanceUnit.NM, 6.110481570334461), 0.061104815703344605);
+        assertEquals(35674.57159054738, DistanceUnit.FBF.convertTo(DistanceUnit.CM, 3.9014185903923204), 0.03901418590392321);
+        assertEquals(53498.77244782795, DistanceUnit.FBF.convertTo(DistanceUnit.IN, 14.860770124396652), 0.14860770124396652);
+        assertEquals(3776.775729535488, DistanceUnit.FBF.convertTo(DistanceUnit.FT, 12.58925243178496), 0.12589252431784959);
+        assertEquals(427.07637858183256, DistanceUnit.FBF.convertTo(DistanceUnit.YD, 4.270763785818326), 0.04270763785818325);
+        assertEquals(404.89780165293695, DistanceUnit.FBF.convertTo(DistanceUnit.FATHOM, 8.09795603305874), 0.0809795603305874);
+        assertEquals(0.6279312270904798, DistanceUnit.FBF.convertTo(DistanceUnit.KM, 6.867139403876639), 0.06867139403876639);
+        assertEquals(0.7357833851458823, DistanceUnit.FBF.convertTo(DistanceUnit.MIL, 12.949787578567529), 0.1294978757856753);
+        assertEquals(3.5702768270998803e-9, DistanceUnit.FBF.convertTo(DistanceUnit.AU, 5.841135316427626), 0.05841135316427626);
+
+        assertEquals(48.89233077183601, DistanceUnit.FBF.convertTo(DistanceUnit.FTCF, 2.9335398463101603), 0.029335398463101604);
+        assertEquals(2314.315310367838, DistanceUnit.FBF.convertTo(DistanceUnit.RBTW, 11.57157655183919), 0.1157157655183919);
+        assertEquals(2703.4473668758055, DistanceUnit.FBF.convertTo(DistanceUnit.HTDG, 12.015321630559136), 0.12015321630559135);
+        assertEquals(3177.0944137187043, DistanceUnit.FTCF.convertTo(DistanceUnit.MM, 0.5790854501528697), 0.005790854501528697);
+        assertEquals(72.00808728934886, DistanceUnit.FTCF.convertTo(DistanceUnit.M, 13.124833641249065), 0.13124833641249065);
+        assertEquals(29179200088.20255, DistanceUnit.FTCF.convertTo(DistanceUnit.NM, 5.31846020855252), 0.0531846020855252);
+        assertEquals(5242.443728203843, DistanceUnit.FTCF.convertTo(DistanceUnit.CM, 9.555343628251393), 0.09555343628251393);
+        assertEquals(4128.795040247295, DistanceUnit.FTCF.convertTo(DistanceUnit.IN, 19.11479185299674), 0.19114791852996738);
+        assertEquals(120.31951291014735, DistanceUnit.FTCF.convertTo(DistanceUnit.FT, 6.684417383897077), 0.06684417383897076);
+        assertEquals(62.02663630974391, DistanceUnit.FTCF.convertTo(DistanceUnit.YD, 10.337772718290651), 0.10337772718290651);
+        assertEquals(25.76170016684597, DistanceUnit.FTCF.convertTo(DistanceUnit.FATHOM, 8.587233388948658), 0.08587233388948658);
+        assertEquals(0.07262502094477784, DistanceUnit.FTCF.convertTo(DistanceUnit.KM, 13.237281449543934), 0.13237281449543933);
+        assertEquals(0.03249938984503339, DistanceUnit.FTCF.convertTo(DistanceUnit.MIL, 9.533154354543129), 0.09533154354543129);
+        assertEquals(1.7591592300940127e-10, DistanceUnit.FTCF.convertTo(DistanceUnit.AU, 4.796774220291344), 0.047967742202913444);
+        assertEquals(0.8161735885732478, DistanceUnit.FTCF.convertTo(DistanceUnit.FBF, 13.602893142887464), 0.13602893142887462);
+
+        assertEquals(172.059263548019, DistanceUnit.FTCF.convertTo(DistanceUnit.RBTW, 14.338271962334916), 0.14338271962334917);
+        assertEquals(58.720620720825735, DistanceUnit.FTCF.convertTo(DistanceUnit.HTDG, 4.349675608950054), 0.04349675608950054);
+        assertEquals(911.046789275474, DistanceUnit.RBTW.convertTo(DistanceUnit.MM, 1.9926657683190596), 0.019926657683190595);
+        assertEquals(8.475463513745325, DistanceUnit.RBTW.convertTo(DistanceUnit.M, 18.537759216415846), 0.18537759216415847);
+        assertEquals(7609515318.629371, DistanceUnit.RBTW.convertTo(DistanceUnit.NM, 16.64373429271516), 0.1664373429271516);
+        assertEquals(314.24481991031405, DistanceUnit.RBTW.convertTo(DistanceUnit.CM, 6.873246279753151), 0.06873246279753151);
+        assertEquals(188.81897528418557, DistanceUnit.RBTW.convertTo(DistanceUnit.IN, 10.489943071343642), 0.10489943071343642);
+        assertEquals(18.15700755424403, DistanceUnit.RBTW.convertTo(DistanceUnit.FT, 12.104671702829354), 0.12104671702829353);
+        assertEquals(8.160829303654216, DistanceUnit.RBTW.convertTo(DistanceUnit.YD, 16.321658607308432), 0.1632165860730843);
+        assertEquals(3.407059247651815, DistanceUnit.RBTW.convertTo(DistanceUnit.FATHOM, 13.62823699060726), 0.1362823699060726);
+        assertEquals(0.004389641237329122, DistanceUnit.RBTW.convertTo(DistanceUnit.KM, 9.601140064149437), 0.09601140064149437);
+        assertEquals(0.003783758049552389, DistanceUnit.RBTW.convertTo(DistanceUnit.MIL, 13.31882833442441), 0.1331882833442441);
+        assertEquals(4.515542487527174e-11, DistanceUnit.RBTW.convertTo(DistanceUnit.AU, 14.775265882197402), 0.14775265882197403);
+        assertEquals(0.035087837421580906, DistanceUnit.RBTW.convertTo(DistanceUnit.FBF, 7.017567484316181), 0.07017567484316181);
+        assertEquals(0.6582950566431172, DistanceUnit.RBTW.convertTo(DistanceUnit.FTCF, 7.899540679717405), 0.07899540679717405);
+
+        assertEquals(10.044731426471902, DistanceUnit.RBTW.convertTo(DistanceUnit.HTDG, 8.928650156863913), 0.08928650156863913);
+        assertEquals(4467.960429036998, DistanceUnit.HTDG.convertTo(DistanceUnit.MM, 10.9939971186934), 0.10993997118693401);
+        assertEquals(7.786469534731168, DistanceUnit.HTDG.convertTo(DistanceUnit.M, 19.159619918137718), 0.19159619918137719);
+        assertEquals(2808967238.3599963, DistanceUnit.HTDG.convertTo(DistanceUnit.NM, 6.911828834547236), 0.06911828834547236);
+        assertEquals(532.4248698736985, DistanceUnit.HTDG.convertTo(DistanceUnit.CM, 13.101005656341007), 0.13101005656341008);
+        assertEquals(284.17023131602406, DistanceUnit.HTDG.convertTo(DistanceUnit.IN, 17.760639457251504), 0.17760639457251504);
+        assertEquals(4.4012687436703795, DistanceUnit.HTDG.convertTo(DistanceUnit.FT, 3.300951557752785), 0.03300951557752785);
+        assertEquals(1.451526089080038, DistanceUnit.HTDG.convertTo(DistanceUnit.YD, 3.265933700430086), 0.03265933700430086);
+        assertEquals(0.5163670211218265, DistanceUnit.HTDG.convertTo(DistanceUnit.FATHOM, 2.3236515950482195), 0.023236515950482196);
+        assertEquals(0.0028848882820870963, DistanceUnit.HTDG.convertTo(DistanceUnit.KM, 7.098642426395414), 0.07098642426395414);
+        assertEquals(0.002765412760604035, DistanceUnit.HTDG.convertTo(DistanceUnit.MIL, 10.951034531991981), 0.10951034531991981);
+        assertEquals(3.896937147602395e-11, DistanceUnit.HTDG.convertTo(DistanceUnit.AU, 14.345024539402518), 0.14345024539402518);
+        assertEquals(0.014603975818597329, DistanceUnit.HTDG.convertTo(DistanceUnit.FBF, 3.285894559184399), 0.03285894559184399);
+        assertEquals(0.6089222794508076, DistanceUnit.HTDG.convertTo(DistanceUnit.FTCF, 8.220450772585902), 0.08220450772585902);
+        assertEquals(16.513970022231085, DistanceUnit.HTDG.convertTo(DistanceUnit.RBTW, 18.57821627500997), 0.1857821627500997);
     }
 }

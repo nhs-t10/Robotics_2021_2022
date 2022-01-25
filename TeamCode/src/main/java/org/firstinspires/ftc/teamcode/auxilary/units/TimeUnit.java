@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class TimeUnit extends Unit {
 
-    private TimeUnit(String name, String abbr, double perSecond, String pluralName) {
-        this(name, new String[] {abbr}, perSecond, pluralName);
+    private TimeUnit(String name, String abbr, double milliseconds, String pluralName) {
+        this(name, new String[] {abbr}, milliseconds, pluralName);
     }
     private TimeUnit(String name, String[] abbreviations, double milliseconds, String pluralName) {
         super(name, abbreviations, milliseconds, pluralName);
@@ -20,10 +20,10 @@ public class TimeUnit extends Unit {
 
     //Larger than the natural time unit
     public final static TimeUnit S = new TimeUnit("Second", "s", 1000, "Seconds");
-    public final static TimeUnit MIN = new TimeUnit("Minute", new String[] {"min", "mn"}, 1000 * 60, "Minutes");
-    public final static TimeUnit HR = new TimeUnit("Hour", new String[] {"h", "hr"}, 1000 * 60 * 60, "Hours");
-    public final static TimeUnit D = new TimeUnit("Day", "d", 1000 * 60 * 60 * 24, "Days");
-    public final static TimeUnit YR = new TimeUnit("Year", new String[] {"y", "yr"}, 1000.0 * 60 * 60 * 24 * 365, "Years");
+    public final static TimeUnit MIN = new TimeUnit("Minute", new String[] {"min", "mn"}, 60_000, "Minutes");
+    public final static TimeUnit HR = new TimeUnit("Hour", new String[] {"h", "hr"}, 3_600_000, "Hours");
+    public final static TimeUnit D = new TimeUnit("Day", "d", 86_400_000, "Days");
+    public final static TimeUnit YR = new TimeUnit("Year", new String[] {"y", "yr"}, 31_536_000_000.0, "Years");
     public final static TimeUnit JIF = new TimeUnit("Jiffy", new String[] {"jif", "jiff", "jiffy", "jiffies", "jiffie"}, 10, "Jiffies");
 
     public final static TimeUnit naturalTimeUnit = TimeUnit.MS;

@@ -413,6 +413,12 @@ public abstract class PaulMath extends FeatureManager {
         return r;
     }
 
+    /**
+     * Takes all input from {@code in} and puts it into {@code out}. Closes {@code in} after it's done. Will block and not return until the piping is complete.
+     * @param in the stream to get data from. Will be closed.
+     * @param out where to stream the to
+     * @throws IOException if something happens with the streaming.
+     */
     public static void pipeStream(InputStream in, OutputStream out) throws IOException {
         //if either's null, don't care.
         if(in == null || out == null) return;

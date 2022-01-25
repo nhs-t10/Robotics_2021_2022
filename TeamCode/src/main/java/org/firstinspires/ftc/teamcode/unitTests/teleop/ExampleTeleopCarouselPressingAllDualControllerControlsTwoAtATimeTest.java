@@ -13,11 +13,14 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
 
 public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTest {
     @Test
     public void runTest() {
+        if(!testRunTypeIs("long")) return;
+
         DualController opmode = new DualController();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();

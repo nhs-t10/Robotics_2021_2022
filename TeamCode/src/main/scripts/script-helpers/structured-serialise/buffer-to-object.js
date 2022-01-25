@@ -12,33 +12,36 @@ module.exports = function(buf) {
 }
 
 var byteParsers = {
-    "undefined": function(bytes, pool) {
+    "undefined": function(bytes, pool, thisId) {
         return undefined;
     },
-    "boolean": function(bytes, pool) {
+    "boolean": function(bytes, pool, thisId) {
         return !!bytes[0];
     },
-    "number": function(bytes, pool) {
+    "number": function(bytes, pool, thisId) {
         return bitwiseyHelpers.numberFromBytes(bytes);
     },
-    "string": function(bytes, pool) {
+    "string": function(bytes, pool, thisId) {
         return Buffer.from(bytes).toString("utf8");
     },
-    "object": function(bytes, pool) {
+    "object": function(bytes, pool, thisId) {
         var o = {};
         var reader = arrayReader(bytes);
         
         while(reader.hasNext()) {
             var k = hydratePool(pool, reader.readVarint());
-            var v = hydratePool(pool, reader.readVarint());
+            
+            var vId = reader.readVarint();
+            var v = vId == thisId ? o : hydratePool(pool, vId);
+
             o[k] = v;
         }
         return o;
     },
-    "null": function(bytes, pool) {
+    "null": function(bytes, pool, thisId) {
         return null
     },
-    "wellKnownObject": function(bytes, pool) {
+    "wellKnownObject": function(bytes, pool, thisId) {
         var reader = arrayReader(bytes);
         
         var constrName = hydratePool(pool, reader.readVarint());
@@ -57,7 +60,8 @@ var byteParsers = {
         
         while(reader.hasNext()) {
             var k = hydratePool(pool, reader.readVarint());
-            var v = hydratePool(pool, reader.readVarint());
+            var vId = reader.readVarint();
+            var v = vId == thisId ? o : hydratePool(pool, vId);
             o[k] = v;
         }
         return o;
@@ -68,8 +72,10 @@ function hydratePool(pool, index) {
     if(!pool.hasOwnProperty(index)) return undefined;
        
     var entry = pool[index];
-    if(!entry.hydrated) entry.value = byteParsers[entry.type](entry.bytes, pool);
-    entry.hydrated = true;
+    if(!entry.hydrated) {
+        entry.value = byteParsers[entry.type](entry.bytes, pool, index);
+        entry.hydrated = true;
+    }
     return entry.value;
 }
 

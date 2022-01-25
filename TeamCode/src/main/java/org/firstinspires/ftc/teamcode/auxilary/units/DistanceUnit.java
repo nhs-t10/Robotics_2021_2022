@@ -72,15 +72,7 @@ public class DistanceUnit extends Unit {
     }
 
     public static double convertBetween(DistanceUnit unitFrom, DistanceUnit unitTo, double fromAmount) {
-        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
-    }
-    public static double convertBetween(DistanceUnit unitFrom, DistanceUnit unitTo, float fromAmount) {
-        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
-    }
-
-    @Override
-    public double convertToNaturalUnit(double u) {
-        return convertBetween(this, naturalDistanceUnit, u);
+        return unitFrom.convertTo(unitTo, fromAmount);
     }
 
     @Override
