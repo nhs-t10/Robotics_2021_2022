@@ -1,3 +1,5 @@
+var version = require("./version");
+
 var typeCodes = require("./types");
 var bitwiseyTools = require("../../script-helpers/bitwisey-helpers");
 var wellKnownConstructors = require("./well-known-constructors");
@@ -6,11 +8,14 @@ module.exports = function(obj) {
     var valuePool = {
         pool: [],
         invertedPoolMap: new Map()
-    }
+    };
 
     createOrGetIdInValuepool(obj, valuePool);
 
-    return valuePool.pool.map(x=>x.bytes).flat(6);
+    var buffer = valuePool.pool.map(x=>x.bytes).flat(6);
+    
+    buffer.splice(0, 0, version);
+    return buffer;
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
@@ -28,6 +33,7 @@ function createOrGetIdInValuepool(obj, valuePool) {
 
     var poolEntry = {value: obj, id: valuePool.pool.length, bytes: []};
     valuePool.pool.push(poolEntry);
+    valuePool.invertedPoolMap.set(obj, poolEntry.id);
 
     switch(type) {
         case "undefined": poolEntry.bytes = [];
@@ -71,13 +77,12 @@ function getWellKnownInfo(constructorName, obj, valuePool) {
     var constructorPoolId = createOrGetIdInValuepool(constructorName, valuePool);
     var constructorPoolBytes = bitwiseyTools.toVarintBytes(constructorPoolId);
     
-    var paramPoolId = 0;
+    var paramVal = undefined;
     if(typeof obj.valueOf === "function" && !obj.hasOwnProperty("valueOf")) {
-        var paramVal = obj.valueOf();
-        if(paramVal != obj) paramPoolId = createOrGetIdInValuepool(paramVal, valuePool);
+        paramVal = obj.valueOf();
     }
 
-    var paramPoolBytes = bitwiseyTools.toVarintBytes(paramPoolId);
+    var paramPoolBytes = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(paramVal, valuePool));
     
     return constructorPoolBytes.concat(paramPoolBytes);
 }

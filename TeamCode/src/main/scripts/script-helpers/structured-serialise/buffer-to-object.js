@@ -1,3 +1,4 @@
+var version = require("./version");
 var arrayReader = require("../../script-helpers/array-reader");
 var bitwiseyHelpers = require("../bitwisey-helpers");
 var types = require("./types");
@@ -6,77 +7,108 @@ const wellKnownConstructors = require("./well-known-constructors");
 var typesInverted = Object.fromEntries(Object.entries(types).map(x=>[x[1], x[0]]));
 
 module.exports = function(buf) {
-    var pool = {};
+    var bVersion = buf[0];
+    buf = buf.slice(1);
+    if(version != bVersion) throw "Version mismatch in structured-serialise!";
+    
+    var pool = [];
+    
     reconstructPool(pool, arrayReader(buf));
-    return hydratePool(pool, 0);
+    
+    hydratePool(pool);
+    return pool[0].value;
 }
 
 var byteParsers = {
-    "undefined": function(bytes, pool, thisId) {
-        return undefined;
+    "undefined": function(entry, pool, thisId) {
+        entry.value = undefined;
+        entry.hydrated = true;
     },
-    "boolean": function(bytes, pool, thisId) {
-        return !!bytes[0];
+    "boolean": function(entry, pool, thisId) {
+        entry.value = !!entry.bytes[0];
+        entry.hydrated = true;
     },
-    "number": function(bytes, pool, thisId) {
-        return bitwiseyHelpers.numberFromBytes(bytes);
+    "number": function(entry, pool, thisId) {
+        entry.value = bitwiseyHelpers.numberFromBytes(entry.bytes);
+        entry.hydrated = true;
     },
-    "string": function(bytes, pool, thisId) {
-        return Buffer.from(bytes).toString("utf8");
+    "string": function(entry, pool, thisId) {
+        entry.value = Buffer.from(entry.bytes).toString("utf8");
+        entry.hydrated = true;
     },
-    "object": function(bytes, pool, thisId) {
-        var o = {};
-        var reader = arrayReader(bytes);
+    "null": function(entry) {
+        entry.value = null;
+        entry.hydrated = true;
+    },
+    "object": function(entry, pool) {
+        var o = entry.value || {};
+        var reader = arrayReader(entry.bytes);
         
+        var completelyFilled = true;
         while(reader.hasNext()) {
-            var k = hydratePool(pool, reader.readVarint());
+            var k = pool[reader.readVarint()];
+            if(!k.hydrated) completelyFilled = false; 
             
-            var vId = reader.readVarint();
-            var v = vId == thisId ? o : hydratePool(pool, vId);
+            var v = pool[reader.readVarint()];   
+            if(!v.hydrated && v.id != entry.id) completelyFilled = false;
 
-            o[k] = v;
+            if(!k.hydrated) break;
+            o[k.value] = v.value || o;
         }
-        return o;
+        entry.value = o;
+        entry.hydrated = completelyFilled;
     },
-    "null": function(bytes, pool, thisId) {
-        return null
-    },
-    "wellKnownObject": function(bytes, pool, thisId) {
-        var reader = arrayReader(bytes);
+    "wellKnownObject": function(entry, pool) {
+        var reader = arrayReader(entry.bytes);
         
-        var constrName = hydratePool(pool, reader.readVarint());
+        var constrNameEntry = pool[reader.readVarint()];
+        if(!constrNameEntry.hydrated) return;
+        var constrName = constrNameEntry.value;
         
+        var constrArg = undefined;
         var constrArgId = reader.readVarint();
-        var constrArg = constrArgId ? hydratePool(pool, constrArgId) : undefined;
+        if(constrArgId) {
+            var constrArgEntry = pool[constrArgId];
+            if(!constrArgEntry.hydrated) return;
+            constrArg = constrArgEntry.value;
+        }
         
         var constr = wellKnownConstructors.byName(constrName);
-        var o;
+        var o = entry.value;
         
-        try {
-            o = constrArg ? new constr(constrArg) : new constr();
-        } catch(e) {
-            o = Object.create(constr.prototype);
+        if(!o) {
+            try { o = constrArg ? new constr(constrArg) : new constr(); }
+            catch(e) { o = Object.create(constr.prototype); }
         }
+        
+        entry.value = o;
         
         while(reader.hasNext()) {
-            var k = hydratePool(pool, reader.readVarint());
-            var vId = reader.readVarint();
-            var v = vId == thisId ? o : hydratePool(pool, vId);
-            o[k] = v;
+            var k = pool[reader.readVarint()];
+            if(!k.hydrated) return;
+            
+            var v = pool[reader.readVarint()];   
+            if(!v.hydrated && v.id != entry.id) return;
+
+            o[k.value] = v.value || o;
         }
-        return o;
+        entry.hydrated = true;
     }
 }
 
-function hydratePool(pool, index) {
-    if(!pool.hasOwnProperty(index)) return undefined;
-       
-    var entry = pool[index];
-    if(!entry.hydrated) {
-        entry.value = byteParsers[entry.type](entry.bytes, pool, index);
-        entry.hydrated = true;
+function hydratePool(pool) {
+    while(true) {
+        var allHy = true;
+        for(var i = 0; i < pool.length; i++) {
+            var entry = pool[i];
+            if(!entry.hydrated) {
+                byteParsers[entry.type](entry, pool, i);
+                if(!entry.hydrated) allHy = false;
+                console.log("nohyd", entry);
+            }
+        }
+        if(allHy) break;
     }
-    return entry.value;
 }
 
 function reconstructPool(pool, reader) {
@@ -90,10 +122,9 @@ function reconstructPool(pool, reader) {
         
         if(typeCode in typesInverted) {
             var typeName = typesInverted[typeCode];
-            pool[index] = { typeId: typeCode, type: typeName, bytes: contentBytes, id: index };
+            pool.push({ typeId: typeCode, type: typeName, bytes: contentBytes, id: index });
         } else {
-            pool[index] = { typeId: typeCode, type: undefined, bytes: contentBytes, value: undefined };
+            pool.push({ typeId: typeCode, type: undefined, bytes: contentBytes, value: undefined, hydrated: true });
         }
-        index++;
     }
 }
