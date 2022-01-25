@@ -2,8 +2,6 @@ var typeCodes = require("./types");
 var bitwiseyTools = require("../../script-helpers/bitwisey-helpers");
 var wellKnownConstructors = require("./well-known-constructors");
 
-var timeSpentSearchingPool = 0, timeSpentOnEntries = 0;
-
 module.exports = function(obj) {
     var valuePool = {
         pool: [],
@@ -11,8 +9,6 @@ module.exports = function(obj) {
     }
 
     createOrGetIdInValuepool(obj, valuePool);
-
-    console.log("tsse", timeSpentOnEntries);
 
     return valuePool.pool.map(x=>x.bytes).flat(6);
 }
@@ -60,15 +56,13 @@ function getEntriesBytes(obj, valuePool) {
 
     var propNames = Object.getOwnPropertyNames(obj);
     var b = [];
-    var tsE = Date.now();
+    
     for(var i = 0; i < propNames.length; i++) {
         var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(propNames[i], valuePool));
         var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(obj[propNames[i]], valuePool));
 
         b.push(kB, vB);
     }
-
-    timeSpentOnEntries += (Date.now() - tsE);
 
     return b.flat();
 }
