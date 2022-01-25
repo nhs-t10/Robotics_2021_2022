@@ -5,12 +5,16 @@ var wellKnownConstructors = require("./well-known-constructors");
 var timeSpentSearchingPool = 0, timeSpentOnEntries = 0;
 
 module.exports = function(obj) {
-    var valuePool = [];
+    var valuePool = {
+        pool: [],
+        invertedPoolMap: new Map()
+    }
+
     createOrGetIdInValuepool(obj, valuePool);
 
     console.log("tsse", timeSpentOnEntries);
 
-    return valuePool.map(x=>x.bytes).flat(6);
+    return valuePool.pool.map(x=>x.bytes).flat(6);
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
@@ -24,14 +28,10 @@ function createOrGetIdInValuepool(obj, valuePool) {
     if(!typeCodes[type]) throw "Could not serialise value of type " + type;
 
     //by searching from the back, we get more-recent values first
-    for(var i = valuePool.length - 1; i >= 0; i--) {
-        if(valuePool[i].value === obj) {
-            return valuePool[i].id;
-        }
-    }
+    if(valuePool.invertedPoolMap.has(obj)) return valuePool.invertedPoolMap.get(obj);
 
-    var poolEntry = {value: obj, id: valuePool.length, bytes: []};
-    valuePool.push(poolEntry);
+    var poolEntry = {value: obj, id: valuePool.pool.length, bytes: []};
+    valuePool.pool.push(poolEntry);
 
     switch(type) {
         case "undefined": poolEntry.bytes = [];

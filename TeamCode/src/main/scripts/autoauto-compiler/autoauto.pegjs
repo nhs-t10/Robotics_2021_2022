@@ -1,9 +1,9 @@
 autoautoFile = 
-  _ f:frontMatter? _ s:labeledStatepath+ _ {
+  _ f:frontMatter? _ u:unlabeledStatepath? s:labeledStatepath* _ {
   	return {
       type: "Program", location: location(),
       frontMatter: f,
-      statepaths: s
+      statepaths: u ? [u].concat(s) : s
     }
   }
 
@@ -24,7 +24,9 @@ frontMatterKeyValue =
    }
  }
 
-commentOpportunity = _
+unlabeledStatepath = _ s:statepath _ {
+    return { type: "LabeledStatepath", location: location(), statepath: s, label: "<init>" }
+}
 
 labeledStatepath =
  _ l:STATEPATH_LABEL_ID COLON _ s:statepath _  {
@@ -168,9 +170,13 @@ baseExpression = a:atom _ t:tail* _ {
      return value;
 }
 
-tail = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } } /
-	OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } } /
-    DOT a:variableReference { return {type: "TailedValue", head: null, tail: a.variable, location: location() }; }
+tail = arrayStyleGetter / callFunction / dotStyleGetter
+
+callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } } 
+
+arrayStyleGetter "array-style property getter (obj[i])" = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } }
+
+dotStyleGetter "dot-style property getter (obj.prop)" = DOT a:variableReference { return {type: "TailedValue", head: null, tail: a.variable, location: location() }; }
 
 variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
@@ -192,7 +198,7 @@ boolean =
  / FALSE { return { type: "BooleanLiteral", location: location(), value: false }; }
  / r:arithmeticValue { return r; }
 
-comparisonOperator =
+comparisonOperator "comparison operator" =
  o:(COMPARE_LTE / COMPARE_LT / COMPARE_EQ / COMPARE_NEQ / COMPARE_GTE / COMPARE_GT) { return o; }
 
 
@@ -211,31 +217,34 @@ argumentList =
  }
 }
 
-argument = n:value v:(EQUALS value)? {
+argument = n:value v:(TITLE_ARG_SEP value)? {
 	if(v) return { type: "TitledArgument", value: v[1], name: n, location: location()  };
     else return n;
 }
 
 dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }
 
-_ = [ \t\n\r]* comment? [ \t\n\r]*
+_ "whitespace" = [ \t\n\r]* comment? [ \t\n\r]*
 
-comment = ("//" [^\n]* "\n")
-  / ("/*" commentText* "*/")
+comment = ("//" [^\n]* EOL)
+  / ("/*" commentText* END_OF_COMMENT)
+  
+  
+  END_OF_COMMENT "end of comment" = "*/"
 
 commentText = !"*/" .
 
 NON_QUOTE_CHARACTER = [^"]
 DOUBLE_QUOTE = '"'
 
-HASHTAG = "#"
+HASHTAG "hashtag" = "#"
 
-  EOL = '\r'? '\n'
-  COLON =
+  EOL "end of line" = '\r'? '\n'
+  COLON "colon" =
     ":"
-SEMICOLON =
+SEMICOLON "semicolon" =
     ";"
-COMMA =
+COMMA "comma" =
     ","
 AFTER =
     "after"
@@ -246,13 +255,15 @@ GOTO =
 IF =
     "if"
 WHEN = "when"
-OPEN_PAREN =
+OPEN_PAREN "opening paren" =
     "("
-CLOSE_PAREN =
+CLOSE_PAREN "closing paren" =
     ")"
 LET =
     "let"
-EQUALS =
+TITLE_ARG_SEP "titled argument separator (=)" = 
+    EQUALS
+EQUALS "equals sign" =
     "="
 NEXT =
     "next"
@@ -274,29 +285,29 @@ TRUE =
     "true"
 FALSE =
     "false"
-PLUS =
+PLUS "arithmetic operator" =
     "+"
-MINUS =
+MINUS "arithmetic operator" =
     "-"
-DIVIDE =
+DIVIDE "arithmetic operator" =
     "/"
-MULTIPLY =
+MULTIPLY "arithmetic operator" =
     "*"
-MODULUS =
+MODULUS "arithmetic operator" =
     "%"
-EXPONENTIATE =
+EXPONENTIATE "arithmetic operator" =
     "^"
-DOLLAR_SIGN =
+DOLLAR_SIGN "dollar sign" =
     "$"
-OPEN_SQUARE_BRACKET =
+OPEN_SQUARE_BRACKET "opening square bracket" = 
     "["
-CLOSE_SQUARE_BRACKET =
+CLOSE_SQUARE_BRACKET "closing square bracket" =
     "]"
-OPEN_CURLY_BRACKET =
+OPEN_CURLY_BRACKET "opening curly bracket" =
     "{"
-CLOSE_CURLY_BRACKET =
+CLOSE_CURLY_BRACKET "closing curly bracket" =
     "}"
-DOT = "."
+DOT "dot (.)" = "."
 PASS = "pass"
 ELSE = "else"
 OTHERWISE = "otherwise"
@@ -309,8 +320,8 @@ IDENTIFIER =
     else return false;
     }
     { return { type: "Identifier", location: location(), value: l.join("") } }
-DIGIT = [0-9]
-LETTER = [A-Za-z_]
+DIGIT "digit" = [0-9]
+LETTER "letter" = [A-Za-z_]
 STATEPATH_LABEL_ID = HASHTAG i:IDENTIFIER { return i; }
 NUMERIC_VALUE = m:MINUS? v:(
     h:DIGIT* '.' t:DIGIT+ { return h.join("") + "." + t.join("") }

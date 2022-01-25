@@ -5,7 +5,6 @@ var aaParser = require("./aa-parser.js");
 var astJavaify = require("./ast-tools.js");
 var parserTools = require("../script-helpers/parser-tools");
 
-var encodeAsJavaPackageName = require("../script-helpers/punycode");
 var crc = require("../script-helpers/crc-string");
 
 var GITIGNORED = ["*__autoauto.java"];
@@ -14,6 +13,8 @@ var DEFAULT_SERVOS = [];
 var DEFAULT_CRSERVOS = [];
 
 var directory = __dirname.split(path.sep);
+
+var runChecks = require("./checks");
 
 var templates = {
     "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
@@ -71,34 +72,31 @@ for(var i = 0; i < autoautoFiles.length; i++) {
     var resultFile = path.join(compiledResultDirectory, package, javaFileName);
     createDirectoryIfNotExist(resultFile);
 
-    if(fileSource.trim() == "") {
-        console.warn("WARNING: Empty autoauto file " + autoautoFiles[i])
-        continue;
-    }
-
     var uncommentedFileSource = parserTools.stripComments(fileSource);
 
     var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
 
     var javaStringFileSource = frontMatter.stripped;
 
+    var parsedModel;
     try {
-        var parsedModel = aaParser.parse(uncommentedFileSource);
-
-        var javaCreationCode = astJavaify(parsedModel);
-
-        var programModelGeneration = javaCreationCode.genCode;
-        var jsonSettingCode = javaCreationCode.jsonSettingCode;
-
-        fs.writeFileSync(resultFile, //SAFE
-            processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
-        );
-        writtenFiles.push(resultFile);
+        parsedModel = aaParser.parse(fileSource);
     } catch(e) {
-        console.error(autoautoFiles[i] + ":" + (e.location ? e.location.start.line + ":" + e.location.start.column + ":" : "") + "\t" + e.toString());
-        if(!e.location) console.error(e.stack);
-        process.exit(1);
+        parsedModel = e;
     }
+
+    if(!runChecks(parsedModel, shortButUniqueFolder, fileName, fileSource, uncommentedFileSource)) continue;
+    if(parsedModel instanceof Error) continue;
+
+    var javaCreationCode = astJavaify(parsedModel);
+
+    var programModelGeneration = javaCreationCode.genCode;
+    var jsonSettingCode = javaCreationCode.jsonSettingCode;
+
+    fs.writeFileSync(resultFile, //SAFE
+        processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
+    );
+    writtenFiles.push(resultFile);
 
 }
 
