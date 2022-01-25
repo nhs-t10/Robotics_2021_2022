@@ -49,13 +49,7 @@ public abstract class Unit {
         return name + " (" + Arrays.toString(abbreviations) + "): " + coefficient;
     }
 
-    public double convertToNaturalUnit(double u) {
-        return u * coefficient;
-    }
-
-    public double convertTo(Unit u, double amountToConvert) {
-        return (amountToConvert * coefficient) / u.coefficient;
-    }
+    public abstract double convertToNaturalUnit(double u);
 
     public abstract Unit getNaturalUnit();
 
