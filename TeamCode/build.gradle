@@ -23,6 +23,7 @@ dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.13.2'
     implementation 'org.jetbrains:annotations-java5:23.0.0'
 }
 
@@ -48,8 +49,6 @@ sonarqube {
 }
 
 android {
-
-
     androidResources {
         noCompress 'tflite'
     }
@@ -61,9 +60,14 @@ android {
     sourceSets {
         main {
             java.srcDir("gen/")
+            java.srcDir("src/test/java")
         }
         debug {
             java.srcDir("gen/")
+            java.srcDir("src/test/java")
         }
+    }
+    testOptions {
+
     }
 }
