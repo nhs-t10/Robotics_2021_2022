@@ -42,7 +42,10 @@ public abstract class Unit {
         DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
         if(distanceUnit != null) return distanceUnit;
 
-        return RotationUnit.forAbbreviation(unit);
+        RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
+        if(rotationUnit != null) return rotationUnit;
+
+        return UNKNOWN;
     }
 
     public String toString() {
