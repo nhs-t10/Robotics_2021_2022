@@ -51,27 +51,21 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         return new AutoautoUnitValue(baseAmount, unit);
     }
 
-    public AutoautoUnitValue(double baseAmount, String unit) {
+    public AutoautoUnitValue(double baseAmount, String unitName) {
         super(baseAmount);
         setPrototype(UnitValuePrototype.getMap());
 
-        this.originalUnitName = unit;
+        this.originalUnitName = unitName;
 
-        TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
-        DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
-        RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
+        this.unit = Unit.forAbbreviation(unitName);
 
-        if(timeUnit != null) {
-            this.unit = TimeUnit.naturalTimeUnit;
+        if(unit instanceof TimeUnit) {
             this.unitType = UnitType.TIME;
-        } else if(distanceUnit != null) {
-            this.unit = DistanceUnit.naturalDistanceUnit;
+        } else if(unit instanceof DistanceUnit) {
             this.unitType = UnitType.DISTANCE;
-        } else if(rotationUnit != null) {
-            this.unit = RotationUnit.naturalRotationUnit;
+        } else if(unit instanceof RotationUnit) {
             this.unitType = UnitType.ROTATION;
         } else {
-            this.unit = Unit.UNKNOWN;
             this.unitType = UnitType.UNKNOWN;
             FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
         }
