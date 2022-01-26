@@ -15,6 +15,6 @@ public class UnitGetter extends NativeFunction {
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive thisValue, AutoautoPrimitive[] args) throws ManagerSetupException {
         AutoautoUnitValue thisUnitvalue = (AutoautoUnitValue) thisValue;
-        return new AutoautoString(thisUnitvalue.unit.getCommonAbbrev());
+        return new AutoautoString(thisUnitvalue.unit.toString());
     }
 }
