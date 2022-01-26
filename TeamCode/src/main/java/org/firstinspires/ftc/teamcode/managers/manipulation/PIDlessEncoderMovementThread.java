@@ -24,6 +24,7 @@ public class PIDlessEncoderMovementThread extends Thread {
         this.motors = motors;
         this.targets = new int[motors.length];
         this.shouldMove = new boolean[motors.length];
+        this.powerCoefs = new double[motors.length];
         
         this.lastDeltas = new float[motors.length];
 
