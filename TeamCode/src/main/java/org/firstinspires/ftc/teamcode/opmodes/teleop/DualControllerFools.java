@@ -18,6 +18,8 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiplyNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
@@ -84,8 +86,12 @@ public class DualControllerFools extends OpMode {
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("precisionDriving", new ButtonNode("b"));
         input.registerInput("dashing", new ButtonNode("x"));
-        input.registerInput("CarouselBlue", new ButtonNode("y"));
-        input.registerInput("CarouselRed", new ButtonNode("a"));
+        input.registerInput("Carousel",
+                new PlusNode(
+                    new MultiplyNode(new ButtonNode("y"), 0.75f),
+                    new MultiplyNode(new ButtonNode("a"), -0.75f)
+                )
+        );
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
@@ -187,15 +193,7 @@ public class DualControllerFools extends OpMode {
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
         }
-        if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.75);
-        }
-        else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.75);
-        }
-        else {
-            hands.setMotorPower("Carousel", 0.0);
-        }
+        hands.setMotorPower("Carousel", (double) input.getFloat("Carousel"));
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
