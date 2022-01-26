@@ -70,22 +70,34 @@ public class DualControllerFools extends OpMode {
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
         input = new InputManager(gamepad1, gamepad2);
         input.registerInput("drivingControls",
-                new MultiInputNode(
-                        new ScaleNode(new JoystickNode("left_stick_y"), 1),
-                        new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
-                        new ScaleNode(new JoystickNode("left_stick_x"), 1)
-                )
-        );
-        input.registerInput("drivingControlsMicro",
-                new MultiInputNode(
-                        new ScaleNode(new JoystickNode("gamepad2right_stick_y"), -0.4f),
-                        new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
-                        new ScaleNode(new JoystickNode("gamepad2right_stick_x"), -0.7f)
+                new PlusNode(
+                        new MultiInputNode(
+                                new ScaleNode(new JoystickNode("left_stick_y"), 1),
+                                new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
+                                new ScaleNode(new JoystickNode("left_stick_x"), 1)
+                        ),
+                        new MultiInputNode(
+                                new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
+                        )
                 )
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("precisionDriving", new ButtonNode("b"));
-        input.registerInput("dashing", new ButtonNode("x"));
+        input.registerInput("precisionDriving",
+                new IfNode(
+                    new ToggleNode(new ButtonNode("b")),
+                    new StaticValueNode(0.1f),
+                    new StaticValueNode(0.6f)
+                )
+        );
+        input.registerInput("dashing",
+                new IfNode(
+                    new ToggleNode(new ButtonNode("x")),
+                    new StaticValueNode(1f),
+                    new StaticValueNode(0.6f)
+                )
+        );
         input.registerInput("Carousel",
                 new PlusNode(
                     new MultiplyNode(new ButtonNode("y"), 0.75f),
@@ -96,8 +108,12 @@ public class DualControllerFools extends OpMode {
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
         input.registerInput("ClawPosHome", new ButtonNode("gamepad2x"));
-        input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
-        input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
+        input.registerInput("ClawManualMove",
+                new PlusNode(
+                        new MultiplyNode(new ButtonNode("gamepad2dpadup"), -0.25f),
+                        new MultiplyNode(new ButtonNode("gamepad2dpaddown"), 0.25f)
+                )
+        );
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Anti-Intake",
@@ -149,31 +165,11 @@ public class DualControllerFools extends OpMode {
     public void loop() {
         input.update();
 
-        if (input.getBool("precisionDriving") == true && precision == false) {
-            driver.downScale(0.5f);
-            precision = true;
-        } else if (input.getBool("precisionDriving") == true && precision == true) {
-            precision = true;
-        } else if (input.getBool("precisionDriving") == false && precision == true) {
-            driver.upScale(0.5f);
-            precision = false;
-        } else {
-            precision = false;
-        }
+        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
-        if (input.getBool("dashing") == true && dashing == false) {
-            driver.upScale(0.4f);
-            dashing = true;
-        } else if (input.getBool("precisionDriving") == true && dashing == true) {
-            dashing = true;
-        } else if (input.getBool("precisionDriving") == false && dashing == true) {
-            driver.downScale(0.4f);
-            dashing = false;
-        } else {
-            dashing = false;
-        }
         clawCheck = clawPosition.getClawOpenish();
         clawPos = clawPosition.getClawPosition();
+
         if (clawCheck == 1.0 && clawPos == 0) {
             hands.setMotorPower("noodle", (double) Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")));
         }
@@ -196,17 +192,9 @@ public class DualControllerFools extends OpMode {
         hands.setMotorPower("Carousel", (double) input.getFloat("Carousel"));
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
-            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                hands.setMotorPower("ClawMotor", -0.25);
-            }
-            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                hands.setMotorPower("ClawMotor", 0.25);
-            }
-            else {
-                hands.setMotorPower("ClawMotor", 0);
-            }
+
+            hands.setMotorPower("ClawMotor", (double) input.getFloat("ClawManualMove"));
+
             if (input.getBool("ClawPos1") == true) {
                 clawPosition.positionOne();
             }
@@ -226,19 +214,6 @@ public class DualControllerFools extends OpMode {
         else {
             clawPosition.setClawOpen(false);
         }
-        if (input.getBool("ClawPos1") == true) {
-            clawPosition.positionOne();
-        }
-        if (input.getBool("ClawPos2") == true) {
-            clawPosition.positionTwo();
-        }
-        if (input.getBool("ClawPos3") == true) {
-            clawPosition.positionThree();
-        }
-        if (input.getBool("ClawPosHome") == true) {
-            clawPosition.positionHome();
-        }
-
 
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
