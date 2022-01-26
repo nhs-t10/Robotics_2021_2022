@@ -12,14 +12,14 @@
 
 //uses CV, saves CV reading to `value`, moves 10cm forwards so later steps won't bump up against wall
 #sampling:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2s next;
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2000ms next;
     goto duckSpin
 
 //drive left, turn left, spin carousel for 3sec, drive right
 #duckSpin:
     driveOmni(0,-0.7,0), after 83degs next;
     driveOmni(0.7,0,0), after 6cm next;
-    setMotorPower("Carousel", -0.7), after 3s next;
+    setMotorPower("Carousel", -0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(-0.7, 0, 0), after 32cm next;
     driveOmni(0,0.7,0), after 80degs next;
@@ -41,8 +41,8 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(0.7,0,0), after 5cm next;
-    setClawOpen(true), after 3s goto finalMovement;
+    driveOmni(0.7,0,0), after 6cm next;
+    setClawOpen(true), after 3000ms goto finalMovement;
 
 #finalMovement:
     driveOmni(-0.7,0,0), after 1cm next;
