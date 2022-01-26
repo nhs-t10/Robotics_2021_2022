@@ -19,20 +19,20 @@ module.exports = function(obj) {
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
-    var type = obj === null ? "null" : typeof obj;
+    var type = (obj === null ? "null" : typeof obj) + "";
     var cstr;
     if(type === "object") {
         cstr = wellKnownConstructors.getName(obj);
         if(cstr) type = "wellKnownObject";
     }
-
-    if(!typeCodes[type]) throw "Could not serialise value of type " + type;
+    
+    if(typeCodes[type] === undefined) throw "Could not serialise value of type " + type;
 
     //by searching from the back, we get more-recent values first
     if(valuePool.invertedPoolMap.has(obj)) return valuePool.invertedPoolMap.get(obj);
 
-    var poolEntry = {value: obj, id: valuePool.pool.length, bytes: []};
-    valuePool.pool.push(poolEntry);
+    var poolEntry = {value: obj, id: valuePool.pool.length++, bytes: []};
+    valuePool.pool[poolEntry.id] = poolEntry;
     valuePool.invertedPoolMap.set(obj, poolEntry.id);
 
     switch(type) {
@@ -80,6 +80,8 @@ function getWellKnownInfo(constructorName, obj, valuePool) {
     var paramVal = undefined;
     if(typeof obj.valueOf === "function" && !obj.hasOwnProperty("valueOf")) {
         paramVal = obj.valueOf();
+        //if valueOf is recursive, then don't use it
+        if(paramVal == obj) paramVal = undefined;
     }
 
     var paramPoolBytes = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(paramVal, valuePool));

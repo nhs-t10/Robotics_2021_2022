@@ -44,19 +44,18 @@ var byteParsers = {
         var o = entry.value || {};
         var reader = arrayReader(entry.bytes);
         
-        var completelyFilled = true;
+        entry.value = o;
+        
         while(reader.hasNext()) {
             var k = pool[reader.readVarint()];
-            if(!k.hydrated) completelyFilled = false; 
+            if(!k.hydrated) return;
             
             var v = pool[reader.readVarint()];   
-            if(!v.hydrated && v.id != entry.id) completelyFilled = false;
+            if(!v.hasOwnProperty("value")) return;
 
-            if(!k.hydrated) break;
-            o[k.value] = v.value || o;
+            o[k.value] = v.value;
         }
-        entry.value = o;
-        entry.hydrated = completelyFilled;
+        entry.hydrated = true;
     },
     "wellKnownObject": function(entry, pool) {
         var reader = arrayReader(entry.bytes);
@@ -67,7 +66,7 @@ var byteParsers = {
         
         var constrArg = undefined;
         var constrArgId = reader.readVarint();
-        if(constrArgId) {
+        if(constrArgId && constrArgId != entry.id) {
             var constrArgEntry = pool[constrArgId];
             if(!constrArgEntry.hydrated) return;
             constrArg = constrArgEntry.value;
@@ -88,9 +87,9 @@ var byteParsers = {
             if(!k.hydrated) return;
             
             var v = pool[reader.readVarint()];   
-            if(!v.hydrated && v.id != entry.id) return;
+            if(!v.hasOwnProperty("value")) return;
 
-            o[k.value] = v.value || o;
+            o[k.value] = v.value;
         }
         entry.hydrated = true;
     }
@@ -99,12 +98,11 @@ var byteParsers = {
 function hydratePool(pool) {
     while(true) {
         var allHy = true;
-        for(var i = 0; i < pool.length; i++) {
+        for(var i = pool.length - 1; i >= 0; i--) {
             var entry = pool[i];
             if(!entry.hydrated) {
                 byteParsers[entry.type](entry, pool, i);
                 if(!entry.hydrated) allHy = false;
-                console.log("nohyd", entry);
             }
         }
         if(allHy) break;
@@ -124,7 +122,8 @@ function reconstructPool(pool, reader) {
             var typeName = typesInverted[typeCode];
             pool.push({ typeId: typeCode, type: typeName, bytes: contentBytes, id: index });
         } else {
-            pool.push({ typeId: typeCode, type: undefined, bytes: contentBytes, value: undefined, hydrated: true });
+            pool.push({ typeId: typeCode, type: undefined, bytes: contentBytes, value: undefined, hydrated: true, id: index });
         }
+        index++;
     }
 }
