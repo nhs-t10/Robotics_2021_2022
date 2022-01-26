@@ -29,7 +29,7 @@ var computerHash = crypto.createHmac("sha256", HASH_SECRET)
     .update(computerUniqueIdentifier)
     .digest("hex");
 
-var familyTreeRecordsDirectory = path.join(srcDirectory, "assets/genealogy");
+var familyTreeRecordsDirectory = path.join(srcDirectory, "main/assets/genealogy");
 var familyLineFile = path.join(familyTreeRecordsDirectory, computerHash + ".json");
 
 if (!fs.existsSync(familyTreeRecordsDirectory)) fs.mkdirSync(familyTreeRecordsDirectory, { recursive: true });
@@ -42,7 +42,7 @@ var familyLine = readJsonFile(familyLineFile);
         familyLine.browser = "Removed_for_privacy_reasons_" + Math.round(Math.random() * 0xFF_FF_FF).toString(16);
     }
 
-    if (!familyLine.cognomen) familyLine.cognomen = generateCognomen(familyLine.browser);
+    if (!familyLine.cognomen) familyLine.cognomen = generateCognomen(computerHash);
     if (!familyLine.builds) familyLine.builds = [];
     if (!familyLine.buildCount) familyLine.buildCount = 0;
 
