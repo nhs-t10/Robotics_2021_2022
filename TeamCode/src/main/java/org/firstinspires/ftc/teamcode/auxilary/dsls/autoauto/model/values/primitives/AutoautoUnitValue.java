@@ -62,13 +62,13 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
 
         if(timeUnit != null) {
-            this.unit = TimeUnit.naturalTimeUnit;
+            this.unit = timeUnit;
             this.unitType = UnitType.TIME;
         } else if(distanceUnit != null) {
-            this.unit = DistanceUnit.naturalDistanceUnit;
+            this.unit = distanceUnit;
             this.unitType = UnitType.DISTANCE;
         } else if(rotationUnit != null) {
-            this.unit = RotationUnit.naturalRotationUnit;
+            this.unit = rotationUnit;
             this.unitType = UnitType.ROTATION;
         } else {
             this.unit = Unit.UNKNOWN;
