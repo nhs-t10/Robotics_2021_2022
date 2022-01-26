@@ -115,7 +115,6 @@ public class DualControllerFools extends OpMode {
                 )
         );
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
-        input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Anti-Intake",
                 new IfNode(
                     new ToggleNode(
@@ -153,9 +152,7 @@ public class DualControllerFools extends OpMode {
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls")[0]+input.getFloatArrayOfInput("drivingControlsMicro")[0],
-                            input.getFloatArrayOfInput("drivingControls")[1]+input.getFloatArrayOfInput("drivingControlsMicro")[1],
-                            input.getFloatArrayOfInput("drivingControls")[2]+input.getFloatArrayOfInput("drivingControlsMicro")[2]);
+            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
 
