@@ -115,7 +115,6 @@ public class DualControllerFools extends OpMode {
                 )
         );
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
-        input.registerInput("turnAround", new StaticValueNode(0)); //chloe note: merging did weird stuff & this showed up oddly.
         input.registerInput("Anti-Intake",
                 new IfNode(
                     new ToggleNode(
