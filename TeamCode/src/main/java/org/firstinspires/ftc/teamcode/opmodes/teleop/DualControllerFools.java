@@ -152,9 +152,7 @@ public class DualControllerFools extends OpMode {
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls")[0]+input.getFloatArrayOfInput("drivingControlsMicro")[0],
-                            input.getFloatArrayOfInput("drivingControls")[1]+input.getFloatArrayOfInput("drivingControlsMicro")[1],
-                            input.getFloatArrayOfInput("drivingControls")[2]+input.getFloatArrayOfInput("drivingControlsMicro")[2]);
+            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
 
