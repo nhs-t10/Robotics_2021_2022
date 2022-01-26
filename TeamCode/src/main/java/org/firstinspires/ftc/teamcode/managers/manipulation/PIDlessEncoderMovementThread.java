@@ -11,6 +11,10 @@ public class PIDlessEncoderMovementThread extends Thread {
     private int[] targets;
     private boolean[] shouldMove;
     private double[] powerCoefs;
+    //checks
+    private float[] direction;
+    private float[] lastDeltas;
+
 
     private double slowRange;
 
@@ -20,7 +24,11 @@ public class PIDlessEncoderMovementThread extends Thread {
         this.motors = motors;
         this.targets = new int[motors.length];
         this.shouldMove = new boolean[motors.length];
-        this.powerCoefs = new double[motors.length];
+        
+        this.lastDeltas = new float[motors.length];
+
+        this.direction = new float[motors.length];
+        for (int i = 0; i < motors.length; i++) direction[i] = 1;
 
         running = true;
 
@@ -37,11 +45,18 @@ public class PIDlessEncoderMovementThread extends Thread {
                     int currentPos = motors[i].getCurrentPosition();
                     int delta = targets[i] - currentPos;
 
-                    double power = -1 * delta * powerCoefs[i] * 0.01;
+                    if(lastDeltas[i] != 0) {
+                        float deltaChange = delta - lastDeltas[i];
+                        if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i]=-1;
+                    }
+
+                    double power = direction[i] * delta * powerCoefs[i] * 0.01;
 
                     motors[i].setPower(power);
 
                     if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
+
+                    lastDeltas[i] = delta;
                 }
             }
             Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);
