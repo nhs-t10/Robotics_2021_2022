@@ -1,0 +1,2 @@
+#f:
+let f = 30s, log(f), after f goto z;

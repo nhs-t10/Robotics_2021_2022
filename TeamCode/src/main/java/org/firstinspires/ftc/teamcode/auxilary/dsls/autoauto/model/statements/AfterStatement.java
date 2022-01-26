@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -14,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
     //Attributes
-    AutoautoUnitValue wait;
+    AutoautoValue wait;
     Statement action;
 
     Location location;
@@ -23,12 +25,14 @@ public class AfterStatement extends Statement {
     private long stepStartTime = 0;
     private float stepStartTick;
 
+    private AutoautoUnitValue waitWithUnit;
+
     //Constructors
-    public static AfterStatement W (AutoautoUnitValue wait, Statement action) {
+    public static AfterStatement W (AutoautoValue wait, Statement action) {
         return new AfterStatement(wait, action);
     }
 
-    public AfterStatement(AutoautoUnitValue wait, Statement action) {
+    public AfterStatement(AutoautoValue wait, Statement action) {
         this.wait = wait;
         this.action = action;
     }
@@ -83,37 +87,48 @@ public class AfterStatement extends Statement {
 
     @Override
     public void stepInit() {
+        wait.loop();
+        AutoautoPrimitive waitResolved = wait.getResolvedValue();
 
-        if(unitExistsInMethodMapping(wait.unit) && wait.unitType == AutoautoUnitValue.UnitType.UNKNOWN) wait.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+        if(!(waitResolved instanceof AutoautoUnitValue)) throw new AutoautoArgumentException("attempted to wait on a non-unit value");
 
-        switch (wait.unitType) {
+        waitWithUnit = (AutoautoUnitValue) waitResolved;
+
+        if(unitExistsInMethodMapping(waitWithUnit.unit) && waitWithUnit.unitType == AutoautoUnitValue.UnitType.UNKNOWN) waitWithUnit.unitType = AutoautoUnitValue.UnitType.DISTANCE;
+
+        switch (waitWithUnit.unitType) {
             case TIME:
                 this.stepStartTime = System.currentTimeMillis();
                 break;
             case DISTANCE:
             case ROTATION:
-                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(wait.unit));
+                getTicks = (AutoautoCallableValue) scope.get(getUnitMethodFromMapping(waitWithUnit.unit));
                 this.stepStartTick = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
                 break;
         }
     }
 
     public void loop() {
-        switch (wait.unitType) {
-            case TIME:
-                if (System.currentTimeMillis() >= stepStartTime + wait.baseAmount) action.loop();
-                break;
-            case DISTANCE:
-            case ROTATION:
-                double targetDifference = wait.baseAmount;
-                float referPoint = stepStartTick;
-                float currentPosition = ((AutoautoNumericValue)getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
+        wait.loop();
+        if(waitWithUnit != null) {
+            switch (waitWithUnit.unitType) {
+                case TIME:
+                    if (System.currentTimeMillis() >= stepStartTime + waitWithUnit.baseAmount)
+                        action.loop();
+                    break;
+                case DISTANCE:
+                case ROTATION:
+                    double targetDifference = waitWithUnit.baseAmount;
+                    float referPoint = stepStartTick;
+                    float currentPosition = ((AutoautoNumericValue) getTicks.call(new AutoautoUndefined(), new AutoautoPrimitive[0])).getFloat();
 
-                FeatureManager.logger.log("curpos " + (Math.abs(currentPosition)));
+                    FeatureManager.logger.log("curpos " + (Math.abs(currentPosition)));
 
-                if(Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference)) action.loop();
-                break;
-        }
+                    if (Math.abs(currentPosition - referPoint) >= Math.abs(targetDifference))
+                        action.loop();
+                    break;
+            }
+        } else throw new IllegalStateException("waitWithUnit should never be null since checked for previously in stepInit");
     }
 
     @Override
