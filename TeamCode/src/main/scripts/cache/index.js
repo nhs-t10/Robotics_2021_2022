@@ -16,7 +16,7 @@ module.exports = {
         fs.writeFileSync(file, JSON.stringify(value));
     },
     get: function(key, defaultValue) {
-        migrateKeys(punycode(key), hashKey(key));
+        migrateKeys(punycode(key), sha(key));
         
         var encodedKey = sha(key);
         
