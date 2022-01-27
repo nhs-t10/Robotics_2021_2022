@@ -87,7 +87,7 @@ public class DualControllerFools extends OpMode {
         input.registerInput("precisionDriving",
                 new IfNode(
                     new ToggleNode(new ButtonNode("b")),
-                    new StaticValueNode(0.1f),
+                    new StaticValueNode(0.3f),
                     new StaticValueNode(0.6f)
                 )
         );
@@ -115,28 +115,28 @@ public class DualControllerFools extends OpMode {
                 )
         );
         input.registerInput("ToggleClaw", new ButtonNode("gamepad2leftbumper"));
-        input.registerInput("Anti-Intake",
-                new IfNode(
-                    new ToggleNode(
-                            new AnyNode(
-                                new ButtonNode("lefttrigger"),
-                                new ButtonNode("gamepad2lefttrigger")
-                            )
-                    ),
-                new StaticValueNode(-0.5f),
-                new StaticValueNode(0f)
-                )
-        );
         input.registerInput("Intake",
-                new IfNode(
+                new PlusNode(
+                    new IfNode(
                         new ToggleNode(
                                 new AnyNode(
-                                        new ButtonNode("righttrigger"),
-                                        new ButtonNode("gamepad2righttrigger")
+                                    new ButtonNode("lefttrigger"),
+                                    new ButtonNode("gamepad2lefttrigger")
                                 )
                         ),
-                        new StaticValueNode(0.9f),
-                        new StaticValueNode(0f)
+                    new StaticValueNode(-0.5f),
+                    new StaticValueNode(0f)
+                    ),
+                    new IfNode(
+                            new ToggleNode(
+                                    new AnyNode(
+                                            new ButtonNode("righttrigger"),
+                                            new ButtonNode("gamepad2righttrigger")
+                                    )
+                            ),
+                            new StaticValueNode(0.9f),
+                            new StaticValueNode(0f)
+                    )
                 )
         );
         input.registerInput("EmergencyStop",
@@ -168,13 +168,13 @@ public class DualControllerFools extends OpMode {
         clawPos = clawPosition.getClawPosition();
 
         if (clawCheck == 1.0 && clawPos == 0) {
-            hands.setMotorPower("noodle", (double) Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")));
+            hands.setMotorPower("noodle", (double) input.getFloat("Intake"));
         }
         else hands.setMotorPower("noodle", 0.0);
 
-        hands.setMotorPower("intake", (double) Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")));
+        hands.setMotorPower("intake", (double) input.getFloat("Intake"));
 
-        if (Math.min(input.getFloat("Anti-Intake"), input.getFloat("Intake")) == 0.0f){
+        if (input.getFloat("Intake") == 0.0f){
             hands.setServoPosition("rampLeft", 0.0);
             hands.setServoPosition("rampRight", -0.35);
         }
