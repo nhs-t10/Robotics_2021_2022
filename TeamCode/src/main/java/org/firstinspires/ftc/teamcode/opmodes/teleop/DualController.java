@@ -132,8 +132,22 @@ public class DualController extends OpMode {
 
     }
 
-    @Override
+    private boolean shouldActuallyDoThings = true;
     public void loop() {
+        try {
+            if(shouldActuallyDoThings) real_loop_Bad_Practice_Fix_Me_Later();
+        }
+        catch (Throwable t) {
+            FeatureManager.logger.log(t.toString());
+            StackTraceElement[] e = t.getStackTrace();
+            for(int i = 0; i < 3 && i < e.length;i++) {
+                FeatureManager.logger.log(e[i].toString());
+            }
+            shouldActuallyDoThings = false;
+            telemetry.update();
+        }
+    }
+    public void real_loop_Bad_Practice_Fix_Me_Later() {
         input.update();
 
 //        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
@@ -224,20 +238,6 @@ public class DualController extends OpMode {
         }
 
 
-        telemetry.addData("FL Power", driver.frontLeft.getPower());
-        telemetry.addData("FR Power", driver.frontRight.getPower());
-        telemetry.addData("BR Power", driver.backLeft.getPower());
-        telemetry.addData("BL Power", driver.backRight.getPower());
-        telemetry.addData("Pos Y (encoders)", driver.getCentimeters());
-        telemetry.addData("WhichBoy", FeatureManager.getRobotName());
-        telemetry.addData("Claw Open Position", clawPosition.getClawOpenish());
-        telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
-        telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
-        telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
-        telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
-        telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
-        telemetry.addData("Is Found", clawPosition.isFound());
-        telemetry.update();
     }
 
     public void stop() {
