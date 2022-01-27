@@ -1,13 +1,21 @@
 var structuredSerialise = require("./index");
 
 
-var t = [];
+var t = [{
+    foo: 3,
+    fef: [
+        32,
+        24,
+        "fhaisld",
+        {
+            fef: 3
+        }
+    ]
+}];
 
-for(var i = 0; i < 1; i++) {
-    t.push(generateRandomObject(1));
+for(var i = 0; i < 100; i++) {
+    t.push(generateRandomObject(3));
 }
-
-console.log(t);
 
 function generateRandomObject(d) {
     if(d < 0) return "";
@@ -32,14 +40,15 @@ var timeStart = Date.now();
 
 var solvedSerial = t.map(x=> {
     var p = structuredSerialise.toBuffer(x);
-    //return structuredSerialise.fromBuffer(p);
+    return structuredSerialise.fromBuffer(p);
 });
 
 var structuredSerialiseTime = Date.now() - timeStart;
 
-console.log(solvedSerial);
 
 var solvedSerialCorrectness = solvedSerial.map((x,i)=>+(JSON.stringify(x)==JSON.stringify(t[i]))).reduce((a,b)=>a+b) / t.length;
+solvedSerialCorrectness *= 100;
+solvedSerialCorrectness += "%";
 
 console.log("===");
 console.log("Structured Serialise: ", structuredSerialiseTime);
