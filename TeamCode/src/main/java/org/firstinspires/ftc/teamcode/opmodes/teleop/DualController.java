@@ -141,7 +141,7 @@ public class DualController extends OpMode {
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
-            if (clawCheck == 1.0 && clawPos == 0) {
+            if (clawCheck == 1.0 && clawPos == 0 && !clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
