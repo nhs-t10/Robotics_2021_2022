@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 import androidx.annotation.NonNull;
 
 public class StaticValueNode extends InputManagerInputNode {
-    private final InputManagerNodeResult result = new InputManagerNodeResult();;
+    private final InputManagerNodeResult result = new InputManagerNodeResult();
 
     public StaticValueNode(float f) {
         result.setFloat(f);

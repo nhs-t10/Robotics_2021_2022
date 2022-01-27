@@ -53,12 +53,7 @@ public abstract class InputManagerInputNode {
         return false;
     }
     public InputManagerNodeResult getOverlappedResult() {
-        if(isOverlapped()) {
-            InputManagerNodeResult r = getResult();
-            r.setBool(false);
-            return r;
-        } else {
-            return getResult();
-        }
+        if(isOverlapped()) return InputManagerNodeResult.FALSE;
+        else return getResult();
     }
 }
