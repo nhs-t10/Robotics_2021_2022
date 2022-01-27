@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmo
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
@@ -35,7 +35,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 @TeleOp
-public class DualController extends OpMode {
+public class DualControllerPreston extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;
@@ -77,23 +77,23 @@ public class DualController extends OpMode {
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
                         new MultiInputNode(
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
+                            new ScaleNode(new JoystickNode("gamepad2left_stick_y"), -0.4f),
                             new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
+                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), -0.7f)
                         )
                 )
             );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-//        input.registerInput("precisionDriving", new IfNode(
-//                new ToggleNode(new ButtonNode("b")),
-//                new StaticValueNode(0.1f),
-//                new StaticValueNode(0.6f)
-//        ));
-//        input.registerInput("dashing", new IfNode(
-//                new ToggleNode(new ButtonNode("x")),
-//                new StaticValueNode(1f),
-//                new StaticValueNode(0.6f)
-//        ));
+        input.registerInput("precisionDriving", new IfNode(
+                new ToggleNode(new ButtonNode("b")),
+                new StaticValueNode(0.1f),
+                new StaticValueNode(0.6f)
+        ));
+        input.registerInput("dashing", new IfNode(
+                new ToggleNode(new ButtonNode("x")),
+                new StaticValueNode(1f),
+                new StaticValueNode(0.6f)
+        ));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
@@ -136,7 +136,7 @@ public class DualController extends OpMode {
     public void loop() {
         input.update();
 
-//        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
+        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
