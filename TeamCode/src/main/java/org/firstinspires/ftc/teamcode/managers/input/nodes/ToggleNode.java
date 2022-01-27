@@ -12,6 +12,11 @@ public class ToggleNode extends InputManagerInputNode {
     private boolean toggledOn;
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
+    /**
+     * Turns everything inside this node into a toggle. <br>
+     * When the button is pressed, it toggles on and will remain acting like it is held until the button is pressed again.
+     * @param node The input contained within the ToggleNode
+     */
     public ToggleNode(InputManagerInputNode node) {
         this.node = node;
     }
@@ -25,7 +30,7 @@ public class ToggleNode extends InputManagerInputNode {
     public void update() {
         node.update();
         boolean isPressed = node.getResult().getBool();
-        if(isPressed && !wasPressed) {
+        if(isPressed && wasPressed == false) {
             toggledOn = !toggledOn;
         }
         wasPressed = isPressed;
