@@ -67,3 +67,9 @@ android {
 
     }
 }
+
+sonarqube {
+    properties {
+        property "sonar.exclusions", "**/unitTests/**"
+    }
+}
