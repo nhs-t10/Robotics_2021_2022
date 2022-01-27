@@ -77,9 +77,9 @@ public class DualController extends OpMode {
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
                         new MultiInputNode(
-                            new ScaleNode(new JoystickNode("gamepad2right_stick_y"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.7f)
+                            new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
+                            new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
+                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
                         )
                 )
             );
@@ -100,6 +100,7 @@ public class DualController extends OpMode {
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
         input.registerInput("ClawPosHome", new ButtonNode("gamepad2x"));
+        input.registerInput("ClawPosNeutral", new ButtonNode("gamepad2ps"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
@@ -217,6 +218,9 @@ public class DualController extends OpMode {
         }
         if (input.getBool("ClawPosHome") == true) {
             clawPosition.positionHome();
+        }
+        if (input.getBool("ClawPosNeutral") == true) {
+            clawPosition.positionNeutral();
         }
 
 
