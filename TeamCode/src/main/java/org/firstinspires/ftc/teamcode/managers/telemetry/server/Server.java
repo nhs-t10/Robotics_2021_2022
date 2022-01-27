@@ -66,15 +66,19 @@ public class Server {
         @Override
         public void run() {
             try {
-                while (serverIsRunning) {
-                    Socket socket = serverSocket.accept();
+                try {
+                    while (serverIsRunning) {
+                        Socket socket = serverSocket.accept();
 
-                    RequestHandlerThread rht = new RequestHandlerThread(socket, dataSource, streamRegistry);
-                    new Thread(rht).start();
+                        RequestHandlerThread rht = new RequestHandlerThread(socket, dataSource, streamRegistry);
+                        new Thread(rht).start();
+                    }
+                    serverSocket.close();
+                } catch(Exception e) {
+                    FeatureManager.logger.log("dashboard status" + e.toString());
                 }
-                serverSocket.close();
-            } catch(Exception e) {
-                FeatureManager.logger.log("dashboard status" + e.toString());
+            } catch(Throwable t) {
+                FeatureManager.logger.log("Silent error in 'Server'");
             }
         }
     }

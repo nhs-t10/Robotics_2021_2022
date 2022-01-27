@@ -38,30 +38,34 @@ public class PIDlessEncoderMovementThread extends Thread {
 
     @Override
     public void run() {
-        while(FeatureManager.isOpModeRunning) {
-            for(int i = 0; i < motors.length; i++) {
-                if(shouldMove[i]) {
-                    if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        try {
+            while(FeatureManager.isOpModeRunning) {
+                for(int i = 0; i < motors.length; i++) {
+                    if(shouldMove[i]) {
+                        if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                    int currentPos = motors[i].getCurrentPosition();
-                    int delta = targets[i] - currentPos;
+                        int currentPos = motors[i].getCurrentPosition();
+                        int delta = targets[i] - currentPos;
 
-                    if(lastDeltas[i] != 0) {
-                        float deltaChange = delta - lastDeltas[i];
-                        if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i]=-1;
+                        if(lastDeltas[i] != 0) {
+                            float deltaChange = delta - lastDeltas[i];
+                            if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i]=-1;
+                        }
+
+                        double power = direction[i] * delta * powerCoefs[i] * 0.01;
+
+                        motors[i].setPower(power);
+
+                        if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
+
+                        lastDeltas[i] = delta;
                     }
-
-                    double power = direction[i] * delta * powerCoefs[i] * 0.01;
-
-                    motors[i].setPower(power);
-
-                    if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) shouldMove[i] = false;
-
-                    lastDeltas[i] = delta;
                 }
+                Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);
+                Thread.yield();
             }
-            Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);
-            Thread.yield();
+        } catch(Throwable t) {
+            FeatureManager.logger.log("Silent error in 'PIDlessEncoderMovementThread'");
         }
     }
 

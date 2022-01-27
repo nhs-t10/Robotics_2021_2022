@@ -20,10 +20,14 @@ public class InputUpdateThread extends Thread {
     }
 
     public void run() {
-        while(FeatureManager.isOpModeRunning) {
-            node.update();
-            Clocktower.time(ClocktowerCodes.INPUT_NODE_UPDATER_THREAD);
-            yield();
+        try {
+            while(FeatureManager.isOpModeRunning) {
+                node.update();
+                Clocktower.time(ClocktowerCodes.INPUT_NODE_UPDATER_THREAD);
+                yield();
+            }
+        } catch(Throwable t) {
+            FeatureManager.logger.log("Silent error in 'InputUpdateThread'");
         }
     }
 }

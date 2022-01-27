@@ -17,10 +17,14 @@ public class PriorityAsyncOpmodeComponent {
 
         @Override
         public void run() {
-            while(FeatureManager.isOpModeRunning) {
-                r.run();
-                Thread.yield();
-                Clocktower.time(ClocktowerCodes.ASYNC_OPMODE_COMPONENT);
+            try {
+                while (FeatureManager.isOpModeRunning) {
+                    r.run();
+                    Thread.yield();
+                    Clocktower.time(ClocktowerCodes.ASYNC_OPMODE_COMPONENT);
+                }
+            } catch(Throwable t) {
+                FeatureManager.logger.log("Silent error in 'PriorityAsyncOpmodeComponent'");
             }
         }
     }

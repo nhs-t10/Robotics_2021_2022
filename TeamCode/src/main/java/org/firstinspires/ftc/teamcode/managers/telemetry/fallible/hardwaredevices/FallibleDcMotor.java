@@ -227,11 +227,15 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
         private boolean running = true;
 
         public void run() {
-            while(running) {
-                if (System.currentTimeMillis() > nextSetTime) {
-                    invertDirection();
-                    nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+            try {
+                while(running) {
+                    if (System.currentTimeMillis() > nextSetTime) {
+                        invertDirection();
+                        nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+                    }
                 }
+            } catch(Throwable t) {
+                FeatureManager.logger.log("Silent error in 'FallibleDcMotor'");
             }
         }
         public void stopJerkingLoop() {

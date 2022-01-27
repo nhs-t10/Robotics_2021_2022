@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.HardwareCapability;
 
@@ -137,11 +138,15 @@ public class FallibleCRServo implements CRServo, FallibleHardwareDevice {
         private boolean running = true;
 
         public void run() {
-            while(running) {
-                if (System.currentTimeMillis() > nextSetTime) {
-                    invertDirection();
-                    nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+            try {
+                while(running) {
+                    if (System.currentTimeMillis() > nextSetTime) {
+                        invertDirection();
+                        nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+                    }
                 }
+            }  catch(Throwable t) {
+                FeatureManager.logger.log("Silent error in 'FallibleCRServo'");
             }
         }
         public void stopJerkingLoop() {

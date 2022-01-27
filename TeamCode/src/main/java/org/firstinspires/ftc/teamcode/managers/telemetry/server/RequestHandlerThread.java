@@ -109,7 +109,7 @@ public class RequestHandlerThread extends Thread {
             socket.close();
 
 
-        } catch(Exception e) {
+        } catch(Throwable e) {
             FeatureManager.logger.log("error! " + e.toString() + Arrays.toString(e.getStackTrace()));
         }
     }
