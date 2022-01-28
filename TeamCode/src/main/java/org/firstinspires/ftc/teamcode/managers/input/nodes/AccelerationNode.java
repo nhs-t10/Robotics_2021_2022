@@ -18,6 +18,16 @@ public class AccelerationNode extends InputManagerInputNode{
     private boolean wasPressed;
     private long accelerationStartTime;
 
+    /**
+     * Gradually accelerates an input over a given amount of time (in milliseconds). <br>
+     * If the starting speed value is greater than the ending speed value, this can be used to gradually slow down as well. <br>
+     * When the input is false, the node will instantly reset to the default value, and it will <i>not</i> return gradually.
+     * @param control The input that will be accelerated
+     * @param startingSpeed The starting speed of the input
+     * @param endingSpeed The ending speed of the input
+     * @param movementTime How long it will take to get from the startingSpeed to the endingSpeed.
+     * @see DecelerationNode#DecelerationNode(InputManagerInputNode, InputManagerInputNode, InputManagerInputNode, InputManagerInputNode) DecelerationNode
+     */
     public AccelerationNode(InputManagerInputNode control, InputManagerInputNode startingSpeed, InputManagerInputNode endingSpeed, InputManagerInputNode movementTime) {
         this.control = control;
         this.startingSpeed = startingSpeed;
