@@ -1,14 +1,12 @@
-var checks = [];
-
 var fs = require("fs");
 var path = require("path");
 
-var checkDirs = fs.readdirSync(__dirname + "/check-sources");
-checkDirs.sort().forEach(x=> {
-    var check = require("./check-sources/" + x);
-    check.id = x.replace(".js", "").toUpperCase();
-    checks.push(check)
-});
+var checkSubfolders = ["P", "T"];
+
+var checks = checkSubfolders
+    .map(x=>loadChecksFromFolder(path.join(__dirname, "check-sources", x)))
+    .flat();
+
 
 module.exports = function(ast, folder, filename, fileContent) {
     var failed = false;
@@ -48,6 +46,17 @@ module.exports = function(ast, folder, filename, fileContent) {
         }
     }
     return !failed;
+}
+
+function loadChecksFromFolder(folder) {
+    if(!fs.existsSync(folder)) return [];
+
+    var checkDir = fs.readdirSync(folder);
+    return checkDir.sort().map(x=> {
+        var check = require(path.join(folder, x));
+        check.id = x.replace(".js", "").toUpperCase();
+        return check;
+    });
 }
 
 function sendPlainMessage(msg) {
