@@ -45,6 +45,7 @@ sonarqube {
         property "sonar.projectKey", "nhs-t10_Robotics_2021_2022"
         property "sonar.organization", "nhs-t10"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.exclusions", "**/unitTests/**"
     }
 }
 
@@ -69,11 +70,5 @@ android {
     }
     testOptions {
 
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.exclusions", "**/unitTests/**"
     }
 }
