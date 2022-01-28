@@ -33,7 +33,7 @@ public class InputManagerNodeResult {
     }
 
     public float getFloat() {
-        if(childs == null || childs.length == 0) {
+        if(childs.length == 0) {
             return value;
         } else {
             return childs[0].getFloat();
@@ -69,6 +69,8 @@ public class InputManagerNodeResult {
     }
 
     public void setChildren(InputManagerNodeResult[] c) {
-        this.childs = c;
+        InputManagerNodeResult[] childCopy = new InputManagerNodeResult[c.length];
+        for(int i = 0; i < c.length; i++) childCopy[i] = c[i];
+        this.childs = childCopy;
     }
 }
