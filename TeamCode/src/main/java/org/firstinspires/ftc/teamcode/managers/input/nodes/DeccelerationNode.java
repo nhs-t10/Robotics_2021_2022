@@ -53,7 +53,7 @@ public class DeccelerationNode extends InputManagerInputNode{
 
         float resultNumber = starting;
 
-        if(!isPressed && System.currentTimeMillis() > decelerationStartTime && decelerationStartTime != 0) {
+        if(!isPressed && System.currentTimeMillis() < (decelerationStartTime + totalMovementTime) && decelerationStartTime != 0) {
             long timeSinceStart = System.currentTimeMillis() - decelerationStartTime;
             float percentageCompleted = Math.min(1, timeSinceStart / totalMovementTime);
 
