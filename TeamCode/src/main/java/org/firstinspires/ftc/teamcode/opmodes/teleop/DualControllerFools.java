@@ -84,20 +84,20 @@ public class DualControllerFools extends OpMode {
                 )
         );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("precisionDriving",
-                new IfNode(
-                    new ToggleNode(new ButtonNode("b")),
-                    new StaticValueNode(0.3f),
-                    new StaticValueNode(0.6f)
-                )
-        );
-        input.registerInput("dashing",
-                new IfNode(
-                    new ToggleNode(new ButtonNode("x")),
-                    new StaticValueNode(1f),
-                    new StaticValueNode(0.6f)
-                )
-        );
+//        input.registerInput("precisionDriving",
+//                new IfNode(
+//                    new ToggleNode(new ButtonNode("b")),
+//                    new StaticValueNode(0.3f),
+//                    new StaticValueNode(0.6f)
+//                )
+//        );
+//        input.registerInput("dashing",
+//                new IfNode(
+//                    new ToggleNode(new ButtonNode("x")),
+//                    new StaticValueNode(1f),
+//                    new StaticValueNode(0.6f)
+//                )
+//        );
         input.registerInput("Carousel",
                 new PlusNode(
                     new MultiplyNode(new ButtonNode("y"), 0.75f),
@@ -162,7 +162,7 @@ public class DualControllerFools extends OpMode {
     public void loop() {
         input.update();
 
-        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
+//        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         clawCheck = clawPosition.getClawOpenish();
         clawPos = clawPosition.getClawPosition();

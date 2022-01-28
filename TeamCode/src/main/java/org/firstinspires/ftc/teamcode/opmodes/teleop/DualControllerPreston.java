@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -141,7 +142,7 @@ public class DualControllerPreston extends OpMode {
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
-            if (clawCheck == 1.0 && clawPos == 0 && !clawPosition.liftMovementFinished()) {
+            if (clawCheck == 1.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
@@ -167,10 +168,10 @@ public class DualControllerPreston extends OpMode {
             clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.75);
+            hands.setMotorPower("Carousel", 0.65);
         }
         else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.75);
+            hands.setMotorPower("Carousel", -0.65);
         }
         else {
             hands.setMotorPower("Carousel", 0.0);
@@ -200,6 +201,9 @@ public class DualControllerPreston extends OpMode {
             if (input.getBool("ClawPosHome") == true) {
                 clawPosition.positionHome();
             }
+            if (input.getBool("ClawPosNeutral") == true) {
+                clawPosition.positionNeutral();
+            }
         }
         if (input.getBool("ClawOpen") == true){
             clawPosition.setClawOpen(true);
@@ -223,7 +227,7 @@ public class DualControllerPreston extends OpMode {
             clawPosition.positionNeutral();
         }
 
-
+        FeatureManager.logger.log(BuildHistory.buildName);
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());

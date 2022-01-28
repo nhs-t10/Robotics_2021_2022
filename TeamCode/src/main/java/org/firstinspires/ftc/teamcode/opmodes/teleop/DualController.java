@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -181,10 +182,10 @@ public class DualController extends OpMode {
             clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.75);
+            hands.setMotorPower("Carousel", 0.65);
         }
         else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.75);
+            hands.setMotorPower("Carousel", -0.65);
         }
         else {
             hands.setMotorPower("Carousel", 0.0);
@@ -237,6 +238,21 @@ public class DualController extends OpMode {
             clawPosition.positionNeutral();
         }
 
+        FeatureManager.logger.log(BuildHistory.buildName);
+        telemetry.addData("FL Power", driver.frontLeft.getPower());
+        telemetry.addData("FR Power", driver.frontRight.getPower());
+        telemetry.addData("BR Power", driver.backLeft.getPower());
+        telemetry.addData("BL Power", driver.backRight.getPower());
+        telemetry.addData("Pos Y (encoders)", driver.getCentimeters());
+        telemetry.addData("WhichBoy", FeatureManager.getRobotName());
+        telemetry.addData("Claw Open Position", clawPosition.getClawOpenish());
+        telemetry.addData("Carousel", hands.getMotorPower("Carousel"));
+        telemetry.addData("driver control", Arrays.toString(input.getFloatArrayOfInput("drivingControls")));
+        telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
+        telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
+        telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
+        telemetry.addData("Is Found", clawPosition.isFound());
+        telemetry.update();
 
     }
 
