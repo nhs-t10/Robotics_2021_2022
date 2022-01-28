@@ -54,6 +54,11 @@ var familyLine = readJsonFile(familyLineFile);
     var w3w = what3Words.simpleNouns(buildHash);
     var phrase = what3Words.complexPhrase(buildHash);
     var pngFile = buildPng(familyLine.buildCount, srcDirectory, BUILD_HASH_IGNORED);
+    
+    console.error("AGPBI: " + JSON.stringify({
+        kind: "INFO",
+        text: "Build Name: " + name
+    }));
 
     familyLine.builds.push({
         name: name,
