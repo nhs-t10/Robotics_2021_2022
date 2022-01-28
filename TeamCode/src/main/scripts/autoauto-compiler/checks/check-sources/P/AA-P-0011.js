@@ -37,10 +37,6 @@ function buildWarningFor(char, index, folder, filename) {
         }]
     }
 }
-
-function homoglyphness(char) {
-
-}
 function isQuote(char) {
     return char == "'" || char == '"';
 }

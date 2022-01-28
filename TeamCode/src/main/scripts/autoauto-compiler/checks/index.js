@@ -19,7 +19,8 @@ module.exports = function(ast, folder, filename, fileContent) {
             var res = check.run(ast, folder, filename, fileContent);
             if(res) {
                 if(!res.original) res.original = res.text;
-                res.text = tag
+                res.text = tag;
+                if(res.fail) res.text += " | Skipping File";
 
                 if(res.sources === undefined) res.sources = [{
                     file: path.join(folder, filename)
