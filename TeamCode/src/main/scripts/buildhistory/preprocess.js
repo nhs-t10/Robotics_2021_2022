@@ -7,7 +7,7 @@ const what3Words = require("./what-3-words-hash.js");
 const buildPng = require("./build-png");
 
 var HASH_SECRET = "autoauto family";
-var BUILD_HASH_IGNORED = ["__compiledautoauto", "gen", "genealogy", "BuildHistory.java", ".cache", "buildimgs"];
+var BUILD_HASH_IGNORED = ["gen", "genealogy", ".cache", "buildimgs"];
 
 var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode") + 1).join(path.sep);

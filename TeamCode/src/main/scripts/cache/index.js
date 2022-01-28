@@ -23,7 +23,7 @@ module.exports = {
         var file = path.join(cacheDir, encodedKey);
         if(!fs.existsSync(file)) return defaultValue;
 
-        return JSON.stringify(fs.readFileSync(file).toString());
+        return JSON.parse(fs.readFileSync(file).toString());
     }
 }
 

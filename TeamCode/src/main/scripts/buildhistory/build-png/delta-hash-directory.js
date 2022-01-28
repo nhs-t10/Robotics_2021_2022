@@ -8,8 +8,9 @@ module.exports = function(directory, ignores) {
     var hash = getDirectoryHash(directory, ignores).toString("hex");
     var oldHash = cache.get("last-build-pixels", {c:"",p:"buildimgs/0.png"});
 
+    
     //translate between old cache and new cache
-    if(typeof oldHash === "string") {
+    if(typeof oldHash === "string") { 
         oldHash = {
             c: oldHash,
             p: "buildimgs/0.png"
