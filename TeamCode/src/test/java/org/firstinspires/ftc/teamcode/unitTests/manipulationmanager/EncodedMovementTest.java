@@ -17,9 +17,14 @@ public class EncodedMovementTest {
 
         m.encodeMoveToPosition(fooMotor, 4096);
 
+        long lastPrintTime = System.currentTimeMillis();
         //wait until it's finished moving
         while(m.hasEncodedMovement(fooMotor)) {
-            FeatureManager.logger.log("Current: " + m.getMotorPosition(fooMotor));
+            long now = System.currentTimeMillis();
+            if(now - lastPrintTime > 1000) {
+                FeatureManager.logger.log("Current: " + m.getMotorPosition(fooMotor));
+                lastPrintTime = now;
+            }
         }
 
         assertEquals(4096, m.getMotorPosition(fooMotor), ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);

@@ -26,6 +26,7 @@ public class AfterStatement extends Statement {
     private float stepStartTick;
 
     private AutoautoUnitValue waitWithUnit;
+    private boolean restartDeltaNextLoop;
 
     //Constructors
     public static AfterStatement W (AutoautoValue wait, Statement action) {
@@ -87,7 +88,10 @@ public class AfterStatement extends Statement {
 
     @Override
     public void stepInit() {
-        wait.loop();
+        restartDeltaNextLoop = true;
+    }
+
+    private void internalStoreStartingStep() {
         AutoautoPrimitive waitResolved = wait.getResolvedValue();
 
         if(!(waitResolved instanceof AutoautoUnitValue)) throw new AutoautoArgumentException("attempted to wait on a non-unit value");
@@ -110,6 +114,8 @@ public class AfterStatement extends Statement {
 
     public void loop() {
         wait.loop();
+        if(restartDeltaNextLoop) internalStoreStartingStep();
+
         if(waitWithUnit != null) {
             switch (waitWithUnit.unitType) {
                 case TIME:

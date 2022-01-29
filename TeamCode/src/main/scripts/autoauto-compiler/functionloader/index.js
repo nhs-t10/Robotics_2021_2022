@@ -14,6 +14,9 @@ var cacheManagers = cache.get("autoauto-managers", {});
 
 if(cacheManagers.cacheVersion != CACHE_VERSION) cacheManagers = {};
 
+var robotFunctionsDirectory = path.join(rootDirectory, "TeamCode/gen/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/robotfunctions");
+if(!fs.existsSync(robotFunctionsDirectory)) cacheManagers = {};
+
 cacheManagers.cacheVersion = CACHE_VERSION;
 
 var managerArgs = {};
