@@ -21,7 +21,6 @@ public class MultiplyNode extends InputManagerInputNode {
         this.input = input;
         this.multiplier = multiplier;
     }
-
     public MultiplyNode(InputManagerInputNode input, float multiplyBy) {
         this.multiplier = new StaticValueNode(multiplyBy);
         this.input = input;

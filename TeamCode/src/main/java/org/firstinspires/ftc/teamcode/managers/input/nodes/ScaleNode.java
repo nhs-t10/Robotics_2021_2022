@@ -14,15 +14,33 @@ public class ScaleNode extends InputManagerInputNode {
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
+    /**
+     * The same as {@link MultiplyNode}. Use whichever makes more sense.
+     * @param scaleBy The input to multiply
+     * @param node The number that the input will be multiplied by (it can be a second input, if you want)
+     * @see MultiplyNode
+     */
     public ScaleNode(InputManagerInputNode scaleBy, InputManagerInputNode node) {
         this.scale = scaleBy;
         this.node = node;
     }
 
+    /**
+     * The same as {@link MultiplyNode}. Use whichever makes more sense.
+     * @param scaleBy The input to multiply
+     * @param node The number that the input will be multiplied by (it can be a second input, if you want)
+     * @see MultiplyNode
+     */
     public ScaleNode(InputManagerInputNode node, float scaleBy) {
         this.scale = new StaticValueNode(scaleBy);
         this.node = node;
     }
+    /**
+     * The same as {@link MultiplyNode}. Use whichever makes more sense.
+     * @param scaleBy The number that the input will be multiplied by (it can be a second input, if you want)
+     * @param node The input to multiply
+     * @see MultiplyNode
+     */
     public ScaleNode(float scaleBy, InputManagerInputNode node) {
         this.scale = new StaticValueNode(scaleBy);
         this.node = node;
