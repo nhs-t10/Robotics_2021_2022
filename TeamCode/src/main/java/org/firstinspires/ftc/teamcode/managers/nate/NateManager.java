@@ -126,7 +126,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionTwo(){
         if(!found) {
-            position = 2483;
+            position = 2520;
         } else{
             position = -5295;
         }
