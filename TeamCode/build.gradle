@@ -15,6 +15,8 @@ plugins {
     id "org.sonarqube" version "3.3"
 }
 
+apply plugin: 'jacoco'
+
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
@@ -58,18 +60,22 @@ android {
         preBuild.dependsOn(generateAutoautoSources)
         preBuild.dependsOn(recordBuildHistory)
     }
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
     sourceSets {
         debug {
             java.srcDir("gen/")
-
         }
         main {
             java.srcDir("gen/")
 
         }
     }
-    testOptions {
-
+    jacoco {
+        version = '0.7.9'
     }
 }
 
