@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 
 var aaParser = require("./aa-parser.js");
-var astJavaify = require("./ast-tools.js");
+var astJavaify = require("./autoauto-to-java.js");
 var parserTools = require("../script-helpers/parser-tools");
 
 var crc = require("../script-helpers/crc-string");
@@ -15,6 +15,7 @@ var DEFAULT_CRSERVOS = [];
 var directory = __dirname.split(path.sep);
 
 var runChecks = require("./checks");
+var makeTestFile = require("./make-test");
 
 var templates = {
     "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
@@ -40,21 +41,25 @@ fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore); //SAFE
 var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
 var compiledResultDirectory = path.join(srcDirectory, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
-createDirectoryIfNotExist(compiledResultDirectory)
+createDirectoryIfNotExist(compiledResultDirectory);
+
+var TESTS_PACKAGE = "org.firstinspires.ftc.teamcode.unitTests.__testedautoauto";
+var testsDirectory = path.join(srcDirectory, "test/java/" + TESTS_PACKAGE.replace(/\./g, path.sep));
 
 var autoautoFiles = loadAutoautoFilesFromFolder(srcDirectory);
 var alreadyUsedAutoautoFileNames = {};
 
 var writtenFiles = [];
+var requiredTests = [];
 
 for(var i = 0; i < autoautoFiles.length; i++) {
     var fileSource = fs.readFileSync(autoautoFiles[i]).toString();
     var folder = path.dirname(autoautoFiles[i]);
     var shortButUniqueFolder = folder.replace(srcDirectory, "").toLowerCase();
     shortButUniqueFolder = shortButUniqueFolder.substring(shortButUniqueFolder.indexOf("teamcode"));
-    var package = shortButUniqueFolder
+    var packageFolder = shortButUniqueFolder
 
-    var packageDeclaration = "package org.firstinspires.ftc.teamcode.__compiledautoauto." + package.replace(/\/|\\/g, ".") + ";";
+    var package = "org.firstinspires.ftc.teamcode.__compiledautoauto." + packageFolder.replace(/\/|\\/g, ".");
 
     var fileName = autoautoFiles[i].substring(autoautoFiles[i].lastIndexOf(path.sep) + 1);
     if (fileName.includes(".macro")) throw "Macro is a bad idea you idiots!";
@@ -63,21 +68,19 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         .replace(".autoauto", "__autoauto");
 
     var classNameNoConflict = className;
-    if(alreadyUsedAutoautoFileNames[className] && className.endsWith("__autoauto")) classNameNoConflict += "__" + crc(package);
+    if(alreadyUsedAutoautoFileNames[className]) classNameNoConflict += "__" + alreadyUsedAutoautoFileNames[className];
 
     if(!alreadyUsedAutoautoFileNames[className]) alreadyUsedAutoautoFileNames[className] = 0;
     alreadyUsedAutoautoFileNames[className]++;
 
     var javaFileName = className + ".java";
 
-    var resultFile = path.join(compiledResultDirectory, package, javaFileName);
+    var resultFile = path.join(compiledResultDirectory, packageFolder, javaFileName);
     createDirectoryIfNotExist(resultFile);
 
     var uncommentedFileSource = parserTools.stripComments(fileSource);
 
     var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
-
-    var javaStringFileSource = frontMatter.stripped;
 
     var parsedModel;
     try {
@@ -91,18 +94,23 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var javaCreationCode = astJavaify(parsedModel);
 
-    var programModelGeneration = javaCreationCode.genCode;
     var jsonSettingCode = javaCreationCode.jsonSettingCode;
 
     fs.writeFileSync(resultFile, //SAFE
-        processTemplate(templates[templateUsed], className, frontMatter.frontMatter, javaStringFileSource, programModelGeneration, autoautoFiles[i], jsonSettingCode, packageDeclaration, classNameNoConflict)
+        processTemplate(templates[templateUsed], className, frontMatter, javaCreationCode.genCode, autoautoFiles[i], jsonSettingCode, package, classNameNoConflict)
     );
+
+    requiredTests.push({
+        className: className, package: package, frontMatter: frontMatter
+    });
     writtenFiles.push(resultFile);
 
 }
 
 //clean leftover java files from deleted autoauto modes.
 clearDirectory(compiledResultDirectory, writtenFiles);
+
+makeTestFile(requiredTests, testsDirectory, TESTS_PACKAGE);
 
 //see if more methods have been made
 (require("./functionloader"));
@@ -140,7 +148,7 @@ function createDirectoryIfNotExist(fileName) {
     }
 }
 
-function processTemplate(template, className, frontMatter, javaStringFileSource, javaCreationCode, sourceFileName, jsonSettingCode, packageDeclaration, classNameNoConflict) {
+function processTemplate(template, className, frontMatter, javaCreationCode, sourceFileName, jsonSettingCode, package, classNameNoConflict) {
     return template
         .replace("public class template", "public class " + className)
         .replace("/*NSERVO_NAMES*/", buildServoNames(frontMatter.servos))
@@ -148,11 +156,9 @@ function processTemplate(template, className, frontMatter, javaStringFileSource,
         .replace("/*JAVA_CREATION_CODE*/", javaCreationCode)
         .replace("/*CRSERVO_NAMES*/", buildCrServoNames(frontMatter.crServos))
         .replace("/*CRSERVOS*/", buildCrServos(frontMatter.crServos))
-        .replace("/*PACKAGE_DECLARATION*/", packageDeclaration)
+        .replace("/*PACKAGE_DECLARATION*/", "package " + package + ";")
         .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
-        .replace("/*TEST_ITERATIONS*/",  (frontMatter.testIterations === undefined ? 3 : frontMatter.testIterations))
-        .replace("/*OUTPUT_ASSERTATION*/", frontMatter.expectedTestOutput == undefined ? "" : `assertThat("Log printed correctly", FeatureManager.logger.getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));` )
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
         .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1);
 }
@@ -179,17 +185,14 @@ function buildServos(servos) {
 
 function stripAndParseFrontMatter(src) {
     var startDollarSign = parserTools.findUngroupedSubstring(src, "$");
-    if(startDollarSign == -1) return { stripped: src, frontMatter: {} };
+    if(startDollarSign == -1) return { };
 
     var endDollarSign = startDollarSign + 1 + parserTools.findUngroupedSubstring(src.substring(startDollarSign + 1), "$");
     if(endDollarSign == -1) throw src;
 
     var frontMatter = eval("({" + src.substring(startDollarSign + 1, endDollarSign) + "})");
 
-    return {
-        stripped: src.substring(parserTools.findUngroupedSubstring(src, "#")),
-        frontMatter: frontMatter
-    }
+    return frontMatter;
 }
 
 function loadAutoautoFilesFromFolder(folder) {

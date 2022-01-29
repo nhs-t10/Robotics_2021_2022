@@ -61,7 +61,7 @@ android {
     sourceSets {
         debug {
             java.srcDir("gen/")
-            java.srcDir("src/test/java")
+            //java.srcDir("src/test/java")
         }
         main {
             java.srcDir("gen/")

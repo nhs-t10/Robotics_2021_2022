@@ -25,13 +25,6 @@ import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
-import org.junit.Test;
-
-
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location.L;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram.P;
@@ -61,7 +54,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
-@SuppressWarnings("WrongPackageStatement")
 @Autonomous(name = "/*NO_CONFLICT_NAME*/")
 public class template extends AutoautoOpmode {
     MovementManager driver;
@@ -131,20 +123,6 @@ public class template extends AutoautoOpmode {
             FeatureManager.logger.log(runtime.getCurrentStatepath() + ":" + runtime.getCurrentState());
             shouldActuallyDoThings = false;
         }
-    }
-
-    @Test
-    public void runTest() {
-        this.hardwareMap = new DummyHardwareMap();
-        this.telemetry = new DummyTelemetry();
-
-        this.init();
-        FeatureManager.logger.setRecordLogHistory(true);
-        int TEST_ITERATIONS = /*TEST_ITERATIONS*/;
-        //noinspection ConstantConditions
-        for(int i = 0; i < TEST_ITERATIONS; i++) this.loop();
-        this.stop();
-        /*OUTPUT_ASSERTATION*/
     }
 
     @Override

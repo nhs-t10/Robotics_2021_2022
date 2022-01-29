@@ -46,44 +46,13 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     "AutoautoValue[]" : "%"
 };
 
-var PRIMITIVENESS_OF_TYPE = {
-     AutoautoUnitValue: 3,
-     AutoautoBooleanValue: 2.9,
-     AutoautoNumericValue: 2.8,
-     AutoautoString: 2.7,
-     VariableReference: 2.6,
-
-     AutoautoArray: 2,
-     BooleanOperator: 2,
-     ArithmeticValue: 2,
-     FunctionCall: 2,
-     "AutoautoValue[]": 2,
-
-    NextStatement: 1.9,
-    LetStatement: 1.8,
-    ValueStatement: 1.7,
-    GotoStatement: 1.6,
-    AfterStatement: 1.5,
-    IfStatement: 1.4,
-
-    "Statement[]": 1.3,
-    State: 1,
-
-    "State[]": 0.9,
-    Statepath: 0,
-
-    AutoautoRuntime: -1
-};
-
-module.exports = function astToString(ast, programNonce, statepath, stateNumber, depth) {
-    if (programNonce === undefined) programNonce = genNonce();
+module.exports = function astToString(ast, statepath, stateNumber, depth) {
     if(depth === undefined) depth = 0;
 
     var nonce = genNonce();
 
     function process(child, newStateNumber) {
         var r = astToString(child,
-            programNonce,
             child.label ? child.label.value : statepath,
             newStateNumber || stateNumber,
             depth + 1

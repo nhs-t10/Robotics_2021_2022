@@ -65,22 +65,5 @@ public class TankTeleop extends OpMode {
         FeatureManager.setIsOpModeRunning(false);
     }
 
-    @Test
-    public void test() {
-        this.hardwareMap = new DummyHardwareMap();
-        this.gamepad1 = new DummyGamepad();
-        this.gamepad2 = new DummyGamepad();
-        this.telemetry = new DummyTelemetry();
 
-        long startTime = System.currentTimeMillis();
-
-        this.start();
-        this.init();
-        this.init_loop();
-        for(int i = 0; i < 100; i++) {
-            this.time = (System.currentTimeMillis() - startTime) * 0.001;
-            this.loop();
-        }
-        this.stop();
-    }
 }

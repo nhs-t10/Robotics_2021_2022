@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.unitTests.teleop;
+package org.firstinspires.ftc.teamcode.unitTests.teleop.longterm;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.DualController;
@@ -16,7 +15,7 @@ import java.util.Collection;
 import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
 
-public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTest {
+public class ExampleTeleopCarouselPressingAllDualControllerControlsTest {
     @Test
     public void runTest() {
         if(!testRunTypeIs("long")) return;
@@ -47,7 +46,7 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
             this.tested = tested;
         }
 
-        public void inputTests() throws InterruptedException {
+        public void inputTests(DualController opmode) throws InterruptedException {
             //give 20s for everything to finish setup
             //probably overkill, but eih
             sleep(20_000);
@@ -60,24 +59,15 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
                 FeatureManager.logger.log("testing control " + node.name);
 
                 String[] keys = node.getKeysUsed();
-                pressButtons(keys);
-
-                sleep(HUMAN_REACTION_TIME * 2);
-
-                for(InputManagerInputNode otherNode : controls) {
-                    if(otherNode == node) continue;
-                    FeatureManager.logger.log("... with " + otherNode.name);
-
-                    String[] otherKeys = otherNode.getKeysUsed();
-                    pressButtons(otherKeys);
-                    sleep(HUMAN_REACTION_TIME * 2);
-                    unpressButtons(otherKeys);
-                    sleep(HUMAN_REACTION_TIME * 2);
+                for(String key : keys) {
+                    TeleopTestingUtils.setKeyState(key, opmode.gamepad1, opmode.gamepad2, (float) (Math.random() * 2 - 1));
+                    sleep(HUMAN_REACTION_TIME / 2);
                 }
-
                 sleep(HUMAN_REACTION_TIME * 2);
-
-                unpressButtons(keys);
+                for(String key : keys) {
+                    TeleopTestingUtils.setKeyState(key, opmode.gamepad1, opmode.gamepad2, 0);
+                    sleep(HUMAN_REACTION_TIME / 2);
+                }
 
                 sleep(HUMAN_REACTION_TIME * 2);
             }
@@ -87,27 +77,13 @@ public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTes
             seemsGood();
         }
 
-        private void unpressButtons(String[] ks) throws InterruptedException {
-            for(String k : ks) {
-                TeleopTestingUtils.setKeyState(k, opmode.gamepad1, opmode.gamepad2, 0);
-                sleep((long) TimeUnit.JIF.convertToNaturalUnit(1));
-            }
-        }
-
-        private void pressButtons(String[] keys) throws InterruptedException {
-            for(String key : keys) {
-                TeleopTestingUtils.setKeyState(key, opmode.gamepad1, opmode.gamepad2, (float) (Math.random() * 2 - 1));
-                sleep(HUMAN_REACTION_TIME / 2);
-            }
-        }
-
         private void seemsGood() {
             tested.testOver();
         }
 
         public void run() {
             try {
-                inputTests();
+                inputTests(opmode);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

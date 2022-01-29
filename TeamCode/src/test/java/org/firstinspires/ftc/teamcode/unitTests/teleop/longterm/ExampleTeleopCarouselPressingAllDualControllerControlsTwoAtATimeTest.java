@@ -1,34 +1,37 @@
-package org.firstinspires.ftc.teamcode.unitTests.teleop;
+package org.firstinspires.ftc.teamcode.unitTests.teleop.longterm;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.SingleController;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.InputManagerInputNode;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.DualController;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
 import org.junit.Test;
 
+import java.util.Collection;
+
 import static org.firstinspires.ftc.teamcode.unitTests.TestTypeManager.testRunTypeIs;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class ExampleTeleopCarouselHangingTest {
+public class ExampleTeleopCarouselPressingAllDualControllerControlsTwoAtATimeTest {
     @Test
     public void runTest() {
         if(!testRunTypeIs("long")) return;
 
-        SingleController opmode = new SingleController();
+        DualController opmode = new DualController();
         opmode.telemetry = new DummyTelemetry();
         opmode.gamepad1 = new DummyGamepad();
         opmode.gamepad2 = new DummyGamepad();
         opmode.hardwareMap = new DummyHardwareMap();
 
-        LoopRunnerThread runningOpmode = new LoopRunnerThread(opmode);
-        WatchdogThread watchdogThread = runningOpmode.watchdog;
-        runningOpmode.start();
+        LoopRunnerThread runner = new LoopRunnerThread(opmode);
+        WatchdogThread watchdogThread = runner.watchdog;
+        runner.start();
 
-        TestInputterThread testInputterThread = new TestInputterThread(opmode, runningOpmode);
+        TestInputterThread testInputterThread = new TestInputterThread(opmode, runner);
         testInputterThread.start();
 
         assertTrue(watchdogThread.blockUntilDone());
@@ -36,46 +39,75 @@ public class ExampleTeleopCarouselHangingTest {
     private static final long HUMAN_REACTION_TIME = 265;
 
     private static class TestInputterThread extends Thread {
-        private final OpMode opmode;
+        private final DualController opmode;
         private final LoopRunnerThread tested;
-        private boolean running = true;
 
-        public TestInputterThread(OpMode opmode, LoopRunnerThread tested) {
+        public TestInputterThread(DualController opmode, LoopRunnerThread tested) {
             this.opmode = opmode;
             this.tested = tested;
         }
 
-        public void inputTests(OpMode opmode) throws InterruptedException {
-                        sleep(HUMAN_REACTION_TIME * 5);
-            opmode.gamepad1.guide = true;
-                        sleep(HUMAN_REACTION_TIME);
-            opmode.gamepad1.guide = false;
-                        sleep(HUMAN_REACTION_TIME);
-            opmode.gamepad1.left_bumper = true;
-                        sleep(HUMAN_REACTION_TIME / 2);
-            opmode.gamepad1.a = true;
-                        sleep(HUMAN_REACTION_TIME);
-            opmode.gamepad1.a = false;
-                        sleep(HUMAN_REACTION_TIME);
-            opmode.gamepad1.left_bumper = false;
-                        sleep(HUMAN_REACTION_TIME);
+        public void inputTests() throws InterruptedException {
+            //give 20s for everything to finish setup
+            //probably overkill, but eih
+            sleep(20_000);
 
-            ((DummyGamepad)opmode.gamepad1).buttonSmash();
-            ((DummyGamepad)opmode.gamepad2).buttonSmash();
+            //get all the controls declared in the opmode
+            Collection<InputManagerInputNode> controls = opmode.input.getNodes();
 
-                        sleep(4000);
+            //one-by-one press all of their buttons
+            for(InputManagerInputNode node : controls) {
+                FeatureManager.logger.log("testing control " + node.name);
+
+                String[] keys = node.getKeysUsed();
+                pressButtons(keys);
+
+                sleep(HUMAN_REACTION_TIME * 2);
+
+                for(InputManagerInputNode otherNode : controls) {
+                    if(otherNode == node) continue;
+                    FeatureManager.logger.log("... with " + otherNode.name);
+
+                    String[] otherKeys = otherNode.getKeysUsed();
+                    pressButtons(otherKeys);
+                    sleep(HUMAN_REACTION_TIME * 2);
+                    unpressButtons(otherKeys);
+                    sleep(HUMAN_REACTION_TIME * 2);
+                }
+
+                sleep(HUMAN_REACTION_TIME * 2);
+
+                unpressButtons(keys);
+
+                sleep(HUMAN_REACTION_TIME * 2);
+            }
+
+            sleep(4000);
 
             seemsGood();
         }
 
+        private void unpressButtons(String[] ks) throws InterruptedException {
+            for(String k : ks) {
+                TeleopTestingUtils.setKeyState(k, opmode.gamepad1, opmode.gamepad2, 0);
+                sleep((long) TimeUnit.JIF.convertToNaturalUnit(1));
+            }
+        }
+
+        private void pressButtons(String[] keys) throws InterruptedException {
+            for(String key : keys) {
+                TeleopTestingUtils.setKeyState(key, opmode.gamepad1, opmode.gamepad2, (float) (Math.random() * 2 - 1));
+                sleep(HUMAN_REACTION_TIME / 2);
+            }
+        }
+
         private void seemsGood() {
-            running = false;
             tested.testOver();
         }
 
         public void run() {
             try {
-                inputTests(opmode);
+                inputTests();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -102,7 +134,7 @@ public class ExampleTeleopCarouselHangingTest {
         public void run() {
 
             //init!
-            watchdog.promiseNotDead();
+            watchdog.promiseNotDead(30_000);
 
             watchdog.setState("init");
             opmode.init();
@@ -141,7 +173,7 @@ public class ExampleTeleopCarouselHangingTest {
     private static class WatchdogThread extends Thread {
         private final LoopRunnerThread watched;
 
-        private final static long MS_BETWEEN_CALL_ALLOWED = HUMAN_REACTION_TIME;
+        private final static long MS_BETWEEN_CALL_ALLOWED = HUMAN_REACTION_TIME * 2;
 
         private long killTime;
         private boolean running;
@@ -180,7 +212,10 @@ public class ExampleTeleopCarouselHangingTest {
 
         //gives the thread `MS_BETWEEN_CALL_ALLOWED` milliseconds to call `promiseNotDead` again
         public void promiseNotDead() {
-            if(running) this.killTime = System.currentTimeMillis() + MS_BETWEEN_CALL_ALLOWED;
+            promiseNotDead(MS_BETWEEN_CALL_ALLOWED);
+        }
+        public void promiseNotDead(long m) {
+            if(running) this.killTime = System.currentTimeMillis() + m;
         }
 
         public void setState(String state) {
