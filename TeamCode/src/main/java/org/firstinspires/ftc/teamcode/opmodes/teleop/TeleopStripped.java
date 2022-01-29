@@ -12,10 +12,6 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
-import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
-import org.junit.Test;
 
 @TeleOp
 public class TeleopStripped extends OpMode {
