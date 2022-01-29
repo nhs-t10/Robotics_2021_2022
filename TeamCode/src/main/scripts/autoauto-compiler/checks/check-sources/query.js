@@ -28,16 +28,23 @@ function cachedGetAllOfType(ast, type, limit) {
 }
 
 function recursiveDescentGrabAllOfType(ast, type, limit) {
-    var children = Object.values(ast).filter(x=>typeof x === "object").flat().filter(x => x && typeof x.type === "string");
+    var children = Object.values(ast)
+        .filter(x=>typeof x === "object")
+        .flat()
+        .filter(x => x && typeof x.type === "string");
 
-    var childrenOfType = children.filter(x=>x.type == type);
+    var directChildrenOfType = children.filter(x=>x.type == type);
 
-    limit -= childrenOfType.length;
+    directChildrenOfType.forEach(x=>x.getParent = ()=>ast);
 
+    limit -= directChildrenOfType.length;
+
+    var allChildrenOfType = directChildrenOfType;
     for(var i = 0; i < children.length && limit > 0; i++) {
         var childSearch = recursiveDescentGrabAllOfType(children[i], type, limit);
         limit -= childSearch.length;
-        childrenOfType = childrenOfType.concat(childSearch);
+        allChildrenOfType = allChildrenOfType.concat(childSearch);
     }
-    return childrenOfType;
+
+    return allChildrenOfType;
 }

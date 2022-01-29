@@ -22,11 +22,15 @@ public class DecelerationNode extends InputManagerInputNode{
  * Gradually decelerates an input over a given amount of time (in milliseconds). <br>
  * If the starting speed value is less than the ending speed value, this can be used to gradually speed up as well. <br>
  * This works in the opposite order of AccelerationNode. The speed will gradually decreased when released and not when it is pressed. <br>
+ *
+ * <img src="./doc-files/deceleration-node.png" width="200">
+ *
  * @param control The input that will be decelerated
  * @param startingSpeed The starting speed of the input
  * @param endingSpeed The ending speed of the input
  * @param movementTime How long it will take to get from the startingSpeed to the endingSpeed.
  * @see AccelerationNode#AccelerationNode(InputManagerInputNode, InputManagerInputNode, InputManagerInputNode, InputManagerInputNode) AccelerationNode
+ * @see BothcelerationNode#BothcelerationNode(InputManagerInputNode, InputManagerInputNode, InputManagerInputNode, InputManagerInputNode) BothcelerationNode
  * */
     public DecelerationNode(InputManagerInputNode control, InputManagerInputNode startingSpeed, InputManagerInputNode endingSpeed, InputManagerInputNode movementTime) {
         this.control = control;

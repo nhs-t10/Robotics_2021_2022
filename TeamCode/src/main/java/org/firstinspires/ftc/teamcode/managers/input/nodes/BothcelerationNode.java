@@ -20,6 +20,19 @@ public class BothcelerationNode extends InputManagerInputNode{
     private float interpolationStartValue;
     private float interpolationEndValue;
 
+    /**
+     * Gradually accelerates and decelerates an input over a given amount of time (in milliseconds). <br>
+     * When the input is false, the node will gradually return to the default value <br>
+     *
+     * <img src="./doc-files/bothceleration-node.png" width="200">
+     *
+     * @param control The input that will be accelerated
+     * @param defaultSpeed The value that the input will start at
+     * @param alternativeSpeed The value that the input will move towards while {@code control} is true.
+     * @param movementTime How long it will take to get from the defaultSpeed to the alternativeSpeed.
+     * @see DecelerationNode#DecelerationNode(InputManagerInputNode, InputManagerInputNode, InputManagerInputNode, InputManagerInputNode) DecelerationNode
+     * @see AccelerationNode#AccelerationNode(InputManagerInputNode, InputManagerInputNode, InputManagerInputNode, InputManagerInputNode) AccelerationNode
+     */
     public BothcelerationNode(InputManagerInputNode control, InputManagerInputNode defaultSpeed, InputManagerInputNode alternativeSpeed, InputManagerInputNode movementTime) {
         this.control = control;
         this.defaultSpeed = defaultSpeed;

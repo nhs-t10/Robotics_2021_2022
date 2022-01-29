@@ -49,7 +49,8 @@ var writtenFiles = [];
 
 for(var i = 0; i < autoautoFiles.length; i++) {
     var fileSource = fs.readFileSync(autoautoFiles[i]).toString();
-    var shortButUniqueFolder = path.dirname(autoautoFiles[i]).replace(srcDirectory, "").toLowerCase();
+    var folder = path.dirname(autoautoFiles[i]);
+    var shortButUniqueFolder = folder.replace(srcDirectory, "").toLowerCase();
     shortButUniqueFolder = shortButUniqueFolder.substring(shortButUniqueFolder.indexOf("teamcode"));
     var package = shortButUniqueFolder
 
@@ -85,7 +86,7 @@ for(var i = 0; i < autoautoFiles.length; i++) {
         parsedModel = e;
     }
 
-    if(!runChecks(parsedModel, shortButUniqueFolder, fileName, fileSource, uncommentedFileSource)) continue;
+    if(!runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource)) continue;
     if(parsedModel instanceof Error) continue;
 
     var javaCreationCode = astJavaify(parsedModel);
