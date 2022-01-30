@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyOutputStream;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyPrintStream;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyTelemetry;
+import org.junit.Test;
 
 import java.io.PrintStream;
 import java.time.Clock;
@@ -65,7 +66,7 @@ public class OpmodeTester {
 
             RobotTime.clock = originalClock;
             FeatureManager.logger.setBackend(originalStdout);
-            fakeStdout.printBufferTo(originalStdout);
+            if(!TestTypeManager.isRunningOnServer()) fakeStdout.printBufferTo(originalStdout);
 
             return succeeded;
         }

@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import java.lang.ref.WeakReference;
 
 public class DummyDcMotor implements DcMotor {
-    protected double power;
-    protected Direction direction;
-    protected RunMode runMode;
+    protected double power = 0.0;
+    protected Direction direction = Direction.FORWARD;
+    protected RunMode runMode = RunMode.RUN_WITHOUT_ENCODER;
     protected int target;
     protected boolean hasTargetSet;
     protected double currentPosition;

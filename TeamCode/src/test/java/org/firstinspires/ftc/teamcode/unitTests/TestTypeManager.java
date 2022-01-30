@@ -17,4 +17,11 @@ public abstract class TestTypeManager {
             return false;
         }
     }
+    public static boolean isRunningOnServer() {
+        try {
+            return "true".equals(System.getenv("CI"));
+        } catch(Throwable onNonPortableProblemIgnore) {
+            return false;
+        }
+    }
 }

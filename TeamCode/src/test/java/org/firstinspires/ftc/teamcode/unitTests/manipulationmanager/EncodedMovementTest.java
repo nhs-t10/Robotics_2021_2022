@@ -21,7 +21,7 @@ public class EncodedMovementTest {
         long startTime = System.currentTimeMillis();
 
         long lastPrintTime = 0;
-        //wait until it's finished moving
+        //wait until it's finished moving...
         while(m.hasEncodedMovement(fooMotor)) {
             long now = System.currentTimeMillis();
             if(now - lastPrintTime > 10) {
@@ -29,10 +29,12 @@ public class EncodedMovementTest {
                 lastPrintTime = now;
             }
 
-            //or the time has ran out
+            //...or the time has ran out
             if(now - startTime > 10_000) {
                 fail("Timeout");
             }
+
+            Thread.yield();
         }
 
         assertEquals(4096, m.getMotorPosition(fooMotor), ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
