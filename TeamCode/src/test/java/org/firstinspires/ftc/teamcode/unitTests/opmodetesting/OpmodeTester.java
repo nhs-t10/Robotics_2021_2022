@@ -23,16 +23,16 @@ public class OpmodeTester {
     static final long DEFAULT_REALTIME_MS = TestTypeManager.testRunTypeIs("long") ? 1000 : 100;
     static final long DEFAULT_SIMULATED_MS = DEFAULT_REALTIME_MS;
 
-    public static synchronized void runTestOn(OpMode opmode) {
-        runTestOn(opmode, DEFAULT_SIMULATED_MS);
+    public static synchronized boolean runTestOn(OpMode opmode) {
+        return runTestOn(opmode, DEFAULT_SIMULATED_MS);
     }
-    public static synchronized void runTestOn(OpMode opmode, long simulatedMsFor) {
-        runTestOn(opmode, simulatedMsFor, DEFAULT_INLOOP_FUNCTION);
+    public static synchronized boolean runTestOn(OpMode opmode, long simulatedMsFor) {
+        return runTestOn(opmode, simulatedMsFor, DEFAULT_INLOOP_FUNCTION);
     }
-    public static synchronized void runTestOn(OpMode opmode, long simulatedMsFor, RunWhileInLoopFunction function) {
-        runTestOn(opmode, simulatedMsFor, function, DEFAULT_REALTIME_MS);
+    public static synchronized boolean runTestOn(OpMode opmode, long simulatedMsFor, RunWhileInLoopFunction function) {
+        return runTestOn(opmode, simulatedMsFor, function, DEFAULT_REALTIME_MS);
     }
-    public static synchronized void runTestOn(OpMode opmode, long simulatedMsFor, RunWhileInLoopFunction function, long realMsFor) {
+    public static synchronized boolean runTestOn(OpMode opmode, long simulatedMsFor, RunWhileInLoopFunction function, long realMsFor) {
         synchronized (TEST_LOCK) {
             PrintStream originalStdout = FeatureManager.logger.fallbackBackend;
             DummyPrintStream fakeStdout = new DummyPrintStream(new DummyOutputStream());
@@ -61,11 +61,13 @@ public class OpmodeTester {
             runner.testOver();
 
             //wait until the runner and its watchdog are dead before cleaning up
-            assertTrue(runner.watchdog.blockUntilDone());
+            boolean succeeded = runner.watchdog.blockUntilDone();
 
             RobotTime.clock = originalClock;
             FeatureManager.logger.setBackend(originalStdout);
             fakeStdout.printBufferTo(originalStdout);
+
+            return succeeded;
         }
     }
 

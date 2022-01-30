@@ -28,7 +28,7 @@ module.exports = function(testRecords, testsDir, testPackage) {
     @Test
     public void runTest${i}_${x.className}() {
         FeatureManager.logger.setRecordLogHistory(true);
-        OpmodeTester.runTestOn(new ${x.package}.${x.className}());
+        assertTrue(OpmodeTester.runTestOn(new ${x.package}.${x.className}()));
         ${makeAssert(x.frontMatter)}
         FeatureManager.logger.setRecordLogHistory(false);
     }
