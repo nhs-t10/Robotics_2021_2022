@@ -19,7 +19,7 @@ public class Server {
     public boolean serverIsRunning = true;
 
     public Server(TelemetryManager dataSource) {
-        //add a shutdown hook so the server can shut down itself when Java's over
+        //add a shutdown hook so the server can shut down itself when the opmode's over
         (new FratricideCommitterThread()).start();
 
         thread = new ServerThread(this, dataSource);
@@ -57,7 +57,7 @@ public class Server {
                 FeatureManager.logger.log("Could not reserve TCP port");
             } else {
                 parentProcess.port = this.port;
-                FeatureManager.logger.add("Go to http://192.168.43.1:" + port);
+                FeatureManager.logger.log("Go to http://192.168.43.1:" + port);
             }
 
             parentProcess.loaded = true;

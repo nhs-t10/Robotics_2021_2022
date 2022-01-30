@@ -4,6 +4,9 @@ import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.unitTests.teleop.longterm.ExampleTeleopCarouselHangingTest;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import static org.junit.Assert.fail;
 
 /**
@@ -29,13 +32,13 @@ public class OpmodeHangingWatchdogThread extends Thread {
     }
     @Override
     public void run() {
-        while(RobotTime.currentTimeMillis() < killTime) Thread.yield();
+        while(RobotTime.currentTimeMillis() < killTime && running) Thread.yield();
 
-        if(!watched.isAlive()) {
+        if(!watched.isAlive() || success) {
             success = true;
         } else {
-            fail("blocked in " + state + "!");
             for (StackTraceElement s : watched.getStackTrace()) FeatureManager.logger.log(s);
+            forceStopWatchedThread();
             success = false;
         }
         this.running = false;
@@ -45,7 +48,18 @@ public class OpmodeHangingWatchdogThread extends Thread {
         this.cleanupDone = true;
     }
 
+    private void forceStopWatchedThread() {
+        try {
+            Method m = Thread.class.getDeclaredMethod("stop0", Object.class);
+            m.setAccessible(true);
+            m.invoke(watched, new ThreadDeath());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void standDown() {
+        this.success = true;
         this.running = false;
     }
 

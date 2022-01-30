@@ -21,9 +21,6 @@ public class FeatureManager {
     public static boolean isOpModeRunning = false;
 
     public static void setIsOpModeRunning(boolean b) {
-        setIsOpModeRunning(b, false);
-    }
-    public static void setIsOpModeRunning(boolean b, boolean shouldLoadAutoConfig) {
         isOpModeRunning = b;
     }
 

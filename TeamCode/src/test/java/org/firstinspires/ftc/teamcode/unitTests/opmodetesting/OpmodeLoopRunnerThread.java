@@ -12,6 +12,9 @@ public class OpmodeLoopRunnerThread extends Thread {
 
     protected boolean running;
 
+    private volatile boolean opmodeLifecycleCompleted;
+    private volatile boolean initCompleted;
+
     public OpmodeLoopRunnerThread(OpMode mode) {
         this.running = true;
 
@@ -31,6 +34,7 @@ public class OpmodeLoopRunnerThread extends Thread {
         watchdog.setState("init");
         opmode.init();
         watchdog.promiseNotDead();
+        initCompleted = true;
 
         watchdog.setState("init_loop");
         for(int i = 20; i >= 0; i--) {
@@ -54,11 +58,17 @@ public class OpmodeLoopRunnerThread extends Thread {
         watchdog.setState("stop");
         opmode.stop();
         watchdog.promiseNotDead();
+        opmodeLifecycleCompleted = true;
     }
 
     public void testOver() {
         running = false;
-        Thread.yield();
-        if(watchdog.running) watchdog.standDown();
+        //yield so that the `stop` method can be called
+        while(!opmodeLifecycleCompleted) Thread.yield();
+        watchdog.standDown();
+    }
+
+    public void blockUntilInit() {
+        while(!initCompleted) Thread.yield();
     }
 }
