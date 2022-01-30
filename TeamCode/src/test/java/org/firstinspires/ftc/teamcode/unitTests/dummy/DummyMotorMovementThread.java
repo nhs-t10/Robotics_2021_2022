@@ -16,6 +16,7 @@ public class DummyMotorMovementThread extends Thread {
     private double lastVelocityRotPerms;
 
     public final double MAX_ROTS_PER_MS = 0.01;
+    public final double DRAG_COEF = 0.5;
 
     private double ticksPerRot;
 
@@ -56,7 +57,7 @@ public class DummyMotorMovementThread extends Thread {
         double acceleration = motor.power * 5;
         if(motor.direction.equals(DcMotorSimple.Direction.REVERSE)) acceleration *= -1;
 
-        double velocity = lastVelocityRotPerms + acceleration * elapsedTimeMs;
+        double velocity = lastVelocityRotPerms * DRAG_COEF + acceleration * elapsedTimeMs;
         velocity = PaulMath.clamp(velocity, -MAX_ROTS_PER_MS, MAX_ROTS_PER_MS);
 
         motor.currentPosition += (velocity * elapsedTimeMs) * ticksPerRot;
