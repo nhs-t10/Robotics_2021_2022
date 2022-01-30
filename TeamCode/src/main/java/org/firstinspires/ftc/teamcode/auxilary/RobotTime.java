@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi;
  * A class that lets us play around with the time. This is <i>very</i> fast, and lets us get precision over System.currentTimeMillis, where it's possible.
  */
 public class RobotTime {
-    static Clock clock = Clock.systemUTC();
+    public static Clock clock = Clock.systemUTC();
 
     /**
      * The same as System.currentTimeMillis, but with greater precision if the device allows it

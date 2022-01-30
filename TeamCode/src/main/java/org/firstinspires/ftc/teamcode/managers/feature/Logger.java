@@ -10,8 +10,8 @@ import java.util.Arrays;
 public class Logger {
     private static int CONSOLE_WIDTH = 180;
 
-    private Telemetry.Log backend;
-    private PrintStream fallbackBackend;
+    public Telemetry.Log backend;
+    public PrintStream fallbackBackend;
     private boolean usesFallback;
 
     private boolean addStackTrace;

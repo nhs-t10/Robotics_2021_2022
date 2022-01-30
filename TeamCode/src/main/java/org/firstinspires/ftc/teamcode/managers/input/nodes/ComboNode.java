@@ -12,6 +12,7 @@ public class ComboNode extends InputManagerInputNode {
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
     private long[] risingEdgeTime;
+    private long iterId = Long.MIN_VALUE;
     private boolean comboMatch;
     private InputManagerNodeResult lastChildResult;
 
@@ -43,19 +44,20 @@ public class ComboNode extends InputManagerInputNode {
             InputManagerNodeResult r = node.getResult();
             boolean rBool = r != null && r.getBool();
 
-            if(!rBool) risingEdgeTime[i] = -1;
-            else if(risingEdgeTime[i] == -1) risingEdgeTime[i] = RobotTime.nanoTime();
+            if(!rBool) risingEdgeTime[i] = Long.MIN_VALUE;
+            else if(risingEdgeTime[i] == Long.MIN_VALUE) risingEdgeTime[i] = iterId;
 
 
             if(rBool) lastResult = r;
 
             //check if the list of times is sorted
-            if(risingEdgeTime[i] == -1 || (i > 0 && risingEdgeTime[i] < risingEdgeTime[i - 1])) {
+            if(risingEdgeTime[i] == Long.MIN_VALUE || (i > 1 && risingEdgeTime[i] <= risingEdgeTime[i - 1])) {
                 comboMatch = false;
             }
         }
         this.comboMatch = comboMatch;
         this.lastChildResult = lastResult;
+        this.iterId++;
     }
 
     @NonNull

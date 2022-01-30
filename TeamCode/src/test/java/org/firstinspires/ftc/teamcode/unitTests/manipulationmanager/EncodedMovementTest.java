@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class EncodedMovementTest {
     @Test
@@ -17,13 +18,20 @@ public class EncodedMovementTest {
 
         m.encodeMoveToPosition(fooMotor, 4096);
 
-        long lastPrintTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
+
+        long lastPrintTime = 0;
         //wait until it's finished moving
         while(m.hasEncodedMovement(fooMotor)) {
             long now = System.currentTimeMillis();
-            if(now - lastPrintTime > 1000) {
+            if(now - lastPrintTime > 10) {
                 FeatureManager.logger.log("Current: " + m.getMotorPosition(fooMotor));
                 lastPrintTime = now;
+            }
+
+            //or the time has ran out
+            if(now - startTime > 10_000) {
+                fail("Timeout");
             }
         }
 

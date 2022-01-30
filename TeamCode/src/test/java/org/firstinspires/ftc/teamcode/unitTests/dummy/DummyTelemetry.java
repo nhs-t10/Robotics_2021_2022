@@ -174,7 +174,7 @@ public class DummyTelemetry implements Telemetry {
         @Override
         public void add(String entry) {
             logText += entry + "\n";
-            System.out.println(entry);
+            FeatureManager.logger.fallbackBackend.println(entry);
         }
 
         @Override
