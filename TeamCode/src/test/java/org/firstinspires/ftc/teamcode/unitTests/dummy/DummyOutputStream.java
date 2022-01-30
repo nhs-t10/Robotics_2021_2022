@@ -5,24 +5,28 @@ import java.io.OutputStream;
 
 public class DummyOutputStream extends OutputStream {
     private boolean closed;
+    private String buf = "";
 
     @Override
     public void write(int i) throws IOException {
-        if(closed) throw new IOException("Stream closed");
+        buf += (char)i;
     }
     public void write(byte[] b) throws IOException {
-        write(0);
+        buf += new String(b);
     }
 
     public void write(byte[] b, int off, int len) throws IOException {
-        write(0);
+        buf += new String(b, off, len);
     }
 
     public void flush() throws IOException {
-        write(0);
+        if(closed) throw new IOException("Stream closed");
     }
 
     public void close() throws IOException {
         this.closed = true;
+    }
+    public String getBuf() {
+        return buf;
     }
 }

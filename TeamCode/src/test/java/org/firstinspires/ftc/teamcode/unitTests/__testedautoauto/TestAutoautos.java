@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.junit.Test;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
-import org.firstinspires.ftc.teamcode.unitTests.OpmodeTester;
+import org.firstinspires.ftc.teamcode.unitTests.opmodetesting.OpmodeTester;
 
 public class TestAutoautos {
     

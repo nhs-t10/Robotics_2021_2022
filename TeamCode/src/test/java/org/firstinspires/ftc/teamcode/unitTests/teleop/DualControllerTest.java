@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.unitTests.teleop;
 
 import org.firstinspires.ftc.teamcode.opmodes.teleop.DualController;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.SingleController;
-import org.firstinspires.ftc.teamcode.unitTests.OpmodeTester;
+import org.firstinspires.ftc.teamcode.unitTests.opmodetesting.OpmodeTester;
 import org.junit.Test;
 
 public class DualControllerTest {
