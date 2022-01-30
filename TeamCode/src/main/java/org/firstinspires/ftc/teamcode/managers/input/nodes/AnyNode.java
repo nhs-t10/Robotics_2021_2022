@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 
 public class AnyNode extends InputManagerInputNode {
     private final InputManagerInputNode[] inputs;
-    private InputManager boss;
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
@@ -24,13 +23,11 @@ public class AnyNode extends InputManagerInputNode {
 
     @Override
     public void init(InputManager boss) {
-        this.boss = boss;
         for(InputManagerInputNode node : inputs) node.init(boss);
     }
 
     @Override
     public void update() {
-        this.boss = boss;
         for(InputManagerInputNode n : inputs) n.update();
     }
 

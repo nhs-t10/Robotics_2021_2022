@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -62,7 +63,7 @@ public class BothcelerationNode extends InputManagerInputNode{
         if(interpolationStartTime == 0) result.setFloat(defaultSpeed.getResult().getFloat());
 
         if(isPressed != wasPressed) {
-            interpolationStartTime = System.currentTimeMillis();
+            interpolationStartTime = RobotTime.currentTimeMillis();
             interpolationStartValue = result.getFloat();
             if(isPressed) {
                 interpolationEndValue = alternativeSpeed.getResult().getFloat();
@@ -71,7 +72,7 @@ public class BothcelerationNode extends InputManagerInputNode{
             }
         }
 
-        long timeSinceStart = System.currentTimeMillis() - interpolationStartTime;
+        long timeSinceStart = RobotTime.currentTimeMillis() - interpolationStartTime;
         float percentageCompleted = Math.max(0,Math.min(1, timeSinceStart / totalMovementTime));
 
         float resultNumber = interpolationStartValue + percentageCompleted * (interpolationEndValue - interpolationStartValue);

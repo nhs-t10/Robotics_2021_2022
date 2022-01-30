@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -43,7 +44,7 @@ public class ComboNode extends InputManagerInputNode {
             boolean rBool = r != null && r.getBool();
 
             if(!rBool) risingEdgeTime[i] = -1;
-            else if(risingEdgeTime[i] == -1) risingEdgeTime[i] = System.nanoTime();
+            else if(risingEdgeTime[i] == -1) risingEdgeTime[i] = RobotTime.nanoTime();
 
 
             if(rBool) lastResult = r;

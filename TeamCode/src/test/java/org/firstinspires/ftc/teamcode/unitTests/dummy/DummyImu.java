@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.robotcore.external.navigation.Temperature;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 
 public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
     private final DummyImuUpdateyThread updateThread;
@@ -45,13 +46,13 @@ public class DummyImu implements com.qualcomm.hardware.bosch.BNO055IMU {
                 org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES,
                 updateThread.orientation,
                 updateThread.orientation,
-                updateThread.orientation, System.nanoTime());
+                updateThread.orientation, RobotTime.nanoTime());
 
     }
 
     @Override
     public Orientation getAngularOrientation(AxesReference reference, AxesOrder order, org.firstinspires.ftc.robotcore.external.navigation.AngleUnit angleUnit) {
-        return new Orientation(reference, order, angleUnit, updateThread.orientation, updateThread.orientation, updateThread.orientation, System.nanoTime());
+        return new Orientation(reference, order, angleUnit, updateThread.orientation, updateThread.orientation, updateThread.orientation, RobotTime.nanoTime());
     }
 
     @Override

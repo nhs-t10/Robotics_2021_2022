@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
@@ -102,7 +103,7 @@ public class AfterStatement extends Statement {
 
         switch (waitWithUnit.unitType) {
             case TIME:
-                this.stepStartTime = System.currentTimeMillis();
+                this.stepStartTime = RobotTime.currentTimeMillis();
                 break;
             case DISTANCE:
             case ROTATION:
@@ -119,7 +120,7 @@ public class AfterStatement extends Statement {
         if(waitWithUnit != null) {
             switch (waitWithUnit.unitType) {
                 case TIME:
-                    if (System.currentTimeMillis() >= stepStartTime + waitWithUnit.baseAmount)
+                    if (RobotTime.currentTimeMillis() >= stepStartTime + waitWithUnit.baseAmount)
                         action.loop();
                     break;
                 case DISTANCE:

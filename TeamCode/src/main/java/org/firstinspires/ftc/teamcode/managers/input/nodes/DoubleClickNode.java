@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers.input.nodes;
 
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.auxilary.units.TimeUnit;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -17,7 +18,7 @@ public class DoubleClickNode extends InputManagerInputNode {
     private long timeClickedFirst = 0;
     private boolean currentlyDblClicked;
 
-    private final long clickLimitOffsetNs = (long) TimeUnit.convertBetween(TimeUnit.MS, TimeUnit.NS, FeatureManager.DOUBLE_CLICK_TIME_MS);
+    private final long clickLimitOffsetMs = FeatureManager.DOUBLE_CLICK_TIME_MS;
 
     private final InputManagerNodeResult result = new InputManagerNodeResult();
 
@@ -40,8 +41,8 @@ public class DoubleClickNode extends InputManagerInputNode {
         //only register a doubleclick on rising edge
         boolean isClickedRisingEdge = clickedCheck && !lastTimeClicked;
 
-        long now = System.nanoTime();
-        long lastValidClickTime = now - clickLimitOffsetNs;
+        long now = RobotTime.currentTimeMillis();
+        long lastValidClickTime = now - clickLimitOffsetMs;
 
         //if the first click was before the last valid time, reset the time-keepy-tracky variables
         if (timeClickedFirst <= lastValidClickTime) {
@@ -53,7 +54,7 @@ public class DoubleClickNode extends InputManagerInputNode {
             if(firstClicked) {
                 currentlyDblClicked = true;
             } else {
-                timeClickedFirst = System.nanoTime();
+                timeClickedFirst = RobotTime.currentTimeMillis();
                 firstClicked = true;
             }
         } else {

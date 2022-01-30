@@ -48,7 +48,8 @@ sonarqube {
         property "sonar.organization", "nhs-t10"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.exclusions", "**/unitTests/**"
-        property "sonar.coverage.jacoco.xmlReportPaths", "TeamCode/build/reports/coverage/test/debug/report.xml"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/coverage/test/debug/report.xml"
     }
 }
 
@@ -77,6 +78,16 @@ android {
     }
     jacoco {
         version = '0.7.9'
+    }
+    testOptions {
+        unitTests.all {
+            reports {
+                junitXml.enabled = true
+            }
+        }
+    }
+    defaultConfig {
+        minSdkVersion 26
     }
 }
 

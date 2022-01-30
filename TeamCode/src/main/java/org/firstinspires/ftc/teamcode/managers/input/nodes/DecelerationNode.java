@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers.input.nodes;
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManagerNodeResult;
 
@@ -59,7 +60,7 @@ public class DecelerationNode extends InputManagerInputNode{
         boolean isPressed = control.getResult().getBool();
 
         if(isPressed == false && wasPressed == true) {
-            decelerationStartTime = System.currentTimeMillis();
+            decelerationStartTime = RobotTime.currentTimeMillis();
         }
 
         float starting = startingSpeed.getResult().getFloat();
@@ -67,8 +68,8 @@ public class DecelerationNode extends InputManagerInputNode{
 
         float resultNumber = starting;
 
-        if(!isPressed && System.currentTimeMillis() < (decelerationStartTime + totalMovementTime) && decelerationStartTime != 0) {
-            long timeSinceStart = System.currentTimeMillis() - decelerationStartTime;
+        if(!isPressed && RobotTime.currentTimeMillis() < (decelerationStartTime + totalMovementTime) && decelerationStartTime != 0) {
+            long timeSinceStart = RobotTime.currentTimeMillis() - decelerationStartTime;
             float percentageCompleted = Math.min(1, timeSinceStart / totalMovementTime);
 
             resultNumber = starting - percentageCompleted * (starting - ending);

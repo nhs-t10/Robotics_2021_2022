@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FailureType;
 import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.HardwareCapability;
@@ -229,9 +230,9 @@ public class FallibleDcMotor implements DcMotor, FallibleHardwareDevice {
         public void run() {
             try {
                 while(running) {
-                    if (System.currentTimeMillis() > nextSetTime) {
+                    if (RobotTime.currentTimeMillis() > nextSetTime) {
                         invertDirection();
-                        nextSetTime = System.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
+                        nextSetTime = RobotTime.currentTimeMillis() + (Math.round(Math.random() * 5000) + 3000);
                     }
                 }
             } catch(Throwable t) {

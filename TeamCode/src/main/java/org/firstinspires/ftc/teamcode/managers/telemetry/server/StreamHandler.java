@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.managers.telemetry.server;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.auxilary.UpdatableWeakReference;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
@@ -35,8 +36,8 @@ public class StreamHandler {
 
         boolean sentStreamConfig = false;
 
-        long streamStartedAt = System.currentTimeMillis();
-        while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && System.currentTimeMillis() - streamStartedAt < 30_000) {
+        long streamStartedAt = RobotTime.currentTimeMillis();
+        while(socket.isConnected() && !socket.isClosed() && FeatureManager.isOpModeRunning && RobotTime.currentTimeMillis() - streamStartedAt < 30_000) {
 
             if(dataSource == null) {
                 Thread.yield();
@@ -103,6 +104,6 @@ public class StreamHandler {
     }
 
     public static String genStreamID() {
-        return Long.toHexString(System.nanoTime()) + Integer.toHexString((int)(Math.random() * 1000));
+        return Long.toHexString(RobotTime.currentTimeMillis()) + Integer.toHexString((int)(Math.random() * 1000));
     }
 }
