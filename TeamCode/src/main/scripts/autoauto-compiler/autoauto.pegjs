@@ -1,6 +1,7 @@
 autoautoFile = 
-  _ f:frontMatter? _ u:unlabeledStatepath? s:labeledStatepath* _ {
+  c:commentedWhitespace f:frontMatter? _ u:unlabeledStatepath? s:labeledStatepath* _ {
   	return {
+      comments: c,
       type: "Program", location: location(),
       frontMatter: f,
       statepaths: u ? [u].concat(s) : s
@@ -16,26 +17,26 @@ frontMatter =
  }
 
 frontMatterKeyValue =
- k:IDENTIFIER COLON _ v:value _ {
+ c:commentedWhitespace k:IDENTIFIER COLON _ v:value _ {
    return {
+     comments: c,
      type: "FrontMatterKeyValue", location: location(),
      key: k,
      value: v
    }
  }
 
-unlabeledStatepath = _ s:statepath _ {
-    return { type: "LabeledStatepath", location: location(), statepath: s, label: "<init>" }
+unlabeledStatepath = c:commentedWhitespace s:statepath _ {
+    return { comments: c, type: "LabeledStatepath", location: location(), statepath: s, label: "<init>" }
 }
 
 labeledStatepath =
- _ l:STATEPATH_LABEL_ID COLON _ s:statepath _  {
-   return { type: "LabeledStatepath", location: location(), statepath: s, label: l }
+ c:commentedWhitespace l:statepathLabelIdentifier COLON _ s:statepath _  {
+   return { comments: c, type: "LabeledStatepath", location: location(), statepath: s, label: l }
  }
 
 
-statepath =
-  _ head:state tail:(SEMICOLON state)* _ (SEMICOLON _)? {
+statepath = head:state tail:(SEMICOLON state)* _ (SEMICOLON _)? {
   	return {
       type: "Statepath", location: location(),
       states: [head].concat(tail.map(x=>x[1]))
@@ -43,8 +44,9 @@ statepath =
   }
 
 state =
-  _ head:statement tail:(COMMA statement)* _ {
+  c:commentedWhitespace head:statement tail:(COMMA statement)* _ {
     return {
+      comments: c,
       type: "State", location: location(),
       statement: [head].concat(tail.map(x=>x[1]))
     }
@@ -52,14 +54,19 @@ state =
 
 statement = singleStatement / multiStatement
 
-multiStatement = _ OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
-	return { type: "Block", state: s, location: location() }
+multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
+	return { type: "Block", state: s, location: location(), comments: c }
 }
 
 singleStatement =
-  _  s:(passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)  _
+  c:commentedWhitespace  s:(passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)
 
-  { return s; }
+  {
+    if(s.comments && s.comments.length) s.comments = c.concat(s.comments);
+    else s.comments = c;
+    
+    return s;
+  }
 
 afterStatement =
  AFTER _ u:value _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
@@ -78,11 +85,12 @@ ifStatement =
  (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? {
  return { type: "IfStatement", location: location(), conditional: t, statement: s, elseClause: e || {type: "PassStatement", location: location()} } }
 
-elseClause = _ (ELSE / OTHERWISE) _ s:statement {
+elseClause = c:commentedWhitespace (ELSE / OTHERWISE) _ s:statement {
+s.comments = c.concat(s.comments);
 return s;
 }
 
-passStatement = _ PASS _ { return { type: "PassStatement", location: location() } }
+passStatement = PASS { return { type: "PassStatement", location: location() } }
 
 letStatement =
  LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
@@ -94,31 +102,31 @@ skipStatement =
  SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   }
 
 value =
- _  b:boolean _ { return b }
+ c:commentedWhitespace  b:boolean _ { b.comments = c; return b }
 
 
 
 valueInParens =
- _ OPEN_PAREN v:value CLOSE_PAREN _ { return v; }
+  c:commentedWhitespace OPEN_PAREN v:value CLOSE_PAREN _ { v.comments = c.concat(v.comments); return v; }
 
 modulo =
  l:baseExpression r:(MODULUS baseExpression)? {
    if(!r) return l;
-   
+
     return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
 }
 
 exponent =
  l:modulo r:(EXPONENTIATE modulo)? {
    if(!r) return l;
-   
+
     return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
 }
 
 product =
  l:exponent tail:(o:(MULTIPLY / DIVIDE) r:product { return [o, r]; })* {
    if(!tail.length) return l;
-   
+
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
   for(var i = 0; i < tail.length - 1; i++) {
@@ -134,7 +142,7 @@ product =
 
 sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })* {
   if(!tail.length) return l;
-  
+
   var r = { type: "OperatorExpression", location: location(), left: l };
   var tar = r;
   for(var i = 0; i < tail.length - 1; i++) {
@@ -157,22 +165,22 @@ atom =
  _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
    return x;
  }
- 
+
 baseExpression = a:atom _ t:tail* _ {
      if(!t.length) return a;
-     
+
      var value = a;
      for(var i = 0; i < t.length; i++) {
        if(t[i].type == "FunctionCall") value = {type: "FunctionCall",func: value, args: t[i].args, location: t[i].location};
        else if(t[i].type == "TailedValue") value = { type: "TailedValue", head: value, tail: t[i].tail, location: t[i].location };
      }
-     
+
      return value;
 }
 
 tail = arrayStyleGetter / callFunction / dotStyleGetter
 
-callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } } 
+callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
 
 arrayStyleGetter "array-style property getter (obj[i])" = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } }
 
@@ -224,12 +232,16 @@ argument = n:value v:(TITLE_ARG_SEP value)? {
 
 dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }
 
-_ "whitespace" = [ \t\n\r]* comment? [ \t\n\r]*
+_ "whitespace" = [ \t\n\r]*
 
-comment = ("//" [^\n]* EOL)
-  / ("/*" commentText* END_OF_COMMENT)
-  
-  
+commentedWhitespace "comment" =
+    _ c:comment* _ { return c; }
+
+comment = "//" t:[^\n]* (EOL/EOF) { return t.join("") }
+  / "/*" t:commentText* END_OF_COMMENT { return t.join("") }
+
+statepathLabelIdentifier = HASHTAG i:IDENTIFIER { return i; }
+
   END_OF_COMMENT "end of comment" = "*/"
 
 commentText = !"*/" .
@@ -261,7 +273,7 @@ CLOSE_PAREN "closing paren" =
     ")"
 LET =
     "let"
-TITLE_ARG_SEP "titled argument separator (=)" = 
+TITLE_ARG_SEP "titled argument separator (=)" =
     EQUALS
 EQUALS "equals sign" =
     "="
@@ -299,7 +311,7 @@ EXPONENTIATE "arithmetic operator" =
     "^"
 DOLLAR_SIGN "dollar sign" =
     "$"
-OPEN_SQUARE_BRACKET "opening square bracket" = 
+OPEN_SQUARE_BRACKET "opening square bracket" =
     "["
 CLOSE_SQUARE_BRACKET "closing square bracket" =
     "]"
@@ -322,14 +334,14 @@ IDENTIFIER =
     { return { type: "Identifier", location: location(), value: l.join("") } }
 DIGIT "digit" = [0-9]
 LETTER "letter" = [A-Za-z_]
-STATEPATH_LABEL_ID = HASHTAG i:IDENTIFIER { return i; }
 NUMERIC_VALUE = m:MINUS? v:(
     h:DIGIT* '.' t:DIGIT+ { return h.join("") + "." + t.join("") }
-    / 
+    /
     d:DIGIT+ { return d.join(""); }) 'f'?
 {
     return { type: "NumericValue", location: location(), v: parseFloat((m||"") + v ) }
-}  
+}
 NUMERIC_VALUE_WITH_UNIT = n:NUMERIC_VALUE u:IDENTIFIER {
     return { type: "UnitValue", location: location(), value: n, unit: u }
 }
+EOF = !.
