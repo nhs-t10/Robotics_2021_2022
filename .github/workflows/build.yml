@@ -17,10 +17,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Set up NodeJS 14jav
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -47,4 +43,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew --build-cache --no-daemon TeamCode:test createDebugUnitTestCoverageReport --stacktrace sonarqube --info
+        run: ./gradlew --build-cache --no-daemon TeamCode:testDebugUnitTest TeamCode:createDebugUnitTestCoverageReport --stacktrace sonarqube --info

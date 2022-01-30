@@ -27,9 +27,9 @@ public class TankTeleop extends OpMode {
     public void init() {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
+        FeatureManager.reconfigureForTeleop();
 
         FeatureManager.logger.setBackend(telemetry.log());
-        FeatureManager.setIsOpModeRunning(true);
 
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");

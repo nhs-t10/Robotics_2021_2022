@@ -25,11 +25,6 @@ public class FeatureManager {
     }
     public static void setIsOpModeRunning(boolean b, boolean shouldLoadAutoConfig) {
         isOpModeRunning = b;
-
-        if(b) {
-            if (shouldLoadAutoConfig) reconfigureForAuto();
-            else reconfigureForTeleop();
-        }
     }
 
     public static final RobotConfiguration tankBoyConfiguration = new RobotConfiguration(

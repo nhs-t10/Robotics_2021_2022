@@ -50,6 +50,11 @@ public class OpmodeTester {
         }
         runner.testOver();
 
+        while(runner.isAlive() || runner.watchdog.isAlive()) {
+            //wait until the runner and its watchdog are dead before cleaning up
+            Thread.yield();
+        }
+
         RobotTime.clock = originalClock;
         FeatureManager.logger.setBackend(originalStdout);
         FeatureManager.logger.log(fakeStdout.getBuf());

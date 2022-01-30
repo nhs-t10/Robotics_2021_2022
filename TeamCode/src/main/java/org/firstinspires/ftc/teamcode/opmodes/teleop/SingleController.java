@@ -41,9 +41,10 @@ public class SingleController extends OpMode {
     public void init() {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
+        FeatureManager.reconfigureForTeleop();
+
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
         telemetry = telemetryManager;
-
         FeatureManager.logger.setBackend(telemetry.log());
 
         imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
