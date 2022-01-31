@@ -35,5 +35,5 @@ function migrateKeys(oldKey, newKey) {
 }
 
 function sha(k) {
-    return crypto.createHash("sha256").update(k).digest("hex");
+    return crypto.createHash("sha256").update(k + "").digest("hex");
 }

@@ -44,3 +44,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew --build-cache --no-daemon TeamCode:testDebugUnitTest TeamCode:createDebugUnitTestCoverageReport --stacktrace sonarqube --info
+  update-trees:
+    name: Update Family Trees
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Build Tree SVGs
+        run: node TeamCode/src/main/scripts/tools/build-family-trees
+      - uses: actions/upload-artifact@v2
+        with:
+          name: family-tree
+          path: TeamCode/src/main/scripts/tools/build-family-trees/vis.svg
+

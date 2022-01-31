@@ -1,80 +1,185 @@
 var fs = require("fs");
-var builds = require("./allBuilds.json");
 
-builds = builds.sort((a,b)=> new Date(a.time).getTime() - new Date(b.time).getTime());
+var builds = require("./generate-build-dataset")();
 
-var commits = Array.from(new Set(builds.map(x=>x.commit)));
+var BUILD_ICON_SIZE = 180;
+var BUILD_ICON_MARGIN_PERCENT = 3;
 
-var commitBuilds = Object.fromEntries(commits.map(x=>[x, builds.filter(y=>y.commit == x).map(z=>z.buildHash)]));
+builds.forEach(x=>x.timeDate = new Date(x.time));
 
-var commitTimes = Object.fromEntries(commits.map(x=>[x, new Date(builds.filter(y=>y.commit == x).pop().time).getTime() ]));
+builds = builds.sort((a,b)=> a.timeDate.getTime() - b.timeDate.getTime());
 
-var svg = "";
+builds.forEach((x,i)=>x.globalBuildNumber = i);
 
-var THING_SIZE = 180;
-var MARGIN_PERCENT = 3;
+var modernBuilds = builds.filter(x=>isModernBuild(x));
 
-var maxX = 0, minX = 0, minY = 0, maxY = 0;
+modernBuilds.forEach((x,i)=>x.globalModernBuildNumber = i);
 
-for(var i = 0; i < commits.length; i++) {
-    var width = commitBuilds[commits[i]].length - 1;
+var marriages = modernBuilds
+    .map((x,i,a)=>i>0 && ({parent2: x, parent1: a[i - 1]}))
+    .filter(x=>x && x.parent1.cognomen != x.parent2.cognomen);
 
-    if(width == 0) continue;
+marriages.forEach(x=>x.time = new Date(Math.min(x.parent1.timeDate.getTime(), x.parent2.timeDate.getTime())));
 
-    var y = i;
-    svg += `<path stroke-width="3" stroke="#333" d="M${-(width * THING_SIZE * MARGIN_PERCENT - THING_SIZE * MARGIN_PERCENT)/2} ${y * THING_SIZE * MARGIN_PERCENT} h${width * THING_SIZE * MARGIN_PERCENT}"/>`;
+marriages.forEach(x=>x.lastMarriages = []);
+
+for(var i = 0; i < marriages.length; i++) {
+    for(var j = i + 1; j < marriages.length; j++) {
+        if(!marriages[i].nextFamily1Marriage &&
+            (marriages[j].parent1.cognomen == marriages[i].parent1.cognomen ||
+            marriages[j].parent2.cognomen == marriages[i].parent1.cognomen)) {
+                marriages[i].nextFamily1Marriage = marriages[j];
+                marriages[j].lastMarriages.push(marriages[i]);
+            }
+
+        if(!marriages[i].nextFamily2Marriage &&
+            (marriages[j].parent1.cognomen == marriages[i].parent2.cognomen ||
+            marriages[j].parent2.cognomen == marriages[i].parent2.cognomen)) {
+                marriages[i].nextFamily2Marriage = marriages[j];
+                marriages[j].lastMarriages.push(marriages[i]);
+            }
+
+        if(marriages[i].family1NextMarriage && marriages[i].family2NextMarriage) break;
+    }
 }
 
-for(var i = 0; i < builds.length; i++) {
-    if(i + 1 == builds.length || i == 0) continue;
+console.log(marriages.length);
 
-    var build = builds[i];
+var rootMarriages = marriages.filter(x=>x.lastMarriages.length == 0);
 
-    var prevCommit = commits[commits.indexOf(build.commit) - 1];
-    if(!prevCommit) continue;
+rootMarriages.forEach(x=>fillMarriageTree(x, modernBuilds));
+rootMarriages.forEach(x=>bringMarriageIntoPeople(x));
 
-    var possibleParents = builds.filter(x=>x.commit == prevCommit && x.cognomen == build.cognomen);
-    var parent = randomFrom(possibleParents);
+console.log(rootMarriages.length);
 
-    if(!parent || parent.isParent) continue;
+var marriageSvgs = rootMarriages.map(x=>makePersonAndTheirDescendantsSvg(x.parent1));
 
-    parent.isParent = true;
+var svgContent = marriageSvgs[0];
 
-    svg += `<path stroke-width="3" stroke="#333" fill="none" d="${curveBetween(getBuildPoint(build), getBuildPoint(parent))}" />`;
-}
+var maxX = svgContent.width, minX = svgContent.xMin, minY = svgContent.yMin, maxY = svgContent.height;
 
-for(var i = 0; i < builds.length; i++) {
-    var build = builds[i];
+
+fs.writeFileSync(__dirname + "/vis.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svgContent.svg + "</svg>"); //SAFE
+
+function makePersonAndTheirDescendantsSvg(person, x, y) {
+    //convert x and y to numbers
+    x |= +x;
+    y |= +y;
+
+    var width = 0;
+    var height = 0;
+    var xMin = x;
+    var yMin = y;
     
+    var svg = "";
 
-    svg += makeItem(build, getBuildPoint(build));
+    var p1x = x, 
+        p2x = x + BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+
+    xMin = Math.min(p1x, p2x);
+    
+    svg += makeAtomicBuildItem(person, [p1x, y]);
+    if(person.relations.partner) {
+        svg += makeAtomicBuildItem(person.relations.partner, [p2x, y]);
+        width += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+    }
+
+    width += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+    height += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+
+    svg += `<path d="M${p1x} ${y}H${p2x}" class="marriage-line"/>`;
+
+    var childrenG = "";
+
+    var nextRowY = y + BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+
+    var maxChildHeight = 0;
+
+    shuffleArray(person.relations.children);
+
+    for(var i = 0; i < person.relations.children.length; i++) {
+        var child = person.relations.children[i];
+        var cSvg = makePersonAndTheirDescendantsSvg(child, x + width, nextRowY);
+
+        width += cSvg.width;
+        maxChildHeight = Math.max(maxChildHeight, cSvg.height);
+        childrenG += cSvg.svg;
+    }
+
+    height += maxChildHeight;
+
+    svg += transformSvg(childrenG, -width / 2, 0);
+    
+    return {
+        xMin: xMin - width / 2,
+        xMax: xMin + width / 2,
+        yMin: y,
+        width: width,
+        height: height,
+        svg: svg
+    };
 }
 
-function getBuildPoint(build) {
-    var rowWidth = commitBuilds[build.commit].length;
-    var buildX = (rowWidth / 2) - commitBuilds[build.commit].indexOf(build.buildHash);
-    var rowY = commits.indexOf(build.commit);
+function bringMarriageIntoPeople(marriage) {
+    initRelations(marriage.parent1);
+    initRelations(marriage.parent2);
 
-    var x = buildX  * THING_SIZE * MARGIN_PERCENT;
-    var y = rowY * THING_SIZE * MARGIN_PERCENT;
+    marriage.parent1.relations.partner = marriage.parent2;
+    marriage.parent2.relations.partner = marriage.parent1;
 
-    maxY = Math.max(maxY, y);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, y);
-    minX = Math.min(minX, y);
+    marriage.children.forEach(x=>{
+        initRelations(x);
+        x.relations.parents = [marriage.parent1, marriage.parent2];
 
-    var pointPos = [x, y];
+        marriage.parent1.relations.children.push(x);
+        marriage.parent2.relations.children.push(x);
+    });
 
-    return pointPos;
+    marriage.knownToPeople = true;
+
+    if(marriage.nextFamily1Marriage && !marriage.nextFamily1Marriage.knownToPeople) bringMarriageIntoPeople(marriage.nextFamily1Marriage);
+    if(marriage.nextFamily2Marriage && !marriage.nextFamily2Marriage.knownToPeople) bringMarriageIntoPeople(marriage.nextFamily2Marriage);
 }
 
-function makeItem(build, pos) {
+function initRelations(build) {
+    if(!build.relations) build.relations = {};
+    if(!build.relations.children) build.relations.children = [];
+}
+
+function fillMarriageTree(marriage, builds) {
+    marriage.children = [];
+    
+    for(var i = marriage.parent1.globalModernBuildNumber + 1; i < builds.length; i++) {
+        if(marriage.nextFamily1Marriage &&
+            builds[i].timeDate.getTime() > marriage.nextFamily1Marriage.time.getTime()) break;
+
+        if(builds[i].cognomen == marriage.parent1.cognomen) marriage.children.push(builds[i]);
+    }
+
+    for(var i = marriage.parent2.globalModernBuildNumber + 1; i < builds.length; i++) {
+        if(marriage.nextFamily2Marriage &&
+            builds[i].timeDate.getTime() > marriage.nextFamily2Marriage.time.getTime()) break;
+
+        if(builds[i].cognomen == marriage.parent2.cognomen) marriage.children.push(builds[i]);
+    }
+
+    if(marriage.nextFamily2Marriage && !marriage.nextFamily2Marriage.children) {
+        fillMarriageTree(marriage.nextFamily2Marriage, builds);
+    }
+    if(marriage.nextFamily1Marriage && !marriage.nextFamily1Marriage.children) {
+        fillMarriageTree(marriage.nextFamily1Marriage, builds);
+    }
+}
+
+function makeAtomicBuildItem(build, pos) {
     var x = pos[0];
     var y = pos[1];
 
-    var background = `<ellipse fill="#${getColor(build.cognomen)}" rx="${THING_SIZE / 2}" ry="${THING_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
+    if(!build) build = {cognomen: "", name: "UNKNOWN"};
 
-    var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + THING_SIZE * 0.8}" text-anchor="middle">${build.name}</text>`
+    var background = `<ellipse fill="#${getColor(build.cognomen)}" rx="${BUILD_ICON_SIZE / 2}" ry="${BUILD_ICON_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
+
+    var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + BUILD_ICON_SIZE * 0.8}" text-anchor="middle">${build.name}</text>`
 
     return background + text;
 }
@@ -94,4 +199,22 @@ function randomFrom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-fs.writeFileSync(__dirname + "/vis.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svg + "</svg>"); //SAFE
+function isModernBuild(build) {
+    var keys = Object.keys(build);
+
+    return keys.includes("colors") && keys.includes("perceptualHash");
+}
+
+function shuffleArray(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+        var swTo = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[swTo];
+        a[swTo] = tmp;
+    }
+    return a;
+}
+
+function transformSvg(svg, x, y) {
+    return `<g transform="translate(${x} ${y})">${svg}</g>`
+}
