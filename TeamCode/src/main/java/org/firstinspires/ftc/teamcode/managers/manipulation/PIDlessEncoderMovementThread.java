@@ -50,7 +50,6 @@ public class PIDlessEncoderMovementThread extends Thread {
                         if(lastDeltas[i] != 0) {
                             float deltaChange = delta - lastDeltas[i];
                             if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i] = -1;
-                            else direction[i] = 1;
                         }
 
                         double power = direction[i] * delta * powerCoefs[i] * 0.01;
