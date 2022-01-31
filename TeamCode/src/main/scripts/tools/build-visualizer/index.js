@@ -5,6 +5,10 @@ var builds = require("./generate-build-dataset")();
 var BUILD_ICON_SIZE = 180;
 var BUILD_ICON_MARGIN_PERCENT = 3;
 
+
+//TODO: make this actually work
+process.exit(0);
+
 builds.forEach(x=>x.timeDate = new Date(x.time));
 
 builds = builds.sort((a,b)=> a.timeDate.getTime() - b.timeDate.getTime());
@@ -15,44 +19,11 @@ var modernBuilds = builds.filter(x=>isModernBuild(x));
 
 modernBuilds.forEach((x,i)=>x.globalModernBuildNumber = i);
 
-var marriages = modernBuilds
-    .map((x,i,a)=>i>0 && ({parent2: x, parent1: a[i - 1]}))
-    .filter(x=>x && x.parent1.cognomen != x.parent2.cognomen);
+addChildrenAndPartners(modernBuilds);
 
-marriages.forEach(x=>x.time = new Date(Math.min(x.parent1.timeDate.getTime(), x.parent2.timeDate.getTime())));
+var greatGrandparents = modernBuilds.filter(x=> !x.relations.parents);
 
-marriages.forEach(x=>x.lastMarriages = []);
-
-for(var i = 0; i < marriages.length; i++) {
-    for(var j = i + 1; j < marriages.length; j++) {
-        if(!marriages[i].nextFamily1Marriage &&
-            (marriages[j].parent1.cognomen == marriages[i].parent1.cognomen ||
-            marriages[j].parent2.cognomen == marriages[i].parent1.cognomen)) {
-                marriages[i].nextFamily1Marriage = marriages[j];
-                marriages[j].lastMarriages.push(marriages[i]);
-            }
-
-        if(!marriages[i].nextFamily2Marriage &&
-            (marriages[j].parent1.cognomen == marriages[i].parent2.cognomen ||
-            marriages[j].parent2.cognomen == marriages[i].parent2.cognomen)) {
-                marriages[i].nextFamily2Marriage = marriages[j];
-                marriages[j].lastMarriages.push(marriages[i]);
-            }
-
-        if(marriages[i].family1NextMarriage && marriages[i].family2NextMarriage) break;
-    }
-}
-
-console.log(marriages.length);
-
-var rootMarriages = marriages.filter(x=>x.lastMarriages.length == 0);
-
-rootMarriages.forEach(x=>fillMarriageTree(x, modernBuilds));
-rootMarriages.forEach(x=>bringMarriageIntoPeople(x));
-
-console.log(rootMarriages.length);
-
-var marriageSvgs = rootMarriages.map(x=>makePersonAndTheirDescendantsSvg(x.parent1));
+var marriageSvgs = greatGrandparents.map(x=>makePersonAndTheirDescendantsSvg(x));
 
 var svgContent = marriageSvgs[0];
 
@@ -134,11 +105,6 @@ function bringMarriageIntoPeople(marriage) {
         marriage.parent1.relations.children.push(x);
         marriage.parent2.relations.children.push(x);
     });
-
-    marriage.knownToPeople = true;
-
-    if(marriage.nextFamily1Marriage && !marriage.nextFamily1Marriage.knownToPeople) bringMarriageIntoPeople(marriage.nextFamily1Marriage);
-    if(marriage.nextFamily2Marriage && !marriage.nextFamily2Marriage.knownToPeople) bringMarriageIntoPeople(marriage.nextFamily2Marriage);
 }
 
 function initRelations(build) {
@@ -146,28 +112,21 @@ function initRelations(build) {
     if(!build.relations.children) build.relations.children = [];
 }
 
-function fillMarriageTree(marriage, builds) {
-    marriage.children = [];
+function fillMarriageChildren(marriages, builds) {
     
-    for(var i = marriage.parent1.globalModernBuildNumber + 1; i < builds.length; i++) {
-        if(marriage.nextFamily1Marriage &&
-            builds[i].timeDate.getTime() > marriage.nextFamily1Marriage.time.getTime()) break;
-
-        if(builds[i].cognomen == marriage.parent1.cognomen) marriage.children.push(builds[i]);
-    }
-
-    for(var i = marriage.parent2.globalModernBuildNumber + 1; i < builds.length; i++) {
-        if(marriage.nextFamily2Marriage &&
-            builds[i].timeDate.getTime() > marriage.nextFamily2Marriage.time.getTime()) break;
-
-        if(builds[i].cognomen == marriage.parent2.cognomen) marriage.children.push(builds[i]);
-    }
-
-    if(marriage.nextFamily2Marriage && !marriage.nextFamily2Marriage.children) {
-        fillMarriageTree(marriage.nextFamily2Marriage, builds);
-    }
-    if(marriage.nextFamily1Marriage && !marriage.nextFamily1Marriage.children) {
-        fillMarriageTree(marriage.nextFamily1Marriage, builds);
+    for(var j = 0; j < marriages.length; j++) {
+        var marriage = marriages[j];
+        
+        marriage.children = [];
+        var bIndex = builds.indexOf(marriage.parent1);
+        if(bIndex == -1) throw "parent not in list";
+        
+        for(var i = bIndex + 1; i < builds.length; i++) {
+            if(isChildOf(builds[i], marriage)) {
+                marriage.children.push(builds[i]);
+                if(builds[i].isMarried) break;
+            }
+        }
     }
 }
 
@@ -217,4 +176,54 @@ function shuffleArray(a) {
 
 function transformSvg(svg, x, y) {
     return `<g transform="translate(${x} ${y})">${svg}</g>`
+}
+function fillLastMarriages(marriages) {
+    marriages.forEach(x=>x.lastMarriages = []);
+    
+    for(var i = 0; i < marriages.length; i++) {
+        var marriage = marriages[i];
+        
+        for(var j = i + 1; j < marriages.length; j++) {
+            if(!marriage.nextFamily1Marriage &&
+                (marriages[j].parent1.cognomen == marriage.parent1.cognomen ||
+                marriages[j].parent2.cognomen == marriage.parent1.cognomen)) {
+                    marriage.nextFamily1Marriage = marriages[j];
+                    marriages[j].lastMarriages.push(marriage);
+                }
+
+            if(!marriage.nextFamily2Marriage &&
+                (marriages[j].parent1.cognomen == marriage.parent2.cognomen ||
+                marriages[j].parent2.cognomen == marriage.parent2.cognomen)) {
+                    marriage.nextFamily2Marriage = marriages[j];
+                    marriages[j].lastMarriages.push(marriage);
+                }
+
+            if(marriage.family1NextMarriage && marriage.family2NextMarriage) break;
+        }
+    }
+}
+function noteMarriedStatus(marriages) {
+    marriages.forEach(x=>{
+        x.parent1.isMarried = x.parent2.cognomen;
+        x.parent2.isMarried = x.parent1.cognomen;
+    })
+}
+
+function isChildOf(build, marriage) {
+    if(marriage.parent1 == build || marriage.parent2 == build) return false;
+    
+    return build.cognomen == marriage.parent1.cognomen || build.cognomen == marriage.parent2.cognomen;
+}
+function isMarried(builds, index) {
+    return builds[index].cognomen != builds[index + 1].cognomen;
+}
+
+function addChildrenAndPartners(builds) {
+    for(var i = 0; i < builds.length; i++) {
+        var build = builds[i];
+        initRelations(build);
+        for(var j = i + 1; j < builds.length; j++) {
+            
+        }
+    }
 }
