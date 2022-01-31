@@ -3,7 +3,7 @@
 
 //uses CV, saves CV reading to `value`, moves 10cm forwards so later steps won't bump up against wall
 #sampling:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2000ms next;
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), after 2000ms next;
     goto clawout
 
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` folds out the arms to their full extent.
