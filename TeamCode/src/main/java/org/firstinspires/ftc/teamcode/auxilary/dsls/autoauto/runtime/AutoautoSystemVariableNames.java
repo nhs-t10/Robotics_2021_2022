@@ -9,4 +9,5 @@ public class AutoautoSystemVariableNames {
     public static final String EXPORTS = "\t@exported";
     public static final String MODULE_ARGS = "module_args";
     public static final String THIS = "this";
+    public static final String COMPAT_MODE = "\t@compatMode";
 }

@@ -1,3 +1,7 @@
+$
+oldAfterCompat: true
+$
+
 #init:
     goto clawout
 

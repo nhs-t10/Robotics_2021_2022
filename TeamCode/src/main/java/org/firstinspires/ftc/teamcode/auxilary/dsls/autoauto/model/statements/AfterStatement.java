@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primit
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUnitValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
@@ -89,7 +90,8 @@ public class AfterStatement extends Statement {
 
     @Override
     public void stepInit() {
-        restartDeltaNextLoop = true;
+        if(scope.get(AutoautoSystemVariableNames.COMPAT_MODE) != null) internalStoreStartingStep();
+        else restartDeltaNextLoop = true;
     }
 
     private void internalStoreStartingStep() {

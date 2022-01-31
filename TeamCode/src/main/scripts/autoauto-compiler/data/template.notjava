@@ -96,6 +96,8 @@ public class template extends AutoautoOpmode {
         /*JSON_SETTING_CODE*/
 
         runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, telemetryManager, clawPosition, cv);
+        
+        /*COMPAT_MODE_SETTING*/
 
         limbs.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

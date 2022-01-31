@@ -160,7 +160,12 @@ function processTemplate(template, className, frontMatter, javaCreationCode, sou
         .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
-        .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1);
+        .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1)
+        .replace("/*COMPAT_MODE_SETTING*/", frontMatter.oldAfterCompat ? getCompatModeSetter() : "");
+}
+
+function getCompatModeSetter() {
+    return "runtime.rootModule.globalScope.systemSet(org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames.COMPAT_MODE, new AutoautoBooleanValue(true));"
 }
 
 function buildServoNames(servos) {
