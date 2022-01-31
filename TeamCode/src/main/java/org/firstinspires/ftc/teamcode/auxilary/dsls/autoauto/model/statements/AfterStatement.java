@@ -93,6 +93,7 @@ public class AfterStatement extends Statement {
     }
 
     private void internalStoreStartingStep() {
+        restartDeltaNextLoop = false;
         AutoautoPrimitive waitResolved = wait.getResolvedValue();
 
         if(!(waitResolved instanceof AutoautoUnitValue)) throw new AutoautoArgumentException("attempted to wait on a non-unit value");
