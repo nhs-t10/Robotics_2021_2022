@@ -21,7 +21,7 @@ public class OpmodeTester {
     private static final Object TEST_LOCK = new Object();
 
     static RunWhileInLoopFunction DEFAULT_INLOOP_FUNCTION = new DoNothingWhileInLoopFunction();
-    static final long DEFAULT_REALTIME_MS = TestTypeManager.testRunTypeIs("long") ? 1000 : 100;
+    static final long DEFAULT_REALTIME_MS = 100;
     static final long DEFAULT_SIMULATED_MS = DEFAULT_REALTIME_MS;
 
     public static synchronized boolean runTestOn(OpMode opmode) {
