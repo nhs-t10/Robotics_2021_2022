@@ -2,7 +2,6 @@ This is a location for one-off tools that I made for one reason or another. They
 
 **Many of them don't work now.**
 
-- `build-visualizer` was broken by the genealogies moving to `assets`. I can't just change the file because it needs to look back through our whole git history. idk if there's a way to do that with multiple files, so I'll leave it broken for now.
 - `visualise-autoauto-trees` needed to be explicitly called *by* the compiler.
 
 (`markov-generator` still works fine, though!)
