@@ -1,5 +1,5 @@
-$
-oldAfterCompat: true //use the old `after` statement behaviour. They both work, but the new one has a more precise start, which throws off our calibrations.
+$ //use the old `after` statement behaviour. They both work, but the new one has a more precise start, which throws off our calibrations.
+oldAfterCompat: true
 $
 
 #init:

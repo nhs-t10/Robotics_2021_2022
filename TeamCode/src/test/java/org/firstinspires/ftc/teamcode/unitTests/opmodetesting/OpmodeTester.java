@@ -39,15 +39,12 @@ public class OpmodeTester {
             DummyPrintStream fakeStdout = new DummyPrintStream(new DummyOutputStream());
             FeatureManager.logger.setBackend(fakeStdout);
 
-            Clock originalClock = RobotTime.clock;
-            RobotTime.clock = new TimeDilatedClock(simulatedMsFor / realMsFor);
-
             opmode.hardwareMap = new DummyHardwareMap();
             opmode.gamepad1 = new DummyGamepad();
             opmode.gamepad2 = new DummyGamepad();
             opmode.telemetry = new DummyTelemetry();
 
-
+            //TODO: make time dilation work
 
             OpmodeLoopRunnerThread runner = new OpmodeLoopRunnerThread(opmode);
             runner.start();
@@ -64,7 +61,6 @@ public class OpmodeTester {
             //wait until the runner and its watchdog are dead before cleaning up
             boolean succeeded = runner.watchdog.blockUntilDone();
 
-            RobotTime.clock = originalClock;
             FeatureManager.logger.setBackend(originalStdout);
             if(!TestTypeManager.isRunningOnServer()) fakeStdout.printBufferTo(originalStdout);
 
