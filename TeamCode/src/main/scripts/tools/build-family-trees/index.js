@@ -1,3 +1,4 @@
+var crypto = require("crypto");
 var fs = require("fs");
 const familyColors = require("./family-colors");
 
@@ -21,20 +22,23 @@ addChildrenAndPartners(modernBuilds);
 
 var greatGrandparents = modernBuilds.filter(x=> !x.relations.hasParent && x.relations.children.length);
 
-greatGrandparents = [greatGrandparents[0]];
+var rootPerson = greatGrandparents[0];
 
-var marriageSvgs = greatGrandparents.map(x=>makePersonAndTheirDescendantsSvg(x));
+var simpleSvg = makePersonAndTheirDescendantsSvg(rootPerson, true);
 
-console.log(marriageSvgs.length);
+packageSvgResultIntoFile(simpleSvg, "vis-simple");
 
-var svgContent = marriageSvgs[0];
+var complexSvg = makePersonAndTheirDescendantsSvg(rootPerson, false);
 
-var maxX = svgContent.width, minX = svgContent.xMin, minY = svgContent.yMin, maxY = svgContent.height;
+packageSvgResultIntoFile(complexSvg, "vis-complex");
+
+function packageSvgResultIntoFile(svgContent, name) {
+    var maxX = svgContent.width, minX = svgContent.xMin, minY = svgContent.yMin, maxY = svgContent.height;
 
 
-fs.writeFileSync(__dirname + "/vis.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svgContent.svg + "</svg>"); //SAFE
-
-function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
+    fs.writeFileSync(__dirname + "/" + name + ".svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svgContent.svg + "</svg>"); //SAFE
+}
+function makePersonAndTheirDescendantsSvg(person, simple, x, y, dir) {
     //fail-safe
     if(!person) return {
         xMin: x,
@@ -46,6 +50,9 @@ function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
         heightWithoutMargin: 0,
         svg: ""
     }
+    
+    simple = !!simple;
+    
     //convert x and y to numbers
     x |= +x;
     y |= +y;
@@ -69,9 +76,13 @@ function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
     xMin = Math.min(p1x, p2x);
     xMax = Math.max(p1x, p2x);
     
-    svg += makeAtomicBuildItem(person, [p1x, y]);
+    if(simple) svg += makeAtomicBuildItem(person, p1x, y);
+    else svg += atomicBuildProfilePicture(person, p1x, y);
+    
     if(person.relations.partner) {
-        svg += makeAtomicBuildItem(person.relations.partner, [p2x, y]);
+        if(simple) svg += makeAtomicBuildItem(person.relations.partner, p2x, y);
+        else svg += atomicBuildProfilePicture(person.relations.partner, p2x, y);
+        
         width += marginCt;
     }
 
@@ -86,7 +97,7 @@ function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
 
     var maxChildHeight = 0;
 
-    shuffleArray(person.relations.children);
+    seededShuffleArray(person.relations.children, person.name);
 
     var childOffsetLeft = 0, childOffsetRight = marginCt;
 
@@ -94,10 +105,10 @@ function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
         var child = person.relations.children[i];
         var cSvg;
         if(i % 2) {
-            cSvg = makePersonAndTheirDescendantsSvg(child, x + childOffsetRight, nextRowY, 1);
+            cSvg = makePersonAndTheirDescendantsSvg(child, simple, x + childOffsetRight, nextRowY, 1);
             childOffsetRight += cSvg.r1width;
         } else {
-            cSvg = makePersonAndTheirDescendantsSvg(child, x - childOffsetLeft, nextRowY, -1);
+            cSvg = makePersonAndTheirDescendantsSvg(child, simple, x - childOffsetLeft, nextRowY, -1);
             childOffsetLeft += cSvg.r1width;
         }
 
@@ -133,13 +144,36 @@ function initRelations(build) {
     if(!build.relations.children) build.relations.children = [];
 }
 
-function makeAtomicBuildItem(build, pos) {
-    var x = pos[0];
-    var y = pos[1];
+function atomicBuildProfilePicture(build, x, y) {
+    var heraldry = familyColors.fullColorScheme(build);
+    
+    var background = svgEllipse(x, y, BUILD_ICON_SIZE * 0.5, BUILD_ICON_SIZE * 0.6, heraldry.primaryVDark);
+    
+    var cLeft = x - BUILD_ICON_SIZE * 0.5,
+        cRight = x + BUILD_ICON_SIZE * 0.5,
+        cBottom = y + BUILD_ICON_SIZE * 0.6,
+        cTop = y - BUILD_ICON_SIZE * 0.6;
+    
+    var bottomStroke = `<path stroke-linecap="round" d="M${cLeft} ${y} Q ${cLeft} ${cBottom} ${x} ${cBottom} Q ${cRight} ${cBottom} ${cRight} ${y}"` +
+        ` stroke-width="${BUILD_ICON_SIZE * 0.1}" stroke="${heraldry.primary}" fill="#00000000"/>`;
+    var bottomEllpse = svgEllipse(x, cBottom, BUILD_ICON_SIZE * 0.2, BUILD_ICON_SIZE * 0.2, heraldry.primary);
+    
+    var bottom = bottomStroke + bottomEllpse + heraldry.crestCircled(x, cBottom, BUILD_ICON_SIZE * 0.3);
+    
+    var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + BUILD_ICON_SIZE * 0.95}" text-anchor="middle">${build.name}</text>`
+    
+    return background + bottom + text;
+}
+
+function svgEllipse(x, y, rx, ry, color) {
+    return `<ellipse fill="${color}" rx="${rx}" ry="${ry}" cx="${x}" cy="${y}"/>`;
+}
+
+function makeAtomicBuildItem(build, x, y) {
 
     if(!build) build = {cognomen: "", name: "UNKNOWN"};
 
-    var background = `<ellipse fill="#${familyColors.primary(build)}" rx="${BUILD_ICON_SIZE / 2}" ry="${BUILD_ICON_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
+    var background = `<ellipse fill="${familyColors.primary(build)}" rx="${BUILD_ICON_SIZE / 2}" ry="${BUILD_ICON_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
 
     var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + BUILD_ICON_SIZE * 0.8}" text-anchor="middle">${build.name}</text>`
 
@@ -163,14 +197,31 @@ function isModernBuild(build) {
     return keys.includes("colors") && keys.includes("perceptualHash");
 }
 
-function shuffleArray(a) {
+function seededShuffleArray(a, s) {
+    var rand = seededRandom(s);
+    
     for (var i = a.length - 1; i > 0; i--) {
-        var swTo = Math.floor(Math.random() * (i + 1));
+        var swTo = Math.floor(rand() * (i + 1));
         var tmp = a[i];
         a[i] = a[swTo];
         a[swTo] = tmp;
     }
     return a;
+}
+
+function seededRandom(seed) {
+    seed = parseInt(sha(seed).substring(0,8), 16);
+    
+    return function mulberry32random() {
+        var t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+}
+
+function sha(t) {
+    return crypto.createHash("sha256").update(t + "").digest("hex");
 }
 
 function transformSvg(svg, x, y) {

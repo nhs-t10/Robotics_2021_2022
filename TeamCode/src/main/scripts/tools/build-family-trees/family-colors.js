@@ -4,30 +4,81 @@ var familyRecords = {};
 
 var PHI = 1.61803399;
 
+/**
+ * @typedef {object} Heraldry
+ * @property {string} primary
+ * @property {string} secondary
+ * @property {string} primaryDark
+ * @property {string} primaryLight
+ * @property {string} primaryVDark
+ * @property {string} primaryPastel
+ * @property {*} crestCircled
+ */
+
 module.exports = {
-    primary: primary
+    primary: primary,
+    fullColorScheme: fullColorScheme
 }
 
+/**
+ * 
+ * @param {*} build 
+ * @returns {string}
+ */
 function primary(build) {
     return fullColorScheme(build).primary;
 }
-
+/**
+ * 
+ * @param {*} build 
+ * @returns {Heraldry}
+ */
 function fullColorScheme(build) {
     var cognomen = build.cognomen;
     if(familyRecords[cognomen]) return familyRecords[cognomen];
 
     var colours = (familyRecords[cognomen] = {});
+    
+    var familyHash = sha(cognomen);
 
-    var prettyPixels = normalizePixels(getHexPixels(sha(cognomen)));
+    var prettyPixels = normalizePixels(getHexPixels(familyHash));
 
-    colours.primary = pixelToHex(prettyPixels[prettyPixels.length - 1]);
-    colours.secondary = pixelToHex(prettyPixels[prettyPixels.length - 2]);
+    colours.primary = pixelToHex(prettyPixels[0]);
+    colours.secondary = pixelToHex(prettyPixels[1]);
+    
+    colours.primaryVDark = pixelToHex(shade(prettyPixels[0], 0.2));
+    colours.primaryDark = pixelToHex(shade(prettyPixels[0], 0.5));
+    colours.primaryLight = pixelToHex(shade(prettyPixels[0], 1.25));
+    colours.primaryPastel = pixelToHex(shade(prettyPixels[0], 2.5));
+    
+    colours.crestCircled = function(x, y, size) {
+        var rand = seededRandom(parseInt(familyHash.substring(0,8), 16));
+        var ellipse = `<ellipse fill="${colours.primaryVDark}" rx="${size/2}" ry="${size/2}" cx="${x}" cy="${y}"/>`;
+            
+        var p = `<path fill="${colours.primary}" stroke-width="2" stroke="${colours.primary}" d="M ${x} ${y}`
+        for(var i = 0; i < 6; i++) {
+            var angle = rand() * Math.PI * 2;
+            var mag = rand() * size / 2;
+            
+            p += `L${x + Math.cos(angle) * mag} ${y + Math.sin(angle) * mag}`;
+        }
+        p += `"/>`;
+        
+        return ellipse + p;
+    }
 
     return colours;
 }
 
 function sha(t) {
     return crypto.createHash("sha256").update(t + "").digest("hex");
+}
+
+function shade(color, coef) {
+    var hsv = RGBtoHSV(color[0], color[1], color[2]);
+    
+    var rgbO = HSVtoRGB(hsv[0], hsv[1], hsv[2] * coef);
+    return [rgbO.r, rgbO.g, rgbO.b];
 }
 
 function normalizePixels(pixels) {
@@ -46,6 +97,8 @@ function normalizePixels(pixels) {
         nextPhiHue(x[0], a[i - 1], a[i - 2]),
         0.25 + (Math.sqrt(x[1]) * (1 / 0.75)),
         1 - scaledBrightnesses[i]]);
+        
+    scaledPixels = scaledPixels.sort((a,b) => a[1] - b[1]);
     
     var rgbScaled = scaledPixels.map(x=>HSVtoRGB(x[0], x[1], x[2]));
     
@@ -131,5 +184,14 @@ function pixelToHex(pixel) {
         else return s.substring(0,2);
     }).join("");
 
-    return hex;
+    return "#" + hex;
+}
+
+function seededRandom(seed) {
+    return function mulberry32random() {
+        var t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
 }
