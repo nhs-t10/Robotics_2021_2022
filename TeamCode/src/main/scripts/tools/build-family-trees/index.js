@@ -4,7 +4,7 @@ const familyColors = require("./family-colors");
 var builds = require("./generate-build-dataset")();
 
 var BUILD_ICON_SIZE = 180;
-var BUILD_ICON_MARGIN_PERCENT = 3;
+var BUILD_ICON_MARGIN_PERCENT = 2;
 
 
 builds.forEach(x=>x.timeDate = new Date(x.time));
