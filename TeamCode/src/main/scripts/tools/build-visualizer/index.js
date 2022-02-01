@@ -1,13 +1,11 @@
 var fs = require("fs");
+const familyColors = require("./family-colors");
 
 var builds = require("./generate-build-dataset")();
 
 var BUILD_ICON_SIZE = 180;
 var BUILD_ICON_MARGIN_PERCENT = 3;
 
-
-//TODO: make this actually work
-process.exit(0);
 
 builds.forEach(x=>x.timeDate = new Date(x.time));
 
@@ -21,9 +19,13 @@ modernBuilds.forEach((x,i)=>x.globalModernBuildNumber = i);
 
 addChildrenAndPartners(modernBuilds);
 
-var greatGrandparents = modernBuilds.filter(x=> !x.relations.parents);
+var greatGrandparents = modernBuilds.filter(x=> !x.relations.hasParent && x.relations.children.length);
+
+greatGrandparents = [greatGrandparents[0]];
 
 var marriageSvgs = greatGrandparents.map(x=>makePersonAndTheirDescendantsSvg(x));
+
+console.log(marriageSvgs.length);
 
 var svgContent = marriageSvgs[0];
 
@@ -32,102 +34,92 @@ var maxX = svgContent.width, minX = svgContent.xMin, minY = svgContent.yMin, max
 
 fs.writeFileSync(__dirname + "/vis.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svgContent.svg + "</svg>"); //SAFE
 
-function makePersonAndTheirDescendantsSvg(person, x, y) {
+function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
     //convert x and y to numbers
     x |= +x;
     y |= +y;
 
+    //make dir 1 or -1
+    dir = +(dir > 0) * 2 - 1;
+
     var width = 0;
     var height = 0;
     var xMin = x;
+    var xMax = x;
     var yMin = y;
     
     var svg = "";
 
+    var marginCt = BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+
     var p1x = x, 
-        p2x = x + BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+        p2x = x + marginCt * dir;
 
     xMin = Math.min(p1x, p2x);
+    xMax = Math.max(p1x, p2x);
     
     svg += makeAtomicBuildItem(person, [p1x, y]);
     if(person.relations.partner) {
         svg += makeAtomicBuildItem(person.relations.partner, [p2x, y]);
-        width += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+        width += marginCt;
     }
 
-    width += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
-    height += BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+    width += marginCt;
+    height += marginCt;
 
     svg += `<path d="M${p1x} ${y}H${p2x}" class="marriage-line"/>`;
 
     var childrenG = "";
 
-    var nextRowY = y + BUILD_ICON_MARGIN_PERCENT * BUILD_ICON_SIZE;
+    var nextRowY = y + marginCt;
 
     var maxChildHeight = 0;
 
     shuffleArray(person.relations.children);
 
+    var childOffsetLeft = 0, childOffsetRight = marginCt;
+
     for(var i = 0; i < person.relations.children.length; i++) {
         var child = person.relations.children[i];
-        var cSvg = makePersonAndTheirDescendantsSvg(child, x + width, nextRowY);
+        var cSvg;
+        if(i % 2) {
+            cSvg = makePersonAndTheirDescendantsSvg(child, x + childOffsetRight, nextRowY, 1);
+            childOffsetRight += cSvg.r1width;
+        } else {
+            cSvg = makePersonAndTheirDescendantsSvg(child, x - childOffsetLeft, nextRowY, -1);
+            childOffsetLeft += cSvg.r1width;
+        }
 
-        width += cSvg.width;
-        maxChildHeight = Math.max(maxChildHeight, cSvg.height);
+        xMin = Math.min(xMin, cSvg.xMin);
+        xMax = Math.max(xMax, cSvg.xMax);
+
+        maxChildHeight = Math.max(maxChildHeight, cSvg.heightWithoutMargin);
         childrenG += cSvg.svg;
+
     }
 
     height += maxChildHeight;
 
-    svg += transformSvg(childrenG, -width / 2, 0);
+    svg += childrenG;
+
+    //give some top margin
+    y -= marginCt;
     
     return {
-        xMin: xMin - width / 2,
-        xMax: xMin + width / 2,
+        xMin: xMin,
+        xMax: xMax,
         yMin: y,
-        width: width,
-        height: height,
+        r1width: marginCt * (person.relations.partner ? 2 : 1),
+        width: xMax - xMin,
+        height: height + marginCt,
+        heightWithoutMargin: height,
         svg: svg
     };
-}
-
-function bringMarriageIntoPeople(marriage) {
-    initRelations(marriage.parent1);
-    initRelations(marriage.parent2);
-
-    marriage.parent1.relations.partner = marriage.parent2;
-    marriage.parent2.relations.partner = marriage.parent1;
-
-    marriage.children.forEach(x=>{
-        initRelations(x);
-        x.relations.parents = [marriage.parent1, marriage.parent2];
-
-        marriage.parent1.relations.children.push(x);
-        marriage.parent2.relations.children.push(x);
-    });
 }
 
 function initRelations(build) {
     if(!build.relations) build.relations = {};
     if(!build.relations.children) build.relations.children = [];
-}
-
-function fillMarriageChildren(marriages, builds) {
-    
-    for(var j = 0; j < marriages.length; j++) {
-        var marriage = marriages[j];
-        
-        marriage.children = [];
-        var bIndex = builds.indexOf(marriage.parent1);
-        if(bIndex == -1) throw "parent not in list";
-        
-        for(var i = bIndex + 1; i < builds.length; i++) {
-            if(isChildOf(builds[i], marriage)) {
-                marriage.children.push(builds[i]);
-                if(builds[i].isMarried) break;
-            }
-        }
-    }
 }
 
 function makeAtomicBuildItem(build, pos) {
@@ -136,15 +128,11 @@ function makeAtomicBuildItem(build, pos) {
 
     if(!build) build = {cognomen: "", name: "UNKNOWN"};
 
-    var background = `<ellipse fill="#${getColor(build.cognomen)}" rx="${BUILD_ICON_SIZE / 2}" ry="${BUILD_ICON_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
+    var background = `<ellipse fill="#${familyColors.primary(build)}" rx="${BUILD_ICON_SIZE / 2}" ry="${BUILD_ICON_SIZE  / 2}" cx="${x}" cy="${y}"/>`;
 
     var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + BUILD_ICON_SIZE * 0.8}" text-anchor="middle">${build.name}</text>`
 
     return background + text;
-}
-
-function getColor(str) {
-    return Buffer.from(str).toString("hex").substring(0, 6);
 }
 
 function curveBetween(pos1, pos2) {
@@ -177,53 +165,35 @@ function shuffleArray(a) {
 function transformSvg(svg, x, y) {
     return `<g transform="translate(${x} ${y})">${svg}</g>`
 }
-function fillLastMarriages(marriages) {
-    marriages.forEach(x=>x.lastMarriages = []);
-    
-    for(var i = 0; i < marriages.length; i++) {
-        var marriage = marriages[i];
-        
-        for(var j = i + 1; j < marriages.length; j++) {
-            if(!marriage.nextFamily1Marriage &&
-                (marriages[j].parent1.cognomen == marriage.parent1.cognomen ||
-                marriages[j].parent2.cognomen == marriage.parent1.cognomen)) {
-                    marriage.nextFamily1Marriage = marriages[j];
-                    marriages[j].lastMarriages.push(marriage);
-                }
-
-            if(!marriage.nextFamily2Marriage &&
-                (marriages[j].parent1.cognomen == marriage.parent2.cognomen ||
-                marriages[j].parent2.cognomen == marriage.parent2.cognomen)) {
-                    marriage.nextFamily2Marriage = marriages[j];
-                    marriages[j].lastMarriages.push(marriage);
-                }
-
-            if(marriage.family1NextMarriage && marriage.family2NextMarriage) break;
-        }
-    }
-}
-function noteMarriedStatus(marriages) {
-    marriages.forEach(x=>{
-        x.parent1.isMarried = x.parent2.cognomen;
-        x.parent2.isMarried = x.parent1.cognomen;
-    })
-}
-
-function isChildOf(build, marriage) {
-    if(marriage.parent1 == build || marriage.parent2 == build) return false;
-    
-    return build.cognomen == marriage.parent1.cognomen || build.cognomen == marriage.parent2.cognomen;
-}
-function isMarried(builds, index) {
-    return builds[index].cognomen != builds[index + 1].cognomen;
-}
 
 function addChildrenAndPartners(builds) {
+
+    builds.forEach(x=>initRelations(x));
+
     for(var i = 0; i < builds.length; i++) {
         var build = builds[i];
-        initRelations(build);
-        for(var j = i + 1; j < builds.length; j++) {
-            
+        if(builds[i + 1] && builds[i + 1].cognomen != build.cognomen) {
+            build.relations.partner = builds[i + 1];
+            builds[i + 1].relations.partner = build;
+            build.relations.children = build.relations.partner.relations.children;
+        }
+    }
+    for(var i = 0; i < builds.length; i++) {
+        var build = builds[i];
+        if(build.relations.partner) {
+            var childCognomens = [build.cognomen, build.relations.partner.cognomen];
+
+            for(i += 2; i < builds.length; i++) {
+                if(childCognomens.includes(builds[i].cognomen)) {
+                    var children = build.relations.children;
+                    children.push(builds[i]);
+                    builds[i].relations.hasParent = true;
+                    if(builds[i].relations.partner) {
+                        i--;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

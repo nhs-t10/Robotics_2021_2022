@@ -15,7 +15,7 @@ module.exports = function(obj) {
     var buffer = valuePool.pool.map(x=>x.bytes).flat(6);
     
     buffer.splice(0, 0, version);
-    return buffer;
+    return Buffer.from(buffer);
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {

@@ -7,6 +7,8 @@ const wellKnownConstructors = require("./well-known-constructors");
 var typesInverted = Object.fromEntries(Object.entries(types).map(x=>[x[1], x[0]]));
 
 module.exports = function(buf) {
+    buf = Array.from(buf);
+    
     var bVersion = buf[0];
     buf = buf.slice(1);
     if(version != bVersion) throw "Version mismatch in structured-serialise!";
