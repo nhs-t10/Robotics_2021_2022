@@ -35,6 +35,17 @@ var maxX = svgContent.width, minX = svgContent.xMin, minY = svgContent.yMin, max
 fs.writeFileSync(__dirname + "/vis.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${maxX} ${maxY}">` + svgContent.svg + "</svg>"); //SAFE
 
 function makePersonAndTheirDescendantsSvg(person, x, y, dir) {
+    //fail-safe
+    if(!person) return {
+        xMin: x,
+        xMax: x,
+        yMin: y,
+        r1width: 0,
+        width: 0,
+        height: 0,
+        heightWithoutMargin: 0,
+        svg: ""
+    }
     //convert x and y to numbers
     x |= +x;
     y |= +y;
