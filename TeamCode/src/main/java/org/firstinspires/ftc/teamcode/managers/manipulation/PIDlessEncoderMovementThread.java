@@ -58,7 +58,6 @@ public class PIDlessEncoderMovementThread extends Thread {
 
                         if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) {
                             shouldMove[i] = false;
-                            motors[i].setPower(0.0);
                         }
 
                         lastDeltas[i] = delta;
