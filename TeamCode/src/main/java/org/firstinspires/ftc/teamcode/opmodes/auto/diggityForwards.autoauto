@@ -1,5 +1,0 @@
-#i:
-driveOmni(0, 0, -0.7), log(getFLMotorPower() + ", " + getFRMotorPower() + ", " + getBRMotorPower() + ", " + getBLMotorPower()), after 5s next;
-//let turn = 90, let delta = Math.abs(getThirdAngleOrientation() - turn)/turn, driveOmni(0, delta*0.5, 0), after 90deg next;
-//let delta = (1.5*getThirdAngleOrientation() - 90)/(1.5*90), log(delta), driveOmni(0, 1*delta, 0), if(getThirdAngleOrientation() == 90) next, after 20s next;
-stopDrive(), log("I Finished the Test Auto, and All I Got Was This TShirt")
