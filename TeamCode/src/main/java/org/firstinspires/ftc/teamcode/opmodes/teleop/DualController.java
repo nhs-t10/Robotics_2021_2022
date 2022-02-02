@@ -154,7 +154,7 @@ public class DualController extends OpMode {
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
-            if (clawCheck == 1.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
+            if (clawCheck != 0.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
@@ -191,11 +191,9 @@ public class DualController extends OpMode {
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", -0.25);
             }
             else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", 0.25);
             }
             else {

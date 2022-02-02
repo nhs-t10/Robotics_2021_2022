@@ -230,7 +230,7 @@ public class NateManager extends FeatureManager {
     public int getClawPosition() {
         if(position == -2750) return 0;
         else if(position == 945) return 1;
-        else if(position == 2483) return 2;
+        else if(position == 2520) return 2;
         else if(position == 4253) return 3;
 
         return -1;
