@@ -7,7 +7,7 @@
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />
     <envs>
-      <env name="TEST_TYPE" value="ALL" />
+      <env name="TEST_TYPE" value="LONG" />
     </envs>
     <method v="2">
       <option name="Make" enabled="true" />

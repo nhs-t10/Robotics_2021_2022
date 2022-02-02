@@ -141,7 +141,7 @@ public class ExampleTeleopCarouselHangingTest {
     private static class WatchdogThread extends Thread {
         private final LoopRunnerThread watched;
 
-        private final static long MS_BETWEEN_CALL_ALLOWED = HUMAN_REACTION_TIME;
+        private final static long MS_BETWEEN_CALL_ALLOWED = 5000;
 
         private long killTime;
         private boolean running;
