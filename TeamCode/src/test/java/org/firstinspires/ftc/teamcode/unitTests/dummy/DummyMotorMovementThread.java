@@ -63,6 +63,8 @@ public class DummyMotorMovementThread extends Thread {
         motor.currentPosition += (velocity * elapsedTimeMs) * ticksPerRot;
 
         lastVelocityRotPerms = velocity;
+
+        motor.power = 0;
     }
 
     private void moveMotorTowardsTarget(DummyDcMotor motor, double elapsedTimeMs) {
