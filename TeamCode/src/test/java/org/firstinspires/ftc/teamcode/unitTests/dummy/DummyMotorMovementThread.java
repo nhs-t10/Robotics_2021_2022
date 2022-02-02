@@ -16,7 +16,8 @@ public class DummyMotorMovementThread extends Thread {
     private double lastVelocityRotPerms;
 
     public final double MAX_ROTS_PER_MS = 0.01;
-    public final double DRAG_COEF = 0.5;
+    public final double DRAG_COEF = 0.1;
+    public final double ACCELERATION_ROT_PER_POWER_PER_MS = 1;
 
     private double ticksPerRot;
 
@@ -27,10 +28,10 @@ public class DummyMotorMovementThread extends Thread {
     }
     @Override
     public void run() {
-        long lastIterationTime = RobotTime.currentTimeMillis();
+        long lastIterationTime = RobotTime.nanoTime();
         while(running) {
-            long thisIterationTime = RobotTime.currentTimeMillis();
-            double deltaTime = thisIterationTime - lastIterationTime;
+            long thisIterationTime = RobotTime.nanoTime();
+            double deltaTime = (thisIterationTime - lastIterationTime) * 0.000001;
 
             //get the motor from the weak reference. If the result is `null`, it's been garbaged and this thread should stop.
             DummyDcMotor motor = motorRef.get();
@@ -44,7 +45,6 @@ public class DummyMotorMovementThread extends Thread {
 
             if (motor.runMode == DcMotor.RunMode.RUN_TO_POSITION) {
                 moveMotorTowardsTarget(motor, deltaTime);
-
             } else {
                 moveMotorAccordingToPower(motor, deltaTime);
             }
@@ -54,10 +54,10 @@ public class DummyMotorMovementThread extends Thread {
     }
 
     private void moveMotorAccordingToPower(DummyDcMotor motor, double elapsedTimeMs) {
-        double acceleration = motor.power * 5;
+        double acceleration = motor.power * ACCELERATION_ROT_PER_POWER_PER_MS;
         if(motor.direction.equals(DcMotorSimple.Direction.REVERSE)) acceleration *= -1;
 
-        double velocity = lastVelocityRotPerms * DRAG_COEF + acceleration * elapsedTimeMs;
+        double velocity = (lastVelocityRotPerms * DRAG_COEF + acceleration) * elapsedTimeMs;
         velocity = PaulMath.clamp(velocity, -MAX_ROTS_PER_MS, MAX_ROTS_PER_MS);
 
         motor.currentPosition += (velocity * elapsedTimeMs) * ticksPerRot;

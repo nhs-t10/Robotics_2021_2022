@@ -1,6 +1,8 @@
 var crypto = require("crypto");
 var fs = require("fs");
-const familyColors = require("./family-colors");
+
+var makePersonSvg = require("./make-person-svg");
+var familyColors = require("./family-colors");
 
 var builds = require("./generate-build-dataset")();
 
@@ -162,7 +164,9 @@ function atomicBuildProfilePicture(build, x, y) {
     
     var text = `<text style="font-family:'JetBrains Mono';font-size:24px" x="${x}" y="${y + BUILD_ICON_SIZE * 0.95}" text-anchor="middle">${build.name}</text>`
     
-    return background + bottom + text;
+    var person = makePersonSvg(build, x, y, BUILD_ICON_SIZE);
+    
+    return background + person + bottom + text;
 }
 
 function svgEllipse(x, y, rx, ry, color) {
