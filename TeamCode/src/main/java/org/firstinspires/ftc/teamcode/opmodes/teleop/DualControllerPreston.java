@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmo
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
@@ -53,6 +53,7 @@ public class DualControllerPreston extends OpMode {
         telemetry = telemetryManager;
         FeatureManager.logger.setBackend(telemetry.log());
 
+
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
@@ -70,28 +71,28 @@ public class DualControllerPreston extends OpMode {
         input.registerInput("drivingControls",
                 new PlusNode(
                         new MultiInputNode(
-                            new ScaleNode(new JoystickNode("left_stick_y"), 1),
-                            new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
-                            new ScaleNode(new JoystickNode("left_stick_x"), 1)
+                                new ScaleNode(new JoystickNode("left_stick_y"), 1),
+                                new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
+                                new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
                         new MultiInputNode(
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_y"), -0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), -0.7f)
+                                new ScaleNode(new JoystickNode("gamepad2left_stick_y"), -0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2left_stick_x"), -0.7f)
                         )
                 )
-            );
+        );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-        input.registerInput("precisionDriving", new IfNode(
-                new ToggleNode(new ButtonNode("b")),
-                new StaticValueNode(0.1f),
-                new StaticValueNode(0.6f)
-        ));
-        input.registerInput("dashing", new IfNode(
-                new ToggleNode(new ButtonNode("x")),
-                new StaticValueNode(1f),
-                new StaticValueNode(0.6f)
-        ));
+//        input.registerInput("precisionDriving", new IfNode(
+//                new ToggleNode(new ButtonNode("b")),
+//                new StaticValueNode(0.1f),
+//                new StaticValueNode(0.6f)
+//        ));
+//        input.registerInput("dashing", new IfNode(
+//                new ToggleNode(new ButtonNode("x")),
+//                new StaticValueNode(1f),
+//                new StaticValueNode(0.6f)
+//        ));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
@@ -114,10 +115,10 @@ public class DualControllerPreston extends OpMode {
                 ));
         input.registerInput("EmergencyStop",
                 new AnyNode(
-                                new ButtonNode("dpadleft"),
-                                new ButtonNode("gamepad2dpadleft"),
-                                new ButtonNode("dpadright"),
-                                new ButtonNode("gamepad2dpadright")
+                        new ButtonNode("dpadleft"),
+                        new ButtonNode("gamepad2dpadleft"),
+                        new ButtonNode("dpadright"),
+                        new ButtonNode("gamepad2dpadright")
                 ));
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
@@ -130,16 +131,30 @@ public class DualControllerPreston extends OpMode {
 
     }
 
-    @Override
+    private boolean shouldActuallyDoThings = true;
     public void loop() {
+        try {
+            if(shouldActuallyDoThings) real_loop_Bad_Practice_Fix_Me_Later();
+        }
+        catch (Throwable t) {
+            FeatureManager.logger.log(t.toString());
+            StackTraceElement[] e = t.getStackTrace();
+            for(int i = 0; i < 3 && i < e.length;i++) {
+                FeatureManager.logger.log(e[i].toString());
+            }
+            shouldActuallyDoThings = false;
+            telemetry.update();
+        }
+    }
+    public void real_loop_Bad_Practice_Fix_Me_Later() {
         input.update();
 
-        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
+//        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
-            if (clawCheck == 1.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
+            if (clawCheck != 0.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
@@ -176,11 +191,9 @@ public class DualControllerPreston extends OpMode {
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", -0.25);
             }
             else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", 0.25);
             }
             else {
@@ -197,9 +210,6 @@ public class DualControllerPreston extends OpMode {
             }
             if (input.getBool("ClawPosHome") == true) {
                 clawPosition.positionHome();
-            }
-            if (input.getBool("ClawPosNeutral") == true) {
-                clawPosition.positionNeutral();
             }
         }
         if (input.getBool("ClawOpen") == true){
@@ -239,6 +249,7 @@ public class DualControllerPreston extends OpMode {
         telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
         telemetry.addData("Is Found", clawPosition.isFound());
         telemetry.update();
+
     }
 
     public void stop() {
