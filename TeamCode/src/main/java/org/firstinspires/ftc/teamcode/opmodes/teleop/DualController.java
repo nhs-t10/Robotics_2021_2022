@@ -83,16 +83,16 @@ public class DualController extends OpMode {
                 )
             );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-//        input.registerInput("precisionDriving", new IfNode(
-//                new ToggleNode(new ButtonNode("b")),
-//                new StaticValueNode(0.1f),
-//                new StaticValueNode(0.6f)
-//        ));
-//        input.registerInput("dashing", new IfNode(
-//                new ToggleNode(new ButtonNode("x")),
-//                new StaticValueNode(1f),
-//                new StaticValueNode(0.6f)
-//        ));
+        input.registerInput("precisionDriving", new IfNode(
+                new ToggleNode(new ButtonNode("b")),
+                new StaticValueNode(0.1f),
+                new StaticValueNode(0.6f)
+        ));
+        input.registerInput("dashing", new IfNode(
+                new ToggleNode(new ButtonNode("x")),
+                new StaticValueNode(1f),
+                new StaticValueNode(0.6f)
+        ));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
@@ -234,7 +234,7 @@ public class DualController extends OpMode {
             clawPosition.positionNeutral();
         }
 
-        FeatureManager.logger.log(BuildHistory.buildName);
+        //FeatureManager.logger.log(BuildHistory.buildName);
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());
