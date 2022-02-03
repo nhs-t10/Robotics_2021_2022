@@ -20,7 +20,7 @@ module.exports = function(build, x, y, size) {
     
     var hair = randomHair(rand, heraldry);
     
-    return `<g transform="translate(${x} ${y}) scale(${size / 2})" fill="${heraldry.primaryDark}">${hair}${personOutline}${overHair}</g>`;
+    return `<g transform="translate(${x} ${y}) scale(${size / 2})" fill="${heraldry.primaryDark}">${hair}${personOutline}</g>`;
 }
 
 function randomHair(rand, heraldry) {
