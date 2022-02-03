@@ -20,8 +20,6 @@ module.exports = function(build, x, y, size) {
     
     var hair = randomHair(rand, heraldry);
     
-    var overHair = ""//randomOverHair(rand, heraldry)
-    
     return `<g transform="translate(${x} ${y}) scale(${size / 2})" fill="${heraldry.primaryDark}">${hair}${personOutline}${overHair}</g>`;
 }
 
@@ -30,27 +28,6 @@ function randomHair(rand, heraldry) {
     
     return `<path d="${hairPieces}" fill="${heraldry.primary}" stroke-width="1" stroke="${heraldry.primaryPastel}"/>`
 }
-
-function randomOverHair(rand, heraldry) {
-    var bangs = generateBangs(rand);
-    
-    return `<path d="${bangs}" fill="${heraldry.primary}" stroke-width="1" stroke="${heraldry.primaryPastel}"/>`
-}
-
-function generateBangs(rand) {
-    var R = 0.6125;
-
-    var s = `M ${R} 0`;
-    
-    for(var i = 0; i < Math.PI; i += rand() * Math.PI) {
-        s += `Q 0 ${-R/2} ${r5(Math.cos(i)*R)} ${r5(-Math.sin(i)*R)}`;
-    }
-    
-    s += `A ${R} ${R} 0 1 0 ${R} ${0}`;
-    
-    return s;
-}
-
 function generateHair(rand) {
     var p = "M 0.5 0";
     
@@ -62,10 +39,10 @@ function generateHair(rand) {
     
     for(var i = 0; i <= MAXS; i += Math.PI * 2 / N_POTS) {
         var rX = Math.cos(i + hS * rand()) * (1 + rand()),
-            rY = Math.sin(i + hS * rand()) * (1 + rand());
+            rY = -Math.sin(i + hS * rand()) * (1 + rand());
             
         var nextX = Math.cos(i),
-            nextY  = Math.sin(i);
+            nextY  = -Math.sin(i);
         p += `Q ${r5(rX/2)} ${r5(rY/2)} ${r5(nextX/2)} ${r5(nextY/2)}`;
     }
     return p;
