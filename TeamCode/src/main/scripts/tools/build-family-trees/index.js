@@ -21,11 +21,11 @@ addChildrenAndPartners(modernBuilds);
 
 var greatGrandparents = modernBuilds.filter(x=> !x.relations.hasParent && x.relations.children.length);
 
+console.log(greatGrandparents.length);
+
 greatGrandparents = [greatGrandparents[0]];
 
 var marriageSvgs = greatGrandparents.map(x=>makePersonAndTheirDescendantsSvg(x));
-
-console.log(marriageSvgs.length);
 
 var svgContent = marriageSvgs[0];
 
