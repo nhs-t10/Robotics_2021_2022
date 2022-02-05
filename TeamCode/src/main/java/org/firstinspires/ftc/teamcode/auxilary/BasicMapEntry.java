@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary;
 
 import java.util.Map;
 
-public class BasicMapEntry<K,V> implements Map.Entry {
+public class BasicMapEntry<K,V> implements Map.Entry<K,V> {
     private V v;
     private final K k;
 
@@ -20,7 +20,8 @@ public class BasicMapEntry<K,V> implements Map.Entry {
         return v;
     }
 
-    public V setValue(Object value) {
-        return v = (V)value;
+    public V setValue(V value) {
+        v = value;
+        return value;
     }
 }
