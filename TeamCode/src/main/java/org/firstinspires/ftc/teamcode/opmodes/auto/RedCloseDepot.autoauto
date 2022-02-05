@@ -44,9 +44,9 @@
     setClawOpen(true), after 500ms goto finalMovement;
 
 #finalMovement:
-    driveOmni(-0.7,0,0), after 1cm next;
+    driveOmni(-0.7,0,0), after 2cm next;
     setClawOpen(false), next;
-    driveOmni(0,-0.7,0), after 68degs next;
+    driveOmni(0,-0.7,0), after 83degs next;
     driveOmni(0.7,0,0), after 30cm next;
     driveOmni(0,0,-0.7), after 1cm next;
     positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) goto parking
