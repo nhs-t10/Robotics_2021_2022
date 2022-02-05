@@ -12,7 +12,7 @@
 
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` moves it off the wall then folds out the arms to their full extent.
 #clawout:
-    driveOmni(0.5,0,0),after 3cm next;
+    driveOmni(0.5,0,0),after 4cm next;
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
     setServoPower("nateMoverLeft", -0.5), setServoPower("nateMoverRight", 0.5), after 3500ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
@@ -51,17 +51,17 @@
 
 //moves the robot forwards so the claw is where it should be to drop off the freight
 #towerDropOff:
-    driveOmni(0.7,0,0), after 10cm next;
+    driveOmni(0.7,0,0), after 5cm next;
     setClawOpen(true), after 3000ms goto finalMovement;
 
 //moves the robot away from the shipping hub, closes the claw, turns right, moves forward, and parks in the depot
 #finalMovement:
-    driveOmni(-0.7,0,0), after 1cm next;
-    setClawOpen(false), next;
-    driveOmni(0,0.7,0), after 90degs next;
+    driveOmni(-0.7,0,0), after 3cm next;
+    setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) next;
+    driveOmni(0,0.7,0), after 83degs next;
     driveOmni(0.7,0,0), after 30cm next;
     driveOmni(0,0,0.7), after 3cm next;
-    positionNeutral(), goto parking
+    goto parking
 
 //brings the robot to a complete stop
 #parking:
