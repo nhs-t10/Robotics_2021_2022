@@ -37,6 +37,6 @@ public class EncodedMovementTest {
             Thread.yield();
         }
 
-        assertEquals(4096, m.getMotorPosition(fooMotor), ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
+        assertEquals(4096, m.getMotorPosition(fooMotor), 1000);
     }
 }
