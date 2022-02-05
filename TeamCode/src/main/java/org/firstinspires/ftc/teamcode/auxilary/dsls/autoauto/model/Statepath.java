@@ -13,7 +13,6 @@ public class Statepath implements AutoautoProgramElement {
     AutoautoRuntimeVariableScope scope;
 
     public String name;
-    public AutoautoProgram program;
 
     public static Statepath S(State[] states, String name) {
         return new Statepath(states, name);

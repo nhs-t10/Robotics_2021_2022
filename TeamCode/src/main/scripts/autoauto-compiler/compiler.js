@@ -2,7 +2,6 @@ var fs = require("fs");
 var path = require("path");
 
 var aaParser = require("./aa-parser.js");
-var astJavaify = require("./autoauto-to-java.js");
 var parserTools = require("../script-helpers/parser-tools");
 
 var crc = require("../script-helpers/crc-string");
@@ -92,12 +91,12 @@ for(var i = 0; i < autoautoFiles.length; i++) {
     if(!runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource)) continue;
     if(parsedModel instanceof Error) continue;
 
-    var javaCreationCode = astJavaify(parsedModel);
+    var javaCreationCode = astJavaify(parsedModel, frontMatter);
 
-    var jsonSettingCode = javaCreationCode.jsonSettingCode;
+    var jsonSettingCode = getDebugJsonSettingCode(parsedModel);
 
     fs.writeFileSync(resultFile, //SAFE
-        processTemplate(templates[templateUsed], className, frontMatter, javaCreationCode.genCode, autoautoFiles[i], jsonSettingCode, package, classNameNoConflict)
+        processTemplate(templates[templateUsed], className, frontMatter, javaCreationCode, autoautoFiles[i], jsonSettingCode, package, classNameNoConflict)
     );
 
     requiredTests.push({
@@ -112,8 +111,25 @@ clearDirectory(compiledResultDirectory, writtenFiles);
 
 makeTestFile(requiredTests, testsDirectory, TESTS_PACKAGE);
 
-//see if more methods have been made
-(require("./functionloader"));
+
+function astJavaify(parsedModel, frontMatter) {
+    var cMode;
+    if(fs.existsSync(__dirname + "/compiler-modes/" + frontMatter.compilerMode + "/index.js")) {
+        cMode = require("./compiler-modes/" + frontMatter.compilerMode);
+    } else {
+        cMode = require("./compiler-modes/default");
+    }
+
+    return cMode(parsedModel);
+}
+
+function getDebugJsonSettingCode(parsedModel) {
+    var programOutline = Object.fromEntries(parsedModel.statepaths.map(x=>[x.label.value, x.statepath.states.length]));
+    var programOutlineJson = JSON.stringify(programOutline);
+
+    //double-stringify it to make the JSON into valid Java
+    return `String simpleProgramJson = ${JSON.stringify(programOutlineJson)};`
+}
 
 function jClassIfy(str) {
     return str.split("-").map(x=>capitalize(x)).join("");

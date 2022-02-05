@@ -53,7 +53,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
 
     function process(child, newStateNumber) {
         var r = astToString(child,
-            child.label ? child.label.value : statepath,
+            child.label ? child.label : statepath,
             newStateNumber || stateNumber,
             depth + 1
         );
@@ -70,7 +70,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
         case "Program":
             var childDefs = ast.statepaths.map(x => process(x));
             
-            childDefs.forEach((x,i)=>x.nameNonce = getStringNonce(ast.statepaths[i].label.value, depth));
+            childDefs.forEach((x,i)=>x.nameNonce = getStringNonce(ast.statepaths[i].label, depth));
             
             var programName = genNonce();
 
@@ -123,11 +123,14 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             ) //remove extra whitespace, if it's not a string
             
                 
-            var creationStatements = typedDefinitions.concat([
+            var creationStatements = typedDefinitions
+            .concat(locationSetters)
+            .concat([
                 `Statepath[] ${nonce} = new Statepath[] { ${childDefs.map(x=>x.varname)} };`,
-                `AutoautoProgram ${programName} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoProgram}(${nonce}, ${childDefs[0].nameNonce});`
-            ]).concat(locationSetters);
+                `return new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.programtypes.RecursiveDescentEvaluationProgram(${nonce}, ${childDefs[0].nameNonce});`
+            ]);
 
+            //put the statements into 1 text-file. Make sure each line isn't too long.
             result = "";
             var line = "";
             for(var i = 0; i < creationStatements.length; i++) {
@@ -140,34 +143,12 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             }
             result += line;
 
-            result += `return ${programName};`
-
-            var simpleProgramJsonSet
-
-            var jsonProgram = JSON.stringify(ast);
-
-            var jsonSettingCode = "";
-
-            for(var i = 0; i < jsonProgram.length; i += 32768) {
-                jsonSettingCode += "programJson.append(" + JSON.stringify(jsonProgram.substring(i, i + 32768)) + ");\n";
-            }
-
-            var simpleProgram = Object.fromEntries(ast.statepaths.map(x=>[x.label.value, x.statepath.states.length]));
-            var simpleProgramJson = JSON.stringify(simpleProgram);
-
-            jsonSettingCode += "simpleProgramJson = " + JSON.stringify(simpleProgramJson) + ";\n";
-
-            result = {
-                genCode: result,
-                jsonSettingCode: jsonSettingCode
-            }
-
             initFileState();
             break;
         case "LabeledStatepath":
             var childDefs = ast.statepath.states.map((x,i) => process(x, i));
 
-            var label = process(ast.label);
+            var labelNonce = getStringNonce(ast.label);
             
             var arrayNonce = genNonce();
 
@@ -180,8 +161,8 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
-                depends: [arrayNonce, label.varname],
-                definition: `Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${label.varname});`
+                depends: [arrayNonce, labelNonce],
+                definition: `Statepath ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.Statepath}($${nonce}, ${labelNonce});`
             });
 
             result = {

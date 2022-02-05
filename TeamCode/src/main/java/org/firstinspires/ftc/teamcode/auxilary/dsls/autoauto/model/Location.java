@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model;
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 
 public class Location {
+
+    public static String defaultFileName = "";
+
     public String fileName;
     public String statepath;
     public int stateNumber;
@@ -22,7 +25,7 @@ public class Location {
     }
 
     public Location(String statepath, int stateNumber, int line, int col) {
-        this(AutoautoProgram.fileName, statepath, stateNumber, line, col);
+        this(defaultFileName, statepath, stateNumber, line, col);
     }
 
     public Location(String fileName, String statepath, int stateNumber, int line, int col) {

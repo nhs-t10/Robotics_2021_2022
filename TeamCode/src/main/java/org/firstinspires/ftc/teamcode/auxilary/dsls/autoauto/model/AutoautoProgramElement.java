@@ -15,6 +15,6 @@ public interface AutoautoProgramElement {
 
     default String formatStack() {
         Location location = getLocation();
-        return "\n\tat " + AutoautoProgram.fileName + ":" + location.line + ":" + location.col + "\n\tat " + location.statepath + ", state " + location.stateNumber;
+        return "\n\tat " + location.fileName + ":" + location.line + ":" + location.col + "\n\tat " + location.statepath + ", state " + location.stateNumber;
     }
 }

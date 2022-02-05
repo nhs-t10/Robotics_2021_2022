@@ -27,7 +27,6 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
 
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location.L;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.AutoautoProgram.P;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime.R;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath.S;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State.A;
@@ -61,15 +60,16 @@ public class template extends AutoautoOpmode {
     ImuManager imu;
     CVManager cv;
     NateManager clawPosition;
+    TelemetryManager telemetryManager;
 
-    public static AutoautoProgram program = generateProgram();
+    public AutoautoProgram program = generateProgram();
 
     AutoautoRuntime runtime;
     public void init() {
         FeatureManager.setIsOpModeRunning(true);
         FeatureManager.reconfigureForAuto();
 
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this);
+        telemetryManager = new TelemetryManager(telemetry, this);
         telemetry = telemetryManager;
         FeatureManager.logger.setBackend(telemetry.log());
 
@@ -90,9 +90,6 @@ public class template extends AutoautoOpmode {
 
             imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
 
-        StringBuilder programJson = new StringBuilder();
-        String simpleProgramJson = "";
-
         /*JSON_SETTING_CODE*/
 
         runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, telemetryManager, clawPosition, cv);
@@ -101,7 +98,6 @@ public class template extends AutoautoOpmode {
 
         limbs.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        telemetryManager.autoauto.setProgramJson(programJson.toString());
         telemetryManager.autoauto.setProgramOutlineJson(simpleProgramJson);
         telemetryManager.autoauto.setGlobalScope(runtime.rootModule.globalScope);
     }
@@ -130,10 +126,9 @@ public class template extends AutoautoOpmode {
     public void stop() {
         FeatureManager.setIsOpModeRunning(false);
     }
-    /*USER_DEFINED_FUNCTIONS*/
 
-    public static AutoautoProgram generateProgram() {
-    AutoautoProgram.fileName = "/*SOURCE_FILE_NAME*/";
+    public AutoautoProgram generateProgram() {
+        Location.defaultFileName = "/*SOURCE_FILE_NAME*/";
 
 /*JAVA_CREATION_CODE*/
     }

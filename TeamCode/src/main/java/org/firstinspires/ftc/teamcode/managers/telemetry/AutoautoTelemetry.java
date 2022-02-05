@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeFunct
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.NativeRobotFunction;
 
 public class AutoautoTelemetry {
-    String programJson;
     String programOutlineJson;
     public AutoautoRuntimeVariableScope globalScope;
 
@@ -18,9 +17,9 @@ public class AutoautoTelemetry {
     }
 
     public final String getProgramJson() {
-        if(programJson != null && programOutlineJson != null) {
+        if(programOutlineJson != null) {
             if (sendProgramJson == 0) return "{}";
-            else if (sendProgramJson == 1) return programJson;
+            else if (sendProgramJson == 1) return "null";
             else if (sendProgramJson == 2) return programOutlineJson;
         }
         return "null";
@@ -30,9 +29,6 @@ public class AutoautoTelemetry {
         this.sendProgramJson = t;
     }
 
-    public final void setProgramJson(String json) {
-        this.programJson = json;
-    }
     public final void setProgramOutlineJson(String json) {
         this.programOutlineJson = json;
     }
@@ -45,7 +41,7 @@ public class AutoautoTelemetry {
         for(String name : globalScope.getKeys()) {
             AutoautoPrimitive val = globalScope.get(name);
             //don't add native functions, bc if we do, it'll add all the built-in functions & bloat the json
-            if(!(val instanceof NativeFunction || val instanceof NativeRobotFunction)) {
+            if(!(val instanceof NativeFunction)) {
                 r.append(PaulMath.JSONify(name));
                 r.append(":");
 

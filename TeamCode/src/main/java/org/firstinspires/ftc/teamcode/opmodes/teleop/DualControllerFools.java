@@ -201,7 +201,7 @@ public class DualControllerFools extends OpMode {
                 clawPosition.positionHome();
             }
         }
-        if (input.getBool("ToggleClaw") == true){
+        if (input.getBool("ToggleClaw")){
             clawPosition.setClawOpen(true);
         }
         else {

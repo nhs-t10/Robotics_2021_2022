@@ -7,7 +7,7 @@ module.exports = {
     run: function(ast, folder, filename, originalFileContent) {
 
         var gotoStatements = query.getAllOfType(ast, "GotoStatement");
-        var statepathNames = query.getAllOfType(ast, "LabeledStatepath").map(x=>x.label.value);
+        var statepathNames = query.getAllOfType(ast, "LabeledStatepath").map(x=>x.label);
         
         var warns = [];
         

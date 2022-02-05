@@ -1,5 +1,5 @@
 autoautoFile = 
-  c:commentedWhitespace f:frontMatter? _ u:unlabeledStatepath? s:labeledStatepath* _ {
+  c:commentedWhitespace f:frontMatter? _ u:unlabeledStatepath? s:labeledStatepath* commentedWhitespace {
   	return {
       comments: c,
       type: "Program", location: location(),
@@ -32,7 +32,7 @@ unlabeledStatepath = c:commentedWhitespace s:statepath _ {
 
 labeledStatepath =
  c:commentedWhitespace l:statepathLabelIdentifier COLON _ s:statepath _  {
-   return { comments: c, type: "LabeledStatepath", location: location(), statepath: s, label: l }
+   return { comments: c, type: "LabeledStatepath", location: location(), statepath: s, label: l.value }
  }
 
 
@@ -162,7 +162,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / unitValue / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
+ _  x:(arrayLiteral / stringLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
    return x;
  }
 
@@ -200,10 +200,12 @@ arrayLiteral =
 functionLiteral = FUNC _ name:IDENTIFIER? _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
     { return { type: "FunctionLiteral", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
+booleanLiteral =
+TRUE { return { type: "BooleanLiteral", location: location(), value: true }; }
+ / FALSE { return { type: "BooleanLiteral", location: location(), value: false }; }
+
 boolean =
  l:arithmeticValue o:comparisonOperator r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; }
- / TRUE { return { type: "BooleanLiteral", location: location(), value: true }; }
- / FALSE { return { type: "BooleanLiteral", location: location(), value: false }; }
  / r:arithmeticValue { return r; }
 
 comparisonOperator "comparison operator" =
