@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSys
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoArgumentException;
 import org.firstinspires.ftc.teamcode.auxilary.units.DistanceUnit;
 import org.firstinspires.ftc.teamcode.auxilary.units.RotationUnit;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.jetbrains.annotations.NotNull;
 
 public class AfterStatement extends Statement {
@@ -80,8 +79,8 @@ public class AfterStatement extends Statement {
         throw new IllegalArgumentException("No such unit `" + unit + "` in mapping.");
     }
     private boolean checkUnitIsDistance(String unit) {
-        for(String[] s : unitMethodMapping) {
-            if(s[1].equals(unit)){
+        for (String[] s : unitMethodMapping) {
+            if (s[1].equals(unit)) {
                 return s[0].equals("D");
             }
         }
@@ -90,7 +89,7 @@ public class AfterStatement extends Statement {
 
     @Override
     public void stepInit() {
-        if(scope.get(AutoautoSystemVariableNames.COMPAT_MODE) != null) internalStoreStartingStep();
+        if(scope.get(AutoautoSystemVariableNames.COMPATFLAG_AFTER_TIMESTART_AT_START_OF_STATE) != null) internalStoreStartingStep();
         else restartDeltaNextLoop = true;
     }
 

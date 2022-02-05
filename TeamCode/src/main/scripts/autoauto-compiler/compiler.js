@@ -177,11 +177,11 @@ function processTemplate(template, className, frontMatter, javaCreationCode, sou
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
         .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1)
-        .replace("/*COMPAT_MODE_SETTING*/", frontMatter.oldAfterCompat ? getCompatModeSetter() : "");
+        .replace("/*COMPAT_MODE_SETTING*/", frontMatter.compatflag_afterStartAtState ? getCompatModeSetter() : "");
 }
 
 function getCompatModeSetter() {
-    return "runtime.rootModule.globalScope.systemSet(org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames.COMPAT_MODE, new AutoautoBooleanValue(true));"
+    return "runtime.rootModule.globalScope.systemSet(org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames.COMPATFLAG_AFTER_TIMESTART_AT_START_OF_STATE, new AutoautoBooleanValue(true));"
 }
 
 function buildServoNames(servos) {

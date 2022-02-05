@@ -1,5 +1,5 @@
 $
-oldAfterCompat: true
+compatflag_afterStartAtState: true
 $
 
 #init:

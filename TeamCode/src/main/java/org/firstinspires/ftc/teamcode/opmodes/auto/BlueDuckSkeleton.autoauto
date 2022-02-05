@@ -2,7 +2,7 @@
 // AS OF 1/20/2022 driveOmni WORKED AS IF IT IS driveOmni(v,r,-h)
 
 $
-oldAfterCompat: true
+compatflag_afterStartAtState: true
 $
 
 #init:
