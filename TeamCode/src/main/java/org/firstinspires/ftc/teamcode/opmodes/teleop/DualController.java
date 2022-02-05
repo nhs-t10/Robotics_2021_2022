@@ -83,16 +83,16 @@ public class DualController extends OpMode {
                 )
             );
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
-//        input.registerInput("precisionDriving", new IfNode(
-//                new ToggleNode(new ButtonNode("b")),
-//                new StaticValueNode(0.1f),
-//                new StaticValueNode(0.6f)
-//        ));
-//        input.registerInput("dashing", new IfNode(
-//                new ToggleNode(new ButtonNode("x")),
-//                new StaticValueNode(1f),
-//                new StaticValueNode(0.6f)
-//        ));
+        input.registerInput("precisionDriving", new IfNode(
+                new ToggleNode(new ButtonNode("b")),
+                new StaticValueNode(0.1f),
+                new StaticValueNode(0.6f)
+        ));
+        input.registerInput("dashing", new IfNode(
+                new ToggleNode(new ButtonNode("x")),
+                new StaticValueNode(1f),
+                new StaticValueNode(0.6f)
+        ));
         input.registerInput("CarouselBlue", new ButtonNode("y"));
         input.registerInput("CarouselRed", new ButtonNode("a"));
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
@@ -154,7 +154,7 @@ public class DualController extends OpMode {
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
             clawPos = clawPosition.getClawPosition();
-            if (clawCheck == 1.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
+            if (clawCheck != 0.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
@@ -191,11 +191,9 @@ public class DualController extends OpMode {
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", -0.25);
             }
             else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hands.setMotorPower("ClawMotor", 0.25);
             }
             else {
@@ -236,7 +234,7 @@ public class DualController extends OpMode {
             clawPosition.positionNeutral();
         }
 
-        FeatureManager.logger.log(BuildHistory.buildName);
+        //FeatureManager.logger.log(BuildHistory.buildName);
         telemetry.addData("FL Power", driver.frontLeft.getPower());
         telemetry.addData("FR Power", driver.frontRight.getPower());
         telemetry.addData("BR Power", driver.backLeft.getPower());

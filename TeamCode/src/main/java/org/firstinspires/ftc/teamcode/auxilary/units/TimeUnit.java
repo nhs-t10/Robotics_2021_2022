@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class TimeUnit extends Unit {
 
-    private TimeUnit(String name, String abbr, double perSecond, String pluralName) {
-        this(name, new String[] {abbr}, perSecond, pluralName);
+    private TimeUnit(String name, String abbr, double milliseconds, String pluralName) {
+        this(name, new String[] {abbr}, milliseconds, pluralName);
     }
     private TimeUnit(String name, String[] abbreviations, double milliseconds, String pluralName) {
         super(name, abbreviations, milliseconds, pluralName);
@@ -66,10 +66,7 @@ public class TimeUnit extends Unit {
         if(unitFrom == null) throw new IllegalArgumentException("Cannot convert from null");
         if(unitTo == null) throw new IllegalArgumentException("Cannot convert to null");
 
-        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
-    }
-    public static double convertBetween(TimeUnit unitFrom, TimeUnit unitTo, float fromAmount) {
-        return (fromAmount / unitFrom.coefficient) * unitTo.coefficient;
+        return (fromAmount * unitFrom.coefficient) / unitTo.coefficient;
     }
 
     @Override

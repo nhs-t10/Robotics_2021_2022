@@ -68,8 +68,13 @@ android {
         }
     }
     sourceSets {
+        test {
+            java.srcDir("gen/")
+            java.srcDir("src/test/java")
+        }
         debug {
             java.srcDir("gen/")
+            java.srcDir("src/test/java")
         }
         main {
             java.srcDir("gen/")

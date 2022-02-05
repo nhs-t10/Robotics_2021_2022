@@ -13,17 +13,11 @@
 //uses CV, saves CV reading to `value`, moves 10cm forwards so later steps won't bump up against wall
 #sampling:
     let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2s next;
-    goto duckSpin
+    goto align
 
 //drive left, turn left, spin carousel for 3sec, drive right
-#duckSpin:
-    driveOmni(0,0,0.7),after 20cm next;
-    driveOmni(0,-0.7,0), after 81degs next;
-    driveOmni(0.7,0,0), after 25cm next;
-    setMotorPower("Carousel", -0.7), after 3s next;
-    setMotorPower("Carousel", 0), next;
-    driveOmni(-0.7, 0, 0), after 32cm next;
-    driveOmni(0,0.7,0), after 80degs next;
+#align:
+    driveOmni(0,0,0.7),after 3cm next;
     driveOmni(0,0,0), goto split
 
 #split:
