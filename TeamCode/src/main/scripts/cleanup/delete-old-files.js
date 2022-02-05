@@ -5,8 +5,8 @@ var oldFiles = [
     path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/auxilary/buildhistory"),
     path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/RobotFunctionLoader.java"),
     path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/robotfunctions"),
-    path.join(__dirname, "../../main/java/org/firstinspires/ftc/teamcode/__compiledcontrols"),
-    path.join(__dirname, "../../main/java/org/firstinspires/ftc/teamcode/__compiledautoauto")
+    path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/__compiledcontrols"),
+    path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/__compiledautoauto")
 ];
 oldFiles.forEach(x=>{
     console.log("Deleting " + x);
