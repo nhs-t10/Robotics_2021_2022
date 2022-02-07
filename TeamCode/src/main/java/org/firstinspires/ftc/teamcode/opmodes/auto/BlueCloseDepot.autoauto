@@ -7,14 +7,14 @@
 
 //uses CV, saves CV reading to `value`
 #sampling:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2s next;
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 1s next;
     goto clawout
 
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` moves it off the wall then folds out the arms to their full extent.
 #clawout:
     driveOmni(0.5,0,0),after 4cm next;
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
-    setServoPower("nateMoverLeft", -0.5), setServoPower("nateMoverRight", 0.5), after 3500ms next;
+    setServoPower("nateMoverLeft", -0.5), setServoPower("nateMoverRight", 0.5), after 3800ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
     goto duckSpin
 
@@ -23,7 +23,7 @@
 //do a 180, drive left, spin carousel for 3sec, drive right to be near the depot, do a 180
 #duckSpin:
     driveOmni(0, 0.7, 0), after 175degs next;
-    driveOmni(0, 0, 0.7),after 22.5cm next;
+    driveOmni(0, 0, 0.7),after 20.5cm next;
     setMotorPower("Carousel", 0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(0,0, -1), after 42cm next;
@@ -59,8 +59,8 @@
     driveOmni(-0.7,0,0), after 3cm next;
     setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) next;
     driveOmni(0,0.7,0), after 83degs next;
-    driveOmni(0.7,0,0), after 30cm next;
-    driveOmni(0,0,0.7), after 3cm next;
+    driveOmni(0.7,0,0), after 31cm next;
+    driveOmni(0,0,0.7), after 1cm next;
     goto parking
 
 //brings the robot to a complete stop
