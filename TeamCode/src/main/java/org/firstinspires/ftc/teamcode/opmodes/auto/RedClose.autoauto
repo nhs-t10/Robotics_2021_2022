@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 $ //use the old `after` statement behaviour. They both work, but the new one has a more precise start, which throws off our calibrations.
 compatflag_afterStartAtState: true
+=======
+ $ //use the old `after` statement behaviour. They both work, but the new one has a more precise start, which throws off our calibrations.
+oldAfterCompat: true
+>>>>>>> Stashed changes
 $
 
 #init:
