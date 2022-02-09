@@ -52,7 +52,7 @@
 //moves the robot forwards so the claw is where it should be to drop off the freight
 #towerDropOff:
     driveOmni(0.7,0,0), after 5cm next;
-    setClawOpen(true), after 3000ms goto finalMovement;
+    setClawOpen(true), after 500ms goto finalMovement;
 
 //moves the robot away from the shipping hub, closes the claw, turns right, moves forward, and parks in the depot
 #finalMovement:

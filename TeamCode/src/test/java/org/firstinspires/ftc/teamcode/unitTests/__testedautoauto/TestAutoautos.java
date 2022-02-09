@@ -35,9 +35,9 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest3_BlueFarWarehouse__autoauto() {
+    public void runTest3_BlueFar__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueFarWarehouse__autoauto()));
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueFar__autoauto()));
         
         FeatureManager.logger.setRecordLogHistory(false);
     }

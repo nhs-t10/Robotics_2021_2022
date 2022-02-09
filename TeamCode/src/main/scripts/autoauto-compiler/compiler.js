@@ -211,8 +211,12 @@ function stripAndParseFrontMatter(src) {
     var endDollarSign = startDollarSign + 1 + parserTools.findUngroupedSubstring(src.substring(startDollarSign + 1), "$");
     if(endDollarSign == -1) throw src;
 
-    var frontMatter = eval("({" + src.substring(startDollarSign + 1, endDollarSign) + "})");
-
+    var frontMatter = {};
+    try {
+    frontMatter = eval("({" + src.substring(startDollarSign + 1, endDollarSign) + "})");
+    } catch(e) {
+    frontMatter = {};
+    }
     return frontMatter;
 }
 

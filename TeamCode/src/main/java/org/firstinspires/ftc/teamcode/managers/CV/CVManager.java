@@ -125,6 +125,10 @@ public class CVManager extends FeatureManager
         else return pipeline.getAnalysisPrecise();
     }
 
+    public double getCVPositionNumberWhereZeroIsLeftOneIsHalfLeftAndTwoIsMiddle() {
+        return Math.floor(Math.min(0.9, pipeline.getAnalysisPrecise() * 2.0) * 3);
+    }
+
 
     public void stopWebcam() {
             /*
