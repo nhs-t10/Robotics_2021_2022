@@ -6,7 +6,8 @@ var knownKeys = [
     "compilerMode",
     "testIterations",
     "expectedTestOutput",
-    "compatflag_afterStartAtState"
+    "compatflag_afterStartAtState",
+    "flag_undefinedUsageCausesErrors"
 ];
 
 module.exports = {
