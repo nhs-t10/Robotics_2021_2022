@@ -56,7 +56,9 @@ function massageResIntoArrayOfMessages(res, tag, folder, filename) {
 function massageResIntoMessage(res, tag, folder, filename) {
     if(!res.original) res.original = res.text;
     res.text = tag;
+
     if(res.fail) res.text += " | Skipping File";
+    else if(res.titleNote) res.text += " | " + res.titleNote;
 
     if(res.sources === undefined) {
             res.sources = [{

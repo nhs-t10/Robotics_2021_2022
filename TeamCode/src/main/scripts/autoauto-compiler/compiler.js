@@ -79,8 +79,6 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var uncommentedFileSource = parserTools.stripComments(fileSource);
 
-    var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
-
     var parsedModel;
     try {
         parsedModel = aaParser.parse(fileSource);
@@ -90,6 +88,8 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     if(!runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource)) continue;
     if(parsedModel instanceof Error) continue;
+
+    var frontMatter = transformFrontmatterTreeIntoJSON(parsedModel.frontMatter);
 
     var javaCreationCode = astJavaify(parsedModel, frontMatter);
 
@@ -129,6 +129,10 @@ function getDebugJsonSettingCode(parsedModel) {
 
     //double-stringify it to make the JSON into valid Java
     return `String simpleProgramJson = ${JSON.stringify(programOutlineJson)};`
+}
+
+function jStringEnc(str) {
+    return JSON.stringify("" + str);
 }
 
 function jClassIfy(str) {
@@ -177,11 +181,20 @@ function processTemplate(template, className, frontMatter, javaCreationCode, sou
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
         .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1)
-        .replace("/*COMPAT_MODE_SETTING*/", frontMatter.compatflag_afterStartAtState ? getCompatModeSetter() : "");
+        .replace("/*COMPAT_MODE_SETTING*/", getCompatModeSetter(frontMatter));
 }
 
-function getCompatModeSetter() {
-    return "runtime.rootModule.globalScope.systemSet(org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames.COMPATFLAG_AFTER_TIMESTART_AT_START_OF_STATE, new AutoautoBooleanValue(true));"
+function getCompatModeSetter(frontMatter) {
+    var keys = Object.keys(frontMatter);
+
+    var flagRegex = /^[a-z]*flag_/;
+    var flagPrefix = "\t@";
+
+    var flagKeys = keys.filter(x=>flagRegex.test(x));
+
+    var setters = flagKeys.map(x=>`runtime.rootModule.globalScope.systemSet(${jStringEnc(flagPrefix + x)}, new AutoautoBooleanValue(true));`);
+
+    return setters.join("\n");
 }
 
 function buildServoNames(servos) {
@@ -204,20 +217,17 @@ function buildServos(servos) {
     return servos.map(x=> `hardwareMap.get(Servo.class, "${x}")`).join(", ");
 }
 
-function stripAndParseFrontMatter(src) {
-    var startDollarSign = parserTools.findUngroupedSubstring(src, "$");
-    if(startDollarSign == -1) return { };
+function transformFrontmatterTreeIntoJSON(srcFmTree) {
+    if(srcFmTree == null) return {};
 
-    var endDollarSign = startDollarSign + 1 + parserTools.findUngroupedSubstring(src.substring(startDollarSign + 1), "$");
-    if(endDollarSign == -1) throw src;
+    var fm = {};
 
-    var frontMatter = {};
-    try {
-    frontMatter = eval("({" + src.substring(startDollarSign + 1, endDollarSign) + "})");
-    } catch(e) {
-    frontMatter = {};
-    }
-    return frontMatter;
+    srcFmTree.values.forEach(x=>{
+        //3 possibilities: string, boolean, & number. 
+        fm[x.key.value] = x.value.str || x.value.value || x.value.v;
+    });
+
+    return fm;
 }
 
 function loadAutoautoFilesFromFolder(folder) {
