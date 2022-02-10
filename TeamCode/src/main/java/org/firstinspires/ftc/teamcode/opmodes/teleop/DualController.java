@@ -125,14 +125,15 @@ public class DualController extends OpMode {
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+            if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
 
     }
-
+    private boolean looping = false;
     private boolean shouldActuallyDoThings = true;
     public void loop() {
+        looping = true;
         try {
             if(shouldActuallyDoThings) real_loop_Bad_Practice_Fix_Me_Later();
         }
