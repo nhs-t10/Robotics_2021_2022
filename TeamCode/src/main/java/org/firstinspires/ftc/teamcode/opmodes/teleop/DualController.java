@@ -181,10 +181,10 @@ public class DualController extends OpMode {
             clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.65);
+            hands.setMotorPower("Carousel", 0.6);
         }
         else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.65);
+            hands.setMotorPower("Carousel", -0.6);
         }
         else {
             hands.setMotorPower("Carousel", 0.0);

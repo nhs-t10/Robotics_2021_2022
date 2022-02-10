@@ -101,7 +101,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionOne(){
         if (!found){
-            position = 608;
+            position = 595;
             //WITH 40 MOTOR: 945
         }
         else {
@@ -233,7 +233,7 @@ public class NateManager extends FeatureManager {
      */
     public int getClawPosition() {
         if(position == -1872) return 0;
-        else if(position == 608) return 1;
+        else if(position == 595) return 1;
         else if(position == 1773) return 2;
         else if(position == 2927) return 3;
 
