@@ -102,6 +102,7 @@ public class NateManager extends FeatureManager {
     public void positionOne(){
         if (!found){
             position = 945;
+            //WITH 40 MOTOR: 671
         }
         else {
             position = -3470;
@@ -127,6 +128,7 @@ public class NateManager extends FeatureManager {
     public void positionTwo(){
         if(!found) {
             position = 2520;
+            //WITH 40 MOTOR: 1789
         } else{
             position = -5295;
         }
@@ -148,6 +150,7 @@ public class NateManager extends FeatureManager {
     public void positionThree(){
         if(!found) {
             position = 4253;
+            //WITH 40 MOTOR: 3007
         } else {
             position = -6893;
         }
@@ -174,6 +177,7 @@ public class NateManager extends FeatureManager {
     public void positionHome(){
         if(!found){
             position = -2750;
+            //WITH 40 motor: -1973
         } else {
             position = 570;
         }
