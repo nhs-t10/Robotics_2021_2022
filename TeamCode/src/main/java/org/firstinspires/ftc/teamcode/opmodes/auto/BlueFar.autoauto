@@ -20,7 +20,7 @@
 
 //drive left, turn left, spin carousel for 3sec, drive right
 #align:
-    driveOmni(0,0,-0.7),after 24cm next;
+    driveOmni(0,0,-0.7),after 22cm next;
     driveOmni(0,0,0), goto split
 
 #split:
@@ -39,14 +39,14 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(0.7,0,0), after 6cm next;
+    driveOmni(0.7,0,0), after 6.5cm next;
     setClawOpen(true), after 500ms goto finalMovement;
 
 #finalMovement:
     driveOmni(-0.7,0,0), after 1.5cm next;
     setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     driveOmni(0,-1,0), after 75degs next;
-    driveOmni(1,0,0), after 50cm next;
+    driveOmni(1,0,0), after 52cm next;
     goto parking
 
 #parking:
