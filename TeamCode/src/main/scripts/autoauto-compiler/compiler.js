@@ -1,7 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 
-var aaParser = require("./aa-parser.js");
+var aaParser = require("./text-to-syntax-tree");
 var parserTools = require("../script-helpers/parser-tools");
 
 var crc = require("../script-helpers/crc-string");
@@ -15,6 +15,7 @@ var directory = __dirname.split(path.sep);
 
 var runChecks = require("./checks");
 var makeTestFile = require("./make-test");
+const syntaxTreeToBytecode = require("./syntax-tree-to-bytecode");
 
 var templates = {
     "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
@@ -79,14 +80,19 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var uncommentedFileSource = parserTools.stripComments(fileSource);
 
-    var parsedModel;
+    var parsedModel, parsedBytecode;
     try {
         parsedModel = aaParser.parse(fileSource);
     } catch(e) {
         parsedModel = e;
     }
+    
+    parsedBytecode = syntaxTreeToBytecode(parsedModel);
 
-    if(!runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource)) continue;
+    if(!process.argv.includes("--no-checks")) {
+        var checksPassed = runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource);
+        if(!checksPassed) continue;
+    }
     if(parsedModel instanceof Error) continue;
 
     var frontMatter = transformFrontmatterTreeIntoJSON(parsedModel.frontMatter);
