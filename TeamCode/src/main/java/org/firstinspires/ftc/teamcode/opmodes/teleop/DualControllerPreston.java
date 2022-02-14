@@ -125,14 +125,16 @@ public class DualControllerPreston extends OpMode {
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+            if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
 
     }
 
+    private boolean looping = false;
     private boolean shouldActuallyDoThings = true;
     public void loop() {
+        looping = true;
         try {
             if(shouldActuallyDoThings) real_loop_Bad_Practice_Fix_Me_Later();
         }
@@ -180,10 +182,10 @@ public class DualControllerPreston extends OpMode {
             clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
-            hands.setMotorPower("Carousel", 0.65);
+            hands.setMotorPower("Carousel", 0.6);
         }
         else if (input.getBool("CarouselRed") && input.getBool("CarouselBlue") == false) {
-            hands.setMotorPower("Carousel", -0.65);
+            hands.setMotorPower("Carousel", -0.6);
         }
         else {
             hands.setMotorPower("Carousel", 0.0);
@@ -191,10 +193,10 @@ public class DualControllerPreston extends OpMode {
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorPower("ClawMotor", -0.25);
+                hands.setMotorPower("ClawMotor", -0.20);
             }
             else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorPower("ClawMotor", 0.25);
+                hands.setMotorPower("ClawMotor", 0.20 );
             }
             else {
                 hands.setMotorPower("ClawMotor", 0);

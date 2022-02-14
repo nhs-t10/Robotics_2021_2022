@@ -23,7 +23,8 @@
 //do a 180, drive left, spin carousel for 3sec, drive right to be near the depot, do a 180
 #duckSpin:
     driveOmni(0, 0.7, 0), after 175degs next;
-    driveOmni(0, 0, 0.7),after 20.5cm next;
+    driveOmni(0, 0, 0.7),after 20cm next;
+    driveOmni(0.1, 0, 0.5), after 500ms setMotorPower("Carousel", 0.4), after 4.5cm next, after 2700ms next;
     setMotorPower("Carousel", 0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(0,0, -1), after 42cm next;
@@ -57,10 +58,10 @@
 //moves the robot away from the shipping hub, closes the claw, turns right, moves forward, and parks in the depot
 #finalMovement:
     driveOmni(-0.7,0,0), after 3cm next;
-    setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) next;
+    setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) next, after 2000ms next;
     driveOmni(0,0.7,0), after 83degs next;
     driveOmni(0.7,0,0), after 31cm next;
-    driveOmni(0,0,0.7), after 1cm next;
+    driveOmni(0,0,0.7), after 2cm next;
     goto parking
 
 //brings the robot to a complete stop
