@@ -11,87 +11,7 @@ import org.firstinspires.ftc.teamcode.unitTests.opmodetesting.OpmodeTester;
 public class TestAutoautos {
     
     @Test
-    public void runTest0_BlueCloseDepot__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueCloseDepot__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest1_BlueDuckSkeleton__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueDuckSkeleton__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest2_BlueFar__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueFar__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest3_ClawOut__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ClawOut__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest4_ParkingBlue__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ParkingBlue__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest5_ParkingRed__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ParkingRed__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest6_RedClose__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedClose__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest7_RedCloseDepot__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedCloseDepot__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest8_RedFar__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedFar__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest9_RedWarehouseSide__autoauto() {
-        FeatureManager.logger.setRecordLogHistory(true);
-        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedWarehouseSide__autoauto()));
-        
-        FeatureManager.logger.setRecordLogHistory(false);
-    }
-    
-    @Test
-    public void runTest10_BlankAutoTest__autoauto() {
+    public void runTest0_BlankAutoTest__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlankAutoTest__autoauto()));
         
@@ -99,7 +19,47 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest11_DiggityClawMover__autoauto() {
+    public void runTest1_BlueCloseDepot__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueCloseDepot__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest2_BlueDuckSkeleton__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueDuckSkeleton__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest3_BlueFar__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueFar__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest4_BlueFarWait__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.BlueFarWait__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest5_ClawOut__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ClawOut__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest6_DiggityClawMover__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityClawMover__autoauto()));
         
@@ -107,7 +67,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest12_DiggityDrive__autoauto() {
+    public void runTest7_DiggityDrive__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityDrive__autoauto()));
         
@@ -115,7 +75,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest13_DiggityVision__autoauto() {
+    public void runTest8_DiggityVision__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityVision__autoauto()));
         
@@ -123,7 +83,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest14_DuckSpinBlue__autoauto() {
+    public void runTest9_DuckSpinBlue__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DuckSpinBlue__autoauto()));
         
@@ -131,7 +91,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest15_DuckSpinRed__autoauto() {
+    public void runTest10_DuckSpinRed__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DuckSpinRed__autoauto()));
         
@@ -139,7 +99,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest16_Everything__autoauto() {
+    public void runTest11_Everything__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.Everything__autoauto()));
         
@@ -147,7 +107,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest17_NewFeatures__autoauto() {
+    public void runTest12_NewFeatures__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.NewFeatures__autoauto()));
         
@@ -155,7 +115,55 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest18_Skeleton__autoauto() {
+    public void runTest13_ParkingBlue__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ParkingBlue__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest14_ParkingRed__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.ParkingRed__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest15_RedClose__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedClose__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest16_RedCloseDepot__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedCloseDepot__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest17_RedFar__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedFar__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest18_RedWarehouseSide__autoauto() {
+        FeatureManager.logger.setRecordLogHistory(true);
+        assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.RedWarehouseSide__autoauto()));
+        
+        FeatureManager.logger.setRecordLogHistory(false);
+    }
+    
+    @Test
+    public void runTest19_Skeleton__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.Skeleton__autoauto()));
         
@@ -163,7 +171,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest19_Test__autoauto() {
+    public void runTest20_Test__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.Test__autoauto()));
         
@@ -171,7 +179,7 @@ public class TestAutoautos {
     }
     
     @Test
-    public void runTest20_Test__autoauto() {
+    public void runTest21_Test__autoauto() {
         FeatureManager.logger.setRecordLogHistory(true);
         assertTrue(OpmodeTester.runTestOn(new org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.unittests.autoauto.delegation.Test__autoauto()));
         
