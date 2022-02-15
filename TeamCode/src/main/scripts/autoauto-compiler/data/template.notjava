@@ -30,7 +30,7 @@ import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Locati
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntime.R;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Statepath.S;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.State.A;
-import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.NextStatement.N;
+import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.SkipStatement.N;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.ValueStatement.F;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.AfterStatement.W;
 import static org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.FunctionCall.M;
