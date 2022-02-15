@@ -12,6 +12,10 @@ public class GiraffeManager extends FeatureManager {
     private int neckPosition;
     private int neckPositionTall;
     private int neckPositionShort;
+    private int giraffePositionOne;
+    private int giraffePositionTwo;
+    private int giraffePositionThree;
+    private int giraffePositionHome;
     NateManager lift;
 
     private double resetOffset;
@@ -19,11 +23,19 @@ public class GiraffeManager extends FeatureManager {
     public GiraffeManager(NateManager lift/*, TouchSensor input*/){
         /*this.input = input;*/
         this.lift = lift;
+        lift.positionHome = giraffePositionHome;
+        lift.positionOne = giraffePositionOne;
+        lift.positionTwo = giraffePositionTwo;
+        lift.positionThree = giraffePositionThree;
     }
 
     public GiraffeManager(NateManager lift, TouchSensor input) {
         this.lift = lift;
         this.input = input;
+        lift.positionHome = giraffePositionHome;
+        lift.positionOne = giraffePositionOne;
+        lift.positionTwo = giraffePositionTwo;
+        lift.positionThree = giraffePositionThree;
     }
 
     public void neckEmergencyStop(){

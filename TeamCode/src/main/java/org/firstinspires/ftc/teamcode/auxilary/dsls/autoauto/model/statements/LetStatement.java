@@ -1,22 +1,33 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoTailedValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.VariableReference;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 
 public class LetStatement extends Statement {
     public String variable;
+    private AutoautoTailedValue property;
 
     public AutoautoValue value;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
+
+
+    public LetStatement(AutoautoTailedValue setProp, AutoautoValue val) {
+        this.property = setProp;
+        this.value = val;
+    }
 
     public static LetStatement D (VariableReference var, AutoautoValue val) {
         return new LetStatement(var, val);
     }
     public static LetStatement D (String var, AutoautoValue val) {
         return new LetStatement(var, val);
+    }
+    public static LetStatement D (AutoautoTailedValue setProp, AutoautoValue val) {
+        return new LetStatement(setProp, val);
     }
 
     public LetStatement(VariableReference var, AutoautoValue val) {
@@ -42,11 +53,16 @@ public class LetStatement extends Statement {
 
     public void loop() {
         this.value.loop();
-        //special keyword delete
-        if(this.value instanceof VariableReference && ((VariableReference)this.value).getName().equals("delete")) {
-            this.scope.remove(this.variable);
+
+        if(this.variable == null && this.property != null) {
+            this.property.loop();
+            this.property.head.getResolvedValue().setProperty(
+                    this.property.tail.getResolvedValue(),
+                    this.value.getResolvedValue()
+            );
+        } else {
+            this.scope.put(this.variable, value.getResolvedValue());
         }
-        this.scope.put(this.variable, value.getResolvedValue());
     }
 
     public String toString() {
