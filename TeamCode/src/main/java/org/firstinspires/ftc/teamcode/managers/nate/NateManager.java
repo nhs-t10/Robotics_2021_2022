@@ -19,15 +19,11 @@ public class NateManager extends FeatureManager {
 
     private double resetOffset;
 
-    public int positionOneUnfoundLocation = 945;
-    public int positionOneFoundLocation = -3470;
-    public int positionTwoUnfoundLocation = 2520;
-    public int positionTwoFoundLocation = -5295;
-    public int positionThreeUnfoundLocation = 4253;
-    public int positionThreeFoundLocation = -6893;
+    public int positionOne = 945;
+    public int positionTwo = 2520;
+    public int positionThree = 4253;
     public int positionNeutralLocation = 0;
-    public int positionHomeUnfoundLocation = -2750;
-    public int positionHomeFoundLocation = 570;
+    public int positionHome = -2750;
 
     public NateManager(ManipulationManager hands/*, TouchSensor input*/){
         /*this.input = input;*/
@@ -110,14 +106,7 @@ public class NateManager extends FeatureManager {
      * </p>
      */
     public void positionOne(){
-        if (!found){
-            position = positionOneUnfoundLocation;
-        }
-        else {
-            position = positionOneFoundLocation;
-        }
-
-
+        position = positionOne;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 
@@ -135,12 +124,7 @@ public class NateManager extends FeatureManager {
      * </p>
      */
     public void positionTwo(){
-        if(!found) {
-            position = positionTwoUnfoundLocation;
-        } else{
-            position = positionTwoFoundLocation;
-        }
-
+        position = positionTwo;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 
@@ -156,12 +140,7 @@ public class NateManager extends FeatureManager {
      * </p>
      */
     public void positionThree(){
-        if(!found) {
-            position = positionThreeUnfoundLocation;
-        } else {
-            position = positionThreeFoundLocation;
-        }
-
+        position = positionThree;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 
@@ -182,12 +161,7 @@ public class NateManager extends FeatureManager {
      * </p>
      */
     public void positionHome(){
-        if(!found){
-            position = positionHomeUnfoundLocation;
-        } else {
-            position = positionHomeFoundLocation;
-        }
-
+        position = positionHome;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 
@@ -207,6 +181,10 @@ public class NateManager extends FeatureManager {
             hands.encodeMoveToPosition("ClawMotor", 0, 0.25);
         } else if (input.isPressed()) {
             found = true;
+            positionOne = -3470;
+            positionTwo = -5295;
+            positionThree = -6893;
+            positionHome = 570;
             hands.setMotorPower("ClawMotor",0);
             hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         } else {
@@ -238,10 +216,10 @@ public class NateManager extends FeatureManager {
      * @return 0 for the "home position"; 1 for the top, 2 for the middle; 3 for the bottom. If the claw's at none of the above, returns -1.
      */
     public int getClawPosition() {
-        if(position == positionHomeUnfoundLocation) return 0;
-        else if(position == positionOneUnfoundLocation) return 1;
-        else if(position == positionTwoUnfoundLocation) return 2;
-        else if(position == positionThreeUnfoundLocation) return 3;
+        if(position == positionHome) return 0;
+        else if(position == positionOne) return 1;
+        else if(position == positionTwo) return 2;
+        else if(position == positionThree) return 3;
 
         return -1;
     }

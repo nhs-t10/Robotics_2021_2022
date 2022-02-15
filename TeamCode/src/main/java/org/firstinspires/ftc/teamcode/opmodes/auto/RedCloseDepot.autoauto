@@ -18,7 +18,7 @@
 #duckSpin:
     driveOmni(0,-0.7,0), after 83degs next;
     driveOmni(0.7,0,0), after 6cm next;
-    setMotorPower("Carousel", -0.7), after 3000ms next;
+    setMotorPower("Carousel", -0.55), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(-0.7, 0, 0), after 32cm next;
     driveOmni(0,0.7,0), after 80degs next;

@@ -24,7 +24,7 @@
     driveOmni(0,0,0), goto split
 
 #split:
-    if(value == 2) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 0) goto firstPosition
+    if(value == 0) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 2) goto firstPosition
 
 #firstPosition:
     positionOne(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
