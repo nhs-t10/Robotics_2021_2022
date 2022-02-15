@@ -8,6 +8,7 @@ public class RobotConfiguration {
     public final static String bigBoyFileContent = "bigBoy";
     public final static String littleBoyFileContent = "littleBoy";
     public final static String tankBoyFileContent = "tankBoy";
+    public final static String giraffeBoyFileContent = "giraffeBoy";
 
     public WheelCoefficients motorCoefficients;
     public WheelCoefficients autoMotorCoefficients;

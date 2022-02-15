@@ -4,16 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
-import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 @TeleOp
-public class BigBoyWriter extends OpMode {
+public class GiraffeBoyWriter extends OpMode {
 
     @Override
     public void init() {
-        FileSaver bigBoyConfiguration = new FileSaver(RobotConfiguration.fileName);
-        bigBoyConfiguration.overwriteFile(RobotConfiguration.bigBoyFileContent);
+        FileSaver giraffeBoyConfiguration = new FileSaver(RobotConfiguration.fileName);
+        giraffeBoyConfiguration.overwriteFile(RobotConfiguration.giraffeBoyFileContent);
     }
 
     @Override
