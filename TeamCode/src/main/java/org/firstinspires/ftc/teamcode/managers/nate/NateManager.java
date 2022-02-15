@@ -101,7 +101,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionOne(){
         if (!found){
-            position = 595;
+            position = 671;
             //WITH 40 MOTOR: 945
         }
         else {
@@ -127,7 +127,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionTwo(){
         if(!found) {
-            position = 1773;
+            position = 1791;
             //WITH 40 MOTOR: 2520
         } else{
             position = -5295;
@@ -149,7 +149,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionThree(){
         if(!found) {
-            position = 2927;
+            position = 2817;
             //WITH 40 MOTOR: 4253
         } else {
             position = -6893;
@@ -176,7 +176,7 @@ public class NateManager extends FeatureManager {
      */
     public void positionHome(){
         if(!found){
-            position = -1872;
+            position = -1806;
             //WITH 40 motor: -2750
         } else {
             position = 570;
@@ -232,10 +232,10 @@ public class NateManager extends FeatureManager {
      * @return 0 for the "home position"; 1 for the top, 2 for the middle; 3 for the bottom. If the claw's at none of the above, returns -1.
      */
     public int getClawPosition() {
-        if(position == -1872) return 0;
-        else if(position == 595) return 1;
-        else if(position == 1773) return 2;
-        else if(position == 2927) return 3;
+        if(position == -1806) return 0;
+        else if(position == 671) return 1;
+        else if(position == 1791) return 2;
+        else if(position == 2817) return 3;
 
         return -1;
     }
