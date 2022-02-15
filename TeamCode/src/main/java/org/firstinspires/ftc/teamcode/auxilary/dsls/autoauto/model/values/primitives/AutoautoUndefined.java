@@ -2,28 +2,40 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primi
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
 import org.jetbrains.annotations.NotNull;
 
 public class AutoautoUndefined extends AutoautoPrimitive {
+    private boolean complainAboutUndefinedUsage = false;
+
+    public static final int USER_CODE_OR_MATHEMATICAL_USAGE = 0;
     public static final int NONEXISTENT_VARIABLE = 1;
 
     private Location location;
 
     public int source;
+    private AutoautoRuntimeVariableScope scope;
+
     public AutoautoUndefined(int source) {
+        if(source != USER_CODE_OR_MATHEMATICAL_USAGE) {
+            if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
+        }
         this.source = source;
     }
 
-    public AutoautoUndefined() { this(0); }
+    public AutoautoUndefined() { this(USER_CODE_OR_MATHEMATICAL_USAGE); }
 
     @Override
     public AutoautoRuntimeVariableScope getScope() {
-        return null;
+        return scope;
     }
 
     @Override
     public void setScope(AutoautoRuntimeVariableScope scope) {
+        this.scope = scope;
 
+        complainAboutUndefinedUsage = (scope.get(AutoautoSystemVariableNames.FLAG_UNDEFINED_CAUSES_ERRORS) != null);
     }
 
     @Override
@@ -59,17 +71,19 @@ public class AutoautoUndefined extends AutoautoPrimitive {
 
     //make sure people don't try to set properties on undefined
     public AutoautoPrimitive getProperty(AutoautoPrimitive key) {
+        if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
         return this;
     }
     public boolean hasProperty(AutoautoPrimitive key) {
+        if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
         return false;
     }
 
     public void setProperty(AutoautoPrimitive key, AutoautoPrimitive value) {
-
+        if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
     }
 
     public void deleteProperty(AutoautoPrimitive key) {
-
+        if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
     }
 }

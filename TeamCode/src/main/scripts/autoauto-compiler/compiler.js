@@ -1,7 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 
-var aaParser = require("./aa-parser.js");
+var aaParser = require("./text-to-syntax-tree");
 var parserTools = require("../script-helpers/parser-tools");
 
 var crc = require("../script-helpers/crc-string");
@@ -15,6 +15,7 @@ var directory = __dirname.split(path.sep);
 
 var runChecks = require("./checks");
 var makeTestFile = require("./make-test");
+const syntaxTreeToBytecode = require("./syntax-tree-to-bytecode");
 
 var templates = {
     "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
@@ -79,17 +80,22 @@ for(var i = 0; i < autoautoFiles.length; i++) {
 
     var uncommentedFileSource = parserTools.stripComments(fileSource);
 
-    var frontMatter = stripAndParseFrontMatter(uncommentedFileSource);
-
-    var parsedModel;
+    var parsedModel, parsedBytecode;
     try {
         parsedModel = aaParser.parse(fileSource);
     } catch(e) {
         parsedModel = e;
     }
+    
+    parsedBytecode = syntaxTreeToBytecode(parsedModel);
 
-    if(!runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource)) continue;
+    if(!process.argv.includes("--no-checks")) {
+        var checksPassed = runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource);
+        if(!checksPassed) continue;
+    }
     if(parsedModel instanceof Error) continue;
+
+    var frontMatter = transformFrontmatterTreeIntoJSON(parsedModel.frontMatter);
 
     var javaCreationCode = astJavaify(parsedModel, frontMatter);
 
@@ -129,6 +135,10 @@ function getDebugJsonSettingCode(parsedModel) {
 
     //double-stringify it to make the JSON into valid Java
     return `String simpleProgramJson = ${JSON.stringify(programOutlineJson)};`
+}
+
+function jStringEnc(str) {
+    return JSON.stringify("" + str);
 }
 
 function jClassIfy(str) {
@@ -177,11 +187,20 @@ function processTemplate(template, className, frontMatter, javaCreationCode, sou
         .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
         .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
         .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1)
-        .replace("/*COMPAT_MODE_SETTING*/", frontMatter.compatflag_afterStartAtState ? getCompatModeSetter() : "");
+        .replace("/*COMPAT_MODE_SETTING*/", getCompatModeSetter(frontMatter));
 }
 
-function getCompatModeSetter() {
-    return "runtime.rootModule.globalScope.systemSet(org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames.COMPATFLAG_AFTER_TIMESTART_AT_START_OF_STATE, new AutoautoBooleanValue(true));"
+function getCompatModeSetter(frontMatter) {
+    var keys = Object.keys(frontMatter);
+
+    var flagRegex = /^[a-z]*flag_/;
+    var flagPrefix = "\t@";
+
+    var flagKeys = keys.filter(x=>flagRegex.test(x));
+
+    var setters = flagKeys.map(x=>`runtime.rootModule.globalScope.systemSet(${jStringEnc(flagPrefix + x)}, new AutoautoBooleanValue(true));`);
+
+    return setters.join("\n");
 }
 
 function buildServoNames(servos) {
@@ -204,16 +223,17 @@ function buildServos(servos) {
     return servos.map(x=> `hardwareMap.get(Servo.class, "${x}")`).join(", ");
 }
 
-function stripAndParseFrontMatter(src) {
-    var startDollarSign = parserTools.findUngroupedSubstring(src, "$");
-    if(startDollarSign == -1) return { };
+function transformFrontmatterTreeIntoJSON(srcFmTree) {
+    if(srcFmTree == null) return {};
 
-    var endDollarSign = startDollarSign + 1 + parserTools.findUngroupedSubstring(src.substring(startDollarSign + 1), "$");
-    if(endDollarSign == -1) throw src;
+    var fm = {};
 
-    var frontMatter = eval("({" + src.substring(startDollarSign + 1, endDollarSign) + "})");
+    srcFmTree.values.forEach(x=>{
+        //3 possibilities: string, boolean, & number. 
+        fm[x.key.value] = x.value.str || x.value.value || x.value.v;
+    });
 
-    return frontMatter;
+    return fm;
 }
 
 function loadAutoautoFilesFromFolder(folder) {

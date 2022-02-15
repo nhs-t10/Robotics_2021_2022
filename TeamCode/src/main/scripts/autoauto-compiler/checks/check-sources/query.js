@@ -1,11 +1,53 @@
 var qCache = new Map();
 
+var vScopeCache = new Map();
+
 module.exports = {
     getOneOfType: function(ast, type) {
         return cachedGetAllOfType(ast, type, 1)[0];
     }, 
     getAllOfType: function(ast, type) {
         return cachedGetAllOfType(ast, type, Infinity);
+    },
+    getVariableScope: function(ast, node) {
+        if(vScopeCache.has(node)) return vScopeCache.get(node);
+        
+        addVariableScopes(ast);
+
+        return vScopeCache.get(node);
+    }
+}
+
+function addVariableScopes(ast) {
+    var parentScope;
+    //if this is the root parent, add it to the thing
+    if(ast.getParent === undefined) vScopeCache.set(ast, {});
+    else parentScope = vScopeCache.get(ast.getParent());
+
+    //for these guys, make a new scope
+    if(ast.type == "FunctionLiteral" || ast.type == "FunctionDefStatement" || ast.type == "Block") {
+        vScopeCache.set(ast, newScopeRecord(parentScope));
+    }
+    //and for others, use the parent's scope
+    else {
+        vScopeCache.set(ast, parentScope);
+    }
+
+    var scope = vScopeCache.get(ast);
+
+    if(ast.type == "LetStatement" && ast.variable.type=="Identifier") {
+        scope.variables[ast.variable.value] = {
+            definedBy: ast
+        }
+    }
+    
+
+}
+
+function newScopeRecord(p) {
+    return {
+        parent: p,
+        variables: {}
     }
 }
 
@@ -28,14 +70,9 @@ function cachedGetAllOfType(ast, type, limit) {
 }
 
 function recursiveDescentGrabAllOfType(ast, type, limit) {
-    var children = Object.values(ast)
-        .filter(x=>typeof x === "object")
-        .flat()
-        .filter(x => x && typeof x.type === "string");
+    var children = getAstChildren(ast);
 
     var directChildrenOfType = children.filter(x=>x.type == type);
-
-    directChildrenOfType.forEach(x=>x.getParent = ()=>ast);
 
     limit -= directChildrenOfType.length;
 
@@ -47,4 +84,15 @@ function recursiveDescentGrabAllOfType(ast, type, limit) {
     }
 
     return allChildrenOfType;
+}
+
+function getAstChildren(ast) {
+    var c = Object.values(ast)
+        .filter(x=>typeof x === "object")
+        .flat()
+        .filter(x => x && typeof x.type === "string");
+
+    c.forEach(x=>x.getParent = ()=>ast);
+
+    return c;
 }

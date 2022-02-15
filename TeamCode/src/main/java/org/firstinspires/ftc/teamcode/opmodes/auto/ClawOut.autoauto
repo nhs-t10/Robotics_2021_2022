@@ -1,15 +1,14 @@
 #init:
     goto clawout
 
+//The robot starts folded up so that it's inside an 18x18 cube. `clawout` moves it off the wall then folds out the arms to their full extent.
 #clawout:
-    driveOmni(0.5, 0, 0), after 900ms next;
-    log(2.3s), next;
+    driveOmni(0.5,0,0),after 4cm next;
     setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
-    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
+    setServoPower("nateMoverLeft", -0.5), setServoPower("nateMoverRight", 0.5), after 3800ms next;
     setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
-    //homing(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
+    goto parking
 
-    after 3s goto deliver
-
-#deliver:
-    log("HOORAH")
+//brings the robot to a complete stop
+#parking:
+    driveRaw(0,0,0,0)

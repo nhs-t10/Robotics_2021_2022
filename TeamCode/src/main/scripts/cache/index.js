@@ -8,6 +8,10 @@ var punycode = require("../script-helpers/punycode");
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
 
+var CACHE_MAX_BYTES = 100000000; //100 MB
+
+cleanOldCache();
+
 module.exports = {
     save: function(key, value) {
         var encodedKey = sha(key);
@@ -36,4 +40,19 @@ function migrateKeys(oldKey, newKey) {
 
 function sha(k) {
     return crypto.createHash("sha256").update(k + "").digest("hex");
+}
+
+function cleanOldCache() {
+    var cacheFiles = fs.readdirSync(cacheDir);
+    var cacheFileStats = cacheFiles.map(x=>({name: x, stats: fs.statSync(path.join(cacheDir, x)) }) );
+    
+    var sortedYoungestToOldest = cacheFileStats.sort((a,b)=>b.stats.mtimeMs - a.stats.mtimeMs);
+    
+    var totalSize = cacheFileStats.reduce((a,b)=>a + b.stats.size, 0);
+    
+    while(totalSize > CACHE_MAX_BYTES) {
+        var toRm = sortedYoungestToOldest.pop();
+        totalSize -= toRm.stats.size;
+        fs.unlinkSync(path.join(cacheDir, toRm.name));
+    }
 }
