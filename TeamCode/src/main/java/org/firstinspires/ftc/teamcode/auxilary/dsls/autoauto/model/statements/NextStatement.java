@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+
 public class NextStatement extends SkipStatement {
 
     public static NextStatement N() {
@@ -7,7 +9,7 @@ public class NextStatement extends SkipStatement {
     }
 
     public NextStatement() {
-        super(1);
+        super(new AutoautoNumericValue(1f));
     }
     public String toString() {
         return "next";

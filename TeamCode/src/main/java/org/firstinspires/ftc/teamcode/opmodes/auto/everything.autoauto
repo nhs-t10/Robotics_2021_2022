@@ -1,0 +1,84 @@
+/*
+    This is a test of absolutely everything that Autoauto can do,
+    as of Feb 14, 2022
+*/
+
+//this is an unlabeled statepath. It's the first statepath!
+log("ULS!"), goto ifStatements;
+
+#ifStatements:
+    if(true) { log("this works like java"), next };
+    if(false) log("fail"), next; //this next should trigger, because it's outside of the `if`
+    if(false) { log("fail") } else { next }; //else clauses
+    goto letStatements
+
+#letStatements:
+    //an empty table!
+    let table = [], next;
+    //setting properties in the table
+    let table.foup = "jeremy", next;
+    log(table), next;
+    let table = 3, next; //actually, it's a number now :)
+    let table.foofoo = 2, next; //it can still have properties
+    log(table), log(table.foofoo), next;
+    goto loopingPath
+
+#loopingPath:
+    let counter = 0, next; //this should log the numbers 1-20!
+    let counter = counter + 1, log("count: " + counter), next;
+    if(counter < 20) { skip -1 } else { next };
+    goto functionDefinition;
+
+#functionDefinition:
+    function f(e = 3) {
+        return(e + "hah")
+    }, next;
+    log(f()), log(f("ha")), next;
+    let d = func(e = 24, k = "fef") {
+        return(e + k + "oop")
+    }, next;
+    log(d()), log(d(2)), log(d(2, 1)), next;
+    goto skipWrapping
+
+#skipWrapping:
+    skip -1;
+    log("IF WE GET HERE, SOMETHING IS WRONG!");
+    goto dynamicGoto
+
+#dynamicGoto:
+    goto ["dgoto" + Math.floor(Math.random() * 2)]
+
+#dgoto:
+    goto dgotoWorks
+#dgoto:
+    goto dgotoWorks
+
+#dgotoWorks:
+    goto undefinedTesting
+
+#undefinedTesting:
+    let u = undefinedvariablethatwedontknowof, next;
+    log(u == u.sjkdla), next;
+    log(u == 0/0), next;
+    goto mathOps;
+
+#mathOps:
+    log(2 >= 2), next;
+    log(3 > 2), next;
+    log(2 < 3), next;
+    log(2 <= 2), next;
+    log([2] == [2]), next;
+    log(2 == 2), next;
+    log(2 != "fefe"), next;
+    log([a=2]+[b=6]==[a=2,b=6]), next;
+    log(2+"e"=="2e"), next;
+    log(2+2 == 4), next;
+    log(2 / 4 == 0.5), next;
+    log(2 - 2 == 0), next;
+    log(3 ** 3 == 9), next;
+    log(3 ^ 3 == 9), next;
+    log(3 % 2 == 1), next;
+    goto done;
+
+#done:
+    pass
