@@ -61,7 +61,7 @@ public class GiraffeBoyTeleop extends OpMode {
                 hardwareMap,
                 crservo         (),
                 servo           (),
-                motor           ("Carousel", "ClawMotor", "noodle", "intake")
+                motor           ("Carousel", "ClawMotor", "NeckMotor")
         );
 
         input = new InputManager(gamepad1, gamepad2);
