@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotC
 
 @TeleOp
 public class LittleBoyWriter extends OpMode {
-    private FileSaver littleBoyConfiguration;
 
     @Override
     public void init() {
