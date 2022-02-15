@@ -127,7 +127,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             .concat(locationSetters)
             .concat([
                 `Statepath[] ${nonce} = new Statepath[] { ${childDefs.map(x=>x.varname)} };`,
-                `return new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.programtypes.RecursiveDescentEvaluationProgram(${nonce}, ${childDefs[0].nameNonce});`
+                `return new org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.programtypes.RecursiveDescentEvaluationProgram(${nonce}, ${(childDefs[0] || {nameNonce: "null"}).nameNonce});`
             ]);
 
             //put the statements into 1 text-file. Make sure each line isn't too long.
