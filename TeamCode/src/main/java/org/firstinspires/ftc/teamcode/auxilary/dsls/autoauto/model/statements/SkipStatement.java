@@ -1,22 +1,33 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.jetbrains.annotations.NotNull;
 
 public class SkipStatement extends Statement {
-    public int delta;
+    private AutoautoValue delta;
     private AutoautoRuntimeVariableScope scope;
     private Location location;
 
     int stateCount = -1;
 
-    public SkipStatement(int delta) {
-        this.delta = delta;
+    public static SkipStatement N(AutoautoValue v) {
+        return new SkipStatement(v);
+    }
+
+    public SkipStatement(AutoautoValue v) {
+        this.delta = v;
     }
     public void loop() {
+        AutoautoPrimitive delRes = this.delta.getResolvedValue();
+
+        int delta = 0;
+        if(delRes instanceof AutoautoNumericValue) delta = (int) ((AutoautoNumericValue) delRes).value;
+
         int currentState = (int)((AutoautoNumericValue)scope.get(AutoautoSystemVariableNames.STATE_NUMBER)).getFloat();
         int nextState = (currentState + delta) % stateCount;
 
@@ -30,7 +41,7 @@ public class SkipStatement extends Statement {
 
     @Override
     public SkipStatement clone() {
-        SkipStatement c = new SkipStatement(delta);
+        SkipStatement c = new SkipStatement(delta.clone());
         c.setLocation(location);
         return c;
     }

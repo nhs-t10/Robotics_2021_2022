@@ -41,6 +41,6 @@ public class TypeofFunction extends NativeFunction {
         if(p instanceof AutoautoCallableValue) return "function";
         if(p instanceof AutoautoUndefined) return "undefined";
         if(p instanceof AutoautoRelation) return type(((AutoautoRelation)p).value);
-        return "object";
+        return "table";
     }
 }
