@@ -22,7 +22,7 @@ var STATIC_CONSTRUCTOR_SHORTNAMES = {
     "State[]": "S",
     State: "A",
     "Statement[]": "A",
-    NextStatement: "N",
+    SkipStatement: "N",
     ValueStatement: "F",
     AfterStatement: "W",
     FunctionCall: "M",
@@ -195,12 +195,15 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             };
             break;
         case "NextStatement":
+            ast.skip = {type:"NumericValue",v:1,location:ast.location};
+        case "SkipStatement":
+            var sk = process(ast.skip);
 
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
-                depends: [],
-                definition: `NextStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.NextStatement}();`
+                depends: [sk.varname],
+                definition: `SkipStatement ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.SkipStatement}(${sk.varname});`
             });
 
             result = {
@@ -428,6 +431,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
                 varname: nonce
             }
             break;
+        case "LetPropertyStatement":
         case "LetStatement":
             if(ast.variable.type == "VariableReference" && ast.variable.variable.value == "delete") {
                 throw ("Attempt to use reserved keyword `delete` as a variable name");

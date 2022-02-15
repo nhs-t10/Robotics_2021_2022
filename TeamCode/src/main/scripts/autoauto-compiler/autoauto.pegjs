@@ -93,13 +93,15 @@ return s;
 passStatement = PASS { return { type: "PassStatement", location: location() } }
 
 letStatement =
- LET _ v:variableReference _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
+ LET _ v:IDENTIFIER _ EQUALS _ val:value { return { type: "LetStatement", location: location(), variable: v, value: val } }
+ /
+ LET _ v:baseExpression _ EQUALS _ val:value { return { type: "LetPropertyStatement", location: location(), variable: v, value: val } }
 
 nextStatement =
  NEXT { return { type: "NextStatement", location: location() }   }
 
 skipStatement =
- SKIP s:NUMERIC_VALUE  { return { type: "SkipStatement", location: location(), skip: s }   }
+ SKIP s:value  { return { type: "SkipStatement", location: location(), skip: s }   }
 
 value =
  c:commentedWhitespace  b:boolean _ { b.comments = c; return b }
@@ -110,21 +112,21 @@ valueInParens =
   c:commentedWhitespace OPEN_PAREN v:value CLOSE_PAREN _ { v.comments = c.concat(v.comments); return v; }
 
 modulo =
- l:baseExpression r:(MODULUS baseExpression)? {
+ l:baseExpression _ r:(MODULUS _ baseExpression)? {
    if(!r) return l;
 
-    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
+    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[2] }
 }
 
 exponent =
- l:modulo r:(EXPONENTIATE modulo)? {
+ l:modulo _ r:(EXPONENTIATE _ modulo)? {
    if(!r) return l;
 
-    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[1] }
+    return { type: "OperatorExpression", location: location(), operator: r[0], left: l, right: r[2] }
 }
 
 product =
- l:exponent tail:(o:(MULTIPLY / DIVIDE) r:product { return [o, r]; })* {
+ l:exponent _ tail:(o:(MULTIPLY / DIVIDE) _ r:product { return [o, r]; })* {
    if(!tail.length) return l;
 
   var r = { type: "OperatorExpression", location: location(), left: l };
@@ -140,7 +142,7 @@ product =
   return r;
 }
 
-sum = l:product tail:(o:(PLUS / MINUS) r:product { return [o, r]; })* {
+sum = l:product _ tail:(o:(PLUS / MINUS) _ r:product { return [o, r]; })* {
   if(!tail.length) return l;
 
   var r = { type: "OperatorExpression", location: location(), left: l };
@@ -184,7 +186,7 @@ callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return
 
 arrayStyleGetter "array-style property getter (obj[i])" = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } }
 
-dotStyleGetter "dot-style property getter (obj.prop)" = DOT a:variableReference { return {type: "TailedValue", head: null, tail: a.variable, location: location() }; }
+dotStyleGetter "dot-style property getter (obj.prop)" = DOT a:IDENTIFIER { return {type: "TailedValue", head: null, tail: a, location: location() }; }
 
 variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
@@ -205,7 +207,7 @@ TRUE { return { type: "BooleanLiteral", location: location(), value: true }; }
  / FALSE { return { type: "BooleanLiteral", location: location(), value: false }; }
 
 boolean =
- l:arithmeticValue o:comparisonOperator r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; }
+ l:arithmeticValue _ o:comparisonOperator _ r:arithmeticValue { return { type: "ComparisonOperator", location: location(), left: l, operator: o, right: r }; }
  / r:arithmeticValue { return r; }
 
 comparisonOperator "comparison operator" =
@@ -246,7 +248,7 @@ statepathLabelIdentifier = HASHTAG i:IDENTIFIER { return i; }
 
   END_OF_COMMENT "end of comment" = "*/"
 
-commentText = !"*/" .
+commentText = !"*/" f:. { return f; }
 
 NON_QUOTE_CHARACTER = [^"]
 DOUBLE_QUOTE = '"'
@@ -310,7 +312,7 @@ MULTIPLY "arithmetic operator" =
 MODULUS "arithmetic operator" =
     "%"
 EXPONENTIATE "arithmetic operator" =
-    "^"
+    "^" / "**"
 DOLLAR_SIGN "dollar sign" =
     "$"
 OPEN_SQUARE_BRACKET "opening square bracket" =

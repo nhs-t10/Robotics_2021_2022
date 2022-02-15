@@ -37,6 +37,23 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
     if(!constantPool) constantPool.f;
     
     switch (ast.type) {
+        case "FunctionLiteral":
+            return functionLiteralToBytecode(ast, block, constantPool);
+
+        case "TitledArgument":
+            return astToBytecode(ast.name, block, constantPool)
+            .concat(astToBytecode(ast.value, block, constantPool))
+            .concat(emitBytecodeWithLocation(bytecodeSpec.construct_relation, ast));
+
+        case "SkipStatement":
+            return skipStatementToBytecode(ast, block, constantPool, afterThisJumpToLabel);
+
+        case "LetPropertyStatement":
+            return letPropertyToBytecode(ast, block, constantPool, afterThisJumpToLabel);
+
+        case "ArrayLiteral":
+            return astToBytecode(ast.elems, block, constantPool)
+                .concat(emitBytecodeWithLocation(bytecodeSpec.construct_table, ast));
         case "TailedValue":
             return astToBytecode(ast.head, block, constantPool)
                 .concat(astToBytecode(ast.tail, block, constantPool))
@@ -119,7 +136,7 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
         default:
             console.error(ast);
             console.error("Can't convert " + ast.type + " to bytecode!");
-            throw "adj"
+            HTMLFormControlsCollection.addStateEntryLabel.af
     }
 }
 
@@ -156,7 +173,37 @@ function getOperationBytecode(comp) {
     throw "Unrecognized comparison " + comp;
 }
 
-function functionDefToBytecode(ast, block, constantPool, nextLabel) {
+function skipStatementToBytecode(ast, block, constantPool, nextLabel) {
+    var stateBlockParams = block.label.split("_");
+    var thisStateIndex = +stateBlockParams[2];
+    if(isNaN(thisStateIndex)) throw "something went wrong in skipStatementToBytecode";
+
+    var prefix = stateBlockParams[0] + "_" + stateBlockParams[1] + "_";
+
+    return emitBytecodesWithLocation([
+        constantPool.getCodeFor(prefix),
+        constantPool.getCodeFor(thisStateIndex),
+        astToBytecode(ast.skip, block, constantPool),
+        bytecodeSpec.add, //add skip to current state
+        bytecodeSpec.add, //add that resulting number to the prefix, to form the state
+        bytecodeSpec.jmp_l, //jump to that label
+        jumpToLabel(nextLabel, constantPool) //just for housekeeping; can be optimized out later
+    ], ast)
+}
+
+function letPropertyToBytecode(ast, block, constantPool, nextLabel) {
+    if(ast.variable.type != "TailedValue") throw "Attempt to inappropriately `let` an unsettable value";
+
+    return astToBytecode(ast.variable.head, block, constantPool)
+        .concat(astToBytecode(ast.variable.tail, block, constantPool))
+        .concat(astToBytecode(ast.value, block, constantPool))
+        .concat(emitBytecodesWithLocation([
+            bytecodeSpec.setprop,
+            jumpToLabel(nextLabel, constantPool)
+        ], ast));
+}
+
+function functionLiteralToBytecode(ast, block, constantPool) {
     var endBlockLabel = constantPool.subblockLabel(block.label, "func_end");
     block.subblocks.push({
         label: endBlockLabel,
@@ -177,7 +224,17 @@ function functionDefToBytecode(ast, block, constantPool, nextLabel) {
         emitConstantWithLocation(bodyBlockLabel, constantPool, ast),
         bytecodeSpec.makefunction
     ], ast));
+}
+
+function functionDefToBytecode(ast, block, constantPool, nextLabel) {
     
+    return functionLiteralToBytecode(ast, block, constantPool)
+    .concat(astToBytecode(ast.name, block, constantPool))
+    .concat(emitBytecodesWithLocation([
+        bytecodeSpec.swap,
+        bytecodeSpec.setvar,
+        jumpToLabel(nextLabel, constantPool)
+    ], ast));
 }
 
 function blockToBytecode(ast, block, constantPool, nextLabel) {
