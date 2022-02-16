@@ -24,6 +24,7 @@ module.exports = {
     expandTasks: function(s) {
         var tasks = cachedParseSpecExpandAliases(s);
         insertDeps(tasks);
+        
         return idsToTras(tasks);
     }
 };
@@ -31,7 +32,12 @@ module.exports = {
 loadTransmutations();
 
 function idsToTras(ids) {
-    return ids.map(x=>transmutations[x]);
+    return ids.map(x=>{
+        var f = {};
+        Object.assign(f, transmutations[x.id]);
+        f.isDependency = x.dep;
+        return f;
+    });
 }
 
 function cachedParseSpecExpandAliases(sp) {
@@ -43,7 +49,7 @@ function cachedParseSpecExpandAliases(sp) {
         v: sp
     };
     
-    var cVal = cache.get(t, false);
+    var cVal = false;//cache.get(t, false);
     
     if(cVal === false) {
         cVal = parseSpecExpandAliases(sp);
@@ -80,15 +86,17 @@ function insertDeps(tras, l) {
     var totalAdded = 0;
     
     for(var i = 0; i < l; i++) {
-        var req = transmutations[tras[i]].requires;
+        var req = transmutations[tras[i].id].requires;
         var reqExpanded = cachedParseSpecExpandAliases(req);
         
-        reqExpanded.forEach(x=>{
-            if(!tras.includes(x)) {
-                tras.splice(0,0,x);
+        for(var j = 0; j < reqExpanded.length; j++) {
+            var x = reqExpanded[j].id;
+            if(!tras.find(z=>z.id == x)) {
+                tras.splice(i,0,{id:x,dep:true});
                 totalAdded++;
+                i++;
             }
-        });
+        }
     }
     
     if(totalAdded > 0) insertDeps(tras, totalAdded);
@@ -114,7 +122,7 @@ function expandAlias(spk) {
         if (!e) throw "No such transmutation `" + x + "`";
         
         if (e.type == "alias") return e.aliasesTo.split(" ").map(x=>expandAlias(x));
-        else return e.id;
+        else return {id: e.id};
     }).flat(2);
 }
 

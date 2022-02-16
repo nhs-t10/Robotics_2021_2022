@@ -5,9 +5,9 @@ require("..").registerTransmutation({
     id: "get-result-package",
     type: "information",
     run: function(context) {
-        var sD = context.sourceDir.split(path.sep);
+        var sD = context.resultDir.split(path.sep);
 
-        context.output = sD.slice(sD.indexOf("java") + 1).join(".");
+        context.output = sD.slice(sD.indexOf("gen") + 1).join(".");
         context.status = "pass";
     }
 });

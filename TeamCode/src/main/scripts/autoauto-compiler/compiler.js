@@ -1,5 +1,6 @@
 var fs = require("fs");
 var path = require("path");
+const androidStudioLogging = require("../script-helpers/android-studio-logging");
 
 var transmutations = require("./transmutations");
 
@@ -9,9 +10,6 @@ var SRC_DIRECTORY = directory.slice(0, directory.indexOf("src") + 1).join(path.s
 
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
 createDirectoryIfNotExist(COMPILED_RESULT_DIRECTORY);
-
-var TESTS_PACKAGE = "org.firstinspires.ftc.teamcode.unitTests.__testedautoauto";
-var testsDirectory = path.join(SRC_DIRECTORY, "test/java/" + TESTS_PACKAGE.replace(/\./g, path.sep));
 
 var autoautoFileNames = loadAutoautoFilesFromFolder(SRC_DIRECTORY);
 
@@ -46,7 +44,9 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         
         if(mut.type.startsWith("codebase_")) continue;
         
-        tryRunTransmutation(mut, fileContext);
+        var mutRan = tryRunTransmutation(mut, fileContext);
+        
+        if(!mutRan) break;
     }
 }
 
@@ -63,14 +63,14 @@ for(var j = 0; j < tPath.length; j++) {
 function tryRunTransmutation(transmutation, fileContext) {
     try {
         runTransmutation(transmutation, fileContext);
+        return true;
     } catch(e) {
-        console.error(e);
-        throw "Error running " + transmutation.id;
+        androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName);
+        return false;
     }
 }
 
 function runTransmutation(transmutation, fileContext) {
-    runTransDependencies(transmutation, fileContext);
     
     var c = {};
     Object.assign(c, fileContext);
@@ -80,20 +80,7 @@ function runTransmutation(transmutation, fileContext) {
     if(c.status != "pass") throw "Unpassed!";
     
     fileContext.inputs[transmutation.id] = c.output;
-    if(c.output !== undefined) fileContext.lastInput = c.output;
-}
-
-function runTransDependencies(baseTransmut, fileContext) {
-    var deps = transmutations.expandTasks(baseTransmut.requires);
-    
-    var subContext = {};
-    Object.assign(subContext, fileContext);
-    
-    for(var i = 0; i < deps.length; i++) {
-        var mut = deps[i];
-        
-        if(!fileContext.inputs[mut.id]) tryRunTransmutation(mut, subContext);
-    }
+    if(c.output !== undefined && !transmutation.isDependency) fileContext.lastInput = c.output;
 }
 
 function getResultFor(filename) {
