@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.ColorSensor;
+import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.*;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.*;
@@ -61,6 +62,7 @@ public class template extends AutoautoOpmode {
     CVManager cv;
     NateManager clawPosition;
     TelemetryManager telemetryManager;
+    GiraffeManager neck;
 
     public AutoautoProgram program = generateProgram();
 
@@ -93,7 +95,7 @@ public class template extends AutoautoOpmode {
 
         /*JSON_SETTING_CODE*/
 
-        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, telemetryManager, clawPosition, cv);
+        runtime = R(program, getClass().getCanonicalName(), imu, driver, limbs, telemetryManager, clawPosition, cv, neck);
         
         /*COMPAT_MODE_SETTING*/
 

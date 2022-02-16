@@ -68,7 +68,7 @@ public class GiraffeBoyTeleop extends OpMode {
         );
 
         input = new InputManager(gamepad1, gamepad2);
-        clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
+        clawPosition = new NateManager(hands);
         neck = new GiraffeManager(clawPosition);
         input.registerInput("drivingControls",
                 new PlusNode(
@@ -108,8 +108,7 @@ public class GiraffeBoyTeleop extends OpMode {
                                 new ButtonNode("dpadright"),
                                 new ButtonNode("gamepad2dpadright")
                 ));
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
+
 
 
         PriorityAsyncOpmodeComponent.start(() -> {
