@@ -81,10 +81,11 @@ public class template extends AutoautoOpmode {
                                 hardwareMap,
                                 new String[] { "nateMoverLeft", "nateMoverRight"},
                                 new String[] {"nateClaw", "rampLeft", "rampRight", "intakeMoverRight", "intakeMoverLeft"},
-                                new String[] {"Carousel", "ClawMotor", "noodle", "intake"}
+                                new String[] {"Carousel", "ClawMotor", "noodle", "intake", "NeckMotor"}
                         );
 
         clawPosition = new NateManager(limbs, hardwareMap.get(TouchSensor.class, "limit"));
+        neck = new GiraffeManager(clawPosition);
 
         cv = new CVManager(hardwareMap);
 
