@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.unitTests.telemetry;
 
-import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityDrive__autoauto;
+import org.firstinspires.ftc.teamcode.__compiledautoauto.teamcode.opmodes.auto.DiggityDrive;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.DualController;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyGamepad;
 import org.firstinspires.ftc.teamcode.unitTests.dummy.DummyHardwareMap;
@@ -18,7 +18,7 @@ public class MultipleOpmodesTest {
     }
 
     private void runAuto() {
-        DiggityDrive__autoauto a = new DiggityDrive__autoauto();
+        DiggityDrive a = new DiggityDrive();
         a.telemetry = new DummyTelemetry();
         a.hardwareMap = new DummyHardwareMap();
 
