@@ -1,4 +1,4 @@
-package TESTPACKAGE;
+package org.firstinspires.ftc.teamcode.unitTests.__testedautoauto;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
@@ -8,6 +8,6 @@ import static org.junit.Assert.assertThat;
 import static org.firstinspires.ftc.robotcore.internal.system.Assert.assertTrue;
 import org.firstinspires.ftc.teamcode.unitTests.opmodetesting.OpmodeTester;
 
-public class TESTCLASS {
+public class TestAutoautos {
     TESTMETHODS
 }

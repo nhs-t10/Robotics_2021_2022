@@ -3,7 +3,11 @@ var path = require("path");
 
 module.exports = {
     createDirectoryIfNotExist: function(fileName) {
-        var dirName = path.dirname(fileName);
+        var dirName = fileName;
+        
+        //if the final term has a dot, assume it's a filename
+        if(path.basename(fileName).includes(".")) dirName = path.dirname(fileName);
+        
         if(!fs.existsSync(dirName)) {
             fs.mkdirSync(dirName, {recursive: true});
         }

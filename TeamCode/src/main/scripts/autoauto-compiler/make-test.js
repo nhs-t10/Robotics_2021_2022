@@ -52,6 +52,3 @@ function makeAssert(frontMatter) {
     if(frontMatter.expectedTestOutput === undefined) return "";
     else return `assertThat("Log printed correctly", FeatureManager.logger.getLogHistory(), containsString(${JSON.stringify(frontMatter.expectedTestOutput)}));`; 
 }
-function sha(text) {
-    return crypto.createHash("sha256").update(text).digest("hex");
-}

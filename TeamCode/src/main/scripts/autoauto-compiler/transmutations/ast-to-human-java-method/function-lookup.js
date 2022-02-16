@@ -10,7 +10,7 @@ cachedManagers.forEach(x=>
     x.methods[1].forEach(y=>invertedMapByFunctionName[y[0]] = x.methods[0])
 );
 
-var templateText = fs.readFileSync(__dirname + "/../../data/template.notjava").toString();
+var templateText = fs.readFileSync(__dirname + "/../../transmutations/process-template/template.notjava").toString();
 var managerVarDeclarations = Array.from(templateText.matchAll(/^\s*(\w+)\s+(\w+);\s*$/gm)).map(x=>[x[1], x[2]]);
 var managerVariableNames = Object.fromEntries(managerVarDeclarations);
 

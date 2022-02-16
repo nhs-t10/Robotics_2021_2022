@@ -1,6 +1,6 @@
 var util = require("util");
 
-var cPool = require("./bytecode-constants");
+var cPool = require("./constant-pool");
 
 var treeBlockToBytecodeBlock = require("./ast-to-bytecode");
 

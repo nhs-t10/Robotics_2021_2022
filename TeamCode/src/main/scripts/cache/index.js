@@ -3,7 +3,7 @@ var crypto = require("crypto");
 var fs = require("fs");
 var path = require("path");
 
-var punycode = require("../script-helpers/punycode");
+var safeFsUtils = require("../script-helpers/safe-fs-utils");
 
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
@@ -15,19 +15,24 @@ cleanOldCache();
 module.exports = {
     save: function(key, value) {
         var encodedKey = sha(key);
-        var file = path.join(cacheDir, encodedKey);
-
-        fs.writeFileSync(file, JSON.stringify(value));
-    },
-    get: function(key, defaultValue) {
-        migrateKeys(punycode(key), sha(key));
         
+        var file = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
+        
+        safeFsUtils.createDirectoryIfNotExist(file);
+
+        fs.writeFileSync(file, JSON.stringify(value) || null);
+    },
+    get: function(key, defaultValue) {        
         var encodedKey = sha(key);
         
+        var newFile = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
         var file = path.join(cacheDir, encodedKey);
-        if(!fs.existsSync(file)) return defaultValue;
-
-        return JSON.parse(fs.readFileSync(file).toString());
+        
+        if(fs.existsSync(file)) return JSON.parse(fs.readFileSync(file).toString());
+        
+        else if(fs.existsSync(newFile)) return JSON.parse(fs.readFileSync(newFile).toString());
+        
+        else return defaultValue;
     }
 }
 
@@ -39,7 +44,7 @@ function migrateKeys(oldKey, newKey) {
 }
 
 function sha(k) {
-    return crypto.createHash("sha256").update(k + "").digest("hex");
+    return crypto.createHash("sha256").update(JSON.stringify(k)).digest("hex");
 }
 
 function cleanOldCache() {

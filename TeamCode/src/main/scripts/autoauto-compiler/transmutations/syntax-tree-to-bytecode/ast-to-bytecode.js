@@ -187,7 +187,6 @@ function skipStatementToBytecode(ast, block, constantPool, nextLabel) {
         bytecodeSpec.add, //add skip to current state
         bytecodeSpec.add, //add that resulting number to the prefix, to form the state
         bytecodeSpec.jmp_l, //jump to that label
-        jumpToLabel(nextLabel, constantPool) //just for housekeeping; can be optimized out later
     ], ast)
 }
 
@@ -373,7 +372,7 @@ function afterStatementToBytecode(ast, block, constantPool, nextLabel) {
                 bytecodeSpec.cmp_gte,
                 constantPool.getCodeFor(labels.afterStatementIfFinished), bytecodeSpec.jmp_l_cond,
                 jumpToLabel(labels.afterStatementDone, constantPool)                
-            ], ast).concat(jumpToLabel(labels.afterStatementDone, constantPool))
+            ], ast)
     });
     
     block.subblocks.push({

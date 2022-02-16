@@ -1,170 +1,139 @@
 var fs = require("fs");
 var path = require("path");
 
-var aaParser = require("./text-to-syntax-tree");
-var parserTools = require("../script-helpers/parser-tools");
-
-var crc = require("../script-helpers/crc-string");
-
-var GITIGNORED = ["*__autoauto.java"];
-
-var DEFAULT_SERVOS = [];
-var DEFAULT_CRSERVOS = [];
+var transmutations = require("./transmutations");
 
 var directory = __dirname.split(path.sep);
 
-var runChecks = require("./checks");
-var makeTestFile = require("./make-test");
-const syntaxTreeToBytecode = require("./syntax-tree-to-bytecode");
+var SRC_DIRECTORY = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
-var templates = {
-    "template": fs.readFileSync(path.join(__dirname, "data" + path.sep + "template.notjava")).toString()
-}
-
-var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
-
-
-//update gitignore with autoauto files
-if(!fs.existsSync(path.join(rootDirectory, ".gitignore"))) {
-    fs.writeFileSync(path.join(rootDirectory, ".gitignore"), "");
-}
-var gitignore = fs.readFileSync(path.join(rootDirectory, ".gitignore")).toString();
-var gitignoreLines = gitignore.split(/\r?\n/);
-
-for(var i = 0; i < GITIGNORED.length; i++) {
-    if(gitignoreLines.indexOf(GITIGNORED[i]) == -1) gitignoreLines.push(GITIGNORED[i]);
-}
-
-gitignore = gitignoreLines.join("\n");
-fs.writeFileSync(path.join(rootDirectory, ".gitignore"), gitignore); //SAFE
-
-var srcDirectory = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
-
-var compiledResultDirectory = path.join(srcDirectory, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
-createDirectoryIfNotExist(compiledResultDirectory);
+var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
+createDirectoryIfNotExist(COMPILED_RESULT_DIRECTORY);
 
 var TESTS_PACKAGE = "org.firstinspires.ftc.teamcode.unitTests.__testedautoauto";
-var testsDirectory = path.join(srcDirectory, "test/java/" + TESTS_PACKAGE.replace(/\./g, path.sep));
+var testsDirectory = path.join(SRC_DIRECTORY, "test/java/" + TESTS_PACKAGE.replace(/\./g, path.sep));
 
-var autoautoFiles = loadAutoautoFilesFromFolder(srcDirectory);
-var alreadyUsedAutoautoFileNames = {};
+var autoautoFileNames = loadAutoautoFilesFromFolder(SRC_DIRECTORY);
 
-var writtenFiles = [];
-var requiredTests = [];
+var autoautoFileContexts = {};
 
-for(var i = 0; i < autoautoFiles.length; i++) {
-    var fileSource = fs.readFileSync(autoautoFiles[i]).toString();
-    var folder = path.dirname(autoautoFiles[i]);
-    var shortButUniqueFolder = folder.replace(srcDirectory, "").toLowerCase();
-    shortButUniqueFolder = shortButUniqueFolder.substring(shortButUniqueFolder.indexOf("teamcode"));
-    var packageFolder = shortButUniqueFolder
-
-    var package = "org.firstinspires.ftc.teamcode.__compiledautoauto." + packageFolder.replace(/\/|\\/g, ".");
-
-    var fileName = autoautoFiles[i].substring(autoautoFiles[i].lastIndexOf(path.sep) + 1);
-    if (fileName.includes(".macro")) throw "Macro is a bad idea you idiots!";
-    var templateUsed = "template";
-    var className = jClassIfy(fileName)
-        .replace(".autoauto", "__autoauto");
-
-    var classNameNoConflict = className;
-    if(alreadyUsedAutoautoFileNames[className]) classNameNoConflict += "__" + alreadyUsedAutoautoFileNames[className];
-
-    if(!alreadyUsedAutoautoFileNames[className]) alreadyUsedAutoautoFileNames[className] = 0;
-    alreadyUsedAutoautoFileNames[className]++;
-
-    var javaFileName = className + ".java";
-
-    var resultFile = path.join(compiledResultDirectory, packageFolder, javaFileName);
-    createDirectoryIfNotExist(resultFile);
-
-    var uncommentedFileSource = parserTools.stripComments(fileSource);
-
-    var parsedModel, parsedBytecode;
-    try {
-        parsedModel = aaParser.parse(fileSource);
-    } catch(e) {
-        parsedModel = e;
-    }
+for(var i = 0; i < autoautoFileNames.length; i++) {
+    var file = autoautoFileNames[i];
+    var resultFile = getResultFor(file);
+    var frontmatter = loadFrontmatter(file);
     
-    parsedBytecode = syntaxTreeToBytecode(parsedModel);
-
-    if(!process.argv.includes("--no-checks")) {
-        var checksPassed = runChecks(parsedModel, folder, fileName, fileSource, uncommentedFileSource);
-        if(!checksPassed) continue;
+    var fileContext = {
+        sourceBaseFileName: path.basename(file),
+        sourceDir: path.dirname(file),
+        sourceFullFileName: file,
+        sourceRoot: SRC_DIRECTORY,
+        resultBaseFileName: path.basename(resultFile),
+        resultDir: path.dirname(resultFile),
+        resultFullFileName: resultFile,
+        resultRoot: COMPILED_RESULT_DIRECTORY,
+        fileFrontmatter: frontmatter,
+        lastInput: null,
+        inputs: {}
+    };
+    
+    autoautoFileContexts[file] = fileContext;
+    
+    
+    var tPath = transmutations.expandTasks(frontmatter.compilerMode || "default");
+    
+    for(var j = 0; j < tPath.length; j++) {
+        var mut = tPath[j];
+        
+        if(mut.type.startsWith("codebase_")) continue;
+        
+        tryRunTransmutation(mut, fileContext);
     }
-    if(parsedModel instanceof Error) continue;
-
-    var frontMatter = transformFrontmatterTreeIntoJSON(parsedModel.frontMatter);
-
-    var javaCreationCode = astJavaify(parsedModel, frontMatter);
-
-    var jsonSettingCode = getDebugJsonSettingCode(parsedModel);
-
-    fs.writeFileSync(resultFile, //SAFE
-        processTemplate(templates[templateUsed], className, frontMatter, javaCreationCode, autoautoFiles[i], jsonSettingCode, package, classNameNoConflict)
-    );
-
-    requiredTests.push({
-        className: className, package: package, frontMatter: frontMatter
-    });
-    writtenFiles.push(resultFile);
-
 }
 
-//clean leftover java files from deleted autoauto modes.
-clearDirectory(compiledResultDirectory, writtenFiles);
+var allFileContexts = Object.values(autoautoFileContexts);
+    
+for(var j = 0; j < tPath.length; j++) {
+    var mut = tPath[j];
+    
+    if(!mut.type.startsWith("codebase_")) continue;
+    
+    mut.run(allFileContexts[0], allFileContexts);
+}
 
-makeTestFile(requiredTests, testsDirectory, TESTS_PACKAGE);
-
-
-function astJavaify(parsedModel, frontMatter) {
-    var cMode;
-    if(fs.existsSync(__dirname + "/compiler-modes/" + frontMatter.compilerMode + "/index.js")) {
-        cMode = require("./compiler-modes/" + frontMatter.compilerMode);
-    } else {
-        cMode = require("./compiler-modes/default");
+function tryRunTransmutation(transmutation, fileContext) {
+    try {
+        runTransmutation(transmutation, fileContext);
+    } catch(e) {
+        console.error(e);
+        throw "Error running " + transmutation.id;
     }
-
-    return cMode(parsedModel);
 }
 
-function getDebugJsonSettingCode(parsedModel) {
-    var programOutline = Object.fromEntries(parsedModel.statepaths.map(x=>[x.label.value, x.statepath.states.length]));
-    var programOutlineJson = JSON.stringify(programOutline);
-
-    //double-stringify it to make the JSON into valid Java
-    return `String simpleProgramJson = ${JSON.stringify(programOutlineJson)};`
+function runTransmutation(transmutation, fileContext) {
+    runTransDependencies(transmutation, fileContext);
+    
+    var c = {};
+    Object.assign(c, fileContext);
+    
+    transmutation.run(c);
+    
+    if(c.status != "pass") throw "Unpassed!";
+    
+    fileContext.inputs[transmutation.id] = c.output;
+    if(c.output !== undefined) fileContext.lastInput = c.output;
 }
 
-function jStringEnc(str) {
-    return JSON.stringify("" + str);
+function runTransDependencies(baseTransmut, fileContext) {
+    var deps = transmutations.expandTasks(baseTransmut.requires);
+    
+    var subContext = {};
+    Object.assign(subContext, fileContext);
+    
+    for(var i = 0; i < deps.length; i++) {
+        var mut = deps[i];
+        
+        if(!fileContext.inputs[mut.id]) tryRunTransmutation(mut, subContext);
+    }
+}
+
+function getResultFor(filename) {
+    var folder = path.dirname(filename);
+    
+    var packageFolder = folder
+        .replace(SRC_DIRECTORY, "").toLowerCase();
+    packageFolder = packageFolder.substring(packageFolder.indexOf("teamcode"));
+    
+    var javaFileName = jClassIfy(filename) + ".java";
+        
+    return path.join(COMPILED_RESULT_DIRECTORY, packageFolder, javaFileName);
 }
 
 function jClassIfy(str) {
-    return str.split("-").map(x=>capitalize(x)).join("");
+    var p = str.split(/\/|\\/);
+    var s = p[p.length - 1].split(".")[0];
+    return s.split("-").map(x=>capitalize(x)).join("");
 }
 function capitalize(str) {
     return str[0].toUpperCase() + str.substring(1);
 }
 
-function clearDirectory(dir, dontDeleteFiles) {
-    var files = fs.readdirSync(dir, { withFileTypes: true });
-    var filesLeft = files.length;
-    files.forEach(x=> {
-        var name = path.join(dir, x.name);
-        if(x.isFile()) {
-            if(!dontDeleteFiles.includes(name)) {
-                fs.unlinkSync(name);
-                filesLeft--;
-            }
-        } else if(x.isDirectory()) {
-            if(clearDirectory(name, dontDeleteFiles)) filesLeft--;
-        }
-    });
-
-    if(filesLeft == 0) fs.rmdirSync(dir);
-    return filesLeft == 0;
+function loadFrontmatter(filename) {
+    var fCont = fs.readFileSync(filename).toString();
+    
+    try {
+        var fmI = fCont.indexOf("$");
+        if(fmI == -1) return {};
+        
+        var fmE = fCont.indexOf("$", fmI + 1);
+        if(fmE == -1) return {};
+        
+        var fmPar = (new Function(`return ({${fCont.substring(fmI + 1, fmE)}})`))();
+        
+        return fmPar;
+        
+    } catch(e) {
+        return {};
+    }
 }
 
 function createDirectoryIfNotExist(fileName) {
@@ -172,68 +141,6 @@ function createDirectoryIfNotExist(fileName) {
     if(!fs.existsSync(dirName)) {
         fs.mkdirSync(dirName, {recursive: true});
     }
-}
-
-function processTemplate(template, className, frontMatter, javaCreationCode, sourceFileName, jsonSettingCode, package, classNameNoConflict) {
-    return template
-        .replace("public class template", "public class " + className)
-        .replace("/*NSERVO_NAMES*/", buildServoNames(frontMatter.servos))
-        .replace("/*NSERVOS*/", buildServos(frontMatter.servos))
-        .replace("/*JAVA_CREATION_CODE*/", javaCreationCode)
-        .replace("/*CRSERVO_NAMES*/", buildCrServoNames(frontMatter.crServos))
-        .replace("/*CRSERVOS*/", buildCrServos(frontMatter.crServos))
-        .replace("/*PACKAGE_DECLARATION*/", "package " + package + ";")
-        .replace("/*JSON_SETTING_CODE*/", jsonSettingCode)
-        .replace("/*NO_CONFLICT_NAME*/", classNameNoConflict)
-        .replace("/*SOURCE_FILE_NAME*/", JSON.stringify(sourceFileName).slice(1, -1))
-        .replace("/*ERROR_STACK_TRACE_HEIGHT*/", (+frontMatter.errorStackTraceHeight) || 1)
-        .replace("/*COMPAT_MODE_SETTING*/", getCompatModeSetter(frontMatter));
-}
-
-function getCompatModeSetter(frontMatter) {
-    var keys = Object.keys(frontMatter);
-
-    var flagRegex = /^[a-z]*flag_/;
-    var flagPrefix = "\t@";
-
-    var flagKeys = keys.filter(x=>flagRegex.test(x));
-
-    var setters = flagKeys.map(x=>`runtime.rootModule.globalScope.systemSet(${jStringEnc(flagPrefix + x)}, new AutoautoBooleanValue(true));`);
-
-    return setters.join("\n");
-}
-
-function buildServoNames(servos) {
-    if(servos === undefined) servos = DEFAULT_SERVOS;
-    return servos.map(x=> `"${x}"`).join(", ");
-}
-
-function buildCrServoNames(crServos) {
-    if(crServos === undefined) crServos = DEFAULT_CRSERVOS;
-    return crServos.map(x=> `"${x}"`).join(", ");
-}
-
-function buildCrServos(crServos) {
-    if(crServos === undefined) crServos = DEFAULT_CRSERVOS;
-    return crServos.map(x=> `hardwareMap.get(CRServo.class, "${x}")`).join(", ");
-}
-
-function buildServos(servos) {
-    if(servos === undefined) servos = DEFAULT_SERVOS;
-    return servos.map(x=> `hardwareMap.get(Servo.class, "${x}")`).join(", ");
-}
-
-function transformFrontmatterTreeIntoJSON(srcFmTree) {
-    if(srcFmTree == null) return {};
-
-    var fm = {};
-
-    srcFmTree.values.forEach(x=>{
-        //3 possibilities: string, boolean, & number. 
-        fm[x.key.value] = x.value.str || x.value.value || x.value.v;
-    });
-
-    return fm;
 }
 
 function loadAutoautoFilesFromFolder(folder) {
