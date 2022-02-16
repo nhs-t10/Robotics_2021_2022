@@ -7,12 +7,12 @@ import org.firstinspires.ftc.teamcode.auxilary.FileSaver;
 import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration;
 
 @TeleOp
-public class LittleBoyWriter extends OpMode {
+public class GiraffeBoyWriter extends OpMode {
 
     @Override
     public void init() {
-        FileSaver littleBoyConfiguration = new FileSaver(RobotConfiguration.fileName);
-        littleBoyConfiguration.overwriteFile(RobotConfiguration.littleBoyFileContent);
+        FileSaver giraffeBoyConfiguration = new FileSaver(RobotConfiguration.fileName);
+        giraffeBoyConfiguration.overwriteFile(RobotConfiguration.giraffeBoyFileContent);
     }
 
     @Override

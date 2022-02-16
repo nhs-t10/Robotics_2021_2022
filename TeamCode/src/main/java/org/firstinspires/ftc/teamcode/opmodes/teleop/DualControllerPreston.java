@@ -12,17 +12,15 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMethod;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
@@ -42,6 +40,9 @@ public class DualControllerPreston extends OpMode {
     private boolean dashing = false;
     private double clawCheck;
     private int clawPos;
+    private ImuManager imu;
+    private boolean seekingTowardsTarget;
+    private float rotationDelta;
 
     @Override
     public void init() {
@@ -67,6 +68,7 @@ public class DualControllerPreston extends OpMode {
         );
 
         clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
+        imu = new ImuManager(hardwareMap.get(com.qualcomm.hardware.bosch.BNO055IMU.class, "imu"));
         input = new InputManager(gamepad1, gamepad2);
         input.registerInput("drivingControls",
                 new PlusNode(
@@ -103,6 +105,7 @@ public class DualControllerPreston extends OpMode {
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
+        input.registerInput("Quadrent", new ButtonNode("rightbumper"));
         input.registerInput("Intake",
                 new AnyNode(
                         new ButtonNode("righttrigger"),
@@ -120,12 +123,13 @@ public class DualControllerPreston extends OpMode {
                         new ButtonNode("dpadright"),
                         new ButtonNode("gamepad2dpadright")
                 ));
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         PriorityAsyncOpmodeComponent.start(() -> {
-            if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
+            if(looping) {
+                float[] f = input.getFloatArrayOfInput("drivingControls");
+                if(seekingTowardsTarget) f[1] = rotationDelta;
+                driver.driveOmni(f);
+            }
         });
 
 
@@ -180,6 +184,16 @@ public class DualControllerPreston extends OpMode {
         }
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
+        }
+        if (input.getBool("Quadrent")){
+            float orientation = imu.getThirdAngleOrientation();
+            float rotationTarget = Math.round(orientation/90) * 90;
+
+            rotationDelta = rotationTarget - orientation;
+
+            seekingTowardsTarget = true;
+        } else {
+            seekingTowardsTarget = false;
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
             hands.setMotorPower("Carousel", 0.6);

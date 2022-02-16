@@ -42,6 +42,15 @@ public class FeatureManager {
             ),
             0.03f, 1680, 1, 8.9, 1, 3f);
 
+    public static final RobotConfiguration giraffeBoyConfiguration = new RobotConfiguration(
+            W(1,-1,1,1), W(0.83f,0.83f,-1,1),
+            new OmniCalcComponents(
+                vertical      (-1f,-1f,-1f,-1f),
+                horizontal    (1f, -1f, 1f, -1f),
+                rotational    (1f,-1f,-1f,1f)
+            ),
+            0.03f, 1680, 1, 8.9, 1, 3f);
+
     public static void reconfigureForTeleop() {
         FeatureManager.logger.log("I am teleop");
         getRobotConfiguration().motorCoefficients = getRobotConfiguration().teleOpMotorCoefficients;
@@ -77,6 +86,8 @@ public class FeatureManager {
                 return "bigBoy";
             case RobotConfiguration.littleBoyFileContent:
                 return "smallBoy";
+            case RobotConfiguration.giraffeBoyFileContent:
+                return "giraffeBoy";
             case RobotConfiguration.tankBoyFileContent:
                 return "tankBoy";
             default:
@@ -100,6 +111,8 @@ public class FeatureManager {
                 return cachedConfiguration = bigBoyConfiguration;
             case RobotConfiguration.littleBoyFileContent:
                 return cachedConfiguration = littleBoyConfiguration;
+            case RobotConfiguration.giraffeBoyFileContent:
+                return cachedConfiguration = giraffeBoyConfiguration;
             default:
                 return cachedConfiguration = defaultConfiguration;
         }
