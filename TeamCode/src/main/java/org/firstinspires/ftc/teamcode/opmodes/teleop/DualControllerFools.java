@@ -143,9 +143,6 @@ public class DualControllerFools extends OpMode {
                         new ButtonNode("gamepad2dpadright")
                         )
                 );
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         PriorityAsyncOpmodeComponent.start(() -> {
             driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));

@@ -120,9 +120,6 @@ public class DualControllerPreston extends OpMode {
                         new ButtonNode("dpadright"),
                         new ButtonNode("gamepad2dpadright")
                 ));
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         PriorityAsyncOpmodeComponent.start(() -> {
             if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
