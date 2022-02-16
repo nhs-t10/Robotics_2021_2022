@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -36,6 +37,8 @@ public class GiraffeBoyTeleop extends OpMode {
     public ManipulationManager hands;
     public InputManager input;
     public SensorManager sensor;
+    public NateManager clawPosition;
+    public GiraffeManager neck;
     private boolean precision = false;
     private boolean dashing = false;
     private double clawCheck;
@@ -65,6 +68,8 @@ public class GiraffeBoyTeleop extends OpMode {
         );
 
         input = new InputManager(gamepad1, gamepad2);
+        clawPosition = new NateManager(hands, hardwareMap.get(TouchSensor.class, "limit"));
+        neck = new GiraffeManager(clawPosition);
         input.registerInput("drivingControls",
                 new PlusNode(
                         new MultiInputNode(
@@ -85,11 +90,17 @@ public class GiraffeBoyTeleop extends OpMode {
         input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
-        input.registerInput("ClawPosShared", new ButtonNode("gamepad2x"));
+        input.registerInput("ClawPosHome", new ButtonNode("gamepad2x"));
+        input.registerInput("ClawPosShared", new ButtonNode("gamepad2rightbumper"));
         input.registerInput("ClawPosNeutral", new ButtonNode("gamepad2ps"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
         input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
+        input.registerInput("NeckTall", new ButtonNode("lefttrigger"));
+        input.registerInput("NeckMiddle", new ButtonNode("righttrigger"));
+        input.registerInput("NeckSmall", new ButtonNode("x"));
+        input.registerInput("NeckUp", new ButtonNode("dpadup"));
+        input.registerInput("NeckDown", new ButtonNode("dpaddown"));
         input.registerInput("EmergencyStop",
                 new AnyNode(
                                 new ButtonNode("dpadleft"),
@@ -130,7 +141,7 @@ public class GiraffeBoyTeleop extends OpMode {
 //        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         if (input.getBool("EmergencyStop")){
-
+            clawPosition.emergencyStop();
         }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
             hands.setMotorPower("Carousel", 0.6);
@@ -153,26 +164,49 @@ public class GiraffeBoyTeleop extends OpMode {
                 hands.setMotorPower("ClawMotor", 0);
             }
         }
+        if (hands.hasEncodedMovement("NeckMotor") == false) {
+            if (input.getBool("NeckUp") == true && input.getBool("NeckDown") == false) {
+                hands.setMotorPower("NeckMotor", -0.20);
+            }
+            else if (input.getBool("NeckDown") == true && input.getBool("NeckUp") == false) {
+                hands.setMotorPower("NeckMotor", 0.20);
+            }
+            else {
+                hands.setMotorPower("NeckMotor", 0);
+            }
+        }
         if (input.getBool("ClawOpen") == true){
-
+            clawPosition.setClawOpen(true);
         }
         else {
-
+            clawPosition.setClawOpen(false);
         }
         if (input.getBool("ClawPos1") == true) {
-
+            clawPosition.positionOne();
         }
         if (input.getBool("ClawPos2") == true) {
-
+            clawPosition.positionTwo();
         }
         if (input.getBool("ClawPos3") == true) {
-
+            clawPosition.positionThree();
         }
         if (input.getBool("ClawPosHome") == true) {
-
+            clawPosition.positionHome();
+        }
+        if (input.getBool("ClawPosShared") == true) {
+            clawPosition.positionShared();
         }
         if (input.getBool("ClawPosNeutral") == true) {
-
+            clawPosition.positionNeutral();
+        }
+        if (input.getBool("NeckTall") == true) {
+            neck.neckTall();
+        }
+        if (input.getBool("NeckMiddle") == true) {
+            neck.neckNeutral();
+        }
+        if (input.getBool("NeckSmall") == true) {
+            neck.neckShort();
         }
 
         //FeatureManager.logger.log(BuildHistory.buildName);
@@ -187,6 +221,9 @@ public class GiraffeBoyTeleop extends OpMode {
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
+        telemetry.addData("NeckTicks", hands.getMotorPosition("NeckMotor"));
+        telemetry.addData("NeckTarTicks", hands.getMotorTargetPosition("NeckMotor"));
+        telemetry.addData("NeckPower", hands.getMotorPower("NeckMotor"));
         telemetry.update();
 
     }
