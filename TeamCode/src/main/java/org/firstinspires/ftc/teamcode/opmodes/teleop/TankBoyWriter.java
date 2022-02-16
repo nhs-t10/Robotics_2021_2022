@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotC
 
 @TeleOp
 public class TankBoyWriter extends OpMode {
-    private FileSaver tankBoyConfiguration;
 
     @Override
     public void init() {
