@@ -23,6 +23,7 @@ public class NateManager extends FeatureManager {
     public int positionTwo = 2520;
     public int positionThree = 4253;
     public int positionNeutralLocation = 0;
+    public int positionShared;
     public int positionHome = -2750;
 
     public NateManager(ManipulationManager hands/*, TouchSensor input*/){
@@ -146,6 +147,11 @@ public class NateManager extends FeatureManager {
 
     public void positionNeutral() {
         position = positionNeutralLocation;
+        hands.encodeMoveToPosition("ClawMotor", position);
+    }
+
+    public void positionShared() {
+        position = positionShared;
         hands.encodeMoveToPosition("ClawMotor", position);
     }
 

@@ -61,7 +61,7 @@ public class GiraffeBoyTeleop extends OpMode {
                 hardwareMap,
                 crservo         (),
                 servo           (),
-                motor           ("Carousel", "ClawMotor", "NeckMotor")
+                motor           ("Carousel", "ClawMotor", "noodle", "intake")
         );
 
         input = new InputManager(gamepad1, gamepad2);
@@ -97,9 +97,6 @@ public class GiraffeBoyTeleop extends OpMode {
                                 new ButtonNode("dpadright"),
                                 new ButtonNode("gamepad2dpadright")
                 ));
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hands.setMotorMode("ClawMotor", DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         PriorityAsyncOpmodeComponent.start(() -> {
             if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));

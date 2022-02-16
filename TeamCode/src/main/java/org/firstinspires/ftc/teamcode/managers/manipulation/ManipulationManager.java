@@ -57,13 +57,13 @@ public class ManipulationManager extends FeatureManager {
         }
 
         this.crservos = new CRServo[_crservos.length];
-        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.get(CRServo.class, _crservos[i]); }
+        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.tryGet(CRServo.class, _crservos[i]); }
         this.crservoNames = _crservos;
         this.servos = new Servo[_servos.length];
-        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.get(Servo.class, _servos[i]); }
+        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.tryGet(Servo.class, _servos[i]); }
         this.servoNames = _servos;
         this.motors = new DcMotor[_motors.length];
-        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
+        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.tryGet(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
 
         this.movementThread = new PIDlessEncoderMovementThread(motors);
@@ -92,13 +92,13 @@ public class ManipulationManager extends FeatureManager {
      */
     public ManipulationManager(HardwareMap _hardwareMap, String[] _crservos, String[] _servos, String[] _motors) {
         this.crservos = new CRServo[_crservos.length];
-        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.get(CRServo.class, _crservos[i]); }
+        for(int i = 0; i < _crservos.length; i++) {crservos[i]  = _hardwareMap.tryGet(CRServo.class, _crservos[i]); }
         this.crservoNames = _crservos;
         this.servos = new Servo[_servos.length];
-        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.get(Servo.class, _servos[i]); }
+        for(int i = 0; i < _servos.length; i++) {servos[i]  = _hardwareMap.tryGet(Servo.class, _servos[i]); }
         this.servoNames = _servos;
         this.motors = new DcMotor[_motors.length];
-        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.get(DcMotor.class, _motors[i]); }
+        for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.tryGet(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
 
         this.movementThread = new PIDlessEncoderMovementThread(motors);
