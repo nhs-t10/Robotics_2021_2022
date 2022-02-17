@@ -73,6 +73,7 @@ function tryRunTransmutation(transmutation, fileContext) {
         
         return fileContext.status == "pass";
     } catch(e) {
+        console.log(e);
         androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName);
         return false;
     }

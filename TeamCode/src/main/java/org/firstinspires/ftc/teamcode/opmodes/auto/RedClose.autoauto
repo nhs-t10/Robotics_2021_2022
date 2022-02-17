@@ -1,5 +1,6 @@
 $ //use the old `after` statement behaviour. They both work, but the new one has a more precise start, which throws off our calibrations.
-compatflag_afterStartAtState: true
+compatflag_afterStartAtState: true,
+compilerMode: "human-readable-java"
 $
 
 #init:

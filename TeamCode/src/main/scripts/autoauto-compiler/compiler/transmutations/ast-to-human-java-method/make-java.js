@@ -46,11 +46,6 @@ function statementToJava(stmt, variables, states) {
             return "{" + stateToJavaCase(stmt.state, variables, states) + "\n}";
         case "PassStatement":
             return "//pass";
-        case "FunctionDefStatement":
-            throw {
-                text: "Function definition statements are not allowed in the Human-Readable Java CompilerMode.",
-                location: stmt.location
-            }
         case "AfterStatement":
             var initedVar = variables.add("timerStarted_" + variables.nonce(), "boolean");
             var timeVar = variables.add("timer_" + variables.nonce(), unitValueType(stmt.unitValue));
@@ -90,6 +85,7 @@ function statementToJava(stmt, variables, states) {
         default:
             throw {
                 text: `A ${stmt.type} is not allowed in the Human-Readable Java CompilerMode.`,
+                __stmt: stmt,
                 location: stmt.location
             };
     }
@@ -117,6 +113,8 @@ function valueToJava(value, variables) {
             };
         case "VariableReference":
             return variables.add(value.variable.value, "float");
+        case "Identifier":
+            return variables.add(value.value, "float");
         case "FunctionCall":
             var functionName = value.func;
             if(functionName.type != "VariableReference") throw {
@@ -131,6 +129,7 @@ function valueToJava(value, variables) {
         default:
             throw {
                 text: `A ${value.type} is not allowed in the Human-Readable Java CompilerMode.`,
+                __stmt: value,
                 location: value.location
             };
     }
