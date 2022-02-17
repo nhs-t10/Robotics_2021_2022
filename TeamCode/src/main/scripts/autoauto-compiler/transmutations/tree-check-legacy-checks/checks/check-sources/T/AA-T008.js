@@ -12,7 +12,7 @@ var knownKeys = [
 
 module.exports = {
     summary: "Unknown Front-matter Key",
-    run: function(ast, folder, filename, originalFileContent) {
+    run: function(ast) {
 
         var fmKeyValues = query.getAllOfType(ast, "FrontMatterKeyValue");
         

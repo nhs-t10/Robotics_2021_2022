@@ -14,8 +14,11 @@ require("..").registerTransmutation({
     run: function(context) {
         var className = context.resultBaseFileName.split(".")[0];
         
+        var java = context.lastInput;
+        if(typeof java != "string") java = "return null;";
+        
         context.output = processTemplate(className, context.fileFrontmatter, 
-                                context.lastInput, context.sourceFullFileName,
+                                java, context.sourceFullFileName,
                                 context.inputs["get-json-outline-java"], context.inputs["get-result-package"],
                                 context.sourceBaseFileName + ZWSP.repeat(n++),
                                 context.inputs["make-runtime-flag-setters"]);

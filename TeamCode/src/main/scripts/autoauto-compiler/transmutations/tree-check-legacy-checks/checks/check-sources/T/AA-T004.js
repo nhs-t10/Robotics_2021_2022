@@ -4,7 +4,7 @@ var query = require("../query");
 
 module.exports = {
     summary: "Unknown statepath in a `goto`",
-    run: function(ast, folder, filename, originalFileContent) {
+    run: function(ast) {
 
         var gotoStatements = query.getAllOfType(ast, "GotoStatement");
         var statepathNames = query.getAllOfType(ast, "LabeledStatepath").map(x=>x.label);

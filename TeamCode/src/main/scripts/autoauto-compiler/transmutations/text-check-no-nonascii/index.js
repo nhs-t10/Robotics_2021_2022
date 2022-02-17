@@ -1,19 +1,29 @@
 var path = require("path");
 
-var unicode = require("../../../../script-helpers/unicode");
+var unicode = require("../../../script-helpers/unicode");
 
-module.exports = {
-    summary: "Illegal Unicode Character",
-    run: function(ast, folder, filename, originalFileContent) {
-        var inQuotes = false;
-        for(var i = 0; i < originalFileContent.length; i++) {
-            var char = originalFileContent[i];
-            if(isQuote(char) && !isEscape(char)) inQuotes = !inQuotes;
+require("..").registerTransmutation({
+    id: "text-check-no-nonascii",
+    type: "check",
+    requires: [],
+    run: function(context) {
+        var fileContent = context.lastInput;
+        var warning = getUnicodeWarning(fileContent);
+        
+        if(warning) return warning;
+        else context.status = "pass";
+    }
+})
 
-            if(!inQuotes) {
-                if(isIllegalChar(char)) {
-                    return buildWarningFor(char, i, folder, filename)
-                }
+function getUnicodeWarning(fileContent) {
+    var inQuotes = false;
+    for(var i = 0; i < fileContent.length; i++) {
+        var char = fileContent[i];
+        if(isQuote(char) && !isEscape(char)) inQuotes = !inQuotes;
+
+        if(!inQuotes) {
+            if(isIllegalChar(char)) {
+                return buildWarningFor(char, i, folder, filename)
             }
         }
     }
@@ -32,7 +42,8 @@ function buildWarningFor(char, index, folder, filename) {
         sources: [{
             file: path.join(folder, filename),
             position: {
-                startOffset: index, endOffset: index + 1
+                startOffset: index,
+                endOffset: index + 1
             }
         }]
     }

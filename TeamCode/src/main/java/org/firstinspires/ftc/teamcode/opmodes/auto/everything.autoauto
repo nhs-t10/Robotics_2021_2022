@@ -1,3 +1,7 @@
+$
+compilerMode: "optimized-bytecode"
+$
+
 /*
     This is a test of absolutely everything that Autoauto can do,
     as of Feb 14, 2022

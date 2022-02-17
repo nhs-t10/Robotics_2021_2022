@@ -4,7 +4,7 @@ var query = require("../query");
 
 module.exports = {
     summary: "Semantically useless `block`",
-    run: function(ast, folder, filename, originalFileContent) {
+    run: function(ast) {
 
         var blocks = query.getAllOfType(ast, "Block");
         

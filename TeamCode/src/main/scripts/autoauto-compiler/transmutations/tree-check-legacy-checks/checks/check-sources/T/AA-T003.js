@@ -4,7 +4,7 @@ var query = require("../query");
 
 module.exports = {
     summary: "No Statepaths",
-    run: function(ast, folder, filename, originalFileContent) {
+    run: function(ast) {
 
         var hasStatepath = !!query.getOneOfType(ast, "Statepath");
         if(!hasStatepath) return {

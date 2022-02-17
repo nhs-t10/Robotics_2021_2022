@@ -4,7 +4,7 @@ var query = require("../query");
 
 module.exports = {
     summary: "Unreachable Statepath",
-    run: function(ast, folder, filename, originalFileContent) {
+    run: function(ast) {
 
         var gotoStatements = query.getAllOfType(ast, "GotoStatement");
         var statepaths = query.getAllOfType(ast, "LabeledStatepath");

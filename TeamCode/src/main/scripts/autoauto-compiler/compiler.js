@@ -15,6 +15,8 @@ var autoautoFileNames = loadAutoautoFilesFromFolder(SRC_DIRECTORY);
 
 var autoautoFileContexts = {};
 
+var codebaseTasks = [];
+
 for(var i = 0; i < autoautoFileNames.length; i++) {
     var file = autoautoFileNames[i];
     var resultFile = getResultFor(file);
@@ -42,7 +44,10 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
     for(var j = 0; j < tPath.length; j++) {
         var mut = tPath[j];
         
-        if(mut.type.startsWith("codebase_")) continue;
+        if(mut.type.startsWith("codebase_")) {
+            codebaseTasks.push(mut);
+            continue;
+        }
         
         var mutRan = tryRunTransmutation(mut, fileContext);
         
@@ -52,18 +57,21 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
 
 var allFileContexts = Object.values(autoautoFileContexts);
     
-for(var j = 0; j < tPath.length; j++) {
-    var mut = tPath[j];
-    
-    if(!mut.type.startsWith("codebase_")) continue;
+for(var j = 0; j < codebaseTasks.length; j++) {
+    var mut = codebaseTasks[j];
     
     mut.run(allFileContexts[0], allFileContexts);
 }
 
 function tryRunTransmutation(transmutation, fileContext) {
     try {
-        runTransmutation(transmutation, fileContext);
-        return true;
+        var m = runTransmutation(transmutation, fileContext);
+        
+        if(m) androidStudioLogging.sendTreeLocationMessage(m);
+        
+        if(fileContext.status != "pass") androidStudioLogging.sendTreeLocationMessage(`Task ${transmutation.id} Failed`, fileContext.sourceFullFileName);
+        
+        return fileContext.status == "pass";
     } catch(e) {
         androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName);
         return false;
@@ -77,7 +85,7 @@ function runTransmutation(transmutation, fileContext) {
     
     transmutation.run(c);
     
-    if(c.status != "pass") throw "Unpassed!";
+    fileContext.status = c.status;
     
     fileContext.inputs[transmutation.id] = c.output;
     if(c.output !== undefined && !transmutation.isDependency) fileContext.lastInput = c.output;

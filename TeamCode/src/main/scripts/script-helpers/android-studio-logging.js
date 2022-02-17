@@ -8,14 +8,30 @@ function sendPlainMessage (msg) {
 }
 
 function sendTreeLocationMessage(res, file) {
-    console.log(res);
-    var m = {
-        sources: [{
-            file: file,
-        }]
-    };
-    if(res.location) {
-        m.sources[0].location = {
+    massageResIntoArrayOfMessages(res, "", file).forEach(x=>sendPlainMessage(x));
+}
+
+
+function massageResIntoArrayOfMessages(res, file) {
+    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, file));
+    else return [massageResIntoMessage(res, file)];
+}
+
+function massageResIntoMessage(res, file) {
+    if(typeof res === "string") res = { text: res };
+    
+    if(!res.original) res.original = res.text;
+    
+
+    if(res.fail) res.text += " | Skipping File";
+    else if(res.titleNote) res.text += " | " + res.titleNote;
+
+    if(res.sources === undefined) {
+            res.sources = [{
+            file: file
+        }];
+        
+        if(res.location) res.sources[0].location = {
             startLine: res.location.start.line,
             startColumn: res.location.start.column,
             startOffset: res.location.start.offset,
@@ -23,9 +39,7 @@ function sendTreeLocationMessage(res, file) {
             endColumn: res.location.end.line,
             endOffset: res.location.end.offset
         }
+        delete res.location;
     }
-    
-    Object.assign(m, res);
-    
-    sendPlainMessage(m);
+    return res;
 }

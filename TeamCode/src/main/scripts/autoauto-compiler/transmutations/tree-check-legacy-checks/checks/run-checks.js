@@ -1,14 +1,15 @@
 var fs = require("fs");
 var path = require("path");
+var androidStudioLogging = require("../../../../script-helpers/android-studio-logging");
 
-var checkSubfolders = ["P", "T"];
+var checkSubfolders = ["T"];
 
 var checks = checkSubfolders
     .map(x=>loadChecksFromFolder(path.join(__dirname, "check-sources", x)))
     .flat();
 
 
-module.exports = function(ast, folder, filename, fileContent) {
+module.exports = function(ast, filename) {
     var failed = false;
     for(var i = 0; i < checks.length; i++) {
         var check = checks[i];
@@ -16,11 +17,11 @@ module.exports = function(ast, folder, filename, fileContent) {
         var tag = "[" + check.id + "] " + check.summary;
         
         try {
-            var res = check.run(ast, folder, filename, fileContent);
+            var res = check.run(ast);
             if(res) {
-                var msgArr = massageResIntoArrayOfMessages(res, tag, folder, filename);
+                var msgArr = massageResIntoArrayOfMessages(res, tag, filename);
 
-                msgArr.forEach(x=>sendPlainMessage(x));
+                msgArr.forEach(x=>androidStudioLogging.sendPlainMessage(x));
                 
                 if(shouldStopAnalysis(msgArr)) {
                     failed = true;
@@ -29,12 +30,12 @@ module.exports = function(ast, folder, filename, fileContent) {
             }
         } catch(e) {
             if(e instanceof Error) tag += " | failed to execute";
-            sendPlainMessage({
+            androidStudioLogging.sendPlainMessage({
                 kind: "ERROR",
                 text: tag, 
                 original: e.toString() + "\n" + (e.stack||""),
                 sources: [{
-                    file: path.join(folder, filename)
+                    file: filename
                 }]
             });
             failed = true;
@@ -48,12 +49,12 @@ function shouldStopAnalysis(messageArray) {
     return !!messageArray.find(x=>x.kind == "ERROR" || x.fail == true);
 }
 
-function massageResIntoArrayOfMessages(res, tag, folder, filename) {
-    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, tag, folder, filename));
-    else return [massageResIntoMessage(res, tag, folder, filename)];
+function massageResIntoArrayOfMessages(res, tag, filename) {
+    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, tag, filename));
+    else return [massageResIntoMessage(res, tag, filename)];
 }
 
-function massageResIntoMessage(res, tag, folder, filename) {
+function massageResIntoMessage(res, tag, filename) {
     if(!res.original) res.original = res.text;
     res.text = tag;
 
@@ -62,7 +63,7 @@ function massageResIntoMessage(res, tag, folder, filename) {
 
     if(res.sources === undefined) {
             res.sources = [{
-            file: path.join(folder, filename)
+            file: filename
         }];
         
         if(res.location) res.sources[0].location = {
@@ -87,8 +88,4 @@ function loadChecksFromFolder(folder) {
         check.id = x.replace(".js", "").toUpperCase();
         return check;
     });
-}
-
-function sendPlainMessage(msg) {
-    console.error("AGPBI: " + JSON.stringify(msg));
 }
