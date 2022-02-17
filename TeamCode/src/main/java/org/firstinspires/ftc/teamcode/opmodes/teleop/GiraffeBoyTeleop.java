@@ -61,7 +61,7 @@ public class GiraffeBoyTeleop extends OpMode {
                 hardwareMap,
                 crservo         (),
                 servo           (),
-                motor           ("Carousel", "ClawMotor", "noodle", "intake")
+                motor           ("Carousel", "ClawMotor", "NeckMotor")
         );
 
         input = new InputManager(gamepad1, gamepad2);
@@ -89,6 +89,8 @@ public class GiraffeBoyTeleop extends OpMode {
         input.registerInput("ClawPosNeutral", new ButtonNode("gamepad2ps"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
+        input.registerInput("NeckUp", new ButtonNode("dpadup"));
+        input.registerInput("NeckDown", new ButtonNode("dpaddown"));
         input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("EmergencyStop",
                 new AnyNode(
@@ -126,9 +128,9 @@ public class GiraffeBoyTeleop extends OpMode {
 
 //        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
-        if (input.getBool("EmergencyStop")){
-
-        }
+//        if (input.getBool("EmergencyStop")){
+//
+//        }
         if (input.getBool("CarouselBlue") && input.getBool("CarouselRed") == false){
             hands.setMotorPower("Carousel", 0.6);
         }
@@ -150,27 +152,39 @@ public class GiraffeBoyTeleop extends OpMode {
                 hands.setMotorPower("ClawMotor", 0);
             }
         }
-        if (input.getBool("ClawOpen") == true){
-
+        if (hands.hasEncodedMovement("NeckMotor") == false) {
+            if (input.getBool("NeckUp") == true && input.getBool("NeckDown") == false) {
+                hands.setMotorPower("NeckMotor", -0.20);
+            }
+            else if (input.getBool("NeckDown") == true && input.getBool("NeckUp") == false) {
+                hands.setMotorPower("NeckMotor", 0.20);
+            }
+            else {
+                hands.setMotorPower("NeckMotor", 0);
+            }
         }
-        else {
 
-        }
-        if (input.getBool("ClawPos1") == true) {
-
-        }
-        if (input.getBool("ClawPos2") == true) {
-
-        }
-        if (input.getBool("ClawPos3") == true) {
-
-        }
-        if (input.getBool("ClawPosHome") == true) {
-
-        }
-        if (input.getBool("ClawPosNeutral") == true) {
-
-        }
+//        if (input.getBool("ClawOpen") == true){
+//
+//        }
+//        else {
+//
+//        }
+//        if (input.getBool("ClawPos1") == true) {
+//
+//        }
+//        if (input.getBool("ClawPos2") == true) {
+//
+//        }
+//        if (input.getBool("ClawPos3") == true) {
+//
+//        }
+//        if (input.getBool("ClawPosHome") == true) {
+//
+//        }
+//        if (input.getBool("ClawPosNeutral") == true) {
+//
+//        }
 
         //FeatureManager.logger.log(BuildHistory.buildName);
         telemetry.addData("FL Power", driver.frontLeft.getPower());
