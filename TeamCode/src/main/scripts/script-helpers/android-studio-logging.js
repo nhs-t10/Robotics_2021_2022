@@ -3,12 +3,17 @@ module.exports = {
     sendTreeLocationMessage: sendTreeLocationMessage
 }
 
+var logLevel = 0;
+if(process.argv.includes("-q")) logLevel = 2;
+
 function sendPlainMessage (msg) {
-    console.error("AGPBI: " + JSON.stringify(msg));
+    var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
+    
+    if(logLevel <= l) console.error("AGPBI: " + JSON.stringify(msg));
 }
 
 function sendTreeLocationMessage(res, file) {
-    massageResIntoArrayOfMessages(res, "", file).forEach(x=>sendPlainMessage(x));
+    massageResIntoArrayOfMessages(res, file).forEach(x=>sendPlainMessage(x));
 }
 
 
@@ -22,6 +27,11 @@ function massageResIntoMessage(res, file) {
     
     if(!res.original) res.original = res.text;
     
+    if(res instanceof Error) {
+        res.kind = "ERROR";
+        res.text = res.toString();
+        res.original = res.stack;
+    }
 
     if(res.fail) res.text += " | Skipping File";
     else if(res.titleNote) res.text += " | " + res.titleNote;

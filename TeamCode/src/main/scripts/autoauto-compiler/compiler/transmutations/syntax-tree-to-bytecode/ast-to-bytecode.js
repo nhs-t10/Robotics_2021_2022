@@ -132,6 +132,7 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
                 .concat(astToBytecode(ast.func, block, constantPool));
         case "ValueStatement":
             return astToBytecode(ast.call, block, constantPool)
+                .concat(emitBytecodeWithLocation(bytecodeSpec.pop, ast))
                 .concat(jumpToLabel(afterThisJumpToLabel, constantPool))
         default:
             console.error(ast);
@@ -415,6 +416,7 @@ function emitBytecodeWithLocation(code, ast) {
     else r.code = code.code;
 
     r.location = ast.location;
+    
     return r;
 }
 

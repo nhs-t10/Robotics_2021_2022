@@ -1,4 +1,5 @@
 var fs = require("fs");
+const path = require("path");
 var cache = require("../../../cache");
 
 var transmutations = {};
@@ -29,7 +30,7 @@ module.exports = {
     }
 };
 
-loadTransmutations();
+loadTransmutations(__dirname);
 
 function idsToTras(ids) {
     return ids.map(x=>{
@@ -80,26 +81,23 @@ function parseSpecExpandAliases(sp) {
     return r;
 }
 
-function insertDeps(tras, l) {
-    if(l === undefined) l = tras.length;
+function insertDeps(insertInto, findDepsIn) {
+    if(findDepsIn === undefined) findDepsIn = insertInto;
     
-    var totalAdded = 0;
-    
-    for(var i = 0; i < l; i++) {
-        var req = transmutations[tras[i].id].requires;
+    for(var i = 0; i < findDepsIn.length; i++) {
+        var req = transmutations[findDepsIn[i].id].requires;
         var reqExpanded = cachedParseSpecExpandAliases(req);
+        
+        var intoIndex = insertInto.indexOf(findDepsIn[i]);
         
         for(var j = 0; j < reqExpanded.length; j++) {
             var x = reqExpanded[j].id;
-            if(!tras.find(z=>z.id == x)) {
-                tras.splice(i,0,{id:x,dep:true});
-                totalAdded++;
-                i++;
+            if(!insertInto.find(z=>z.id == x)) {
+                insertInto.splice(intoIndex,0,{id:x,dep:true});
             }
         }
+        insertDeps(insertInto, reqExpanded);
     }
-    
-    if(totalAdded > 0) insertDeps(tras, totalAdded);
 }
 
 function expandAlias(spk) {
@@ -126,11 +124,16 @@ function expandAlias(spk) {
     }).flat(2);
 }
 
-function loadTransmutations() {
-    var dir = fs.readdirSync(__dirname, { withFileTypes: true });
+function loadTransmutations(dirname) {
+    var dir = fs.readdirSync(dirname, { withFileTypes: true });
+    
     for(var i = 0; i < dir.length; i++) {
+        var p = path.join(dirname, dir[i].name);
+        
         if(dir[i].isDirectory()) {
-            require("./" + dir[i].name);
+            var pFil = path.join(p, "index.js");
+            if(fs.existsSync(pFil)) require(pFil);
+            else loadTransmutations(p);
         }
     }
 }

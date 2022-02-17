@@ -12,7 +12,7 @@ module.exports = function(ast) {
     
     var flattedBlocks = bytecodeBlocks.map(x=>x.subblocks).flat(Infinity);
     
-    var blockRecords = Object.fromEntries(flattedBlocks.map(x=>[x.label, x.bcode]));
+    var blockRecords = Object.fromEntries(flattedBlocks.map(x=>[x.label, x.bcode.flat()]));
     
     return blockRecords;
 }

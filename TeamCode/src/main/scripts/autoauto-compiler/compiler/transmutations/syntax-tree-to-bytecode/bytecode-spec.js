@@ -9,7 +9,6 @@ module.exports = {
     pop: { code: 0x100 },
     dup: { code: 0x101 },
     swap: { code: 0x102 },
-    roll: { code: 0x103 },
     add: { code: 0x200 },
     subtr: { code: 0x201 },
     mul: { code: 0x202 },
