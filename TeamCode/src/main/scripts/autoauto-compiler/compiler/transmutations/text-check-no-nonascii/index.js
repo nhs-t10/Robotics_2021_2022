@@ -1,6 +1,6 @@
 var path = require("path");
 
-var unicode = require("../../../script-helpers/unicode");
+var unicode = require("../../../../script-helpers/unicode");
 
 require("..").registerTransmutation({
     id: "text-check-no-nonascii",

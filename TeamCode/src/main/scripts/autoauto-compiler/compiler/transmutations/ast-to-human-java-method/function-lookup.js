@@ -1,7 +1,7 @@
 //Lets the compiler use the functionloader's cache to figure out where it should call functions from.
 //For example, it needs to know that `omniDrive()` is in the `MovementManager`
 var fs = require("fs");
-var cache = require("../../../cache");
+var cache = require("../../../../cache");
 
 var functionLoaderCache = cache.get("autoauto-managers", {});
 var cachedManagers = Object.values(functionLoaderCache).filter(x=>typeof x === "object");

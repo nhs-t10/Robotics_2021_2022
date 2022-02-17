@@ -1,5 +1,5 @@
 var fs = require("fs");
-var cache = require("../../cache");
+var cache = require("../../../cache");
 
 var transmutations = {};
 

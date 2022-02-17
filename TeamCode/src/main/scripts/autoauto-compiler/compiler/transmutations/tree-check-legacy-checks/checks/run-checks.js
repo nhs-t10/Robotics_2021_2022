@@ -1,6 +1,6 @@
 var fs = require("fs");
 var path = require("path");
-var androidStudioLogging = require("../../../../script-helpers/android-studio-logging");
+var androidStudioLogging = require("../../../../../script-helpers/android-studio-logging");
 
 var checkSubfolders = ["T"];
 

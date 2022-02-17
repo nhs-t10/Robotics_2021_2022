@@ -1,5 +1,5 @@
 var fs = require("fs");
-var safeFsUtils = require("../../../script-helpers/safe-fs-utils");
+var safeFsUtils = require("../../../../script-helpers/safe-fs-utils");
 
 require("..").registerTransmutation({
     requires: [],

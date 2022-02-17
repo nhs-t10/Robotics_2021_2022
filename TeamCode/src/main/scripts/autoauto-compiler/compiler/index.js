@@ -1,6 +1,6 @@
 var fs = require("fs");
 var path = require("path");
-const androidStudioLogging = require("../script-helpers/android-studio-logging");
+const androidStudioLogging = require("../../script-helpers/android-studio-logging");
 
 var transmutations = require("./transmutations");
 
