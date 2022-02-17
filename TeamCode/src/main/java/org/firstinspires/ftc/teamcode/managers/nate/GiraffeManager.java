@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 
 public class GiraffeManager extends FeatureManager {
     private TouchSensor input;
@@ -23,19 +22,19 @@ public class GiraffeManager extends FeatureManager {
     public GiraffeManager(NateManager lift/*, TouchSensor input*/){
         /*this.input = input;*/
         this.lift = lift;
-        lift.positionHome = giraffePositionHome;
-        lift.positionOne = giraffePositionOne;
-        lift.positionTwo = giraffePositionTwo;
-        lift.positionThree = giraffePositionThree;
+        lift.positionHomeLocation = giraffePositionHome;
+        lift.positionOneLocation = giraffePositionOne;
+        lift.positionTwoLocation = giraffePositionTwo;
+        lift.positionThreeLocation = giraffePositionThree;
     }
 
     public GiraffeManager(NateManager lift, TouchSensor input) {
         this.lift = lift;
         this.input = input;
-        lift.positionHome = giraffePositionHome;
-        lift.positionOne = giraffePositionOne;
-        lift.positionTwo = giraffePositionTwo;
-        lift.positionThree = giraffePositionThree;
+        lift.positionHomeLocation = giraffePositionHome;
+        lift.positionOneLocation = giraffePositionOne;
+        lift.positionTwoLocation = giraffePositionTwo;
+        lift.positionThreeLocation = giraffePositionThree;
     }
 
     public void neckEmergencyStop(){
