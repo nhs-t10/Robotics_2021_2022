@@ -8,6 +8,8 @@ if(process.argv.includes("-q")) logLevel = 2;
 
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
+
+    if(l == 2) console.log(2);
     
     if(logLevel <= l) console.error("AGPBI: " + JSON.stringify(msg));
 }
@@ -28,6 +30,7 @@ function massageResIntoMessage(res, file) {
     if(!res.original) res.original = res.text;
     
     if(res instanceof Error) {
+        console.log("err");
         res.kind = "ERROR";
         res.text = res.toString();
         res.original = res.stack;

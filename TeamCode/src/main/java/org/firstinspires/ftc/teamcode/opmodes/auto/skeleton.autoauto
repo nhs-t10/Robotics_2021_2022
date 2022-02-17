@@ -1,5 +1,6 @@
 $
-compatflag_afterStartAtState: true
+compatflag_afterStartAtState: true,
+compilerMode: "human-readable-java"
 $
 
 #init:

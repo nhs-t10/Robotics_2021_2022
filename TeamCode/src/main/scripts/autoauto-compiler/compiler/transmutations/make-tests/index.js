@@ -9,7 +9,9 @@ require("..").registerTransmutation({
     run: function(context, contexts) {
         var testDir = path.join(context.sourceRoot, "test/java/org/firstinspires/ftc/teamcode/unitTests/__testedautoauto");
         
-        var testRecords = contexts.map(x=>({
+        var testRecords = contexts
+        .filter(x=>x.status == "pass")
+        .map(x=>({
             frontMatter: x.fileFrontmatter,
             className: x.resultBaseFileName.split(".")[0],
             package: x.inputs["get-result-package"]

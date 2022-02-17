@@ -187,7 +187,7 @@ function unitValueGetter(unitValue) {
         return methodName;
     } else {
         throw {
-            text: "Unit conversion is not supported in the Human-Readable Java CompilerMode.",
+            text: "Unit conversion is not supported in the Human-Readable Java CompilerMode. Please use `ms`, `cm`, or `degs`.",
             location: unitValue.location
         }
     }
