@@ -179,8 +179,8 @@ public class DualControllerPreston extends OpMode {
         else {
             hands.setMotorPower("noodle", 0.0);
             hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.35);
+            hands.setServoPosition("rampLeft", -0.025);
+            hands.setServoPosition("rampRight", 0.3);
         }
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();
