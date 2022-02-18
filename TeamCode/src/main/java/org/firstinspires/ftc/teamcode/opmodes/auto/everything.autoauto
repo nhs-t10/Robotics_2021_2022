@@ -52,9 +52,9 @@ log("ULS!"), goto ifStatements;
 #dynamicGoto:
     goto ["dgoto" + Math.floor(Math.random() * 2)]
 
-#dgoto:
+#dgoto0:
     goto dgotoWorks
-#dgoto:
+#dgoto1:
     goto dgotoWorks
 
 #dgotoWorks:

@@ -65,13 +65,15 @@ for(var j = 0; j < codebaseTasks.length; j++) {
 
 function tryRunTransmutation(transmutation, fileContext) {
     try {
+        delete fileContext.status;
+        
         var m = runTransmutation(transmutation, fileContext);
         
         if(m) androidStudioLogging.sendTreeLocationMessage(m, fileContext.sourceFullFileName);
         
-        if(fileContext.status != "pass") androidStudioLogging.sendTreeLocationMessage(`Task ${transmutation.id} Failed`, fileContext.sourceFullFileName);
+        if(fileContext.status != "pass") throw `Task ${transmutation.id} didn't report success`;
         
-        return fileContext.status == "pass";
+        return true;
     } catch(e) {
         fileContext.status = "fail";
 

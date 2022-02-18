@@ -19,7 +19,7 @@ module.exports = function() {
         },
         subblockLabel: function(label, subcategory) {
             subId++
-            return `${label}_${subcategory}_${subId.toString(16)}`;
+            return `${label}/${subcategory}/${subId.toString(16)}`;
         },
         tempVar: function() {
             return "@temp" + (tempvars++);

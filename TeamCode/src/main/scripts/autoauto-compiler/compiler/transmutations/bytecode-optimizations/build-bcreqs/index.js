@@ -5,15 +5,19 @@ require("../..").registerTransmutation({
     requires: ["syntax-tree-to-bytecode"],
     type: "information",
     run: function(context) {
-        var bytecode = context.inputs["syntax-tree-to-bytecode"].blocks;
-        var constants = context.inputs["syntax-tree-to-bytecode"].constants;
+        var bytecode = (
+            context.inputs["bc-condense-constants"] ||
+            context.inputs["syntax-tree-to-bytecode"].blocks);
         
         var keys = Object.keys(bytecode);
-        keys.forEach(k=>bytecode[k] = makeCausallyLinkedCodesHierarchal(bytecode[k], constants));
+        keys.forEach(k=>bytecode[k] = makeCausallyLinkedCodesHierarchal(bytecode[k]));
+        
+        context.output = bytecode;
+        context.status = "pass";
     }
 });
 
-function makeCausallyLinkedCodesHierarchal(block, constants) {       
+function makeCausallyLinkedCodesHierarchal(block) {       
     block.forEach(x=>x.deps=[]);
     
     var sta = [{deps: [], consm: Infinity}];
@@ -28,8 +32,8 @@ function makeCausallyLinkedCodesHierarchal(block, constants) {
         if(opcodeFamily != 0) {
             arity = 1;
         } else if(codeIndexedSpec[opcode]) {
-            var pushInContext = resolveArity(codeIndexedSpec[opcode].push, block, i, constants) 
-            var popInContext =  resolveArity(codeIndexedSpec[opcode].pop, block, i, constants);
+            var pushInContext = resolveArity(codeIndexedSpec[opcode].push, block, i) 
+            var popInContext =  resolveArity(codeIndexedSpec[opcode].pop, block, i);
             
             arity = popInContext - pushInContext;
         }
@@ -38,25 +42,26 @@ function makeCausallyLinkedCodesHierarchal(block, constants) {
         sta[sta.length - 1].consm -= arity;
         
         if(arity > 0) sta.push({ deps: instr.deps, consm: arity });
-        else if(sta[sta.length - 1].consm < 0) sta.push();
+        else if(sta[sta.length - 1].consm == 0) sta.pop();
+        else if(sta[sta.length - 1].consm < 0) throw "stack underflow!";
     }
     
     return sta[0].deps;
 }
 
-function resolveArity(ar, block, index, constants) {
+function resolveArity(ar, block, index) {
     if(typeof ar === "number") return ar;
     
     var tArity = 0;
     
     for(var j = 0; j < ar.length; j++) {
         if(typeof ar[j] === "number") tArity += ar[j];
-        else tArity += findOpcodeLiteralValue(block[index - j - 1], constants);
+        else tArity += findOpcodeLiteralValue(block[index - j - 1]);
     }
     return tArity;
 }
 
-function findOpcodeLiteralValue(instr, constants) {
+function findOpcodeLiteralValue(instr) {
     var c = instr.code;
     var f = c >>> 24;
     var k = c & 0xFFFFFF;

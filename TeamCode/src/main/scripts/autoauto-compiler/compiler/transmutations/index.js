@@ -26,6 +26,8 @@ module.exports = {
         var tasks = cachedParseSpecExpandAliases(s);
         insertDeps(tasks);
         
+        if(tasks.find(x=>x.id=="syntax-tree-to-bytecode")) console.log(tasks);
+        
         return idsToTras(tasks);
     }
 };
@@ -88,12 +90,13 @@ function insertDeps(insertInto, findDepsIn) {
         var req = transmutations[findDepsIn[i].id].requires;
         var reqExpanded = cachedParseSpecExpandAliases(req);
         
-        var intoIndex = insertInto.indexOf(findDepsIn[i]);
+        var intoIndex = insertInto.findIndex(x=>x.id == findDepsIn[i].id);
         
         for(var j = 0; j < reqExpanded.length; j++) {
             var x = reqExpanded[j].id;
             if(!insertInto.find(z=>z.id == x)) {
                 insertInto.splice(intoIndex,0,{id:x,dep:true});
+                intoIndex++;
             }
         }
         insertDeps(insertInto, reqExpanded);
