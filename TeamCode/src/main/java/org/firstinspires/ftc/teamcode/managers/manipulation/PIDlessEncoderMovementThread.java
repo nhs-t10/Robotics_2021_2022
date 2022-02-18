@@ -14,6 +14,7 @@ public class PIDlessEncoderMovementThread extends Thread {
     //checks
     private float[] direction;
     private float[] lastDeltas;
+    private boolean[] zeroed;
 
 
     private double slowRange;
@@ -31,6 +32,8 @@ public class PIDlessEncoderMovementThread extends Thread {
         this.direction = new float[motors.length];
         for (int i = 0; i < motors.length; i++) direction[i] = 1;
 
+        this.zeroed = new boolean[motors.length];
+
         running = true;
 
         this.slowRange = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
@@ -42,6 +45,12 @@ public class PIDlessEncoderMovementThread extends Thread {
             while(FeatureManager.isOpModeRunning) {
                 for(int i = 0; i < motors.length; i++) {
                     if(shouldMove[i]) {
+                        //The first time a motor is used, reset its ticks.
+                        if(!zeroed[i]) {
+                            zeroed[i] = true;
+                            motors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            continue;
+                        }
                         if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                         int currentPos = motors[i].getCurrentPosition();
@@ -52,7 +61,7 @@ public class PIDlessEncoderMovementThread extends Thread {
                             if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i] = -1;
                         }
 
-                        double power = direction[i] * delta * powerCoefs[i] * 0.01;
+                        double power = direction[i] * delta * powerCoefs[i] * 0.005;
 
                         motors[i].setPower(power);
 
