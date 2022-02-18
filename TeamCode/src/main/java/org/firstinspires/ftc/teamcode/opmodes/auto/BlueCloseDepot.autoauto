@@ -23,7 +23,7 @@
 //do a 180, drive left, spin carousel for 3sec, drive right to be near the depot, do a 180
 #duckSpin:
     driveOmni(0, 0.7, 0), after 175degs next;
-    driveOmni(0, 0, 0.7),after 20cm next;
+    driveOmni(0, 0, 0.7),after 18cm next;
     driveOmni(0.1, 0, 0.5), after 500ms setMotorPower("Carousel", 0.4), after 5cm next, after 2700ms next;
     setMotorPower("Carousel", 0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
