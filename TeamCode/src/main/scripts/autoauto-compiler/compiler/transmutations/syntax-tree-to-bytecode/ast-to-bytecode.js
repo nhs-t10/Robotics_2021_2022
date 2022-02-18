@@ -126,7 +126,7 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
             return [emitConstantWithLocation(ast.str, constantPool, ast)];
         case "ArgumentList":
             return ast.args.map(x => astToBytecode(x, block, constantPool))
-                .concat(emitConstantWithLocation(ast.len, constantPool, ast));
+                .concat(emitConstantWithLocation(ast.args.length, constantPool, ast));
         case "FunctionCall":
             return astToBytecode(ast.args, block, constantPool)
                 .concat(astToBytecode(ast.func, block, constantPool));

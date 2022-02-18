@@ -75,8 +75,7 @@ function tryRunTransmutation(transmutation, fileContext) {
     } catch(e) {
         fileContext.status = "fail";
 
-        if(e && !e.kind) e.kind = "ERROR";
-        androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName);
+        androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName, "ERROR");
         
         return false;
     }

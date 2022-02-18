@@ -14,7 +14,10 @@ module.exports = function(ast) {
     
     var blockRecords = Object.fromEntries(flattedBlocks.map(x=>[x.label, x.bcode.flat()]));
     
-    return blockRecords;
+    return {
+        blocks: blockRecords,
+        constants: constantPool
+    };
 }
 
 function programToTreeBlocks(program) {

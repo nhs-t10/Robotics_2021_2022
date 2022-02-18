@@ -3,6 +3,7 @@ module.exports = function() {
     var subId = 0;
     var tempvars = 0;
     return {
+        pool: pool,
         getCodeFor: function(cons) {
             
             //if it's an integer between 0 and 0xFFFFFF, use `loadint`.
