@@ -5,11 +5,15 @@ require("../..").registerTransmutation({
     requires: ["syntax-tree-to-bytecode"],
     type: "information",
     run: function(context) {
-        var bytecode = context.inputs["syntax-tree-to-bytecode"];
+        var bytecode = (
+            context.inputs["bc-condense-constants"] ||
+            context.inputs["syntax-tree-to-bytecode"].blocks);
         
         var keys = Object.keys(bytecode);
         keys.forEach(k=>bytecode[k] = makeCausallyLinkedCodesHierarchal(bytecode[k]));
-        console.log(bytecode);
+        
+        context.output = bytecode;
+        context.status = "pass";
     }
 });
 
@@ -34,11 +38,12 @@ function makeCausallyLinkedCodesHierarchal(block) {
             arity = popInContext - pushInContext;
         }
         
-        sta[sta.length - 1].deps.push(instr);
+        sta[sta.length - 1].deps.splice(0,0,instr);
         sta[sta.length - 1].consm -= arity;
         
         if(arity > 0) sta.push({ deps: instr.deps, consm: arity });
-        else if(sta[sta.length - 1].consm < 0) sta.push();
+        else if(sta[sta.length - 1].consm == 0) sta.pop();
+        else if(sta[sta.length - 1].consm < 0) throw "stack underflow!";
     }
     
     return sta[0].deps;
@@ -59,7 +64,8 @@ function resolveArity(ar, block, index) {
 function findOpcodeLiteralValue(instr) {
     var c = instr.code;
     var f = c >>> 24;
+    var k = c & 0xFFFFFF;
     
-    if(f == 0x0E) return c & 0xFFFFFF;
-    else throw "Couldn't reduce! " + instr.code;
+    if(f == 0x0E) return k;
+    else throw "malformed bytecode; couldn't resolve!";
 }

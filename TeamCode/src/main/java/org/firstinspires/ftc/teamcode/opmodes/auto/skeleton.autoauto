@@ -17,7 +17,7 @@ $
 
 //uses CV, saves CV reading to `value`, moves 10cm forwards so later steps won't bump up against wall
 #sampling:
-    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2s next;
+    let value = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), log(value), after 2000ms next;
     goto duckSpin
 
 //drive left, turn left to contact carousel, spin carousel for 3sec, turn back, drive right to be near the depot
@@ -25,7 +25,7 @@ $
     driveOmni(0,0,0.7),after 20cm next;
     driveOmni(0,-0.7,0), after 78degs next;
     driveOmni(0.7,0,0), after 24cm next;
-    setMotorPower("Carousel", -0.7), after 3s next;
+    setMotorPower("Carousel", -0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(-0.7, 0, 0), after 30cm next;
     driveOmni(0,0.7,0), after 80degs next;
@@ -53,7 +53,7 @@ $
 //moves the robot forwards so the claw is where it should be to drop off the freight
 #towerDropOff:
     driveOmni(0.7,0,0), after 10cm next;
-    setClawOpen(true), after 3s goto finalMovement;
+    setClawOpen(true), after 3000ms goto finalMovement;
 
 //moves the robot away from the depot, closes the claw, turns right and moves forward
 #finalMovement:

@@ -17,12 +17,12 @@ public class NateManager extends FeatureManager {
 
     private double resetOffset;
 
-    public int positionOneLocation = 945;
-    public int positionTwoLocation = 2520;
-    public int positionThreeLocation = 4253;
+    public int positionOneLocation = 727;
+    public int positionTwoLocation = 1738;
+    public int positionThreeLocation = 2950;
     public int positionNeutralLocation = 0;
     public int positionSharedLocation;
-    public int positionHomeLocation = -2750;
+    public int positionHomeLocation = -1826;
 
     public NateManager(ManipulationManager hands/*, TouchSensor input*/){
         /*this.input = input;*/

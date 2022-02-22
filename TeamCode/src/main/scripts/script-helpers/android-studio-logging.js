@@ -21,18 +21,20 @@ function sendPlainMessage (msg) {
     if(logLevel <= l) console.error("AGPBI: " + JSON.stringify(msg));
 }
 
-function sendTreeLocationMessage(res, file) {
-    massageResIntoArrayOfMessages(res, file).forEach(x=>sendPlainMessage(x));
+function sendTreeLocationMessage(res, file, defaultKind) {
+    massageResIntoArrayOfMessages(res, file, defaultKind).forEach(x=>sendPlainMessage(x));
 }
 
 
-function massageResIntoArrayOfMessages(res, file) {
-    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, file));
-    else return [massageResIntoMessage(res, file)];
+function massageResIntoArrayOfMessages(res, file, defaultKind) {
+    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, file, defaultKind));
+    else return [massageResIntoMessage(res, file, defaultKind)];
 }
 
-function massageResIntoMessage(res, file) {
+function massageResIntoMessage(res, file, defaultKind) {
     if(typeof res === "string") res = { text: res };
+    
+    if(!res.kind) res.kind = defaultKind;
     
     if(!res.original) res.original = res.text;
     

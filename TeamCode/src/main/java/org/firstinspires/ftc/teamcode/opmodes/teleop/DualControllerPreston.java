@@ -39,7 +39,6 @@ public class DualControllerPreston extends OpMode {
     private boolean precision = false;
     private boolean dashing = false;
     private double clawCheck;
-    private int clawPos;
     private ImuManager imu;
     private boolean seekingTowardsTarget;
     private float rotationDelta;
@@ -159,8 +158,7 @@ public class DualControllerPreston extends OpMode {
 
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
-            clawPos = clawPosition.getClawPosition();
-            if (clawCheck != 0.0 && clawPos == 0 && clawPosition.liftMovementFinished()) {
+            if (clawCheck != 0.0 && clawPosition.getClawPosition() == 0 && clawPosition.liftMovementFinished()) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {
@@ -179,8 +177,8 @@ public class DualControllerPreston extends OpMode {
         else {
             hands.setMotorPower("noodle", 0.0);
             hands.setMotorPower("intake", 0.0);
-            hands.setServoPosition("rampLeft", 0.0);
-            hands.setServoPosition("rampRight", 0.35);
+            hands.setServoPosition("rampLeft", -0.025);
+            hands.setServoPosition("rampRight", 0.3);
         }
         if (input.getBool("EmergencyStop")){
             clawPosition.emergencyStop();

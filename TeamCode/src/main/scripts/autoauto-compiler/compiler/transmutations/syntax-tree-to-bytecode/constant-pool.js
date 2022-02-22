@@ -3,6 +3,7 @@ module.exports = function() {
     var subId = 0;
     var tempvars = 0;
     return {
+        pool: pool,
         getCodeFor: function(cons) {
             
             //if it's an integer between 0 and 0xFFFFFF, use `loadint`.
@@ -18,7 +19,7 @@ module.exports = function() {
         },
         subblockLabel: function(label, subcategory) {
             subId++
-            return `${label}_${subcategory}_${subId.toString(16)}`;
+            return `${label}/${subcategory}/${subId.toString(16)}`;
         },
         tempVar: function() {
             return "@temp" + (tempvars++);
