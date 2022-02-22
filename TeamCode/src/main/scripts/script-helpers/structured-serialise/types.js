@@ -1,9 +1,9 @@
 module.exports = {
-    "undefined": 0,
-    "boolean": 1,
-    "number": 2,
-    "string": 3,
-    "object": 4,
-    "null": 5,
-    "wellKnownObject": 6
+    "undefined": 85, //ascii U
+    "boolean": 66, //ascii B
+    "number": 78, //ascii N
+    "string": 83, //ascii S 
+    "object": 79, //ascii O
+    "null": 95, //ascii _
+    "wellKnownObject": 67 //ascii C (for Constructor)
 }

@@ -1,15 +1,22 @@
 module.exports = {
     sendPlainMessage: sendPlainMessage,
-    sendTreeLocationMessage: sendTreeLocationMessage
+    sendTreeLocationMessage: sendTreeLocationMessage,
+    
+    warning: sendWarn
 }
 
 var logLevel = 0;
 if(process.argv.includes("-q")) logLevel = 2;
 
+function sendWarn(msgStr) {
+    sendPlainMessage({
+        kind: "WARNING",
+        text: msgStr
+    });
+}
+
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
-
-    if(l == 2) console.log(2);
     
     if(logLevel <= l) console.error("AGPBI: " + JSON.stringify(msg));
 }
