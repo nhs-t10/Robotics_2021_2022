@@ -1,0 +1,19 @@
+s/<init>/0/stmt/0:
+const "log"
+getvar 1,1
+const "ULS!"
+const 1
+callfunction 3,1
+pop 1,0
+const "undefined/stmt/1"
+jmp_l 1,0
+s/<init>/0/stmt/1:
+const "s/<init>/1"
+jmp_l 1,0
+yield 0,0
+s/<init>/0:
+const "s/<init>/0/stmt/0"
+jmp_l 1,0
+ENTRY:
+const "s/<init>/0"
+jmp_l 1,0

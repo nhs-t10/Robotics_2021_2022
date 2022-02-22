@@ -37,7 +37,7 @@ module.exports = {
     0x100: {
         "pop": 1,
         "push": 0,
-        "mnemom": "push"
+        "mnemom": "pop"
     },
     0x101: {
         "pop": 1,
@@ -140,12 +140,12 @@ module.exports = {
         "mnemom": "getprop"
     },
     0x305: {
-        "pop": [1, undefined],
+        "pop": [undefined, 1],
         "push": 1,
         "mnemom": "callfunction"
     },
     0x306: {
-        "pop": [1, undefined],
+        "pop": [undefined, 1],
         "push": 1,
         "mnemom": "makefunction"
     },

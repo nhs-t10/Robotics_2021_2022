@@ -2,6 +2,7 @@ var bytecodeSpec = require("./bytecode-spec");
 
 module.exports = treeBlockToBytecode;
 
+//this gets a "tree block", which is a state.
 function treeBlockToBytecode(block, constantPool, afterStateDoneJumpTo) {
     
     var bBlock = {
@@ -16,7 +17,7 @@ function treeBlockToBytecode(block, constantPool, afterStateDoneJumpTo) {
     }));
 
     block.treeStatements.forEach((x, i) => {
-        var nextLabel = (i + 1 < block.treeStatements.length) ? (block.label + "/stmt/" + (i + 1)) : (afterStateDoneJumpTo || block.label);
+        var nextLabel = (i + 1 < block.treeStatements.length) ? (x.label + "/stmt/" + (i + 1)) : (afterStateDoneJumpTo || block.label);
         var bcode = astToBytecode(x, bBlock, constantPool, nextLabel);
         if(i + 1 == block.treeStatements.length) {
             bcode.push(emitBytecodeWithLocation(bytecodeSpec.yield, x));
@@ -103,7 +104,7 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
                 ], ast)
                 );
         case "NextStatement":
-            var match = afterThisJumpToLabel.split("/");
+            var match = block.label.split("/");
             var thisIndex = +match[2];
             if(isNaN(thisIndex)) {
                 console.error(afterThisJumpToLabel);
@@ -111,7 +112,9 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
             }
             
             match[2] = thisIndex + 1;
-            return jumpToLabel(match.slice(0,3).join("/"), constantPool);
+            var lbl = match.slice(0,3).join("/");
+            console.log(lbl);
+            return jumpToLabel(lbl, constantPool);
         
         case "UnitValue": 
             return [emitConstantWithLocation(unitwrap(ast), constantPool, ast)]
@@ -130,8 +133,9 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
             return ast.args.map(x => astToBytecode(x, block, constantPool))
                 .concat(emitConstantWithLocation(ast.args.length, constantPool, ast));
         case "FunctionCall":
-            return astToBytecode(ast.args, block, constantPool)
-                .concat(astToBytecode(ast.func, block, constantPool));
+            return astToBytecode(ast.func, block, constantPool)
+                .concat(astToBytecode(ast.args, block, constantPool))
+                .concat(emitBytecodeWithLocation(bytecodeSpec.callfunction, ast));
         case "ValueStatement":
             return astToBytecode(ast.call, block, constantPool)
                 .concat(emitBytecodeWithLocation(bytecodeSpec.pop, ast))
@@ -181,7 +185,7 @@ function skipStatementToBytecode(ast, block, constantPool, nextLabel) {
     var thisStateIndex = +stateBlockParams[2];
     if(isNaN(thisStateIndex)) throw "something went wrong in skipStatementToBytecode";
 
-    var prefix = "s/" + stateBlockParams[0] + "/" + stateBlockParams[1];
+    var prefix = "s/" + stateBlockParams[1] + "/";
 
     return emitBytecodesWithLocation([
         emitConstantWithLocation(prefix, constantPool, ast),
@@ -221,11 +225,9 @@ function functionLiteralToBytecode(ast, block, constantPool) {
         }, constantPool, endBlockLabel)
     });
     
-    return astToBytecode(ast.args, block, constantPool)
-    .concat(emitBytecodesWithLocation([
-        emitConstantWithLocation(bodyBlockLabel, constantPool, ast),
-        bytecodeSpec.makefunction
-    ], ast));
+    return [emitConstantWithLocation(bodyBlockLabel, constantPool, ast)]
+    .concat(astToBytecode(ast.args, block, constantPool))
+    .concat(emitBytecodeWithLocation(bytecodeSpec.makefunction, ast));
 }
 
 function functionDefToBytecode(ast, block, constantPool, nextLabel) {

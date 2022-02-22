@@ -8,7 +8,6 @@ require("../..").registerTransmutation({
         var heirarchalBytecode = context.inputs["build-bcreqs"];
         
         context.output = buildGraphFrom(heirarchalBytecode);
-        console.log(context.output);
     }
 });
 
