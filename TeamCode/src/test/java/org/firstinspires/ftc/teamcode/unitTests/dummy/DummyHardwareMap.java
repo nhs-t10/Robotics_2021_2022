@@ -57,4 +57,15 @@ public class DummyHardwareMap extends HardwareMap {
         }
         throw new IllegalArgumentException(String.format("Unable to find a hardware device with name \"%s\" and type %s", deviceName, classOrInterface.getSimpleName()));
     }
+
+    @Nullable
+    @Override
+    public <T> T tryGet(Class<? extends T> classOrInterface, String deviceName) {
+        try {
+            return get(classOrInterface, deviceName);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
+    }
+
 }

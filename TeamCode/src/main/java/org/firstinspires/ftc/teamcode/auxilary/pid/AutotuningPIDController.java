@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.pid;
 
 import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+import org.firstinspires.ftc.teamcode.managers.input.InputManager;
 
 public class AutotuningPIDController extends NormalizedPIDController {
     private final float minOutput;
@@ -57,6 +58,7 @@ public class AutotuningPIDController extends NormalizedPIDController {
 
         //only do things if we've gotten to a symmetrical measurement point
         if (period != -1) {
+            InputManager.vibrategp2();
             if(period >= TUNING_PERIODS) {
                 periodEndFinal = RobotTime.nanoTime();
                 tuning = false;

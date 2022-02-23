@@ -14,7 +14,7 @@ import java.util.Map;
 import androidx.annotation.Nullable;
 
 public class ManipulationManager extends FeatureManager {
-    public static final int ENCODER_TICK_VALUE_TOLERANCE = 25;
+    public static final int ENCODER_TICK_VALUE_TOLERANCE = 5;
 
     public CRServo[] crservos;
     public DcMotor[] motors;
@@ -66,6 +66,8 @@ public class ManipulationManager extends FeatureManager {
         for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.tryGet(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
 
+        resetEncoders();
+
         this.movementThread = new PIDlessEncoderMovementThread(motors);
         this.movementThread.start();
     }
@@ -101,6 +103,8 @@ public class ManipulationManager extends FeatureManager {
         for(int i = 0; i < _motors.length; i++) {motors[i]  = _hardwareMap.tryGet(DcMotor.class, _motors[i]); }
         this.motorNames = _motors;
 
+        resetEncoders();
+
         this.movementThread = new PIDlessEncoderMovementThread(motors);
         this.movementThread.start();
     }
@@ -122,6 +126,8 @@ public class ManipulationManager extends FeatureManager {
         this.servoNames = _servoNames;
         this.motors = _motors;
         this.motorNames = _motorNames;
+
+        resetEncoders();
 
         this.movementThread = new PIDlessEncoderMovementThread(motors);
         this.movementThread.start();
@@ -204,7 +210,9 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void resetEncoders() {
-        for(DcMotor motor : motors) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        for(DcMotor motor : motors) {
+            if(motor != null) motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     }
 
     public void runUsingEncoders() {
@@ -267,11 +275,11 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void encodeMoveToPosition(String name, int position) {
-        encodeMoveToPosition(name,position, 1);
+        encodeMoveToPosition(name,position, 0.3);
     }
 
     public void encodeMoveToPosition(int index, int position) {
-        encodeMoveToPosition(index, position, 1);
+        encodeMoveToPosition(index, position, 0.3);
     }
 
     //monitors whether the lift motor has been given RUN_TO_POSITION

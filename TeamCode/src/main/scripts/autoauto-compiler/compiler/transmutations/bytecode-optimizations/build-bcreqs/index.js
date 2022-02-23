@@ -10,12 +10,12 @@ require("../..").registerTransmutation({
             context.inputs["bc-condense-constants"] ||
             context.inputs["syntax-tree-to-bytecode"].blocks);
 
-        //fs.writeFileSync(__dirname + "/raw.txt", fmtBlocks(bytecode));
+        fs.writeFileSync(__dirname + "/raw.txt", fmtBlocks(bytecode));
 
         var keys = Object.keys(bytecode);
         keys.forEach(k => makeCausallyLinkedCodesHierarchal(bytecode[k]));
 
-        //fs.writeFileSync(__dirname + "/formatted.txt", fmtBlocks(bytecode))
+        fs.writeFileSync(__dirname + "/formatted.txt", fmtBlocks(bytecode))
 
         context.output = bytecode;
         context.status = "pass";
@@ -40,9 +40,9 @@ function fmtBlock(b, indent) {
         if (instr.deps && instr.deps.length) ans += "(" + fmtBlock(instr.deps, indent + 1) + "\n)";
 
         if (c) {
-            ans += c.mnemom + " " + fmtArity(getArity(b, i));
+            ans += c.mnemom;
         } else {
-            ans += "const " + JSON.stringify(instr.__value);
+            ans += JSON.stringify(instr.__value);
         }
         r.push(ans);
     }
@@ -119,7 +119,6 @@ function consumeNStackValues(bytecodes, startIndex, num) {
 
         var arity = getArity(bytecodes, i);
         var deps = consumeNStackValues(bytecodes, i - 1, arity.pop);
-        bytecodes[i].deps = deps.tree;
 
         toGo -= arity.push;
         i -= deps.codeLength + 1;

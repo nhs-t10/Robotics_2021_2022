@@ -24,8 +24,8 @@ public class EncodedMovementTest {
         //wait until it's finished moving...
         while(m.hasEncodedMovement(fooMotor)) {
             long now = System.currentTimeMillis();
-            if(now - lastPrintTime > 10) {
-                FeatureManager.logger.log("Current: " + m.getMotorPosition(fooMotor));
+            if(now - lastPrintTime > 0) {
+                FeatureManager.logger.log(now + "\t" + m.getMotorPosition(fooMotor) + "\t" + m.getMotorPower(fooMotor));
                 lastPrintTime = now;
             }
 

@@ -9,12 +9,17 @@ public class GiraffeManager extends FeatureManager {
     private TouchSensor input;
     private boolean neckFound;
     private int neckPosition;
-    private int neckPositionTall;
-    private int neckPositionShort;
-    private int giraffePositionOne;
-    private int giraffePositionTwo;
-    private int giraffePositionThree;
-    private int giraffePositionHome;
+    private int neckPositionTall = -1406;
+    private int neckPositionShort = 716;
+    private int giraffePositionOne = 504;
+    private int giraffePositionTwo = 164;
+    private int giraffePositionThree = -194;
+    private int giraffePositionShared = 630;
+
+    private int giraffeShortPositionHome = -409;
+    private int giraffeTallPositionHome = -409;
+
+
     NateManager lift;
 
     private double resetOffset;
@@ -22,16 +27,17 @@ public class GiraffeManager extends FeatureManager {
     public GiraffeManager(NateManager lift/*, TouchSensor input*/){
         /*this.input = input;*/
         this.lift = lift;
-        lift.positionHomeLocation = giraffePositionHome;
+        lift.positionHomeLocation = giraffeShortPositionHome;
         lift.positionOneLocation = giraffePositionOne;
         lift.positionTwoLocation = giraffePositionTwo;
         lift.positionThreeLocation = giraffePositionThree;
+        lift.positionSharedLocation = giraffePositionShared;
     }
 
     public GiraffeManager(NateManager lift, TouchSensor input) {
         this.lift = lift;
         this.input = input;
-        lift.positionHomeLocation = giraffePositionHome;
+        lift.positionHomeLocation = giraffeShortPositionHome;
         lift.positionOneLocation = giraffePositionOne;
         lift.positionTwoLocation = giraffePositionTwo;
         lift.positionThreeLocation = giraffePositionThree;
@@ -48,17 +54,21 @@ public class GiraffeManager extends FeatureManager {
 
     public void neckTall(){
         neckPosition = neckPositionTall;
-        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionTall);
+
+        lift.positionHomeLocation = giraffeTallPositionHome;
+        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionTall, 0.3);
     }
 
     public void neckShort(){
         neckPosition = neckPositionShort;
-        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionShort);
+
+        lift.positionHomeLocation = giraffeShortPositionHome;
+        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionShort, 0.3);
     }
 
     public void neckNeutral(){
         neckPosition = 0;
-        lift.hands.encodeMoveToPosition("NeckMotor", 0);
+        lift.hands.encodeMoveToPosition("NeckMotor", 0, 0.3);
     }
 
     public boolean neckHoming(){

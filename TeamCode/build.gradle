@@ -89,6 +89,7 @@ android {
             reports {
                 junitXml.enabled = true
             }
+            ignoreFailures = true
         }
     }
     defaultConfig {
