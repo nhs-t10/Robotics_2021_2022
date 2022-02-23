@@ -194,7 +194,7 @@ public class GiraffeBoyTeleop extends OpMode {
                 clawPosition.positionHome();
             }
         }
-        if (input.getBool("ClawOpen") == true){
+        if (input.getBool("ClawOpen") == true && giraffeNeck.neckMovementFinished()){
             clawPosition.setClawOpen(true);
         }
         else {
