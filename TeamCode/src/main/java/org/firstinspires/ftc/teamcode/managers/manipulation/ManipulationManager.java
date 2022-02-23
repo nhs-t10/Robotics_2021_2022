@@ -349,4 +349,15 @@ public class ManipulationManager extends FeatureManager {
 
         motors[index].setTargetPosition(position);
     }
+
+    public void incrementEncodedTargetPosition(int index, int increment) {
+        movementThread.incrementTarget(index, increment);
+    }
+
+    public void incrementEncodedTargetPosition(String name, int increment) {
+        int index = (Arrays.asList(motorNames)).indexOf(name);
+        if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
+
+        incrementEncodedTargetPosition(index, increment);
+    }
 }

@@ -92,7 +92,11 @@ public class PIDlessEncoderMovementThread extends Thread {
     public int getTarget(int i) {
         return targets[i];
     }
-    public void cancelMovement(int index) {
-        hasTarget[index] = false;
+    public void cancelMovement(int i) {
+        hasTarget[i] = false;
+    }
+
+    public void incrementTarget(int i, int increment) {
+        targets[i] += increment;
     }
 }

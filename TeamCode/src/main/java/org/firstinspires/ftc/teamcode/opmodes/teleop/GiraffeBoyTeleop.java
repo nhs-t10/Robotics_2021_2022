@@ -148,10 +148,10 @@ public class GiraffeBoyTeleop extends OpMode {
 
         if (hands.hasEncodedMovement("ClawMotor") == false) {
             if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorPower("ClawMotor", -0.20);
+                hands.incrementEncodedTargetPosition("ClawMotor", 10);
             }
             else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorPower("ClawMotor", 0.20);
+                hands.incrementEncodedTargetPosition("ClawMotor", -10);
             }
             else {
                 hands.setMotorPower("ClawMotor", 0);
