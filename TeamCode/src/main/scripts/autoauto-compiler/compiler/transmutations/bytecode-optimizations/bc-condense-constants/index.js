@@ -18,18 +18,20 @@ require("../..").registerTransmutation({
 function condenseConstantOps(block, constants) {
     for(var i = 2; i < block.length; i++) {
         if(isDecidableOpWithTwoArgs(block[i].code)) {
-            var left = block[i - 2].__value;
-            var right = block[i - 1].__value;
+            var left = block[i - 2];
+            var right = block[i - 1];
             
-            var r = doOp(block[i].code, left, right);
-            if(isNaN(r)) r = undefined;
-            
-            block.splice(i - 2, 3, {
-                code: constants.getCodeFor(r),
-                __value: r,
-                location: block[i].location
-            });
-            i -= 3;
+            if(left.hasOwnProperty("__value") && right.hasOwnProperty("__value")) {
+                var r = doOp(block[i].code, left.__value, right.__value);
+                if(r != r) r = undefined;
+                
+                block.splice(i - 2, 3, {
+                    code: constants.getCodeFor(r),
+                    __value: r,
+                    location: block[i].location
+                });
+                i -= 3;
+            }
         }
     }
     return block;

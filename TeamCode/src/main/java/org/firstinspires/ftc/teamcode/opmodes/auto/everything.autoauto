@@ -14,7 +14,7 @@ log("ULS!"), goto ifStatements;
     if(true) { log("this works like java"), next };
     if(false) log("fail"), next; //this next should trigger, because it's outside of the `if`
     if(false) { log("fail") } else { next }; //else clauses
-    goto letStatements
+    goto letStatements;
 
 #letStatements:
     //an empty table!

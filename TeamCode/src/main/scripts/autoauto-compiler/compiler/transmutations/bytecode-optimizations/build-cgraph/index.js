@@ -1,22 +1,29 @@
+var fs = require("fs");
 const bytecodeSpec = require("../bytecode-spec");
 
 require("../..").registerTransmutation({
     id: "build-cgraph",
-    requires: ["bc-condense-constants", "build-bcreqs"],
+    requires: ["bc-condense-constants"],
     type: "information",
     run: function(context) {
-        var heirarchalBytecode = context.inputs["build-bcreqs"];
+        var heirarchalBytecode = context.inputs["bc-condense-constants"];
         
         context.output = buildGraphFrom(heirarchalBytecode);
+        
+        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(context.output, null, 2));
     }
 });
 
 function buildGraphFrom(bcode) {
     var keys = Object.keys(bcode);
     
+    var stateKeys = keys.filter(x=>/^s\/[^/]+\/0$/.test(x));
+    
+    console.log(stateKeys);
+    
     var r = {};
     for(var i = 0; i < keys.length; i++) {
-        r[keys[i]] = findBlockTargets(bcode[keys[i]], keys);
+        r[keys[i]] = findBlockTargets(bcode[keys[i]], stateKeys);
     }
     
     return r;
@@ -26,25 +33,19 @@ function findBlockTargets(block, allBlockNames) {
     
     var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code];
     
-    var jumps = block.filter(x=>jumpLabelCodes.includes(x.code));
+    var jumps = block
+        .map((x,i)=>jumpLabelCodes.includes(x.code)?i:-1)
+        .filter(x=>x!=-1);
     
     var res = [];
     
-    for(var i = 0; i < jumps.length; i++) {
-        var jmpInstr = jumps[i];
-        
-        if(jmpInstr.deps.length != 1) throw "Unconditional jump depends on more than one item!";
-            
-        var targets = getPossibleJumpTargets(jmpInstr.deps[jmpInstr.deps.length - 1], allBlockNames);
-            
-        targets.forEach(x=> {            
-            var r = { to: x };
-            //if it's conditional...
-            if(jmpInstr.code == jumpLabelCodes[1]) r.conditional = jmpInstr.dep[0];
-            res.push(r);
-        });
+    for(var i = 0; i < jumps.length; i++) {        
+        var jmpTrgt = block[jumps[i] - 1];
+        if(!jmpTrgt || !jmpTrgt.__value) res = res.concat(allBlockNames);
+        else res.push(jmpTrgt.__value);
     }
-    return res;
+    
+    return Array.from(new Set(res));
 }
 
 function getPossibleJumpTargets(heirCode, bkeys) {

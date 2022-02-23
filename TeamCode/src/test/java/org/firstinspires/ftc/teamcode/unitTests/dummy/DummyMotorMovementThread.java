@@ -15,7 +15,7 @@ public class DummyMotorMovementThread extends Thread {
 
     private double lastVelocityRotPerms;
 
-    public final double MAX_ROTS_PER_MS = 0.01;
+    public final double MAX_ROTS_PER_MS = 0.1;
     public final double DRAG_COEF = 0.1;
     public final double ACCELERATION_ROT_PER_POWER_PER_MS = 1;
 
@@ -28,10 +28,12 @@ public class DummyMotorMovementThread extends Thread {
     }
     @Override
     public void run() {
-        long lastIterationTime = RobotTime.nanoTime();
+        long lastIterationTime = RobotTime.currentTimeMillis();
         while(running) {
-            long thisIterationTime = RobotTime.nanoTime();
-            double deltaTime = (thisIterationTime - lastIterationTime) * 0.000001;
+            long thisIterationTime = RobotTime.currentTimeMillis();
+            double deltaTime = (thisIterationTime - lastIterationTime);
+
+            if(deltaTime < 1) continue;
 
             //get the motor from the weak reference. If the result is `null`, it's been garbaged and this thread should stop.
             DummyDcMotor motor = motorRef.get();
@@ -39,9 +41,6 @@ public class DummyMotorMovementThread extends Thread {
                 running = false;
                 break;
             }
-
-            //just taking iterDelta would mean 1000rpm, so we divide by 100 for 10rpm.
-            double movementTimeCoef = deltaTime / 100.0;
 
             if (motor.runMode == DcMotor.RunMode.RUN_TO_POSITION) {
                 moveMotorTowardsTarget(motor, deltaTime);
@@ -63,8 +62,6 @@ public class DummyMotorMovementThread extends Thread {
         motor.currentPosition += (velocity * elapsedTimeMs) * ticksPerRot;
 
         lastVelocityRotPerms = velocity;
-
-        motor.power = 0;
     }
 
     private void moveMotorTowardsTarget(DummyDcMotor motor, double elapsedTimeMs) {

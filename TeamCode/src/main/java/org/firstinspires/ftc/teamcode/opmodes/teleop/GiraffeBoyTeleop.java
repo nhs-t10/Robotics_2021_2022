@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
+import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
 import org.firstinspires.ftc.teamcode.managers.nate.NateManager;
 import org.firstinspires.ftc.teamcode.managers.sensor.SensorManager;
 import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
@@ -36,10 +37,12 @@ public class GiraffeBoyTeleop extends OpMode {
     public ManipulationManager hands;
     public InputManager input;
     public SensorManager sensor;
+    public GiraffeManager giraffeNeck;
+    public NateManager clawPosition;
+
     private boolean precision = false;
     private boolean dashing = false;
     private double clawCheck;
-    private int clawPos;
 
     @Override
     public void init() {
@@ -60,7 +63,7 @@ public class GiraffeBoyTeleop extends OpMode {
         hands = new ManipulationManager(
                 hardwareMap,
                 crservo         (),
-                servo           (),
+                servo           ("nateClaw"),
                 motor           ("Carousel", "ClawMotor", "NeckMotor")
         );
 
@@ -86,25 +89,27 @@ public class GiraffeBoyTeleop extends OpMode {
         input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
         input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
         input.registerInput("ClawPosShared", new ButtonNode("gamepad2x"));
-        input.registerInput("ClawPosNeutral", new ButtonNode("gamepad2ps"));
+        input.registerInput("ClawPosHome", new ButtonNode("gamepad2ps"));
+        input.registerInput("ClawPosNeutral", new ButtonNode("ps"));
         input.registerInput("ClawUp", new ButtonNode("gamepad2dpadup"));
         input.registerInput("ClawDown", new ButtonNode("gamepad2dpaddown"));
+        input.registerInput("NeckPosUp", new ButtonNode ("gamepad2_dpadleft"));
+        input.registerInput("NeckPosDown", new ButtonNode ("gamepad2_dpadright"));
         input.registerInput("NeckUp", new ButtonNode("dpadup"));
         input.registerInput("NeckDown", new ButtonNode("dpaddown"));
         input.registerInput("ClawOpen", new ButtonNode("gamepad2leftbumper"));
         input.registerInput("EmergencyStop",
                 new AnyNode(
                                 new ButtonNode("dpadleft"),
-                                new ButtonNode("gamepad2dpadleft"),
-                                new ButtonNode("dpadright"),
-                                new ButtonNode("gamepad2dpadright")
+                                new ButtonNode("dpadright")
                 ));
 
         PriorityAsyncOpmodeComponent.start(() -> {
             if(looping) driver.driveOmni(input.getFloatArrayOfInput("drivingControls"));
         });
 
-
+        clawPosition = new NateManager(hands);
+        giraffeNeck = new GiraffeManager(clawPosition);
     }
     private boolean looping = false;
     private boolean shouldActuallyDoThings = true;
@@ -164,27 +169,55 @@ public class GiraffeBoyTeleop extends OpMode {
             }
         }
 
-//        if (input.getBool("ClawOpen") == true){
-//
-//        }
-//        else {
-//
-//        }
-//        if (input.getBool("ClawPos1") == true) {
-//
-//        }
-//        if (input.getBool("ClawPos2") == true) {
-//
-//        }
-//        if (input.getBool("ClawPos3") == true) {
-//
-//        }
-//        if (input.getBool("ClawPosHome") == true) {
-//
-//        }
-//        if (input.getBool("ClawPosNeutral") == true) {
-//
-//        }
+        if(input.getBool("NeckPosDown")) giraffeNeck.neckShort();
+        if(input.getBool("NeckPosUp")) giraffeNeck.neckTall();
+        if (hands.hasEncodedMovement("ClawMotor") == false) {
+            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+                hands.setMotorPower("ClawMotor", -0.20);
+            }
+            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+                hands.setMotorPower("ClawMotor", 0.20);
+            }
+            else {
+                hands.setMotorPower("ClawMotor", 0);
+            }
+            if (input.getBool("ClawPos1") == true) {
+                clawPosition.positionOne();
+            }
+            if (input.getBool("ClawPos2") == true) {
+                clawPosition.positionTwo();
+            }
+            if (input.getBool("ClawPos3") == true) {
+                clawPosition.positionThree();
+            }
+            if (input.getBool("ClawPosHome") == true) {
+                clawPosition.positionHome();
+            }
+        }
+        if (input.getBool("ClawOpen") == true){
+            clawPosition.setClawOpen(true);
+        }
+        else {
+            clawPosition.setClawOpen(false);
+        }
+        if (input.getBool("ClawPos1") == true) {
+            clawPosition.positionOne();
+        }
+        if (input.getBool("ClawPos2") == true) {
+            clawPosition.positionTwo();
+        }
+        if (input.getBool("ClawPos3") == true) {
+            clawPosition.positionThree();
+        }
+        if (input.getBool("ClawPosHome") == true) {
+            clawPosition.positionHome();
+        }
+        if (input.getBool("ClawPosNeutral") == true) {
+            clawPosition.positionNeutral();
+        }
+        if (input.getBool("ClawPosShared") == true) {
+            clawPosition.positionShared();
+        }
 
         //FeatureManager.logger.log(BuildHistory.buildName);
         telemetry.addData("FL Power", driver.frontLeft.getPower());

@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.managers.manipulation;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
+import org.firstinspires.ftc.teamcode.auxilary.pid.AutotuningPIDController;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class PIDlessEncoderMovementThread extends Thread {
@@ -16,6 +18,7 @@ public class PIDlessEncoderMovementThread extends Thread {
     private float[] lastDeltas;
     private boolean[] zeroed;
 
+    AutotuningPIDController[] controllers;
 
     private double slowRange;
 
@@ -34,6 +37,8 @@ public class PIDlessEncoderMovementThread extends Thread {
 
         this.zeroed = new boolean[motors.length];
 
+        this.controllers = new AutotuningPIDController[motors.length];
+
         running = true;
 
         this.slowRange = FeatureManager.getRobotConfiguration().encoderTicksPerRotation;
@@ -45,27 +50,25 @@ public class PIDlessEncoderMovementThread extends Thread {
             while(FeatureManager.isOpModeRunning) {
                 for(int i = 0; i < motors.length; i++) {
                     if(shouldMove[i]) {
-                        //The first time a motor is used, reset its ticks.
-                        if(!zeroed[i]) {
-                            zeroed[i] = true;
-                            motors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                            continue;
-                        }
+                        if(this.controllers[i] == null) this.controllers[i] = new AutotuningPIDController(ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
+
                         if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                         int currentPos = motors[i].getCurrentPosition();
                         int delta = targets[i] - currentPos;
+
+                        controllers[i].setTarget(targets[i]);
 
                         if(lastDeltas[i] != 0) {
                             float deltaChange = delta - lastDeltas[i];
                             if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i] = -1;
                         }
 
-                        double power = direction[i] * delta * powerCoefs[i] * 0.005;
+                        double power = powerCoefs[i] * controllers[i].getControl(currentPos);
 
-                        motors[i].setPower(power);
+                        motors[i].setPower(Range.clip(power, -0.3,0.3));
 
-                        if(Math.abs(delta) < ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE) {
+                        if(controllers[i].isStable(currentPos)) {
                             shouldMove[i] = false;
                         }
 
