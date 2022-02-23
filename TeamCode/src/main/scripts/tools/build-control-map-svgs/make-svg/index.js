@@ -2,6 +2,9 @@ var fs = require("fs");
 var path = require("path");
 var getMapLayoutEngine = require("./map-layout");
 
+var outFolder = path.join(__dirname, "../out");
+if(!fs.existsSync(outFolder)) fs.mkdirSync(outFolder);
+
 module.exports = function(controlMapEntry) {
     var mapName = controlMapEntry[0];
     var map = controlMapEntry[1];
@@ -12,7 +15,7 @@ module.exports = function(controlMapEntry) {
 
     addButtonLabels(map, layoutEngine);
     
-    var targetFileName = path.join(__dirname, "../out", mapName + ".svg");
+    var targetFileName = path.join(outFolder, mapName + ".svg");
 
     fs.writeFileSync(targetFileName, layoutEngine.render());
 }
