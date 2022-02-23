@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -146,17 +147,13 @@ public class GiraffeBoyTeleop extends OpMode {
             hands.setMotorPower("Carousel", 0.0);
         }
 
-        if (hands.hasEncodedMovement("ClawMotor") == false) {
-            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.incrementEncodedTargetPosition("ClawMotor", 10);
-            }
-            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.incrementEncodedTargetPosition("ClawMotor", -10);
-            }
-            else {
-                hands.setMotorPower("ClawMotor", 0);
-            }
+        if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+            hands.incrementEncodedTargetPosition("ClawMotor", 10);
         }
+        else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            hands.incrementEncodedTargetPosition("ClawMotor", -10);
+        }
+
         if (hands.hasEncodedMovement("NeckMotor") == false) {
             if (input.getBool("NeckUp") == true && input.getBool("NeckDown") == false) {
                 hands.setMotorPower("NeckMotor", -0.20);
@@ -194,7 +191,7 @@ public class GiraffeBoyTeleop extends OpMode {
                 clawPosition.positionHome();
             }
         }
-        if (input.getBool("ClawOpen") == true && giraffeNeck.neckMovementFinished()){
+        if (input.getBool("ClawOpen") == true){
             clawPosition.setClawOpen(true);
         }
         else {
@@ -234,6 +231,7 @@ public class GiraffeBoyTeleop extends OpMode {
         telemetry.addData("NeckTowerTicks", hands.getMotorPosition("NeckMotor"));
         telemetry.addData("NeckTowerTarTicks", hands.getMotorTargetPosition("NeckMotor"));
         telemetry.addData("NeckTowerPower", hands.getMotorPower("NeckMotor"));
+        telemetry.addData("Build Name", BuildHistory.buildName);
         telemetry.update();
 
     }

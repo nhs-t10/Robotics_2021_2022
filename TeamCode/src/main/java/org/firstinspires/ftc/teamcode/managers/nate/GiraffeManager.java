@@ -17,7 +17,7 @@ public class GiraffeManager extends FeatureManager {
     private int giraffePositionShared = 630;
 
     private int giraffeShortPositionHome = -561;
-    private int giraffeTallPositionHome = -409;
+    private int giraffeTallPositionHome = -402;
 
 
     NateManager lift;
@@ -56,14 +56,16 @@ public class GiraffeManager extends FeatureManager {
         neckPosition = neckPositionTall;
 
         lift.positionHomeLocation = giraffeTallPositionHome;
-        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionTall, 0.3);
+        /*if(lift.getClawPosition() == 0)*/ lift.positionHome();
+
+        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionTall, 0.7);
     }
 
     public void neckShort(){
         neckPosition = neckPositionShort;
 
         lift.positionHomeLocation = giraffeShortPositionHome;
-        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionShort, 0.3);
+        lift.hands.encodeMoveToPosition("NeckMotor", neckPositionShort, 0.7);
     }
 
     public void neckNeutral(){

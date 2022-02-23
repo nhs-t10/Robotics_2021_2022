@@ -10,23 +10,25 @@ public class AutotuningPIDController extends NormalizedPIDController {
 
     private boolean tuning;
 
+    private float tuningTarget;
+
     private float lastError = 0;
     private int period = -1;
 
     private float maxAmp = 0;
     private float minAmp = 0;
 
-    private static int TUNING_PERIODS = 4;
+    private static int TUNING_PERIODS = 3;
     private long[] periodStartTimes;
 
     private int lastPeriodStarted = -1;
     private long periodEndFinal;
 
-    public AutotuningPIDController(float minOutput, float maxOutput, float stability) {
+    public AutotuningPIDController(double minOutput, double maxOutput, float stability) {
         super(0,0,0, stability);
         this.tuning = true;
-        this.minOutput = minOutput;
-        this.maxOutput = maxOutput;
+        this.minOutput = (float)minOutput;
+        this.maxOutput = (float)maxOutput;
 
         periodStartTimes = new long[TUNING_PERIODS];
     }
@@ -49,6 +51,8 @@ public class AutotuningPIDController extends NormalizedPIDController {
 
     private float autotuneOnCurrentValue(float current) {
         float error = super.getError(current);
+
+        invalidateTuningIfTargetChanged();
 
         boolean isStartPeriod = lastError < 0 && error > 0 && needsToBeStarted(period);
         if(isStartPeriod) {
@@ -75,6 +79,14 @@ public class AutotuningPIDController extends NormalizedPIDController {
 
         if(error > 0) return minOutput;
         else return maxOutput;
+    }
+
+    private void invalidateTuningIfTargetChanged() {
+        float target = super.target;
+        if(target != tuningTarget) {
+            tuningTarget = target;
+            period = -1;
+        }
     }
 
     private boolean needsToBeStarted(int period) {

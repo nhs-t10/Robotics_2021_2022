@@ -49,27 +49,21 @@ public class PIDlessEncoderMovementThread extends Thread {
             while(FeatureManager.isOpModeRunning) {
                 for(int i = 0; i < motors.length; i++) {
                     if(hasTarget[i]) {
-                        if(this.controllers[i] == null) this.controllers[i] = new AutotuningPIDController(ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
+                        if(this.controllers[i] == null) this.controllers[i] = new AutotuningPIDController(-1.0/powerCoefs[i],
+                                1.0/powerCoefs[i],
+                                ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
 
                         if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                         int currentPos = motors[i].getCurrentPosition();
-                        int delta = targets[i] - currentPos;
 
                         controllers[i].setTarget(targets[i]);
-
-                        if(lastDeltas[i] != 0) {
-                            float deltaChange = delta - lastDeltas[i];
-                            if ((delta>0 && deltaChange>0) || (delta<0 && deltaChange<0)) direction[i] = -1;
-                        }
 
                         double power = powerCoefs[i] * controllers[i].getControl(currentPos);
 
                         motors[i].setPower(power);
 
                         isMoving[i] = !controllers[i].isStable(currentPos);
-
-                        lastDeltas[i] = delta;
                     }
                 }
                 Clocktower.time(ClocktowerCodes.MOTOR_ENCODER_THREAD);

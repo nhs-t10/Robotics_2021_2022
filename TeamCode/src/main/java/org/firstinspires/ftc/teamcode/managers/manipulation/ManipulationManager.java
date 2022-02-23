@@ -238,7 +238,7 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void setMotorPower(int i, double power) {
-        cancelEncodedMovement(i);
+        //cancelEncodedMovement(i);
         motors[i].setPower(power);
     }
 

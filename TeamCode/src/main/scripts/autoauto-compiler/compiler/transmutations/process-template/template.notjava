@@ -71,7 +71,7 @@ public class template extends AutoautoOpmode {
         FeatureManager.setIsOpModeRunning(true);
         FeatureManager.reconfigureForAuto();
 
-        telemetryManager = new TelemetryManager(telemetry, this);
+        telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
         FeatureManager.logger.setBackend(telemetry.log());
 
@@ -86,7 +86,7 @@ public class template extends AutoautoOpmode {
                                 new String[] {"Carousel", "ClawMotor", "noodle", "intake", "NeckMotor"}
                         );
 
-        clawPosition = new NateManager(limbs, hardwareMap.get(TouchSensor.class, "limit"));
+        clawPosition = new NateManager(limbs, hardwareMap.tryGet(TouchSensor.class, "limit"));
         neck = new GiraffeManager(clawPosition);
 
         cv = new CVManager(hardwareMap);
