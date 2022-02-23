@@ -75,4 +75,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: family-tree
-          path: TeamCode/src/main/scripts/tools/build-family-trees/out/*.svg
+          path: TeamCode/src/main/scripts/tools/build-control-map-svgs/out/*.svg
