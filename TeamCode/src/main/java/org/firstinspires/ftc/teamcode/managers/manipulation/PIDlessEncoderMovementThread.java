@@ -28,6 +28,7 @@ public class PIDlessEncoderMovementThread extends Thread {
         this.motors = motors;
         this.targets = new int[motors.length];
         this.hasTarget = new boolean[motors.length];
+        this.isMoving = new boolean[motors.length];
         this.powerCoefs = new double[motors.length];
         
         this.lastDeltas = new float[motors.length];
@@ -64,7 +65,7 @@ public class PIDlessEncoderMovementThread extends Thread {
 
                         double power = powerCoefs[i] * controllers[i].getControl(currentPos);
 
-                        motors[i].setPower(Range.clip(power, -0.5,0.5));
+                        motors[i].setPower(power);
 
                         isMoving[i] = !controllers[i].isStable(currentPos);
 
