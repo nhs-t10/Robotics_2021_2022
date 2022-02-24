@@ -74,5 +74,5 @@ jobs:
         run: node TeamCode/src/main/scripts/tools/build-control-map-svgs
       - uses: actions/upload-artifact@v2
         with:
-          name: family-tree
+          name: control-maps
           path: TeamCode/src/main/scripts/tools/build-control-map-svgs/out/*.svg
