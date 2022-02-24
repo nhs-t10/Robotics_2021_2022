@@ -11,10 +11,13 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="1300"
    height="400"
-   id="svgRoot"
+   id="svg8014"
    version="1.1"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="Dualshock_4_Layout_2.svg">
+   sodipodi:docname="Dualshock_4_Layout_2.svg"
+   inkscape:export-filename="C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\tools\build-control-map-svgs\make-svg\map-layout\data\Dualshock_4_Layout_2.png"
+   inkscape:export-xdpi="400"
+   inkscape:export-ydpi="400">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -28,13 +31,13 @@
      inkscape:window-height="1017"
      id="namedview131"
      showgrid="false"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="401.60359"
-     inkscape:cy="382.65334"
+     inkscape:zoom="0.70928249"
+     inkscape:cx="574.36844"
+     inkscape:cy="219.17509"
      inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svgRoot"
+     inkscape:current-layer="svg8014"
      inkscape:snap-bbox="true"
      inkscape:snap-nodes="true"
      inkscape:bbox-nodes="false"
@@ -44,7 +47,13 @@
      inkscape:snap-page="true"
      inkscape:snap-global="true" />
   <defs
-     id="defs133" />
+     id="defs133">
+    <style>
+        text {
+            font-family: 'JetBrains Mono', 'Lucida Console', monospace
+        }
+    </style>
+</defs>
   <metadata
      id="metadata8019">
     <rdf:RDF>
@@ -1228,7 +1237,7 @@
      inkscape:connector-curvature="0" />
   <path
      style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#eee077;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.29236543;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
-     d="M 838.43695,159.27533 A 17.358986,7.361505 8.2481691 0 0 853.08333,169.39638 17.358986,7.361505 8.2481691 0 0 872.52502,165.38132 17.358986,7.361505 8.2481691 0 0 857.87864,155.26027 17.358986,7.361505 8.2481691 0 0 838.43695,159.27533 Z"
+     d="M 838.43695,159.27533 A 17.358986,7.361505 8.2481691 0 0 853.08333,169.39638 A 17.358986,7.361505 8.2481691 0 0 872.52502,165.38132 17.358986,7.361505 8.2481691 0 0 857.87864,155.26027 17.358986,7.361505 8.2481691 0 0 838.43695,159.27533 Z"
      id="b2-circle"
      inkscape:connector-curvature="0" />
   <path

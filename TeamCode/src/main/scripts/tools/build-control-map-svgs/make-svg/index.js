@@ -1,6 +1,8 @@
 var fs = require("fs");
 var path = require("path");
+
 var getMapLayoutEngine = require("./map-layout");
+var prettyButton = require("./pretty-button-names");
 
 var outFolder = path.join(__dirname, "../out");
 if(!fs.existsSync(outFolder)) fs.mkdirSync(outFolder);
@@ -36,15 +38,20 @@ function makeLabelFromDescriptor(desc) {
     var title = desc.to;
 
     var attributes = desc.attributes;
-    var subtitle = "";
-    if(attributes.Scaled) subtitle += "Scaled by " + attributes.Scaled.reduce((a,b)=>a*b, 1);
-    if(attributes.Toggle) subtitle += "Toggle";
+    var subtitle = prettyButton(desc.button);
+    if(attributes.Scaled) {
+        var scalePc = attributes.Scaled.reduce((a,b)=>a*b, 1) * 100;
+        if(scalePc != 100) subtitle += " - scaled by " + scalePc + "%";
+    }
+    if(attributes.Toggle) subtitle += " - Toggle";
 
     return {
         title: title,
         subtitle: subtitle
     };
 }
+
+
 
 function getButtonDescriptors(inputNodeStructure, attributes) {
     if(!attributes) attributes = {};
@@ -77,7 +84,7 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
         case "All":
         case "Combo":
             var a = inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes)).flat(Infinity);
-            a.forEach(x=>a.forEach(y=>setAttribute(x, "Combo", y.button)));
+            a.forEach(x=>a.forEach(y=>x==y?0:setAttribute(x, "Combo", y.button)));
             return a;
         case undefined:
         case "StaticValue":

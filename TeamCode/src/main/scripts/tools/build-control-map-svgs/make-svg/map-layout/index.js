@@ -1,8 +1,11 @@
 var fakeDom = require("./fake-dom");
 var fs = require("fs");
+var nextColor = require("./colors");
 
 var mapTemplate = fs.readFileSync(__dirname + "/data/Dualshock_4_Layout_2.svg").toString();
 var mapTemplateDom = fakeDom.makeDocument(fakeDom.parseHTML(mapTemplate));
+
+var TOP_THRESHOLD = 150, LEVEL_SIZE = 50, LAYER_MAX_WIDTH = 1200, MIDDLE_Y_MARGIN = 200, MAX_SUBTITLE_WIDTH = 40;
 
 module.exports = function () {
     var document = mapTemplateDom.cloneNode();
@@ -12,14 +15,80 @@ module.exports = function () {
     return {
         addLabel: function (button, lbl) {
             var pos = getButtonPosition(button, document);
-            labels.push({ button: getButtonBasicInfo(button), position: pos, description: lbl });
+            labels.push({ button: getButtonBasicInfo(button), position: pos, description: neatifyDescription(lbl) });
         },
         render: function() {
+            condenseLabels(labels);
             addEndPositions(labels, document);
-            labels.forEach(x=>addLabelElem(document, x));
+            addLabelElements(labels, document);
             return document.innerHTML;
         }
     }
+}
+
+function neatifyDescription(description) {
+    return {
+        title: camelToSentence(description.title),
+        subtitle: description.subtitle
+    }
+}
+
+function camelToSentence(str) {
+    var w = [];
+    var acc = str[0];
+    for(var i = 1; i < str.length; i++) {
+        if(isUpper(str[i]) && !isUpper(str[i - 1])) {
+            w.push(acc);
+            acc = str[i];
+        } else {
+            acc += str[i];
+        }
+    }
+    w.push(acc);
+    return w.map(x=>titlecase(x)).join(" ");
+}
+
+function titlecase(s) {
+    return s[0].toUpperCase() + s.substring(1).toLowerCase();
+}
+
+function isUpper(c) {
+    return c.toUpperCase() == c;
+}
+
+function condenseLabels(labels) {
+    for(var i = 0; i < labels.length; i++) {
+        var lbl = labels[i];
+        //find labels with the same title and an x-coord within 400px.
+        var coterminalLabels = labels.filter(x=>
+            x.description.title == lbl.description.title 
+            && Math.abs(x.position[0] - lbl.position[0]) < 400
+            && x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
+        );
+
+        if(coterminalLabels.length > 1) {
+            lbl.positions = coterminalLabels.map(x=>x.position);
+            lbl.description.subtitle = coterminalLabels.map(x=>x.description.subtitle).join("\n");
+            coterminalLabels.forEach(x=> {
+                if(x != lbl) labels.splice(labels.indexOf(x), 1);
+            });
+        } else {
+            lbl.positions = [lbl.position];
+        }
+        
+    }
+}
+
+function addLabelElements(labels, document) {
+    var svgElem = document.getElementsByTagName("svg")[0];
+
+    var lineRoot = document.createElement("g");
+    svgElem.appendChild(lineRoot);
+
+    var labelRoot = document.createElement("g");
+    svgElem.appendChild(labelRoot);
+
+    labels.forEach(x=>addLabelElem(document, lineRoot, labelRoot, x));
 }
 
 function getButtonBasicInfo(b) {
@@ -33,13 +102,15 @@ function getButtonBasicInfo(b) {
 
 
 function addEndPositions(labels, document) {
-    var TOP_THRESHOLD = averageYCoord(labels), LEVEL_SIZE = 200, LAYER_MAX_WIDTH = 1200;
     
     //assign each a basic top/bottom layer first.
-    labels.forEach(x=>x.level = x.position[1] > TOP_THRESHOLD ? 1 : -1);
+    labels.forEach(x=>x.level = x.position[1] >= TOP_THRESHOLD ? 1 : -1);
     
     //estimate width & save it
-    labels.forEach(x=>x.estWidth = estimateWidth(x));
+    labels.forEach(x=>{
+        x.estWidth = estimateWidth(x);
+        x.estHeight = estimateHeight(x);
+    });
 
     recalculateLevelIndexes(labels);
 
@@ -48,14 +119,34 @@ function addEndPositions(labels, document) {
 
     labels.forEach(x=> x.endPosition = [
         (x.indexInLevel / x.countInLevel) * LAYER_MAX_WIDTH,
-        TOP_THRESHOLD + LEVEL_SIZE * x.level 
+        TOP_THRESHOLD + Math.sign(x.level) * MIDDLE_Y_MARGIN + calculateDistanceToLevel(labels, x.level)
     ]);
     
-    adjustYBox(document, labels, TOP_THRESHOLD, LEVEL_SIZE);
+    adjustYBox(document, labels, TOP_THRESHOLD, LEVEL_SIZE, MIDDLE_Y_MARGIN);
 }
 
-function adjustYBox(document, labels, middle, levelSize) {
-    var svgElem = document.getElementById("svgRoot");
+function calculateDistanceToLevel(labels, lvl) {
+    var total = 0;
+
+    var lvlSign = Math.sign(lvl);    
+    var lvlMag = Math.abs(lvl);
+
+    //when building "down" (actually up bc svg coords), count the current level.
+    var lvlTarg = lvlSign == -1 ? lvlMag : lvlMag - 1;
+
+    for(var i = 1; i <= lvlTarg; i++) {
+        var l = lvlSign * i;
+        var lbl = labels.filter(x=>x.level == l);
+        var levelHeight = lbl.reduce((a,x)=>Math.max(x.estHeight, a), 0);
+        
+        total += levelHeight + 10;
+    }
+
+    return total * lvlSign;
+}
+
+function adjustYBox(document, labels, middle, levelSize, marginSize) {
+    var svgElem = document.getElementsByTagName("svg")[0]
     
     var width = +svgElem.getAttribute("width");
     var height = +svgElem.getAttribute("height");
@@ -64,9 +155,12 @@ function adjustYBox(document, labels, middle, levelSize) {
     
     var maxLevel = Math.max(...labels.map(x=>x.level));
     var minLevel = Math.min(...labels.map(x=>x.level));
+
+    var minY = middle - marginSize * 2 + (minLevel - 1) * levelSize;
+    var maxY = middle + marginSize * 2 + (maxLevel + 1) * levelSize;
     
-    viewBox[1] = middle - Math.abs(maxLevel + 1) * levelSize;
-    viewBox[3] = height + middle + Math.abs(minLevel - 1) * levelSize;
+    viewBox[1] = minY;
+    viewBox[3] = (maxY - minY);
     
     viewBox[0] += -100;
     viewBox[2] += 100;
@@ -80,24 +174,36 @@ function recalculateLevelSizes(labels, max) {
     while(labelsNeedCalc) {
         
         execCbForEachLabelLayer(labels, function(levelIndex) {
-            if(!labelsNeedCalc) return;
             
-            var levelWidth = 0;
             var level = labels.filter(x=>x.level == levelIndex)
-                .sort((a,b)=>b.estWidth - a.estWidth);
+                .sort((a,b)=>a.indexInLevel - b.indexInLevel);
                 
-            if(level.length != 0) {
-                for(var i = 0; i < level.width; i++) {
-                    levelWidth += level[i].estWidth;
-                    if(levelWidth > max) {
-                        level[0].level += Math.sign(levelIndex);
-                        return;
-                    }
-                }
+            for(var i = 1; i < level.length; i++) {
+                if(labelOverlaps(level, i, max)) level[i].level += Math.sign(levelIndex);
             }
+
             labelsNeedCalc = false;
         });
     }
+}
+
+function labelOverlaps(labels, index, levelMaxWidth) {
+    var level = labels[index].level;
+    var referenceElementX = calculateX(labels[index], levelMaxWidth);
+
+    for(var i = index - 1; i >= 0; i--) {
+        if(labels[i].level == level) {
+            var thisX = calculateX(labels[i], levelMaxWidth)
+            var availableSpace = referenceElementX - thisX;
+
+            if(labels[index].estWidth >= availableSpace - 100) return true;
+        }
+    }
+    return false;
+}
+
+function calculateX(label, levelWidth) {
+    return (label.indexInLevel / label.countInLevel) * levelWidth;
 }
 
 function recalculateLevelIndexes(labels) {
@@ -129,40 +235,156 @@ function execCbForEachLabelLayer(labels, cb) {
     }
 }
 
-function averageYCoord(labels) {
-    var t = 0;
-    labels.forEach(x=>t += x.position[1]);
-    return t / labels.length;
-}
-
 function estimateWidth(label) {
     var d = label.description;
-    return Math.max(d.title.length * 10, d.subtitle.length * 5) + 10;
+    var ls = getLines(d.subtitle, MAX_SUBTITLE_WIDTH);
+    var mls = ls.reduce((a,x)=>Math.max(x.length, a), 0);
+
+    return Math.max(d.title.length * 18, mls * 14) + 10;
+}
+function estimateHeight(label) {
+    var d = label.description;
+    
+    var lCount = getLines(d.subtitle, MAX_SUBTITLE_WIDTH).length;
+
+    return (40) + lCount * 18 + 10;
 }
 
-function addLabelElem(document, label) {
-    var svgElem = document.getElementById("svgRoot");
+function getLines(text, maxLineLength) {
+    var explicitLines = text.split("\n");
+    return explicitLines
+        .map(x=>getLinesCollapseWhitespace(x, maxLineLength))
+        .flat();
+}
 
-    var x = label.position[0], y = label.position[1];
+function getLinesCollapseWhitespace(text, maxLineLength) {
 
+    var words = text.split(/\b/);
+
+    var lines = [], line = "";
+    for(var i = 0; i < words.length; i++) {
+        if(words[i] == "") {
+            lines.push(line + "\n");
+            line = "";
+        } else {
+            if(line.length + words[i].length > maxLineLength) {
+                lines.push(line);
+                line = words[i];
+            } else {
+                line += words[i];
+            }
+        }
+    }
+    lines.push(line);
+
+    return lines;
+}
+
+function addLabelElem(document, lineRoot, labelRoot, label) {
     var eX = label.endPosition[0], eY = label.endPosition[1];
+
+    var color = nextColor();
     
     var path = document.createElement("path");
-    path.setAttribute("d", lineBetween(x, y, eX, eY));
-    path.style.stroke = "#000000";
-    path.style.fill = "#00000000";
-    path.style.strokeWidth = "3";
-    svgElem.appendChild(path);
+    path.setAttribute("d", 
+        label.positions
+        .map(p=>lineBetween(p[0], p[1], eX + label.estWidth / 2, eY))
+        .join(" ")
+    );
+    path.style.stroke = color;
+    path.style.fill = "none";
+    path.style.strokeWidth = "2";
+    lineRoot.appendChild(path);
 
-    var text = document.createElement("text");
-    text.setAttribute("x", eX);
-    text.setAttribute("y", eY);
-    text.textContent = label.description.title;
-    svgElem.appendChild(text);
+    var labelElem = createLabelElem(label, eX, eY, color, document);
+    labelRoot.appendChild(labelElem);
+
+    
+}
+
+function createLabelElem(label, x, y, color, document) {
+    var g = document.createElement("g");
+
+    addPerspBoxLines(g, x, y, label.estWidth, label.estHeight, label.level, color, document);
+
+    var hText = document.createElement("text");
+    hText.style.fontWeight = "900";
+    hText.style.fontSize = "18px";
+    hText.style.dominantBaseline = "hanging";
+
+    hText.setAttribute("x", x + 5);
+    hText.setAttribute("y", y + 5);
+    hText.textContent = label.description.title;
+    g.appendChild(hText);
+
+    var dText = document.createElement("text");
+    var dLines = getLines(label.description.subtitle, MAX_SUBTITLE_WIDTH);
+    dLines.forEach(ln=> {
+        var t = document.createElement("tspan");
+        t.textContent = ln;
+        t.setAttribute("x", x + 5);
+        t.setAttribute("dy", 18);
+        dText.appendChild(t);
+    });
+    dText.setAttribute("x", x + 5);
+    dText.setAttribute("y", y + 25);
+
+    g.appendChild(dText);
+
+    return g;
+}
+
+function addPerspBoxLines(parent, x, y, w, h, lvl, color, document) {
+    //background box
+    parent.appendChild(makeBoxOfColor(x, y, w, h, "#fff", document));
+
+    var lineTop = pathWithD(parent, `M${x} ${y} L ${x + w} ${y}`, color, document);
+    var lineBottom = pathWithD(parent, `M${x} ${y + h} L ${x + w} ${y + h}`, color, document);
+    var lineLeft = pathWithD(parent, `M${x} ${y} L ${x} ${y + h}`, color, document);
+    var lineRight = pathWithD(parent, `M${x + w} ${y} L ${x + w} ${y + h}`, color, document);
+
+    var xStart = x, xEnd = x + w;
+
+    lineLeft.style.strokeWidth = (1 + 2 * Math.round((xStart - LAYER_MAX_WIDTH/2) / (LAYER_MAX_WIDTH/2)));
+    lineRight.style.strokeWidth = 4 - (1 + 2 * Math.round((xEnd - LAYER_MAX_WIDTH/2) / (LAYER_MAX_WIDTH/2)));
+
+
+    if(lvl < 0) {
+        lineBottom.style.strokeWidth = 3;
+    } else {
+        lineTop.style.strokeWidth = 3;
+    }
+
+}
+
+function makeBoxOfColor(x, y, w, h, color, document) {
+    var bgBox = document.createElement("rect");
+    bgBox.setAttribute("x", x);
+    bgBox.setAttribute("y", y);
+    bgBox.setAttribute("height", h);
+    bgBox.setAttribute("width", w);
+    bgBox.style.fill = color;
+    return bgBox;
+}
+
+function pathWithD(parent, d, color, document) {
+    if(typeof parent === "string") {
+        d = parent;
+        parent = undefined;
+    }
+
+    var p = document.createElement("path");
+    p.setAttribute("d", d);
+    p.style.strokeWidth = 1;
+    p.style.stroke = color;
+    p.style.strokeLinejoin = "round";
+
+    if(parent) parent.appendChild(p);
+    return p;
 }
 
 function lineBetween(x, y, eX, eY) {
-    var deltaXCoef = 1 / Math.abs((eY - y) / (eX - x)) * 0.2;
+    var deltaXCoef =  0.5;
     
     
     
