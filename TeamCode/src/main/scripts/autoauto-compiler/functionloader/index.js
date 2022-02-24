@@ -8,7 +8,7 @@ var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinsp
 
 var cache = require("../../cache");
 
-var CACHE_VERSION = 9001;
+var CACHE_VERSION = 9002 + Math.random();
 
 var cacheManagers = cache.get("autoauto-managers", {});
 

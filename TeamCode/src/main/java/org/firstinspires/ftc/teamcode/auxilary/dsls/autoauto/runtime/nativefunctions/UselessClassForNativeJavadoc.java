@@ -49,8 +49,8 @@ public abstract class UselessClassForNativeJavadoc {
 
     /**
      *
-     * @param value
-     * @see #delegate(AutoautoString)
+     * @param value The value to provide to its parent. If this file isn't being used as a module, {@code provide} does nothing.
+     * @see #delegate(AutoautoString, AutoautoValue...)
      */
     @AutoautoNativeJavadoc(name = "provide")
     public abstract void provide(AutoautoValue value);

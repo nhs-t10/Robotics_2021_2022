@@ -75,27 +75,19 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         processedOverloads += overloadsWithNArgs.length;
 
         callMethodSource += `if(args.length == ${i}) {`;
+
+        var widestOverload = findWidestOverload(overloadsWithNArgs);
         
-        for(var j = 0; j < overloadsWithNArgs.length; j++) {
-            var overload = overloadsWithNArgs[j];
 
-            if(overload.argnames.length > argumentNames.length) argumentNames = overload.argnames;
+        if(widestOverload.argnames.length > argumentNames.length) argumentNames = widestOverload.argnames;
 
+        
+        if(widestOverload.type != "void") callMethodSource += `return new ${equivAutoautoClass(widestOverload.type)}(`;
+        callMethodSource += `manager.${name}(`;
+        callMethodSource += widestOverload.args.map((x,k)=>`${caster(x)}args[${k}].${rawValueGetter(x)}`).join(",");
 
-            //process each arg & add it to the pile of `&&` clauses
-            
-            if(overload.args.length) {
-             callMethodSource += `if(`;
-             callMethodSource += overload.args.map((x,k)=>`args[${k}] instanceof ${equivAutoautoClass(x)}`).join("&&");
-             callMethodSource += ") {";
-            }
-                if(overload.type != "void") callMethodSource += `return new ${equivAutoautoClass(overload.type)}(`;
-                callMethodSource += `manager.${name}(`;
-                    callMethodSource += overload.args.map((x,k)=>`${caster(x)}((${equivAutoautoClass(x)})args[${k}]).${rawValueGetter(x)}`).join(",")
-                if(overload.type != "void") callMethodSource += `));`;
-                else callMethodSource += "); return new AutoautoUndefined();";
-            if(overload.args.length) callMethodSource += "}";
-        }
+        if(widestOverload.type != "void") callMethodSource += `));`;
+        else callMethodSource += "); return new AutoautoUndefined();";
 
 
         callMethodSource += `}`;
@@ -119,6 +111,37 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         shimClassFunction: [noConflictName, classname],
         cachableFunctionIndexLines: functionIndexLines
     }
+}
+
+function findWidestOverload(overloads) {
+    var maxWidenessScore = 0;
+    var maxScoreIndex = 0;
+
+    for(var i = 0; i < overloads.length; i++) {
+        var w = 0;
+        overloads[i].args.forEach(x=> w += getTypeWideness(x));
+
+        if(w > maxWidenessScore) {
+            maxWidenessScore = w;
+            maxScoreIndex = i;
+        }
+    }
+
+    return overloads[maxScoreIndex];
+}
+
+function getTypeWideness(type) {
+    return  ({
+        "byte": 1,
+        "short": 1,
+        "int": 1,
+        "long": 2,
+        "float": 3,
+        "double": 3,
+        "boolean": 1,
+        "char": 4,
+        "String": 5
+    })[type] || 0;
 }
 
 function replaceNumbers(str) {
@@ -151,13 +174,13 @@ function caster(type) {
 
 function rawValueGetter(type) {
     return  ({
-        "byte": "getFloat()",
-        "short": "getFloat()",
-        "int": "getFloat()",
-        "long": "getFloat()",
-        "float": "getFloat()",
-        "double": "getFloat()",
-        "boolean": "getBoolean()",
+        "byte": "castToNumber().getFloat()",
+        "short": "castToNumber().getFloat()",
+        "int": "castToNumber().getFloat()",
+        "long": "castToNumber().getFloat()",
+        "float": "castToNumber().getFloat()",
+        "double": "castToNumber().getFloat()",
+        "boolean": "castToBoolean().getBoolean()",
         "char": "getString().charAt(0)",
         "String": "getString()"
     })[type] || "getString()";

@@ -61,7 +61,7 @@ public class DelegateFunction extends NativeFunction {
     }
 
     public static String pathnameToClassname(String pathname, String relativeTo) {
-        String pathnameNoExtension = pathname.replaceAll("\\.autoauto$", "__autoauto");
+        String pathnameNoExtension = pathname.replaceAll("\\.autoauto$", "");
 
         String absolutePackage = relativeTo.substring(0, relativeTo.lastIndexOf("."));
         String relativePackage = pathnameNoExtension

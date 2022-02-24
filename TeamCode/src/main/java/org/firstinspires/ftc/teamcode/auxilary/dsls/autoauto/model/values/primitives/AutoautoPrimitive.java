@@ -84,4 +84,32 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
             prototype.put(k, p.prototype.get(k));
         }
     }
+
+    //casting!
+    public final AutoautoNumericValue castToNumber() {
+        if(this instanceof AutoautoNumericValue) return (AutoautoNumericValue) this;
+        if(this instanceof AutoautoUndefined) return new AutoautoNumericValue(0f);
+        if(this instanceof AutoautoBooleanValue) return new AutoautoNumericValue(((AutoautoBooleanValue) this).value ? 1f : 0f);
+        if(this instanceof AutoautoRelation) return ((AutoautoRelation) this).value.castToNumber();
+
+        if(this instanceof AutoautoString) {
+            try {
+                return new AutoautoNumericValue(Float.parseFloat(((AutoautoString) this).value));
+            } catch (NumberFormatException ignored) {
+                return new AutoautoNumericValue(0f);
+            }
+        }
+
+        if(this instanceof AutoautoTable) return new AutoautoNumericValue(((AutoautoTable) this).size());
+
+        return new AutoautoNumericValue(0f);
+    }
+
+    public final AutoautoString castToString() {
+        return new AutoautoString(this.getString());
+    }
+
+    public final AutoautoBooleanValue castToBoolean() {
+        return new AutoautoBooleanValue(AutoautoBooleanValue.isTruthy(this));
+    }
 }
