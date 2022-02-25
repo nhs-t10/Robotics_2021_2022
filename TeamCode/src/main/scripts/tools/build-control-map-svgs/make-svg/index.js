@@ -50,6 +50,9 @@ function makeLabelFromDescriptor(desc) {
     if(attributes.Toggle) subtitle += " - Toggle";
     if(attributes.All) subtitle += " and";
     if(attributes.Any) subtitle += " or";
+    if(attributes.StartGroup) subtitle = "(" + subtitle;
+    if(attributes.EndGroup) subtitle += ") \n";
+    if(attributes.Plus) subtitle += " combined with";
 
     return {
         title: title,
@@ -77,13 +80,19 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 (i == a.length - 1) ? attributes : addAttribute(attributes, "All")
                 ));
         case "MultiInput":
-            return inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
+            return inputNodeStructure.args.map((x,i,a)=>{
+                            if(i == 0) return getButtonDescriptors(x, addAttribute(attributes, "StartGroup"));
+                            else if(i == a.length - 1) return getButtonDescriptors(x, addAttribute(attributes, "EndGroup"));
+                            else return getButtonDescriptors(x, attributes);
+                        });
         case "Multiply":
             return getButtonDescriptors(inputNodeStructure.args[0],
                 addAttribute(attributes, "Multiplied", inputNodeStructure.args[1])
                 );
         case "Plus":
-            return inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
+            return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
+                (i == a.length - 1) ? attributes : addAttribute(attributes, "Plus")
+                ));
         case "Scale":
             return getButtonDescriptors(inputNodeStructure.args[0],
                 addAttribute(attributes, "Scaled", inputNodeStructure.args[1])

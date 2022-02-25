@@ -63,7 +63,7 @@ function condenseLabels(labels) {
         var coterminalLabels = labels.filter(x=>
             x.description.title == lbl.description.title 
             && Math.abs(x.position[0] - lbl.position[0]) < 1200
-            && x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
+//          && x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
         );
 
         if(coterminalLabels.length > 1) {
