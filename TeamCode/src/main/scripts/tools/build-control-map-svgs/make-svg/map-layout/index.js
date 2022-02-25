@@ -62,7 +62,7 @@ function condenseLabels(labels) {
         //find labels with the same title and an x-coord within 400px.
         var coterminalLabels = labels.filter(x=>
             x.description.title == lbl.description.title 
-            && Math.abs(x.position[0] - lbl.position[0]) < 400
+            && Math.abs(x.position[0] - lbl.position[0]) < 1200
             && x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
         );
 

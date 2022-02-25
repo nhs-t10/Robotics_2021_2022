@@ -44,6 +44,8 @@ function makeLabelFromDescriptor(desc) {
         if(scalePc != 100) subtitle += " - scaled by " + scalePc + "%";
     }
     if(attributes.Toggle) subtitle += " - Toggle";
+    if(attributes.All) subtitle += " and";
+    if(attributes.Any) subtitle += " or";
 
     return {
         title: title,
@@ -63,6 +65,13 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
             attributes: attributes
         }];
         case "Any":
+            return getButtonDescriptors(inputNodeStructure.args[0],
+                addAttribute(attributes, "Any")
+                );
+        case "All":
+            return getButtonDescriptors(inputNodeStructure.args[0],
+                addAttribute(attributes, "All")
+                );
         case "MultiInput":
         case "Multiply":
         case "Plus":

@@ -1,4 +1,8 @@
 module.exports = function prettyButton(b) {
+if (b == "b2-cross" || b == "b2-circle") return {
+    "b2-cross": "X",
+    "b2-circle": "Circle"
+} [b]
     b = b.replace(/b\d?-/, "");
     return {
         touchpadfinger1: "Touchpad",
@@ -19,8 +23,8 @@ module.exports = function prettyButton(b) {
         rightbumper: "Right Bumper",
         leftstickbutton: "Left Stick Press",
         rightstickbutton: "Right Stick Press",
-        circle: "Circle",
-        cross: "X",
+        circle: "Circle (Red)",
+        cross: "X (Blue)",
         triangle: "Triangle",
         square: "Square",
         share: "Share",
@@ -31,7 +35,7 @@ module.exports = function prettyButton(b) {
         leftsticky: "Left Stick (Y)",
         rightstickx: "Right Stick (X)",
         rightsticky: "Right Stick (Y)",
-        lefttrigger: "Right Trigger",
-        righttrigger: "Left Trigger"
+        lefttrigger: "Left Trigger",
+        righttrigger: "Right Trigger"
     }[b] || b;
 }
