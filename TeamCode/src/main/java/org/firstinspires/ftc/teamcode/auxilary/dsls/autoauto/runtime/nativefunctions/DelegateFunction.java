@@ -40,7 +40,9 @@ public class DelegateFunction extends NativeFunction {
             AutoautoProgram program;
             try {
                 Class<AutoautoOpmode> p = (Class<AutoautoOpmode>) Class.forName(address);
-                program = (AutoautoProgram) p.getMethod("generateProgram").invoke(null);
+                program = (AutoautoProgram) p.getMethod("generateProgram").invoke(
+                        p.newInstance()
+                );
             } catch (Exception e) {
                 throw new AutoautoArgumentException("No such module `" + address + "`"+ formatStack());
             }
