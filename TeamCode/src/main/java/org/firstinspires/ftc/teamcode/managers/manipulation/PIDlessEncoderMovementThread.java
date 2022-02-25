@@ -92,6 +92,10 @@ public class PIDlessEncoderMovementThread extends Thread {
     }
 
     public void incrementTarget(int i, int increment) {
+        if(!hasTarget[i]) {
+            targets[i] = motors[i].getCurrentPosition();
+            hasTarget[i] = true;
+        }
         targets[i] += increment;
     }
 }

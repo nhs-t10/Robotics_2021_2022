@@ -358,6 +358,6 @@ public class ManipulationManager extends FeatureManager {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
 
-        incrementEncodedTargetPosition(index, increment);
+        //incrementEncodedTargetPosition(index, increment);
     }
 }

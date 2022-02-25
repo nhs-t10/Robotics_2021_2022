@@ -1,5 +1,6 @@
+#init:
     let target = module_args[0],
-        let error = target - getThirdAngleOrientation(),
-        let kP = 0.05,
-        driveOmni(r = error * kP),
-        provide(error)
+        let error = target - getThirdAngleOrientation(), log(error),
+        let kP = 0.023,
+        driveOmni(0, -1*error*kP, 0),
+        provide(Math.abs(error))

@@ -55,8 +55,9 @@ public class GiraffeManager extends FeatureManager {
     public void neckTall(){
         neckPosition = neckPositionTall;
 
+        boolean isAtHome = lift.getClawPosition() == 0;
         lift.positionHomeLocation = giraffeTallPositionHome;
-        /*if(lift.getClawPosition() == 0)*/ lift.positionHome();
+        if (isAtHome) lift.positionHome();
 
         lift.hands.encodeMoveToPosition("NeckMotor", neckPositionTall, 0.7);
     }

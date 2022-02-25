@@ -6,31 +6,13 @@ $
     goto clawout
 
 #clawout:
-//  Make the limit switch safety function work with new SensorManager code
-    setServoPosition("intakeMoverLeft", -1.0), setServoPosition("intakeMoverRight", 1.0), next;
-    setServoPower("nateMoverLeft", -1.0), setServoPower("nateMoverRight", 1.0), after 2650ms next;
-    setServoPower("nateMoverLeft", 0.0), setServoPower("nateMoverRight", 0.0), next;
-//    //homing(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
-    log("I AM MOVING CLAW"), next;
-    after 3s log("I FINISHED CLAW OUT AND ALL I GOT WAS THIS STUPID T-SHIRT"), after 3s goto vision
-
-#vision:
-    log("WELL WE GOT THIS FAR"),
-    //if(isFound() == false) homing(), if(isFound() == true) next;
-    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), next;
-    let CVPosition = getCVPrecisePosition(), next;
-    log("Basic Reading: " + CVReading + " | Precise Reading" + CVPosition), next;
-    goto movesomewhere
-
-#movesomewhere:
-    log("MOVING SOMEWHERE"),
-    driveOmni(0,0.5,0), after 2s next;
-    log("FINISHED DRIVING"), next;
-    log("going to deliver"), goto deliver
+    driveOmni(0.5,0,0),after 2in next;
+    neckTall(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
+    goto deliver;
 
 #deliver:
-    log("DELIVERING"), if(CVReading == 0) positionOne(), if(CVReading == 1) positionTwo(), if(CVReading == 2) positionThree(), if(liftMovementFinished()) goto park
+    positionOne(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
 
 #park:
-    positionNeutral(), if(liftMovementFinished()) next;
+    positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
     driveOmni(0,0,0)

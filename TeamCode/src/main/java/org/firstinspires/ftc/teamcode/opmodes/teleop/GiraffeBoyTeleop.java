@@ -163,7 +163,7 @@ public class GiraffeBoyTeleop extends OpMode {
         }
     }
     public void real_loop_Bad_Practice_Fix_Me_Later() {
-        hands.setMotorPower("Carousel", (double) input.getFloat("Carousel"));
+        hands.setMotorPower("Carousel", input.getFloat("Carousel"));
         hands.incrementEncodedTargetPosition("NeckMotor",  (int) input.getFloat("NeckManualMove"));
         hands.incrementEncodedTargetPosition("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
@@ -172,11 +172,11 @@ public class GiraffeBoyTeleop extends OpMode {
 
         clawPosition.setClawOpen(input.getBool("ClawOpen"));
 
+        if (input.getBool("ClawPosIntake")) clawPosition.positionHome();
         if (input.getBool("ClawPos1")) clawPosition.positionOne();
         if (input.getBool("ClawPos2")) clawPosition.positionTwo();
         if (input.getBool("ClawPos3")) clawPosition.positionThree();
-        if (input.getBool("ClawPosHome")) clawPosition.positionHome();
-        if (input.getBool("ClawPosNeutral")) clawPosition.positionNeutral();
+        if (input.getBool("ClawPos0")) clawPosition.positionNeutral();
         if (input.getBool("ClawPosShared")) clawPosition.positionShared();
         if (input.getBool("EmergencyStop")) clawPosition.emergencyStop();
 
