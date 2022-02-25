@@ -73,9 +73,11 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 (i == a.length - 1) ? attributes : addAttribute(attributes, "Any")
                 ));
         case "All":
-            return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
-                (i == a.length - 1) ? attributes : addAttribute(attributes, "All")
-                ));
+            return inputNodeStructure.args.map((x,i,a)=>{
+                if(i == 0) return getButtonDescriptors(x, addAttribute(attributes, "All"));
+                else if(i == a.length - 1) return getButtonDescriptors(x, addAttribute(attributes, "All"));
+                else return getButtonDescriptors(x, attributes);
+            });
         case "MultiInput":
             return inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
         case "Multiply":
