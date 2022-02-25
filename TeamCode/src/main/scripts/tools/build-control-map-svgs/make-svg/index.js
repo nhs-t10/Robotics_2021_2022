@@ -43,6 +43,10 @@ function makeLabelFromDescriptor(desc) {
         var scalePc = attributes.Scaled.reduce((a,b)=>a*b, 1) * 100;
         if(scalePc != 100) subtitle += " - scaled by " + scalePc + "%";
     }
+    if(attributes.Multiplied) {
+            var MultiPc = attributes.Multiplied
+            if(MultiPc != 100) subtitle += " - multiplied by " + MultiPc;
+        }
     if(attributes.Toggle) subtitle += " - Toggle";
     if(attributes.All) subtitle += " and";
     if(attributes.Any) subtitle += " or";
@@ -65,15 +69,19 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
             attributes: attributes
         }];
         case "Any":
-            return getButtonDescriptors(inputNodeStructure.args[0],
-                addAttribute(attributes, "Any")
-                );
+            return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
+                (i == a.length - 1) ? attributes : addAttribute(attributes, "Any")
+                ));
         case "All":
             return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
                 (i == a.length - 1) ? attributes : addAttribute(attributes, "All")
                 ));
         case "MultiInput":
+            return inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
         case "Multiply":
+            return getButtonDescriptors(inputNodeStructure.args[0],
+                addAttribute(attributes, "Multiplied", inputNodeStructure.args[1])
+                );
         case "Plus":
             return inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
         case "Scale":
