@@ -111,10 +111,10 @@ public class GiraffeBoyTeleop extends OpMode {
         input.registerInput("ClawPosShared",
                 new AnyNode(
                         new ButtonNode("gamepad2x"),
-                        new ButtonNode("rightbumper")
-                        )
+                        new ButtonNode("righttrigger")
+                )
         );
-        input.registerInput("ClawPosIntake", new ButtonNode("gamepad2ps"));
+        input.registerInput("ClawPosIntake", new ButtonNode("lefttrigger"));
         input.registerInput("ClawManualMove",
                 new PlusNode(
                         new MultiplyNode(new ButtonNode("gamepad2dpadup"), -10f),
