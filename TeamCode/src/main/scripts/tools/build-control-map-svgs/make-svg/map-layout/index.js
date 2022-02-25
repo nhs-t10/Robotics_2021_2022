@@ -162,10 +162,17 @@ function adjustYBox(document, labels, middle, levelSize, marginSize) {
     viewBox[1] = minY;
     viewBox[3] = (maxY - minY);
     
+    var maxX = Math.max(...labels.map(x=>x.endPosition[0] + x.estWidth));
+    
+    viewBox[2] = maxX;
+    
     viewBox[0] += -100;
     viewBox[2] += 100;
     
+    
+    
     svgElem.setAttribute("height", viewBox[3]);
+    svgElem.setAttribute("width", viewBox[2]);
     svgElem.setAttribute("viewBox", viewBox.join(" "));
 }
 
