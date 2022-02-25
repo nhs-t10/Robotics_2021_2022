@@ -69,9 +69,9 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 addAttribute(attributes, "Any")
                 );
         case "All":
-            return getButtonDescriptors(inputNodeStructure.args[0],
+            return inputNodeStructure.args.map(x=>getButtonDescriptors(x,
                 addAttribute(attributes, "All")
-                );
+                ));
         case "MultiInput":
         case "Multiply":
         case "Plus":
