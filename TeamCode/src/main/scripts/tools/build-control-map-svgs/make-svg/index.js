@@ -76,11 +76,9 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 (i == a.length - 1) ? attributes : addAttribute(attributes, "Any")
                 ));
         case "All":
-            return inputNodeStructure.args.map((x,i,a)=>{
-                if(i == 0) return getButtonDescriptors(x, addAttribute(attributes, "All"));
-                else if(i == a.length - 1) return getButtonDescriptors(x, addAttribute(attributes, "All"));
-                else return getButtonDescriptors(x, attributes);
-            });
+            return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
+                (i == a.length - 1) ? attributes : addAttribute(attributes, "All")
+                ));
         case "MultiInput":
             return inputNodeStructure.args.map((x,i,a)=>{
                             if(i == 0) return getButtonDescriptors(x, addAttribute(attributes, "StartGroup"));
@@ -92,9 +90,14 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 addAttribute(attributes, "Multiplied", inputNodeStructure.args[1])
                 );
         case "Plus":
-            return inputNodeStructure.args.map((x,i,a)=>getButtonDescriptors(x,
-                (i == a.length - 1) ? attributes : addAttribute(attributes, "Plus")
-                ));
+            var ents =  inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes));
+            ents.forEach((x,i,a)=>{
+                var flx = x.flat(Infinity)
+                var lst = flx[flx.length - 1];
+                console.log(lst)
+                if(i != a.length - 1) setAttribute(lst, "Plus")
+                });
+            return ents.flat(Infinity);
         case "Scale":
             return getButtonDescriptors(inputNodeStructure.args[0],
                 addAttribute(attributes, "Scaled", inputNodeStructure.args[1])
@@ -109,7 +112,6 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
                 getButtonDescriptors(inputNodeStructure.args[1], addAttribute(attributes, "IfTrue")),
                 getButtonDescriptors(inputNodeStructure.args[2], addAttribute(attributes, "IfFalse"))
             ];
-        case "All":
         case "Combo":
             var a = inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes)).flat(Infinity);
             a.forEach(x=>a.forEach(y=>x==y?0:setAttribute(x, "Combo", y.button)));
@@ -150,6 +152,10 @@ function clone(n) {
 }
 
 function setAttribute(buttonDescriptor, attr, value) {
+    if(typeof buttonDescriptor != "object") return;
+
+    if(!buttonDescriptor.attributes) buttonDescriptor.attributes = {};
+
     if(!buttonDescriptor.attributes[attr]) buttonDescriptor.attributes[attr] = [];
     buttonDescriptor.attributes[attr].push(value);
 }
