@@ -5,7 +5,7 @@ var nextColor = require("./colors");
 var mapTemplate = fs.readFileSync(__dirname + "/data/Dualshock_4_Layout_2.svg").toString();
 var mapTemplateDom = fakeDom.makeDocument(fakeDom.parseHTML(mapTemplate));
 
-var TOP_THRESHOLD = 150, LEVEL_SIZE = 50, LAYER_MAX_WIDTH = 1200, MIDDLE_Y_MARGIN = 200, MAX_SUBTITLE_WIDTH = 40;
+var TOP_THRESHOLD = 150, LEVEL_SIZE = 50, LAYER_MAX_WIDTH = 1200, MIDDLE_Y_MARGIN = 200, MAX_SUBTITLE_WIDTH = 40, BORDER_MARGIN = 100;
 
 module.exports = function () {
     var document = mapTemplateDom.cloneNode();
@@ -63,7 +63,7 @@ function condenseLabels(labels) {
         var coterminalLabels = labels.filter(x=>
             x.description.title == lbl.description.title 
             && Math.abs(x.position[0] - lbl.position[0]) < 1200
-//          && x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
+            //&& x.position[1] > TOP_THRESHOLD == lbl.position[1] > TOP_THRESHOLD
         );
 
         if(coterminalLabels.length > 1) {
@@ -153,12 +153,10 @@ function adjustYBox(document, labels, middle, levelSize, marginSize) {
     
     var viewBox = [0,0,width,height];
     
-    var maxLevel = Math.max(...labels.map(x=>x.level));
-    var minLevel = Math.min(...labels.map(x=>x.level));
-
-    var minY = middle - marginSize * 2 + (minLevel - 1) * levelSize;
-    var maxY = middle + marginSize * 2 + (maxLevel + 1) * levelSize;
+    var minY = Math.min(...labels.map(x=>x.endPosition[1])) - BORDER_MARGIN;
+    var maxY = Math.max(...labels.map(x=>x.endPosition[1] + x.estHeight)) + BORDER_MARGIN;
     
+     
     viewBox[1] = minY;
     viewBox[3] = (maxY - minY);
     
@@ -166,8 +164,8 @@ function adjustYBox(document, labels, middle, levelSize, marginSize) {
     
     viewBox[2] = maxX;
     
-    viewBox[0] += -100;
-    viewBox[2] += 100;
+    viewBox[0] -= BORDER_MARGIN;
+    viewBox[2] += BORDER_MARGIN;
     
     
     
@@ -392,8 +390,6 @@ function pathWithD(parent, d, color, document) {
 
 function lineBetween(x, y, eX, eY) {
     var deltaXCoef =  0.5;
-    
-    
     
     return `M ${x} ${y} L ${eX} ${y + (eY - y) * deltaXCoef} L ${eX} ${eY}`
 }
