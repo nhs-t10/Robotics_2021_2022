@@ -94,7 +94,7 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
             ents.forEach((x,i,a)=>{
                 var flx = x.flat(Infinity)
                 var lst = flx[flx.length - 1];
-                console.log(lst)
+        
                 if(i != a.length - 1) setAttribute(lst, "Plus")
                 });
             return ents.flat(Infinity);
