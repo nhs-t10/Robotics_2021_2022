@@ -18,8 +18,8 @@
 
 //drive left, turn left, spin carousel for 3sec, drive right
 #align:
-    driveOmni(0.7,0,0),after 27in next;
-    driveOmni(0,0.7,0),after 90degs next;
+    driveOmni(0.7,0,0),after 6in next;
+    delegate("helpers/pid-turn.autoauto", -90), after 2000ms next;
     driveOmni(0,0,0), goto split
 
 #split:
@@ -38,13 +38,14 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(0.7,0,0), after 2in next;
+    driveOmni(-0.7,0,0), after 2in next;
     setClawOpen(true), after 500ms goto finalMovement;
 
 #finalMovement:
-    driveOmni(-0.7,0,0), after 2in next;
-    setClawOpen(false), positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
-    driveOmni(0,0,-0.7), after 29.5in next;
+    driveOmni(0.7,0,0), after 2in next;
+    setClawOpen(false), neckNeutral(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
+    positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("netural movement done"), next };
+    driveOmni(0,0,-0.7), after 6in next;
     driveOmni(1,0,0), after 30in next;
     goto parking
 
