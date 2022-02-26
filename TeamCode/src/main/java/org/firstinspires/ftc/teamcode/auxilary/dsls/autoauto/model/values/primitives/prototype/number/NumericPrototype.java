@@ -16,6 +16,7 @@ public class NumericPrototype {
     private static void initMap() {
         map = new HashMap<>();
         map.put("roundTo", new PrototypePropertyDescriptor(new RoundToFunction()));
+        map.put("clip", new PrototypePropertyDescriptor(new ClipFunction()));
 
         map.put("isNumericValue", new PrototypePropertyDescriptor(new AutoautoBooleanValue(true)));
 

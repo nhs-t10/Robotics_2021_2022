@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration;
 
 
+import org.firstinspires.ftc.teamcode.auxilary.BasicMapEntry;
+import org.firstinspires.ftc.teamcode.auxilary.UpdatableWeakReference;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RobotConfiguration {
     public final static String fileName = "configuration";
@@ -41,9 +46,12 @@ public class RobotConfiguration {
 
 
     public float exponentialScalar;
+    public HashMap<String, float[]> pidCoefs;
 
 
-    public RobotConfiguration(WheelCoefficients teleOpMotorCoefficients, WheelCoefficients autoMotorCoefficients, OmniCalcComponents omniComponents, float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm, double slip, float exponentialScalar) {
+    public RobotConfiguration(WheelCoefficients teleOpMotorCoefficients, WheelCoefficients autoMotorCoefficients, OmniCalcComponents omniComponents,
+                              float pidPCoefficient, double encoderTicksPerRotation, double gearRatio, double wheelDiameterCm,
+                              double slip, float exponentialScalar, HashMap<String, float[]> pidCoefs) {
         this.motorCoefficients = teleOpMotorCoefficients;
         this.teleOpMotorCoefficients = teleOpMotorCoefficients;
         this.autoMotorCoefficients = autoMotorCoefficients;
@@ -54,6 +62,15 @@ public class RobotConfiguration {
         this.slip = slip;
         this.wheelCircumference = Math.PI * wheelDiameterCm;
         this.exponentialScalar = exponentialScalar;
+        this.pidCoefs = pidCoefs;
     }
 
+    public static Map.Entry<String, float[]> PIDC(String n, float... v) {
+        return new BasicMapEntry<String, float[]>(n, v);
+    }
+    public static HashMap<String, float[]> PIDMAP(Map.Entry<String, float[]>... m) {
+        HashMap<String, float[]> f = new HashMap<>();
+        for(Map.Entry<String, float[]> k : m) f.put(k.getKey(), k.getValue());
+        return f;
+    }
 }

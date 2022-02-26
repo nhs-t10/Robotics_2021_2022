@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelC
 
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration.PIDC;
+import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotConfiguration.PIDMAP;
 import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.W;
 import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.horizontal;
 import static org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.WheelCoefficients.rotational;
@@ -31,7 +33,9 @@ public class FeatureManager {
                     horizontal    (0f, 0f, 0f, 0f),
                     rotational    (1f,-1f,-1f,-1f)
             ),
-            0.03f, 1680, 1, 8.9, 1, 3f);
+            0.03f, 1680, 1, 8.9, 1, 3f,
+            PIDMAP()
+    );
 
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
             W(1,1,-1,1), W(0.83f,0.83f,-1,1),
@@ -40,7 +44,9 @@ public class FeatureManager {
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
             ),
-            0.03f, 1680, 1, 8.9, 1, 3f);
+            0.03f, 1680, 1, 8.9, 1, 3f,
+            PIDMAP()
+        );
 
     public static final RobotConfiguration giraffeBoyConfiguration = new RobotConfiguration(
             W(1,1,-1,1), W(1,1,-1,1),
@@ -49,7 +55,12 @@ public class FeatureManager {
                 horizontal    (1f, -1f, 1f, -1f),
                 rotational    (1f,-1f,-1f,1f)
             ),
-            0.03f, 1680, 1, 8.9, 1, 3f);
+            0.03f, 1680, 1, 8.9, 1, 3f,
+            PIDMAP(
+                    PIDC("NeckMotor", 0.050928f, 1.003e-9f  , 0.05f),
+                    PIDC("ClawMotor", 0.010718f, 1.6917e-10f, 0fg)
+            )
+    );
 
     public static void reconfigureForTeleop() {
         FeatureManager.logger.log("I am teleop");
@@ -66,7 +77,9 @@ public class FeatureManager {
                 horizontal    (-1f,1f,1f,-1f),
                 rotational    (-1f, 1f, -1f, 1f)
             ),
-            0.03f, 1680, 1, 4, 0.7, 3f);
+            0.03f, 1680, 1, 4, 0.7, 3f,
+            PIDMAP()
+        );
 
     public static final RobotConfiguration defaultConfiguration = bigBoyConfiguration;
 

@@ -109,7 +109,7 @@ public class AutotuningPIDController extends NormalizedPIDController {
 
     private void setZieglerNichols(float tu, float ku) {
         FeatureManager.logger.log("finished tuning!");
-        float kp = 0.33f * ku;
+        float kp = 0.3f * ku;
         float ki = 0.50f * ku / tu;
         float kd = 0.11f * ku * tu;
 
