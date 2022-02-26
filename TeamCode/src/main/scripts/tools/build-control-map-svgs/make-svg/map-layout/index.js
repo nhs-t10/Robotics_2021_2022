@@ -1,6 +1,6 @@
 var fakeDom = require("./fake-dom");
 var fs = require("fs");
-var nextColor = require("./colors");
+var colors = require("./colors");
 var drawLines = require("./line-drawer");
 
 var mapTemplate = fs.readFileSync(__dirname + "/data/Dualshock_4_Layout_2.svg").toString();
@@ -86,7 +86,10 @@ function addLabelElements(labels, document) {
     var lineRoot = document.createElement("g");
     svgElem.appendChild(lineRoot);
 
-    labels.forEach(x => x.color = nextColor());
+    labels.forEach((x,i) => {
+        x.color = colors.getForNum(i);
+        x.dashes = colors.getDashes(i);
+    });
 
     addNonOverlappingLines(document, labels, lineRoot);
 
@@ -293,28 +296,32 @@ function getLinesCollapseWhitespace(text, maxLineLength) {
 function addNonOverlappingLines(document, labels, lineRoot) {
 
     var startEndMap = labels.map(x =>
-        x.positions.map(p => ({
-            color: x.color,
-            points: [
-                [
+        x.positions.map(p => {
+            var f = {};
+            Object.assign(f, x);
+            f.segments = [
+                [[
                     x.endPosition[0] + x.estWidth / 2,
                     x.endPosition[1] + (x.level < 0 ? x.estHeight : 0)
                 ], [
                     p[0],
                     p[1],
-                ]
-            ]
-        }))).flat(1);
+                ]]
+            ];
+            return f;
+        }
+    )).flat(1);
 
     var poss = drawLines(startEndMap);
 
     poss.forEach((x, i) => {
-        var backgroundPath = pathWithD(lineRoot, pointsToSvgLine(x.points), "#fff", document);
+        var backgroundPath = pathWithD(lineRoot, pointsToSvgLine(x.segments), "#fff", document);
         backgroundPath.style.strokeWidth = 7;
         backgroundPath.style.strokeLinecap = "round";
 
-        var coloredPath = pathWithD(lineRoot, pointsToSvgLine(x.points), x.color, document);
+        var coloredPath = pathWithD(lineRoot, pointsToSvgLine(x.segments), x.color, document);
         coloredPath.style.strokeWidth = 2;
+        coloredPath.style.strokeDasharray = x.dashes;
         coloredPath.style.strokeLinecap = "round";
         
     });
@@ -414,7 +421,9 @@ function pathWithD(parent, d, color, document) {
 }
 
 function pointsToSvgLine(pts) {
-    return `M ${pts[0][0]},${pts[0][1]} L ${pts.slice(1).flat(2).join(" ")}`;
+    return pts.map(x=>
+        `M` + x[0].join(",") + ` L` + x[1].join(",")
+    ).join(" ");
 }
 
 function getButtonPosition(button, document) {

@@ -94,7 +94,7 @@ function FakeDomNode(tag, value) {
         __buildAsAttribute: function () {
             let styles = Object.keys(this).map(style => {
                 if (typeof this[style] == "function") return "";
-                return `${camelToKebab(style)}: ${attributeEncodeCharacterEntities(this[style].toString())}`;
+                return `${camelToKebab(style)}: ${attributeEncodeCharacterEntities(this[style])}`;
             });
 
             return styles.filter(x=>x!="").join(";");
@@ -427,7 +427,7 @@ function camelToKebab(str) {
 }
 
 function attributeEncodeCharacterEntities(str) {
-    return str.replace(/"/g, "&quot;");
+    return (str+"").replace(/"/g, "&quot;");
 }
 
 function minimalTextEncodeCharacterEntities(str) {
