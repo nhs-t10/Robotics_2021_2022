@@ -12,7 +12,7 @@ function swapCoordsToPathfindNoOverlap(requiredLineRecord, pastLines) {
     var overallLine = requiredLineRecord.segments[0];
 
     var segments =  pathfindBetween(overallLine, pastLines).map(x=>
-        subwayanizeLine(x)
+        [x]//subwayanizeLine(x)
     ).flat(1);
 
     requiredLineRecord.segments = segments;
@@ -75,12 +75,15 @@ function pathfindBetween(coords, pastLines) {
 
 function getCircumnavigation(desiredLine, blockingLine, intersectionPoint) {
     var branch = offsetFromPointAlongLine(desiredLine, intersectionPoint, -10);
-    var through = offsetFromPointAlongLine(desiredLine, intersectionPoint, distance(desiredLine[1], intersectionPoint) / 2);
+
+    var goal = desiredLine[1];
+
+    var through = offsetFromPointAlongLine(desiredLine, intersectionPoint, distance(goal, intersectionPoint) / 32);
 
     return {
         approach: [desiredLine[0], branch],
         circumnavigate: [
-            [branch, through]
+            
         ],
         newStartingPoint: through
     };
@@ -94,11 +97,17 @@ function offsetFromPointAlongLine(line, point, offset) {
     var y1 = point[1];
     var y2 = line[0][1];
 
+    if(x1 == x2 || y1 == y2) {
+        x2 = line[1][0];
+        y2 = line[1][1];
+    }
+
     var sof = Math.sign(offset);
+    var abso = Math.abs(offset);
 
     var m = (y1 - y2) / (x1 - x2);
 
-    var xsL = (x1 + m*m * x1 + offset * Math.sqrt(m*m + 1)) / (1 + m*m);
+    var xsL = (x1 + m*m * x1 + abso * Math.sqrt(m*m + 1)) / (1 + m*m);
 
     var sod = x1 + Math.sign(x1 - x2) * sof * Math.abs(xsL - x1);
 
