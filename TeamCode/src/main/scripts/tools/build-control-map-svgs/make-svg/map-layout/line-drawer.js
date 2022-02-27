@@ -12,7 +12,7 @@ function swapCoordsToPathfindNoOverlap(requiredLineRecord, pastLines) {
     var overallLine = requiredLineRecord.segments[0];
 
     var segments =  pathfindBetween(overallLine, pastLines).map(x=>
-        [x]//subwayanizeLine(x)
+        subwayanizeLine(x)
     ).flat(1);
 
     requiredLineRecord.segments = segments;
