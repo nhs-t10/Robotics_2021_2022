@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.auxilary.pid.AutotuningPIDController;
+import org.firstinspires.ftc.teamcode.auxilary.pid.NormalizedPIDController;
+import org.firstinspires.ftc.teamcode.auxilary.pid.PIDController;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class PIDlessEncoderMovementThread extends Thread {
@@ -18,13 +20,15 @@ public class PIDlessEncoderMovementThread extends Thread {
     private float[] direction;
     private float[] lastDeltas;
 
-    AutotuningPIDController[] controllers;
+    private float[][] pidCoefs;
+
+    PIDController[] controllers;
 
     private double slowRange;
 
     private boolean running;
 
-    public PIDlessEncoderMovementThread(DcMotor[] motors) {
+    public PIDlessEncoderMovementThread(DcMotor[] motors, String[] motorNames) {
         this.motors = motors;
         this.targets = new int[motors.length];
         this.hasTarget = new boolean[motors.length];
@@ -36,7 +40,12 @@ public class PIDlessEncoderMovementThread extends Thread {
         this.direction = new float[motors.length];
         for (int i = 0; i < motors.length; i++) direction[i] = 1;
 
-        this.controllers = new AutotuningPIDController[motors.length];
+        this.controllers = new PIDController[motors.length];
+
+        this.pidCoefs = new float[motors.length][];
+        for(int i = 0; i < motorNames.length; i++) {
+            this.pidCoefs[i] = FeatureManager.getRobotConfiguration().pidCoefs.get(motorNames[i]);
+        }
 
         running = true;
 
@@ -49,9 +58,7 @@ public class PIDlessEncoderMovementThread extends Thread {
             while(FeatureManager.isOpModeRunning) {
                 for(int i = 0; i < motors.length; i++) {
                     if(hasTarget[i]) {
-                        if(this.controllers[i] == null) this.controllers[i] = new AutotuningPIDController(-1.0/powerCoefs[i],
-                                1.0/powerCoefs[i],
-                                ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
+                        if(this.controllers[i] == null) initPidController(i);
 
                         if(motors[i].getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -71,6 +78,18 @@ public class PIDlessEncoderMovementThread extends Thread {
             }
         } catch(Throwable t) {
             FeatureManager.logger.log("Silent error in 'PIDlessEncoderMovementThread'");
+            FeatureManager.logger.log(t.toString());
+        }
+    }
+
+    private void initPidController(int i) {
+        float[] pidc = pidCoefs[i];
+        if(pidc == null) {
+            this.controllers[i] = new AutotuningPIDController(-1.0 / powerCoefs[i],
+                    1.0 / powerCoefs[i],
+                    ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
+        } else {
+            this.controllers[i] = new NormalizedPIDController(pidc[0], pidc[1], pidc[2], ManipulationManager.ENCODER_TICK_VALUE_TOLERANCE);
         }
     }
 

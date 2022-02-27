@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunctions;
 
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
@@ -54,6 +55,14 @@ public abstract class UselessClassForNativeJavadoc {
      */
     @AutoautoNativeJavadoc(name = "provide")
     public abstract void provide(AutoautoValue value);
+
+    /**
+     * Clips a value, such that it won't be **Greater** than **Maximum** or **Lesser** than **Minimum**
+     * @param minimum smallest value that the return can be
+     * @param maximum largest value that the return can be.
+     */
+    @AutoautoNativeJavadoc(name = "provide")
+    public abstract void clip(AutoautoNumericValue minimum, AutoautoNumericValue maximum);
 
 
     @interface AutoautoNativeJavadoc {

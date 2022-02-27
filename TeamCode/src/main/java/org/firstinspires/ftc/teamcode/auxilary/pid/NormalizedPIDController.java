@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.auxilary.pid;
 
 import org.firstinspires.ftc.teamcode.auxilary.RobotTime;
 
-public class NormalizedPIDController {
+public class NormalizedPIDController extends PIDController {
     private final float stability;
     public float kp, ki, kd;
 

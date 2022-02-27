@@ -68,7 +68,7 @@ public class ManipulationManager extends FeatureManager {
 
         resetEncoders();
 
-        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
     }
     public static BasicMapEntry<String, String[]> crservo(String... names) {
@@ -105,7 +105,7 @@ public class ManipulationManager extends FeatureManager {
 
         resetEncoders();
 
-        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
     }
 
@@ -129,7 +129,7 @@ public class ManipulationManager extends FeatureManager {
 
         resetEncoders();
 
-        this.movementThread = new PIDlessEncoderMovementThread(motors);
+        this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
     }
 

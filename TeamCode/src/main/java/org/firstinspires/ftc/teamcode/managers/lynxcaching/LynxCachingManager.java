@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.managers.lynxcaching;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.managers.lynxcaching.cachedHardware.CachedHardwareMap;
-
 import java.util.List;
 
 /**
@@ -20,7 +18,6 @@ public class LynxCachingManager {
         this.hubs = allControlAndExpansionHubs.toArray(new LynxModule[0]);
 
         LynxCacheInvalidationThread cThread = new LynxCacheInvalidationThread(msBetweenCacheInvalidation, this.hubs);
-        opmode.hardwareMap = new CachedHardwareMap(opmode.hardwareMap, cThread);
         cThread.start();
     }
 }

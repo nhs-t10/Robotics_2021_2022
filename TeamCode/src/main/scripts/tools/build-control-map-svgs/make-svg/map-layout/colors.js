@@ -12,6 +12,6 @@ module.exports = {
         var on = dIndex & 0b11;
         var off = (dIndex >>> 2) & 0b11;
 
-        return on*3 + " " + off*3;
+        return on*3 + " " + off;
     }
 }

@@ -18,6 +18,9 @@ module.exports = function () {
             var pos = getButtonPosition(button, document);
             labels.push({ button: getButtonBasicInfo(button), position: pos, description: neatifyDescription(lbl) });
         },
+        setName: function(name) {
+            document.setAttribute("data-name", name);
+        },
         render: function () {
             condenseLabels(labels);
             addEndPositions(labels, document);
@@ -180,6 +183,10 @@ function adjustYBox(document, labels, middle, levelSize, marginSize) {
     svgElem.setAttribute("height", viewBox[3]);
     svgElem.setAttribute("width", viewBox[2]);
     svgElem.setAttribute("viewBox", viewBox.join(" "));
+    
+    var title = document.createElement("text");
+    title.textContent = document.getAttribute("data-name");
+    title.setAttribute("x", )
 }
 
 function recalculateLevelSizes(labels, max) {

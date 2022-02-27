@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
+import org.firstinspires.ftc.teamcode.managers.lynxcaching.LynxCachingManager;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
@@ -52,6 +53,8 @@ public class GiraffeBoyTeleop extends OpMode {
         // Phone is labelled as Not Ready For Use
         FeatureManager.setIsOpModeRunning(true);
         FeatureManager.reconfigureForTeleop();
+
+        LynxCachingManager lynxCachingManager = new LynxCachingManager(this,1);
 
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
