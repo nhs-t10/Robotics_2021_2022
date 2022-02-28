@@ -14,7 +14,7 @@ public class GiraffeManager extends FeatureManager {
     private int giraffePositionOne = 504;
     private int giraffePositionTwo = 164;
     private int giraffePositionThree = -194;
-    private int giraffePositionShared = 630;
+    private int giraffePositionShared = 570;
 
     private int giraffeShortPositionHome = -561;
     private int giraffeTallPositionHome = -402;

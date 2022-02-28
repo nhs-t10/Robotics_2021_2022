@@ -14,7 +14,7 @@ import java.util.Map;
 import androidx.annotation.Nullable;
 
 public class ManipulationManager extends FeatureManager {
-    public static final int ENCODER_TICK_VALUE_TOLERANCE = 5;
+    public static final int ENCODER_TICK_VALUE_TOLERANCE = 25;
 
     public CRServo[] crservos;
     public DcMotor[] motors;

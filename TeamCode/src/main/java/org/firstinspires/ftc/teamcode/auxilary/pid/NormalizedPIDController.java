@@ -47,7 +47,8 @@ public class NormalizedPIDController extends PIDController {
     }
 
     public boolean isStable(float current) {
-        return Math.abs(getError(current)) < stability && Math.abs(errSlope) < Math.sqrt(stability);
+        return Math.abs(getError(current)) < stability;
+        //&& Math.abs(errSlope) < Math.sqrt(stability
     }
 
     protected float getError(float current) {

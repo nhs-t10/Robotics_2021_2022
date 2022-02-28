@@ -68,7 +68,7 @@ public class PIDlessEncoderMovementThread extends Thread {
 
                         double power = powerCoefs[i] * controllers[i].getControl(currentPos);
 
-                        motors[i].setPower(power);
+                        motors[i].setPower(Range.clip(power, -0.8, 0.8));
 
                         isMoving[i] = !controllers[i].isStable(currentPos);
                     }

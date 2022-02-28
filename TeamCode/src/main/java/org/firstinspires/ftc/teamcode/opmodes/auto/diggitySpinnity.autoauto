@@ -2,5 +2,4 @@
     goto ninety;
 
 #ninety:
-    when (delegate("helpers/pid-turn.autoauto", 90) < 5) next;
-    when (delegate("helpers/pid-turn.autoauto", -180) < 5) next;
+     delegate("helpers/pid-turn.autoauto", 90);
