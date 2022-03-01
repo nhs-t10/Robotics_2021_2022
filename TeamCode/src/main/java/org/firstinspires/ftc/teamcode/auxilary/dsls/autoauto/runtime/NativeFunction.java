@@ -33,6 +33,11 @@ public abstract class NativeFunction extends AutoautoPrimitive implements Autoau
     }
 
     @Override
+    public int dataWidth() {
+        return 5;
+    }
+
+    @Override
     public Location getLocation() {
         return location;
     }

@@ -86,4 +86,9 @@ public class AutoautoUndefined extends AutoautoPrimitive {
     public void deleteProperty(AutoautoPrimitive key) {
         if (complainAboutUndefinedUsage) throw new AutoautoNameException("Undefined Usage Error");
     }
+
+    @Override
+    public int dataWidth() {
+        return 0;
+    }
 }

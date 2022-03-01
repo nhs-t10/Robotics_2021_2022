@@ -23,6 +23,24 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
     @Override
     public abstract AutoautoPrimitive clone();
 
+    /**
+     * Returns a number indicating how "wide" the primitive is.
+     * <b>Must</b> be the following:
+     * <table>
+     *     <tr><th>Primitive type</th><th>Data width</th></tr>
+     *     <tr><td>undefined</td><td>0</td></tr>
+     *     <tr><td>boolean</td><td>1</td></tr>
+     *     <tr><td>numeric (including unitvalue)</td><td>2</td></tr>
+     *     <tr><td>relation</td><td>3</td></tr>
+     *     <tr><td>tabular</td><td>4</td></tr>
+     *     <tr><td>function</td><td>5</td></tr>
+     *     <tr><td>string</td><td>6</td></tr>
+     * </table>
+     * @return the specified data width number
+     */
+    public abstract int dataWidth();
+
+
     private final HashMap<String, PrototypePropertyDescriptor> prototype = new HashMap<>();
 
     //these are primitives, so they don't need to do anything for init/loop :)
@@ -93,10 +111,12 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
         if(this instanceof AutoautoRelation) return ((AutoautoRelation) this).value.castToNumber();
 
         if(this instanceof AutoautoString) {
+            String t = ((AutoautoString) this).value;
             try {
-                return new AutoautoNumericValue(Float.parseFloat(((AutoautoString) this).value));
+                return new AutoautoNumericValue(Float.parseFloat(t));
             } catch (NumberFormatException ignored) {
-                return new AutoautoNumericValue(0f);
+                if(t.length() == 0) return new AutoautoNumericValue(0f);
+                else return new AutoautoNumericValue(Float.POSITIVE_INFINITY);
             }
         }
 

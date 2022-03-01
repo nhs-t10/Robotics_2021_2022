@@ -39,10 +39,13 @@ function massageResIntoMessage(res, file, defaultKind) {
     if(!res.original) res.original = res.text;
     
     if(res instanceof Error) {
-        console.log("err");
-        res.kind = "ERROR";
-        res.text = res.toString();
-        res.original = res.stack;
+        console.log(res);
+        res = {
+            kind: "ERROR",
+            text: res.toString(),
+            original: res.toString(),
+            location: res.location
+        }
     }
 
     if(res.fail) res.text += " | Skipping File";
@@ -52,15 +55,17 @@ function massageResIntoMessage(res, file, defaultKind) {
             res.sources = [{
             file: file
         }];
-        
-        if(res.location) res.sources[0].location = {
+    }
+    if(res.location && !res.sources[0].location) {
+        res.original = `Line ${res.location.start.line}\n\n${res.original}`;
+        res.sources[0].location = {
             startLine: res.location.start.line,
             startColumn: res.location.start.column,
             startOffset: res.location.start.offset,
             endLine: res.location.end.line,
             endColumn: res.location.end.line,
             endOffset: res.location.end.offset
-        }
+        };
         delete res.location;
     }
     return res;

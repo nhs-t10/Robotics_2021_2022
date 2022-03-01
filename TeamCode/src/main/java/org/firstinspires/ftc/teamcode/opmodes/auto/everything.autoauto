@@ -1,5 +1,6 @@
 $
-compilerMode: "optimized-bytecode"
+compilerMode: "default",
+expectedTestOutput: "ULS!\nthis works like java\n[foup = jeremy]\n3\n2\ncount: 1\ncount: 2\ncount: 3\ncount: 4\ncount: 5\ncount: 6\ncount: 7\ncount: 8\ncount: 9\ncount: 10\ncount: 11\ncount: 12\ncount: 13\ncount: 14\ncount: 15\ncount: 16\ncount: 17\ncount: 18\ncount: 19\ncount: 20\n3hah\nhahah"
 $
 
 /*
@@ -53,9 +54,9 @@ log("ULS!"), goto ifStatements;
     goto ["dgoto" + Math.floor(Math.random() * 2)]
 
 #dgoto0:
-    goto dgotoWorks
+    log("dgdg"), goto dgotoWorks
 #dgoto1:
-    goto dgotoWorks
+    log("dgdg"), goto dgotoWorks
 
 #dgotoWorks:
     goto undefinedTesting
@@ -68,7 +69,7 @@ log("ULS!"), goto ifStatements;
 
 #mathOps:
     log(2 >= 2), next;
-    log(3 > 2), next;
+    log((3 > 2) == false), next;
     log(2 < 3), next;
     log(2 <= 2), next;
     log([2] == [2]), next;
@@ -79,8 +80,8 @@ log("ULS!"), goto ifStatements;
     log(2+2 == 4), next;
     log(2 / 4 == 0.5), next;
     log(2 - 2 == 0), next;
-    log(3 ** 3 == 9), next;
-    log(3 ^ 3 == 9), next;
+    log(3 ** 2 == 9), next;
+    log(3 ^ 2 == 9), next;
     log(3 % 2 == 1), next;
     goto done;
 

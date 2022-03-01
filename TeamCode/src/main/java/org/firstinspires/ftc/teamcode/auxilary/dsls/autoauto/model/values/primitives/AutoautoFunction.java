@@ -63,6 +63,11 @@ public class AutoautoFunction extends AutoautoPrimitive implements AutoautoCalla
     }
 
     @Override
+    public int dataWidth() {
+        return 5;
+    }
+
+    @Override
     public String[] getArgNames() {
         return argNames;
     }

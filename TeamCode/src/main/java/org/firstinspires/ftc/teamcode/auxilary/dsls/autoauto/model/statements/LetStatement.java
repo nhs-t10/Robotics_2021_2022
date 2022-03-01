@@ -78,6 +78,7 @@ public class LetStatement extends Statement {
     public void setScope(AutoautoRuntimeVariableScope scope) {
         this.scope = scope;
         this.value.setScope(scope);
+        if(this.property != null) this.property.setScope(scope);
     }
 
     @Override

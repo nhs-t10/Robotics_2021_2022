@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primi
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.ParserTools;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoPlusOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoPropertyBearingObject;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.prototype.table.TablePrototype;
@@ -18,7 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject {
+public class AutoautoTable extends AutoautoPrimitive implements AutoautoPropertyBearingObject, HasAutoautoPlusOperator {
     private Set<String> ownProperties;
 
     private AutoautoRuntimeVariableScope scope;
@@ -186,10 +187,29 @@ public class AutoautoTable extends AutoautoPrimitive implements AutoautoProperty
         return table;
     }
 
+    @Override
+    public int dataWidth() {
+        return 4;
+    }
+
     public boolean isEmpty() {
         return ownProperties.isEmpty();
     }
     public int size() {
         return ownProperties.size();
+    }
+
+    @Override
+    public AutoautoPrimitive opPlus(AutoautoPrimitive other, boolean otherIsLeft) {
+        if(other instanceof AutoautoRelation) {
+            AutoautoTable cl = clone();
+            cl.setProperty(((AutoautoRelation) other).title, ((AutoautoRelation) other).value);
+            return cl;
+        } else if(other instanceof AutoautoTable) {
+            if(otherIsLeft) return ((AutoautoTable) other).combineWith(this);
+            else return this.combineWith((AutoautoTable) other);
+        } else {
+            return this;
+        }
     }
 }

@@ -12,4 +12,5 @@ public class AutoautoSystemVariableNames {
 
     public static final String COMPATFLAG_AFTER_TIMESTART_AT_START_OF_STATE = "\t@compatflag_afterStartAtState";
     public static final String FLAG_UNDEFINED_CAUSES_ERRORS = "\t@flag_undefinedUsageCausesErrors";
+    public static final String OPERATOR_OVERLOADING_PREFIX = "@op";
 }

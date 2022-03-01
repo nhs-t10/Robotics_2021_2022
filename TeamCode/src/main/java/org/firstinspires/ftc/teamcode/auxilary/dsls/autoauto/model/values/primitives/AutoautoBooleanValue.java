@@ -75,6 +75,11 @@ public class AutoautoBooleanValue extends AutoautoPrimitive {
     }
 
     @Override
+    public int dataWidth() {
+        return 1;
+    }
+
+    @Override
     public String getJSONString() {
         return value + "";
     }

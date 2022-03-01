@@ -58,4 +58,9 @@ public class AutoautoRelation extends AutoautoPrimitive {
     public String toString() {
         return title + " = " + value;
     }
+
+    @Override
+    public int dataWidth() {
+        return 3;
+    }
 }
