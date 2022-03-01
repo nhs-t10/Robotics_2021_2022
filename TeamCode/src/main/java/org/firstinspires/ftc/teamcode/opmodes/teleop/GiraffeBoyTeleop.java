@@ -53,7 +53,6 @@ public class GiraffeBoyTeleop extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         FeatureManager.reconfigureForTeleop();
 
-        LynxCachingManager lynxCachingManager = new LynxCachingManager(this,1);
 
         TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.NONE);
         telemetry = telemetryManager;
