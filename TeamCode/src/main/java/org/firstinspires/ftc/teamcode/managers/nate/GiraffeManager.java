@@ -13,14 +13,14 @@ public class GiraffeManager extends FeatureManager {
     private TouchSensor input;
     private boolean neckFound;
     private int neckPosition;
-    private int neckPositionTall = -1406;
-    private int neckPositionShort = 716;
-    private int giraffePositionOne = 504;
-    private int giraffePositionTwo = 200;
-    private int giraffePositionThree = -170;
-    private int giraffePositionShared = 573;
+    private int neckPositionTall = -1711;
+    private int neckPositionShort = 516; //
+    private int giraffePositionOne = 530;
+    private int giraffePositionTwo = 285;
+    private int giraffePositionThree = -111;
+    private int giraffePositionShared = 624;
 
-    private int giraffeShortPositionHome = -635;
+    private int giraffeShortPositionHome = -562;
     private int giraffeTallPositionHome = -395;
 
 

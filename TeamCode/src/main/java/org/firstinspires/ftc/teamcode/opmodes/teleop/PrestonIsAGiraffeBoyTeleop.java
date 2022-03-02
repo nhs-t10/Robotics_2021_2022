@@ -96,16 +96,41 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         input.registerInput("NeckPosAlliance", new ButtonNode("gamepad 2 right trigger"));
         input.registerInput("NeckPosShared", new ButtonNode("gamepad 2 left trigger"));
 
-        input.registerInput("ClawPos0", new ButtonNode("gamepad 2 PS"));
-        input.registerInput("ClawPosIntake", new ButtonNode("gamepad 2 square"));
-        input.registerInput("ClawPos1OrShared", new ButtonNode ("gamepad 2 triangle"));
-        input.registerInput("ClawPos2", new ButtonNode ("gamepad 2 circle"));
-        input.registerInput("ClawPos3", new ButtonNode ("gamepad 2 cross"));
+        input.registerInput("ClawPos0", //also moves the neck to neckNeutral, despite the absolute failure of naming
+                new AnyNode(
+                        new ButtonNode("gamepad 2 PS"),
+                        new ButtonNode("gamepad 1 PS")
+                )
+        );
+        input.registerInput("ClawPosIntake",
+                new AnyNode(
+                        new ButtonNode("gamepad 2 square"),
+                        new ButtonNode("gamepad 1 square")
+                )
+        );
+        input.registerInput("ClawPos1OrShared",
+                new AnyNode(
+                        new ButtonNode("gamepad 2 triangle"),
+                        new ButtonNode("gamepad 1 triangle")
+                )
+        );
+        input.registerInput("ClawPos2",
+                new AnyNode(
+                        new ButtonNode("gamepad 2 circle"),
+                        new ButtonNode("gamepad 1 circle")
+                )
+        );
+        input.registerInput("ClawPos3",
+                new AnyNode(
+                        new ButtonNode ("gamepad 2 cross"),
+                        new ButtonNode("gamepad 1 cross")
+                )
+        );
 
         input.registerInput("ClawManualMove",
                 new PlusNode(
-                        new MultiplyNode(new ButtonNode("gamepad2dpadup"), -10f),
-                        new MultiplyNode(new ButtonNode("gamepad2dpaddown"), 10f)
+                        new MultiplyNode(new ButtonNode("gamepad2dpaddown"), -10f),
+                        new MultiplyNode(new ButtonNode("gamepad2dpadup"), 10f)
                 )
         );
         input.registerInput("NeckManualMove",
@@ -171,7 +196,7 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
 
         if (input.getBool("ClawPos2")) clawPosition.positionTwo();
         if (input.getBool("ClawPos3")) clawPosition.positionThree();
-        if (input.getBool("ClawPos0")) clawPosition.positionNeutral();
+        if (input.getBool("ClawPos0")) {clawPosition.positionNeutral(); giraffeNeck.neckNeutral();}
         if (input.getBool("EmergencyStop")) clawPosition.emergencyStop();
 
         //FeatureManager.logger.log(BuildHistory.buildName);
