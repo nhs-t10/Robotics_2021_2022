@@ -14,10 +14,10 @@ public class GiraffeManager extends FeatureManager {
     private int giraffePositionOne = 504;
     private int giraffePositionTwo = 200;
     private int giraffePositionThree = -170;
-    private int giraffePositionShared = 570;
+    private int giraffePositionShared = 573;
 
     private int giraffeShortPositionHome = -570;
-    private int giraffeTallPositionHome = -350;
+    private int giraffeTallPositionHome = -395;
 
 
     NateManager lift;

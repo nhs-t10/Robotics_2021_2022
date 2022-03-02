@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
+//import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.input.InputManager;
@@ -115,7 +115,12 @@ public class GiraffeBoyTeleop extends OpMode {
                         new ButtonNode("righttrigger")
                 )
         );
-        input.registerInput("ClawPosIntake", new ButtonNode("lefttrigger"));
+        input.registerInput("ClawPosIntake",
+                new AnyNode(
+                        new ButtonNode("lefttrigger"),
+                        new ButtonNode("gamepad2rightbumper")
+                )
+        );
         input.registerInput("ClawManualMove",
                 new PlusNode(
                         new MultiplyNode(new ButtonNode("gamepad2dpadup"), -10f),
@@ -196,7 +201,7 @@ public class GiraffeBoyTeleop extends OpMode {
         telemetry.addData("NeckTowerTicks", hands.getMotorPosition("NeckMotor"));
         telemetry.addData("NeckTowerTarTicks", hands.getMotorTargetPosition("NeckMotor"));
         telemetry.addData("NeckTowerPower", hands.getMotorPower("NeckMotor"));
-        telemetry.addData("Build Name", BuildHistory.buildName);
+        //telemetry.addData("Build Name", BuildHistory.buildName);
         telemetry.update();
 
     }

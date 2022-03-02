@@ -60,7 +60,7 @@ public class FeatureManager {
             0.03f, 1680, 1, 8.9, 1, 3f,
             PIDMAP(
                     PIDC("NeckMotor", 0.050928f, 1.003e-9f  , 0.05f),
-                    PIDC("ClawMotor", 0.053f, 1.243e-9f, 0f)
+                    PIDC("ClawMotor", 0.057f, 1.243e-9f, 0f)
                //    PIDC("ClawMotor", 0.008718f, 1.6917e-7f, 0.0001f)
 
             )
