@@ -94,7 +94,7 @@ public class InputManager extends FeatureManager {
      * @return A ButtonHandle that's been "bound" to that button.
      */
     public ButtonHandle getButtonHandle(String key) {
-        String normalizedKey = key.toLowerCase().replace("_", "").replace(".", "");
+        String normalizedKey = key.toLowerCase().replaceAll("[^a-z0-9]", "");
 
         //remove 'gamepad1'
         if(normalizedKey.startsWith("gamepad1")) normalizedKey = normalizedKey.replace("gamepad1", "");
