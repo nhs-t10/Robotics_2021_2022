@@ -18,7 +18,7 @@
 
 #duckspin:
     let tError = delegate("helpers/pid-turn.autoauto", 180), if (tError < 5) next;
-    driveOmni(0,0,-0.7), after 6in next;
+    driveOmni(0,0,-0.7), after 6.5in next;
     setMotorPower("Carousel", -0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     driveOmni(-0.7,0,0), after 6in next;

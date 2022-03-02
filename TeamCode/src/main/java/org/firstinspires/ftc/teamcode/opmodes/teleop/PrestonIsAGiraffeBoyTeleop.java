@@ -88,8 +88,8 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("Carousel",
                 new PlusNode(
-                        new MultiplyNode(new ButtonNode("a"), 0.75f),
-                        new MultiplyNode(new ButtonNode("b"), -0.75f)
+                        new MultiplyNode(new ButtonNode("cross"), 0.75f),
+                        new MultiplyNode(new ButtonNode("circle"), -0.75f)
                 )
         );
 
@@ -102,30 +102,10 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
                         new ButtonNode("gamepad 1 PS")
                 )
         );
-        input.registerInput("ClawPosIntake",
-                new AnyNode(
-                        new ButtonNode("gamepad 2 square"),
-                        new ButtonNode("gamepad 1 square")
-                )
-        );
-        input.registerInput("ClawPos1OrShared",
-                new AnyNode(
-                        new ButtonNode("gamepad 2 triangle"),
-                        new ButtonNode("gamepad 1 triangle")
-                )
-        );
-        input.registerInput("ClawPos2",
-                new AnyNode(
-                        new ButtonNode("gamepad 2 circle"),
-                        new ButtonNode("gamepad 1 circle")
-                )
-        );
-        input.registerInput("ClawPos3",
-                new AnyNode(
-                        new ButtonNode ("gamepad 2 cross"),
-                        new ButtonNode("gamepad 1 cross")
-                )
-        );
+        input.registerInput("ClawPosIntake",new ButtonNode("gamepad 2 square"));
+        input.registerInput("ClawPos1OrShared", new ButtonNode("gamepad 2 triangle"));
+        input.registerInput("ClawPos2",new ButtonNode("gamepad 2 circle"));
+        input.registerInput("ClawPos3", new ButtonNode ("gamepad 2 cross"));
 
         input.registerInput("ClawManualMove",
                 new PlusNode(
