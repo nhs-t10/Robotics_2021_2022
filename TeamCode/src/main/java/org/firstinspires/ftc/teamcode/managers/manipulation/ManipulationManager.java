@@ -66,6 +66,7 @@ public class ManipulationManager extends FeatureManager {
         this.motorNames = _motors;
 
         resetEncoders();
+        runWithoutEncoders();
 
         this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
@@ -103,6 +104,7 @@ public class ManipulationManager extends FeatureManager {
         this.motorNames = _motors;
 
         resetEncoders();
+        runWithoutEncoders();
 
         this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
@@ -127,6 +129,7 @@ public class ManipulationManager extends FeatureManager {
         this.motorNames = _motorNames;
 
         resetEncoders();
+        runWithoutEncoders();
 
         this.movementThread = new PIDlessEncoderMovementThread(motors, motorNames);
         this.movementThread.start();
@@ -214,6 +217,12 @@ public class ManipulationManager extends FeatureManager {
         }
     }
 
+    private void runWithoutEncoders() {
+        for(DcMotor motor : motors) {
+            if(motor != null) motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
     public void runUsingEncoders() {
         for(DcMotor motor : motors) motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -237,7 +246,6 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void setMotorPower(int i, double power) {
-        //cancelEncodedMovement(i);
         motors[i].setPower(power);
     }
 
