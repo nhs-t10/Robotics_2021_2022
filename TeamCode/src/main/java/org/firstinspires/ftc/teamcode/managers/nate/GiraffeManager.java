@@ -12,12 +12,12 @@ public class GiraffeManager extends FeatureManager {
     private int neckPositionTall = -1406;
     private int neckPositionShort = 716;
     private int giraffePositionOne = 504;
-    private int giraffePositionTwo = 164;
-    private int giraffePositionThree = -194;
+    private int giraffePositionTwo = 200;
+    private int giraffePositionThree = -170;
     private int giraffePositionShared = 570;
 
-    private int giraffeShortPositionHome = -561;
-    private int giraffeTallPositionHome = -402;
+    private int giraffeShortPositionHome = -570;
+    private int giraffeTallPositionHome = -350;
 
 
     NateManager lift;
