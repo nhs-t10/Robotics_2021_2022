@@ -24,10 +24,9 @@
 #duckSpin:
     driveOmni(0, 0.7, 0), after 175degs next;
     driveOmni(0, 0, 0.7),after 20cm next;
-    driveOmni(0.1, 0, 0.5), after 500ms setMotorPower("Carousel", 0.4), after 4.5cm next, after 2700ms next;
-    setMotorPower("Carousel", 0.7), after 3000ms next;
+    driveOmni(0.1, 0, 0.2), after 500ms setMotorPower("Carousel", 0.4), after 4.5cm next, after 3000ms next;
     setMotorPower("Carousel", 0), next;
-    driveOmni(0,0, -1), after 42cm next;
+    driveOmni(0,0, -1), after 40cm next;
     driveOmni(0,0.7,0), after 160degs next;
     driveOmni(0,0,0), goto split
 
