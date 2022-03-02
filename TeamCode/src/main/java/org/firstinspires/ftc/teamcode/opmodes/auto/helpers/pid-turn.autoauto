@@ -1,4 +1,4 @@
-#init:
+
     let target = module_args[0],
         let error = target - getThirdAngleOrientation(), log(error),
         let kP = 0.1,

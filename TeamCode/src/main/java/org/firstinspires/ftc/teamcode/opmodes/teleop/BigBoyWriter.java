@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.managers.feature.robotconfiguration.RobotC
 
 @TeleOp
 public class BigBoyWriter extends OpMode {
-    private FileSaver bigBoyConfiguration;
 
     @Override
     public void init() {

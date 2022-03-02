@@ -158,7 +158,7 @@ public class DualControllerPreston extends OpMode {
 
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
-            if (clawCheck != 0.0 && clawPosition.getClawPosition() == 0 && clawPosition.liftMovementFinished()) {
+            if (clawCheck != 0.0 && clawPosition.getClawPosition() == 0) {
                 hands.setMotorPower("noodle", 0.9);
             }
             else {

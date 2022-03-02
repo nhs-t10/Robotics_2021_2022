@@ -45,7 +45,9 @@ public class FeatureManager {
                 rotational    (1f,-1f,-1f,1f)
             ),
             0.03f, 1680, 1, 8.9, 1, 3f,
-            PIDMAP()
+            PIDMAP(
+                PIDC("ClawMotor", 0.05f, 0f, 0f)
+            )
         );
 
     public static final RobotConfiguration giraffeBoyConfiguration = new RobotConfiguration(
