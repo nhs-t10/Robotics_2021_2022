@@ -28,6 +28,7 @@ public class InputManager extends FeatureManager {
     public InputOverlapResolutionMethod overlapResolutionMethod = InputOverlapResolutionMethod.BOTH_CHILDREN_CAN_SPEAK;
 
     private final HashMap<String, InputManagerInputNode> nodes;
+    private final HashMap<String, Float> inputVars;
 
     /**
      * Make an InputManager with 2 gamepads
@@ -39,6 +40,7 @@ public class InputManager extends FeatureManager {
         this.gamepad2 = _gamepad2;
         gp2 = _gamepad2;
         nodes = new HashMap<>();
+        inputVars = new HashMap<>();
     }
 
     /**
@@ -63,6 +65,16 @@ public class InputManager extends FeatureManager {
         nodes.put(key.toLowerCase(), node);
         rebuildOverlaps();
         (new InputUpdateThread(node)).start();
+    }
+
+    public void setInputVariable(String name, float f) {
+        inputVars.put(name, f);
+    }
+
+    public float getInputVariable(String name) {
+        Float f = inputVars.get(name);
+        if(f == null) return 0f;
+        else return f;
     }
 
     /**

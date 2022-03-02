@@ -38,14 +38,11 @@ public class NateManager extends FeatureManager {
     /**
      * Make the claw open or close
      *
-     * <h2>Warning: This method has not been tested in the wild. Use it, but don't rely fully until it's been tested.</h2>
-     *
      * @param open If {@code true}, open the claw; otherwise, close it.
      */
     public void setClawOpen(boolean open) {
-        //by setting the `clawState` variable to the opposite and then calling toggleClawOpen(), we can cut down on code reuse.
-        //toggleClawOpen() will reverse it back to the value the user asked for.
-        hands.setServoPosition("nateClaw", open ? 1 : 0.25);
+        if(open) hands.setServoPosition("nateClaw", 1);
+        else hands.setServoPosition("nateClaw", 0.25);
     }
 
     /**
