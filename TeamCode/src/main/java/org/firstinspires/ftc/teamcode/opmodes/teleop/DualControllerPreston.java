@@ -201,10 +201,10 @@ public class DualControllerPreston extends OpMode {
         }
 
         if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-            hands.incrementEncodedTargetPosition("ClawMotor", -10);
+            hands.manualMoveEncodedMotor("ClawMotor", -10);
         }
         else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-            hands.incrementEncodedTargetPosition("ClawMotor", 10);
+            hands.manualMoveEncodedMotor("ClawMotor", 10);
         }
 
         clawPosition.setClawOpen(input.getBool("ClawOpen"));

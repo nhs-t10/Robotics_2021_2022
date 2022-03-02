@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationM
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.integratedasync.PriorityAsyncOpmodeComponent;
@@ -17,14 +16,11 @@ import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMetho
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AllNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiplyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
-import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
@@ -165,8 +161,8 @@ public class GiraffeBoyTeleop extends OpMode {
     }
     public void real_loop_Bad_Practice_Fix_Me_Later() {
         hands.setMotorPower("Carousel", input.getFloat("Carousel"));
-        hands.incrementEncodedTargetPosition("NeckMotor",  (int) input.getFloat("NeckManualMove"));
-        hands.incrementEncodedTargetPosition("ClawMotor", (int) input.getFloat("ClawManualMove"));
+        hands.manualMoveEncodedMotor("NeckMotor",  (int) input.getFloat("NeckManualMove"));
+        hands.manualMoveEncodedMotor("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
         if(input.getBool("NeckPosShared")) giraffeNeck.neckShort();
         if(input.getBool("NeckPosAlliance")) giraffeNeck.neckTall();
@@ -193,6 +189,7 @@ public class GiraffeBoyTeleop extends OpMode {
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
+        telemetry.addData("ClawTowerManMove", input.getFloat("ClawManualMove"));
         telemetry.addData("NeckTowerTicks", hands.getMotorPosition("NeckMotor"));
         telemetry.addData("NeckTowerTarTicks", hands.getMotorTargetPosition("NeckMotor"));
         telemetry.addData("NeckTowerPower", hands.getMotorPower("NeckMotor"));

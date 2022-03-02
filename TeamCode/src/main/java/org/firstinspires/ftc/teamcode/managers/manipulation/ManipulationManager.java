@@ -11,8 +11,6 @@ import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import java.util.Arrays;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
-
 public class ManipulationManager extends FeatureManager {
     public static final int ENCODER_TICK_VALUE_TOLERANCE = 25;
 
@@ -350,14 +348,14 @@ public class ManipulationManager extends FeatureManager {
         motors[index].setTargetPosition(position);
     }
 
-    public void incrementEncodedTargetPosition(int index, int increment) {
+    public void manualMoveEncodedMotor(int index, int increment) {
         movementThread.incrementTarget(index, increment);
     }
 
-    public void incrementEncodedTargetPosition(String name, int increment) {
+    public void manualMoveEncodedMotor(String name, int increment) {
         int index = (Arrays.asList(motorNames)).indexOf(name);
         if(index == -1) throw new IllegalArgumentException("Motor " + name + " does not exist or is not registered in ManipulationManager");
 
-        //incrementEncodedTargetPosition(index, increment);
+        manualMoveEncodedMotor(index, increment);
     }
 }
