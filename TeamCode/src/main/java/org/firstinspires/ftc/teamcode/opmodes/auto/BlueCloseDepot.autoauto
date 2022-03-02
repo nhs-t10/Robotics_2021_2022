@@ -33,7 +33,7 @@
 
 //based on the CV reading, chooses the correct state path to go to (adjusted for blue)
 #split:
-    if(value == 2) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 0) goto firstPosition
+    if(value == 0) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 2) goto firstPosition
 
 //moves claw to position one
 #firstPosition:
