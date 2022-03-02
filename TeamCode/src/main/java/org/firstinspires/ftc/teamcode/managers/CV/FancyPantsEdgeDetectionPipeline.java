@@ -22,8 +22,8 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     {
         LEFT,
         CENTER,
-        DEFAULT,
-        RIGHT
+        RIGHT,
+        DEFAULT
     }
 
     /*
