@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.auxilary.buildhistory.BuildHistory;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.Clocktower;
 import org.firstinspires.ftc.teamcode.auxilary.clocktower.ClocktowerCodes;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
-import org.firstinspires.ftc.teamcode.managers.telemetry.fallible.FallibleHardwareMap;
 import org.firstinspires.ftc.teamcode.managers.telemetry.pojotracker.OhNoJavaFieldMonitorAndExposer;
 import org.firstinspires.ftc.teamcode.managers.telemetry.server.Server;
 
@@ -26,7 +25,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
         public static final int WEBSERVER = 1;
         public static final int BUILD_HISTORY = 1 << 1;
         public static final int POJO_MONITOR = 1 << 2;
-        public static final int FALLIBLE_HARDWARE = 1 << 3;
     }
 
     public OhNoJavaFieldMonitorAndExposer opmodeFieldMonitor;
@@ -34,8 +32,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     public AutoautoTelemetry autoauto;
     private Telemetry backend;
     private LogCatcher backendLog;
-
-    public FallibleHardwareMap fallibleHardwareMap;
 
     private Gamepad gamepad1;
     private Gamepad gamepad2;
@@ -71,10 +67,6 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
 
         if((config & BITMASKS.BUILD_HISTORY) != 0) BuildHistory.init();
 
-        if((config & BITMASKS.FALLIBLE_HARDWARE) != 0) {
-            fallibleHardwareMap = new FallibleHardwareMap(opMode.hardwareMap);
-            opMode.hardwareMap = fallibleHardwareMap;
-        }
 
         setGamepads(opmode.gamepad1, opmode.gamepad2);
     }
@@ -88,7 +80,7 @@ public class TelemetryManager extends FeatureManager implements Telemetry {
     }
 
     public TelemetryManager(Telemetry backend, OpMode opMode) {
-        this(backend, opMode, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
+        this(backend, opMode, TelemetryManager.BITMASKS.WEBSERVER);
     }
 
     @Override

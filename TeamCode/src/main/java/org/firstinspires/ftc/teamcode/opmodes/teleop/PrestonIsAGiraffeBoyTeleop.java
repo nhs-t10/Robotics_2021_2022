@@ -191,6 +191,7 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         telemetry.addData("ClawTowerTicks", hands.getMotorPosition("ClawMotor"));
         telemetry.addData("ClawTowerTarTicks", hands.getMotorTargetPosition("ClawMotor"));
         telemetry.addData("ClawTowerPower", hands.getMotorPower("ClawMotor"));
+        telemetry.addData("ClawServoPos", clawPosition.getClawOpenish());
         telemetry.addData("NeckTowerTicks", hands.getMotorPosition("NeckMotor"));
         telemetry.addData("NeckTowerTarTicks", hands.getMotorTargetPosition("NeckMotor"));
         telemetry.addData("NeckTowerPower", hands.getMotorPower("NeckMotor"));

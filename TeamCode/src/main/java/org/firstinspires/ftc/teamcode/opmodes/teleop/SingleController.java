@@ -43,7 +43,7 @@ public class SingleController extends OpMode {
         FeatureManager.setIsOpModeRunning(true);
         FeatureManager.reconfigureForTeleop();
 
-        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER | TelemetryManager.BITMASKS.FALLIBLE_HARDWARE);
+        TelemetryManager telemetryManager = new TelemetryManager(telemetry, this, TelemetryManager.BITMASKS.WEBSERVER);
         telemetry = telemetryManager;
         FeatureManager.logger.setBackend(telemetry.log());
 
