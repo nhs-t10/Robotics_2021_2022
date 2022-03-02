@@ -6,6 +6,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class GiraffeManager extends FeatureManager {
+    public static final int POSITIONCODE_TALL = 2;
+    public static final int POSITIONCODE_SHORT = 1;
+    public static final int POSITIONCODE_ZERO = 0;
+
     private TouchSensor input;
     private boolean neckFound;
     private int neckPosition;
@@ -91,9 +95,9 @@ public class GiraffeManager extends FeatureManager {
     }
 
     public int getNeckPosition() {
-        if(neckPosition == 0) return 0;
-        else if(neckPosition == neckPositionShort) return 1;
-        else if(neckPosition == neckPositionTall) return 2;
+        if(neckPosition == 0) return POSITIONCODE_ZERO;
+        else if(neckPosition == neckPositionShort) return POSITIONCODE_SHORT;
+        else if(neckPosition == neckPositionTall) return POSITIONCODE_TALL;
 
         return -1;
     }

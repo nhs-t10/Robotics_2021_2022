@@ -3,14 +3,15 @@ package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.nativefunc
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoString;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.RobotFunctionLoader;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.encapsulation.AutoautoModule;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 /**
  * I don't know how to make Autoauto generate its own Javadocs :'( so this is a stopgap.
- * See {@link org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope#initBuiltinFunctions(AutoautoModule, FeatureManager[]) initBuiltinFunctions()} for the actual implementation.
+ * See {@link org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope#initBuiltinFunctions(AutoautoModule, RobotFunctionLoader) initBuiltinFunctions()} for the actual implementation.
  *
- * @see org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope#initBuiltinFunctions(AutoautoModule, FeatureManager[])
+ * @see org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope#initBuiltinFunctions(AutoautoModule, RobotFunctionLoader)
  * @author https://github.com/chlohal
  */
 public abstract class UselessClassForNativeJavadoc {
