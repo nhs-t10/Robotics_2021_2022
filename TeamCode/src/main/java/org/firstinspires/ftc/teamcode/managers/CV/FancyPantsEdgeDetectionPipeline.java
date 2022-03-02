@@ -22,6 +22,7 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
     {
         LEFT,
         CENTER,
+        DEFAULT,
         RIGHT
     }
 
@@ -82,26 +83,25 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
             }
         }
 
-        biggestContourBoundingRect = Imgproc.boundingRect(biggestContour);
-
-        Imgproc.rectangle(
-                input, // Buffer to draw on
-                new Point(biggestContourBoundingRect.x, biggestContourBoundingRect.y), // First point which defines the rectangle
-                new Point(biggestContourBoundingRect.x + biggestContourBoundingRect.width,
-                        biggestContourBoundingRect.y + biggestContourBoundingRect.height), // Second point which defines the rectangle
-                new Scalar(0.5, 255, 0), // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-        largeBlobCenterX = biggestContourBoundingRect.x + (biggestContourBoundingRect.width / 2);
-        inputWidth = input.width();
-
-        //depending on which third the blob's center falls into, report the result position.
-        if(largeBlobCenterX < inputWidth / 3) {
-            position = SkystonePosition.LEFT;
-        } else if(largeBlobCenterX < (inputWidth * 2) / 3) {
-            position = SkystonePosition.CENTER;
+        if(biggestArea < inputWidth * inputWidth * 0.0625) {
+            position = SkystonePosition.DEFAULT;
+            largeBlobCenterX = 0.0;
         } else {
-            position = SkystonePosition.RIGHT;
+
+            biggestContourBoundingRect = Imgproc.boundingRect(biggestContour);
+
+
+            largeBlobCenterX = biggestContourBoundingRect.x + (biggestContourBoundingRect.width / 2);
+            inputWidth = input.width();
+
+            //depending on which third the blob's center falls into, report the result position.
+            if (largeBlobCenterX < inputWidth / 3) {
+                position = SkystonePosition.LEFT;
+            } else if (largeBlobCenterX < (inputWidth * 2) / 3) {
+                position = SkystonePosition.CENTER;
+            } else {
+                position = SkystonePosition.RIGHT;
+            }
         }
 
         return input;
