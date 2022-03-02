@@ -85,7 +85,7 @@ public class FancyPantsEdgeDetectionPipeline extends PipelineThatExposesSomeAnal
 
         if(biggestArea < inputWidth * inputWidth * 0.0625) {
             position = SkystonePosition.DEFAULT;
-            largeBlobCenterX = 0.0;
+            largeBlobCenterX = 0;
         } else {
 
             biggestContourBoundingRect = Imgproc.boundingRect(biggestContour);
