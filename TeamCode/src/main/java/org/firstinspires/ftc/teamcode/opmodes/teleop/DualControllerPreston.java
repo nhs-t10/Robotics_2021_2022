@@ -152,9 +152,6 @@ public class DualControllerPreston extends OpMode {
         }
     }
     public void real_loop_Bad_Practice_Fix_Me_Later() {
-        input.update();
-
-//        driver.setScale(Math.min(input.getFloat("precisionDriving"), input.getFloat("dashing")));
 
         if (input.getBool("Intake")){
             clawCheck = clawPosition.getClawOpenish();
@@ -203,35 +200,15 @@ public class DualControllerPreston extends OpMode {
             hands.setMotorPower("Carousel", 0.0);
         }
 
-        if (hands.hasEncodedMovement("ClawMotor") == false) {
-            if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
-                hands.setMotorPower("ClawMotor", -0.20);
-            }
-            else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
-                hands.setMotorPower("ClawMotor", 0.20 );
-            }
-            else {
-                hands.setMotorPower("ClawMotor", 0);
-            }
-            if (input.getBool("ClawPos1") == true) {
-                clawPosition.positionOne();
-            }
-            if (input.getBool("ClawPos2") == true) {
-                clawPosition.positionTwo();
-            }
-            if (input.getBool("ClawPos3") == true) {
-                clawPosition.positionThree();
-            }
-            if (input.getBool("ClawPosHome") == true) {
-                clawPosition.positionHome();
-            }
+        if (input.getBool("ClawUp") == true && input.getBool("ClawDown") == false) {
+            hands.incrementEncodedTargetPosition("ClawMotor", -10);
         }
-        if (input.getBool("ClawOpen") == true){
-            clawPosition.setClawOpen(true);
+        else if (input.getBool("ClawDown") == true && input.getBool("ClawUp") == false) {
+            hands.incrementEncodedTargetPosition("ClawMotor", 10);
         }
-        else {
-            clawPosition.setClawOpen(false);
-        }
+
+        clawPosition.setClawOpen(input.getBool("ClawOpen"));
+
         if (input.getBool("ClawPos1") == true) {
             clawPosition.positionOne();
         }
