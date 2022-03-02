@@ -112,9 +112,10 @@ public class PIDlessEncoderMovementThread extends Thread {
 
     public void incrementTarget(int i, int increment) {
         if(!hasTarget[i]) {
-            targets[i] = motors[i].getCurrentPosition();
             hasTarget[i] = true;
+            targets[i] = motors[i].getCurrentPosition();
         }
+        powerCoefs[i] = ManipulationManager.DEFAULT_ENCODED_MOVEMENT_POWER;
         targets[i] += increment;
     }
 }

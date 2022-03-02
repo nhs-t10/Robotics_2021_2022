@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class ManipulationManager extends FeatureManager {
     public static final int ENCODER_TICK_VALUE_TOLERANCE = 25;
+    public static final float DEFAULT_ENCODED_MOVEMENT_POWER = 0.3f;
 
     public CRServo[] crservos;
     public DcMotor[] motors;
@@ -273,11 +274,11 @@ public class ManipulationManager extends FeatureManager {
     }
 
     public void encodeMoveToPosition(String name, int position) {
-        encodeMoveToPosition(name,position, 0.3);
+        encodeMoveToPosition(name,position, DEFAULT_ENCODED_MOVEMENT_POWER);
     }
 
     public void encodeMoveToPosition(int index, int position) {
-        encodeMoveToPosition(index, position, 0.3);
+        encodeMoveToPosition(index, position, DEFAULT_ENCODED_MOVEMENT_POWER);
     }
 
     //monitors whether the lift motor has been given RUN_TO_POSITION

@@ -197,6 +197,13 @@ public class NateManager extends FeatureManager {
         return found;
     }
 
+    public void ifStableBobDownThenUp() {
+        if(liftMovementFinished()) {
+            hands.setMotorPower("ClawMotor", 0.2);
+            hands.setMotorPower("ClawMotor", -0.2);
+        }
+    }
+
     /**
      * Checks whether or not the homing process has completed.
      *

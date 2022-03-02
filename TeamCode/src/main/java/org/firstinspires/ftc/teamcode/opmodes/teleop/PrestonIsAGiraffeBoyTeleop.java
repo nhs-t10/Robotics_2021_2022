@@ -16,11 +16,14 @@ import org.firstinspires.ftc.teamcode.managers.input.InputOverlapResolutionMetho
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AllNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiplyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.PlusNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ScaleNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.StaticValueNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.ToggleNode;
 import org.firstinspires.ftc.teamcode.managers.manipulation.ManipulationManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 import org.firstinspires.ftc.teamcode.managers.nate.GiraffeManager;
@@ -31,7 +34,7 @@ import org.firstinspires.ftc.teamcode.managers.telemetry.TelemetryManager;
 import java.util.Arrays;
 
 @TeleOp
-public class GiraffeBoyTeleop extends OpMode {
+public class PrestonIsAGiraffeBoyTeleop extends OpMode {
     public MovementManager driver;
     public ManipulationManager hands;
     public InputManager input;
@@ -89,29 +92,16 @@ public class GiraffeBoyTeleop extends OpMode {
                         new MultiplyNode(new ButtonNode("b"), -0.75f)
                 )
         );
-        input.registerInput("NeckPosShared",
-                new AnyNode(
-                        new ButtonNode("x"),
-                        new ButtonNode("gamepad2lefttrigger")
-                )
-        );
-        input.registerInput("NeckPosAlliance",
-                new AnyNode(
-                        new ButtonNode("y"),
-                        new ButtonNode("gamepad2righttrigger")
-                )
-        );
-        input.registerInput("ClawPos0", new ButtonNode("ps"));
-        input.registerInput("ClawPos1", new ButtonNode ("gamepad2y"));
-        input.registerInput("ClawPos2", new ButtonNode ("gamepad2b"));
-        input.registerInput("ClawPos3", new ButtonNode ("gamepad2a"));
-        input.registerInput("ClawPosShared",
-                new AnyNode(
-                        new ButtonNode("gamepad2x"),
-                        new ButtonNode("righttrigger")
-                )
-        );
-        input.registerInput("ClawPosIntake", new ButtonNode("lefttrigger"));
+
+        input.registerInput("NeckPosAlliance", new ButtonNode("gamepad 2 right trigger"));
+        input.registerInput("NeckPosShared", new ButtonNode("gamepad 2 left trigger"));
+
+        input.registerInput("ClawPos0", new ButtonNode("gamepad 2 PS"));
+        input.registerInput("ClawPosIntake", new ButtonNode("gamepad 2 square"));
+        input.registerInput("ClawPos1OrShared", new ButtonNode ("gamepad 2 triangle"));
+        input.registerInput("ClawPos2", new ButtonNode ("gamepad 2 circle"));
+        input.registerInput("ClawPos3", new ButtonNode ("gamepad 2 cross"));
+
         input.registerInput("ClawManualMove",
                 new PlusNode(
                         new MultiplyNode(new ButtonNode("gamepad2dpadup"), -10f),
@@ -160,21 +150,28 @@ public class GiraffeBoyTeleop extends OpMode {
     }
     public void real_loop_Bad_Practice_Fix_Me_Later() {
         hands.setMotorPower("Carousel", input.getFloat("Carousel"));
-
+        
         hands.manualMoveEncodedMotor("NeckMotor",  (int) input.getFloat("NeckManualMove"));
         hands.manualMoveEncodedMotor("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
-        if(input.getBool("NeckPosShared")) giraffeNeck.neckShort();
         if(input.getBool("NeckPosAlliance")) giraffeNeck.neckTall();
+        if(input.getBool("NeckPosShared")) giraffeNeck.neckShort();
 
-        clawPosition.setClawOpen(input.getBool("ClawOpen"));
+        clawPosition.setClawOpen(giraffeNeck.neckMovementFinished() && input.getBool("ClawOpen"));
 
-        if (input.getBool("ClawPosIntake")) clawPosition.positionHome();
-        if (input.getBool("ClawPos1")) clawPosition.positionOne();
+        if (input.getBool("ClawPosIntake")) {
+            clawPosition.positionHome();
+            clawPosition.ifStableBobDownThenUp();
+        }
+
+        if (input.getBool("ClawPos1OrShared")) {
+            if (giraffeNeck.getNeckPosition() == GiraffeManager.POSITION_TALL) clawPosition.positionOne();
+            else clawPosition.positionShared();
+        }
+
         if (input.getBool("ClawPos2")) clawPosition.positionTwo();
         if (input.getBool("ClawPos3")) clawPosition.positionThree();
         if (input.getBool("ClawPos0")) clawPosition.positionNeutral();
-        if (input.getBool("ClawPosShared")) clawPosition.positionShared();
         if (input.getBool("EmergencyStop")) clawPosition.emergencyStop();
 
         //FeatureManager.logger.log(BuildHistory.buildName);

@@ -6,6 +6,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 public class GiraffeManager extends FeatureManager {
+    public static final int POSITION_TALL = 2;
+    private static final int POSITION_SHORT = 1;
+    private static final int POSITION_ZERO = 0;
+
     private TouchSensor input;
     private boolean neckFound;
     private int neckPosition;
@@ -16,8 +20,8 @@ public class GiraffeManager extends FeatureManager {
     private int giraffePositionThree = -170;
     private int giraffePositionShared = 570;
 
-    private int giraffeShortPositionHome = -570;
-    private int giraffeTallPositionHome = -350;
+    private int giraffeShortPositionHome = -635;
+    private int giraffeTallPositionHome = -396;
 
 
     NateManager lift;
@@ -91,9 +95,9 @@ public class GiraffeManager extends FeatureManager {
     }
 
     public int getNeckPosition() {
-        if(neckPosition == 0) return 0;
-        else if(neckPosition == neckPositionShort) return 1;
-        else if(neckPosition == neckPositionTall) return 2;
+        if(neckPosition == 0) return POSITION_ZERO;
+        else if(neckPosition == neckPositionShort) return POSITION_SHORT;
+        else if(neckPosition == neckPositionTall) return POSITION_TALL;
 
         return -1;
     }
