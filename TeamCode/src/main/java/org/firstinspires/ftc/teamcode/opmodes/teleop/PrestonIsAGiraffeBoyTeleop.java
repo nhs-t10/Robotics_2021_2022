@@ -165,7 +165,7 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         }
 
         if (input.getBool("ClawPos1OrShared")) {
-            if (giraffeNeck.getNeckPosition() == GiraffeManager.POSITIONCODE_TALL) clawPosition.positionOne();
+            if (giraffeNeck.getNeckPosition() == GiraffeManager.POSITION_TALL) clawPosition.positionOne();
             else clawPosition.positionShared();
         }
 

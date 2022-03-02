@@ -13,16 +13,16 @@
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` moves it off the wall then folds out the arms to their full extent.
 #clawout:
     driveOmni(0.5,0,0),after 2in next;
-    neckTall(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
+    neckTall(), when (neckMovementFinished()) { log("movement done"), next };
     goto duckspin;
 
 #duckspin:
-    driveOmni(0,0,0.7), after 6in next;
-    delegate("helpers/pid-turn.autoauto", 0), after 1000ms next;
+    let tError = delegate("helpers/pid-turn.autoauto", 180), if (tError < 5) next;
+    driveOmni(0,0,-0.7), after 6in next;
     setMotorPower("Carousel", -0.7), after 3000ms next;
     setMotorPower("Carousel", 0), next;
-    driveOmni(0.7,0,0), after 6in next;
-    delegate("helpers/pid-turn.autoauto", 90), after 2000ms next;
+    driveOmni(-0.7,0,0), after 6in next;
+    let tError = delegate("helpers/pid-turn.autoauto", 90), if (tError < 5) next;
     goto split;
 
 #split:
