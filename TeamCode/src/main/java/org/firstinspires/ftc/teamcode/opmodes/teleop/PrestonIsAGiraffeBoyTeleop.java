@@ -79,17 +79,16 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
                             new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
-                        //new MultiplyNode(
-                                new MultiInputNode(
+//                        new MultiplyNode(new InputVariableNode("negativeIfIsShort"),
+                            new MultiInputNode(
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
                                 new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.6f),
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
                             )
-                        //, new InputVariableNode("negativeIfIsShort")
-                        //)
+//                        )
                 )
             );
-        input.setInputVariable("negativeIfIsShort", 1);
+//        input.setInputVariable("negativeIfIsShort", 1);
 
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("Carousel",
@@ -165,14 +164,14 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         hands.manualMoveEncodedMotor("NeckMotor",  (int) input.getFloat("NeckManualMove"));
         hands.manualMoveEncodedMotor("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
-        if(input.getBool("NeckPosAlliance")) {
-            giraffeNeck.neckTall();
-            input.setInputVariable("negativeIfIsShort", 1);
-        }
-        if(input.getBool("NeckPosShared")) {
-            giraffeNeck.neckShort();
-            input.setInputVariable("negativeIfIsShort", -1);
-        }
+//        if(input.getBool("NeckPosAlliance")) {
+//            giraffeNeck.neckTall();
+//            input.setInputVariable("negativeIfIsShort", 1);
+//        }
+//        if(input.getBool("NeckPosShared")) {
+//            giraffeNeck.neckShort();
+//            input.setInputVariable("negativeIfIsShort", -1);
+//        }
 
         clawPosition.setClawOpen(giraffeNeck.neckMovementFinished() && input.getBool("ClawOpen"));
 
@@ -188,7 +187,7 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
 
         if (input.getBool("ClawPos2")) clawPosition.positionTwo();
         if (input.getBool("ClawPos3")) clawPosition.positionThree();
-        if (input.getBool("ClawPos0")) {clawPosition.positionNeutral(); giraffeNeck.neckNeutral(); input.setInputVariable("negativeIfIsShort", 1);}
+        if (input.getBool("ClawPos0")) {clawPosition.positionNeutral(); giraffeNeck.neckNeutral();}
         if (input.getBool("EmergencyStop")) clawPosition.emergencyStop();
 
         //FeatureManager.logger.log(BuildHistory.buildName);
