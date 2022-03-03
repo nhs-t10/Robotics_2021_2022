@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.managers.input.nodes.AllNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.AnyNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.ButtonNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.IfNode;
+import org.firstinspires.ftc.teamcode.managers.input.nodes.InputVariableNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.JoystickNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiInputNode;
 import org.firstinspires.ftc.teamcode.managers.input.nodes.MultiplyNode;
@@ -78,13 +79,17 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
                             new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
-                        new MultiInputNode(
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
-                            new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
+                        new ScaleNode(new InputVariableNode("negativeIfIsShort"),
+                            new MultiInputNode(
+                                new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
+                                new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
+                            )
                         )
                 )
             );
+        input.setInputVariable("negativeIfIsShort", 1);
+
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("Carousel",
                 new PlusNode(
@@ -159,8 +164,14 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         hands.manualMoveEncodedMotor("NeckMotor",  (int) input.getFloat("NeckManualMove"));
         hands.manualMoveEncodedMotor("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
-        if(input.getBool("NeckPosAlliance")) giraffeNeck.neckTall();
-        if(input.getBool("NeckPosShared")) giraffeNeck.neckShort();
+        if(input.getBool("NeckPosAlliance")) {
+            giraffeNeck.neckTall();
+            input.setInputVariable("negativeIfIsShort", 1);
+        }
+        if(input.getBool("NeckPosShared")) {
+            giraffeNeck.neckShort();
+            input.setInputVariable("negativeIfIsShort", -1);
+        }
 
         clawPosition.setClawOpen(giraffeNeck.neckMovementFinished() && input.getBool("ClawOpen"));
 
