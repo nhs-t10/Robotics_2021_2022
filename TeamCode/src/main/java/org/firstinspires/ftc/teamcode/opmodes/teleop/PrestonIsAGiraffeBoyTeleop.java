@@ -79,7 +79,7 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
                             new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
-                        new ScaleNode(new InputVariableNode("negativeIfIsShort"),
+                        new MultiplyNode(new InputVariableNode("negativeIfIsShort"),
                             new MultiInputNode(
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
                                 new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),

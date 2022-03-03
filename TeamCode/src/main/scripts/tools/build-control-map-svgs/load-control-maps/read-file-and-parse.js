@@ -13,7 +13,9 @@ module.exports = function(file) {
                 )
             )
         );
-    } catch(e) {}
+    } catch(e) {
+        console.error(e);
+    }
 }
 
 function structureDefs(callsToRegisterInput) {
