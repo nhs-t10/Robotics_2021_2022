@@ -14,12 +14,12 @@ public class MultiplyNode extends InputManagerInputNode {
     /**
      * Multiplies one number by another.
      * @param input The input listed in the MultiplyNode
-     * @param multiplier The number that the input will be multiplied by (it can be a second input, if you want)
+     * @param coefficient The number that the input will be multiplied by (it can be a second input, if you want)
      * @see MinusNode#MinusNode(InputManagerInputNode, InputManagerInputNode) MinusNode
      */
-    public MultiplyNode(InputManagerInputNode input, InputManagerInputNode multiplier) {
+    public MultiplyNode(InputManagerInputNode coefficient, InputManagerInputNode input) {
         this.input = input;
-        this.multiplier = multiplier;
+        this.multiplier = coefficient;
     }
     public MultiplyNode(InputManagerInputNode input, float multiplyBy) {
         this.multiplier = new StaticValueNode(multiplyBy);
@@ -39,15 +39,20 @@ public class MultiplyNode extends InputManagerInputNode {
     public void update() {
         input.update();
         multiplier.update();
+
+        float[] f = input.getResult().getFloatArray();
+        float[] res = new float[f.length];
+
+        float muliplier = multiplier.getResult().getFloat();
+        for(int i = 0; i < res.length; i++) {
+            res[i] = f[i] * muliplier;
+        }
+        result.setFloatArray(res);
     }
 
     @NonNull
     @Override
     public InputManagerNodeResult getResult() {
-        float muliplier = multiplier.getResult().getFloat();
-        float value = input.getResult().getFloat();
-        value = value * muliplier;
-        result.setFloat(value);
         return result;
     }
 
