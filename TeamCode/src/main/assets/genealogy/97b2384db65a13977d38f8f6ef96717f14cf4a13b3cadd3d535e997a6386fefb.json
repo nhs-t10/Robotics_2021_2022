@@ -3,6 +3,15 @@
     "cognomen": "Thigermaner",
     "builds": [
         {
+            "name": "Mila Thigermaner",
+            "time": "2021-12-22T00:32:33.015Z",
+            "buildHash": "3a78dcc930804a68753563c952706eb4db9e4196bcdadd346da32c8342b0f4f3",
+            "w3w": "bingo commune gunman",
+            "phrase": "Everybody started and has never spoke very nearly threw the world. They won’t discuss literature. The picture, smiling now.",
+            "perceptualHash": "fafdf5cf6fe",
+            "colors": "#688041,#9723af"
+        },
+        {
             "name": "Timothy Thigermaner",
             "time": "2021-12-22T00:38:21.259Z",
             "buildHash": "3a78dcc930804a68753563c952706eb4db9e4196bcdadd346da32c8342b0f4f3",
@@ -892,17 +901,8 @@
             "phrase": "Dante describes as dull rage was proud to-night.” I choose my business. Besides, each step. He felt keenly the more and grossly common sense. She showed it in, or badly bound to escape.”",
             "perceptualHash": "f9fdfaf9f7fafc",
             "colors": "#4a8058,#704e81,#804fb5"
-        },
-        {
-            "name": "Sam Thigermaner",
-            "time": "2022-03-03T19:42:20.703Z",
-            "buildHash": "a73cea1e154a794fe9be1b94ac9047423bfb310ec68267f6b6c3a58fd5ab22b3",
-            "w3w": "drafting biology hearts",
-            "phrase": "Juliet on its superb rejection of it some foul puppet on the tall, graceful young master sleep so crude violence of his enemies. I may I did, even now, and death.",
-            "perceptualHash": "f5f577af1fdfc783f7f6fa2f9f952fcfefd22",
-            "colors": "#8282e5,#59bb8d,#51eb81,#64c680,#ae7cc0,#7d8523,#feb46c"
         }
     ],
-    "buildCount": 380,
-    "lastBuildTimeUnixMs": 1646336541344
+    "buildCount": 379,
+    "lastBuildTimeUnixMs": 1646272419371
 }
