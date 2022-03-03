@@ -52,7 +52,7 @@ $
     setClawOpen(false), next;
     driveOmni(0,1,0), after 68degs next;
     driveOmni(1,0,0), after 52cm next;
-    positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) goto parking
+    positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) goto parking, after 2000ms goto parking
 
 #parking:
     driveRaw(0,0,0,0)
