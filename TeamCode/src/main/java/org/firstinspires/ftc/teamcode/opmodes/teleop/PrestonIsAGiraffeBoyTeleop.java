@@ -79,16 +79,16 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
                             new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
                             new ScaleNode(new JoystickNode("left_stick_x"), 1)
                         ),
-//                        new MultiplyNode(new InputVariableNode("negativeIfIsShort"),
+                        new MultiplyNode(new InputVariableNode("negativeIfIsShort"),
                             new MultiInputNode(
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
                                 new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.4f),
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
                             )
-//                        )
+                        )
                 )
             );
-//        input.setInputVariable("negativeIfIsShort", 1);
+        input.setInputVariable("negativeIfIsShort", 1);
 
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("Carousel",
@@ -164,14 +164,14 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         hands.manualMoveEncodedMotor("NeckMotor",  (int) input.getFloat("NeckManualMove"));
         hands.manualMoveEncodedMotor("ClawMotor", (int) input.getFloat("ClawManualMove"));
 
-//        if(input.getBool("NeckPosAlliance")) {
-//            giraffeNeck.neckTall();
-//            input.setInputVariable("negativeIfIsShort", 1);
-//        }
-//        if(input.getBool("NeckPosShared")) {
-//            giraffeNeck.neckShort();
-//            input.setInputVariable("negativeIfIsShort", -1);
-//        }
+        if(input.getBool("NeckPosAlliance")) {
+            giraffeNeck.neckTall();
+            input.setInputVariable("negativeIfIsShort", 1);
+        }
+        if(input.getBool("NeckPosShared")) {
+            giraffeNeck.neckShort();
+            input.setInputVariable("negativeIfIsShort", -1);
+        }
 
         clawPosition.setClawOpen(giraffeNeck.neckMovementFinished() && input.getBool("ClawOpen"));
 
