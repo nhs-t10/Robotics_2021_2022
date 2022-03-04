@@ -41,7 +41,7 @@ public class NateManager extends FeatureManager {
      * @param open If {@code true}, open the claw; otherwise, close it.
      */
     public void setClawOpen(boolean open) {
-        if(open) hands.setServoPosition("nateClaw", 0.5);
+        if(open) hands.setServoPosition("nateClaw", 0.7);
         else hands.setServoPosition("nateClaw", 0.25);
     }
 
