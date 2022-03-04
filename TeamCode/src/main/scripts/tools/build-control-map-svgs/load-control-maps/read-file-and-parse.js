@@ -4,7 +4,8 @@ var javaparser = require("../../../script-helpers/javaparser/parser");
 module.exports = function(file) {
     var fContent = fs.readFileSync(file).toString();
     try {
-        var parseTree = javaparser.parse(fContent);
+        var fContentStripped = fContent.replace(/\/\/.+/g, "");
+        var parseTree = javaparser.parse(fContentStripped);
 
         return structureDefs(
             findControlDefinitions(
@@ -73,7 +74,7 @@ function findControlDefinitions(initMethod) {
         && x.expression.node == "Assignment"
         && x.expression.operator == "=" 
         && x.expression.rightHandSide.node == "ClassInstanceCreation"
-        && x.expression.rightHandSide.type.node == "SimpleType"
+        //&& x.expression.rightHandSide.type.node == "SimpleType"
         && x.expression.rightHandSide.type.name.identifier == "InputManager")
     .expression.leftHandSide.identifier;
     

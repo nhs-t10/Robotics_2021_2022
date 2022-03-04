@@ -10,6 +10,7 @@ module.exports = function() {
 
     var entries =
         opmodeFiles
+        .filter(x=>matchesArgv(x))
         .map(x=>[path.basename(x, ".java"), readFileParseMap(x)])
         .filter(x=>x[1]!=undefined);
     
@@ -27,6 +28,17 @@ module.exports = function() {
     });
 
     return resultObject;
+}
+
+function matchesArgv(name) {
+    if(process.argv.length > 2) {
+        var names = process.argv.slice(2);
+        var matchedName = names.find(x=>name.toLowerCase().includes(x.toLowerCase()));
+
+        if(matchedName) return true;
+        else return false;
+    }
+    return true;
 }
 
 function loadJavaFilesFromFolder(folder) {
