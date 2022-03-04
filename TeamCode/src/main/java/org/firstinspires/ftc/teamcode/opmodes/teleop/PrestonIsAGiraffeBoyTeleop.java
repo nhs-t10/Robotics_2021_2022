@@ -93,8 +93,8 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
         input.setOverlapResolutionMethod(InputOverlapResolutionMethod.MOST_COMPLEX_ARE_THE_FAVOURITE_CHILD);
         input.registerInput("Carousel",
                 new PlusNode(
-                        new MultiplyNode(new ButtonNode("cross"), 0.3f),
-                        new MultiplyNode(new ButtonNode("circle"), -0.3f)
+                        new MultiplyNode(new ButtonNode("cross"), 0.35f),
+                        new MultiplyNode(new ButtonNode("circle"), -0.35f)
                 )
         );
 
