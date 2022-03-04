@@ -42,13 +42,13 @@
     setClawOpen(true), after 1000ms goto finalMovement;
 
 #finalMovement:
-    driveOmni(0.7,0,0), after 2in next;
+    driveOmni(0.8,0,0), after 2in next;
     setClawOpen(false), neckNeutral(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
     positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("netural movement done"), next };
     let tError = delegate("helpers/pid-turn.autoauto", 90), if (tError < 5) next;
     driveOmni(0,0,1), after 6in next, after 3000ms next;
     driveOmni(-1,0,0.2), after 15in next, after 5000ms next;
-    driveOmni(0,0,-1), after 5in next, after 3000ms next;
+    driveOmni(0,0,-0.7), after 6in next, after 3000ms next;
     goto parking
 
 #parking:

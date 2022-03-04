@@ -12,13 +12,13 @@
 
 //The robot starts folded up so that it's inside an 18x18 cube. `clawout` moves it off the wall then folds out the arms to their full extent.
 #clawout:
-    driveOmni(0.5,0,0),after 2in next;
+    driveOmni(0.7,0,0),after 2in next;
     neckTall(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
     goto align
 
 //drive left, turn left, spin carousel for 3sec, drive right
 #align:
-    driveOmni(0,0,-0.7),after 6.5in next;
+    driveOmni(0,0,-1),after 6.5in next;
     let tError = delegate("helpers/pid-turn.autoauto", 180), if (tError < 5) next;
     driveOmni(0,0,0), goto split
 
@@ -38,15 +38,15 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(-0.7,0,0), after 3in next;
-    setClawOpen(true), after 500ms goto finalMovement;
+    driveOmni(-0.6,0,0), after 3in next;
+    setClawOpen(true), after 1000ms goto finalMovement;
 
 #finalMovement:
     driveOmni(0.7,0,0), after 2in next;
     setClawOpen(false), neckNeutral(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
     positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("netural movement done"), next };
     let tError = delegate("helpers/pid-turn.autoauto", -90), if (tError < 5) next;
-    driveOmni(0,0,-0.7), after 6in next, after 3000ms next;
+    driveOmni(0,0,-1), after 6in next, after 3000ms next;
     driveOmni(-1,0,-0.2), after 15in next, after 5000ms next;
     driveOmni(0,0,0.7), after 5.5in next;
     goto parking
