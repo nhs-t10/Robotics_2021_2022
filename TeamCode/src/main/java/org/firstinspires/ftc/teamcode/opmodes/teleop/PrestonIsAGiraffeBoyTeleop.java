@@ -73,20 +73,19 @@ public class PrestonIsAGiraffeBoyTeleop extends OpMode {
 
         input = new InputManager(gamepad1, gamepad2);
         input.registerInput("drivingControls",
-                new PlusNode(
-                        new MultiInputNode(
-                            new ScaleNode(new JoystickNode("left_stick_y"), 1),
-                            new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
-                            new ScaleNode(new JoystickNode("left_stick_x"), 1)
-                        ),
-                        //new MultiplyNode(
+                new MultiplyNode(new InputVariableNode("negativeIfIsShort"),
+                        new PlusNode(
+                                new MultiInputNode(
+                                        new ScaleNode(new JoystickNode("left_stick_y"), 1),
+                                        new ScaleNode(new JoystickNode("right_stick_x"), 0.9f),
+                                        new ScaleNode(new JoystickNode("left_stick_x"), 1)
+                    ),
                                 new MultiInputNode(
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_y"), 0.4f),
                                 new ScaleNode(new JoystickNode("gamepad2right_stick_x"), 0.6f),
                                 new ScaleNode(new JoystickNode("gamepad2left_stick_x"), 0.7f)
                             )
-                        //, new InputVariableNode("negativeIfIsShort")
-                        //)
+                        )
                 )
             );
         input.setInputVariable("negativeIfIsShort", 1);

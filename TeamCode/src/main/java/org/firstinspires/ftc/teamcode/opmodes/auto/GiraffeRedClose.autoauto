@@ -28,7 +28,9 @@
     goto split;
 
 #split:
-    if(value == 0) goto thirdPosition, if(value == 1) goto secondPosition, if(value == 2) goto firstPosition
+    if(value == 0) goto thirdPosition
+    else if(value == 1) goto secondPosition
+    else goto firstPosition
 
 #firstPosition:
     positionOne(),  when (hasEncodedMovement("ClawMotor") == false) { log("movement done"), next };
