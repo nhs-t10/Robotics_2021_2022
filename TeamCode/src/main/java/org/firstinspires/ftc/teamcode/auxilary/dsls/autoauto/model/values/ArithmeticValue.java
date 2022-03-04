@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.AutoautoOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.DivisionOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.EqualsOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.ExponentiationOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.GreaterThanOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.GrequalsOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoDivideOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoEqualsOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoExpOperator;
@@ -20,13 +14,6 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.Has
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoOperatorInterface;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoPlusOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.HasAutoautoTimesOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.LequalsOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.LessThanOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.MinusOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.ModuloOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.NotEqualsOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.PlusOperator;
-import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.operators.TimesOperator;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoBooleanValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
@@ -92,6 +79,9 @@ public class ArithmeticValue extends AutoautoValue {
         AutoautoPrimitive leftRes = left.getResolvedValue();
         AutoautoPrimitive rightRes = right.getResolvedValue();
 
+        leftRes = replaceNanWithUndefined(leftRes);
+        rightRes = replaceNanWithUndefined(rightRes);
+
         //Choose the widest datatype; if there's a tie, choose left, since we read left-to-right.
         boolean chooseLeft = leftRes.dataWidth() >= rightRes.dataWidth();
         AutoautoPrimitive chosen = chooseLeft ? leftRes : rightRes;
@@ -125,6 +115,14 @@ public class ArithmeticValue extends AutoautoValue {
         else {
             this.returnValue = new AutoautoUndefined();
         }
+    }
+
+    private AutoautoPrimitive replaceNanWithUndefined(AutoautoPrimitive value) {
+        if(value instanceof AutoautoNumericValue) {
+            if(Float.isNaN(((AutoautoNumericValue) value).value)) return new AutoautoUndefined();
+        }
+        //if we haven't returned undefined,
+        return value;
     }
 
     private AutoautoPrimitive dispatchOperator(String operator,

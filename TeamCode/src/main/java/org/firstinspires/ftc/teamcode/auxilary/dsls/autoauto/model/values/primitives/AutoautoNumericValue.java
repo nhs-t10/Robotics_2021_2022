@@ -78,6 +78,7 @@ public class AutoautoNumericValue extends AutoautoPrimitive implements
     @Override
     public String getString() {
         if((int)value == value) return (int)value + "";
+        else if(Float.isNaN(value)) return (new AutoautoUndefined()).getString();
         else return value + "";
     }
 
@@ -116,7 +117,8 @@ public class AutoautoNumericValue extends AutoautoPrimitive implements
 
     @Override
     public AutoautoPrimitive opEquals(AutoautoPrimitive other, boolean otherIsLeft) {
-        return new AutoautoBooleanValue(other.castToNumber().value == this.value);
+        if(Float.isNaN(value) && Float.isNaN(other.castToNumber().value)) return new AutoautoBooleanValue(true);
+        else return new AutoautoBooleanValue(other.castToNumber().value == this.value);
     }
 
     @Override
