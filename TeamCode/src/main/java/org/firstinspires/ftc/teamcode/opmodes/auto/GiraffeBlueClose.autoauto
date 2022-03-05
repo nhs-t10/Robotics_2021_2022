@@ -46,7 +46,7 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(-0.7,0,0), after 6.5in next;
+    driveOmni(-0.7,0,0), after 6.2in next;
     setClawOpen(true), after 1200ms goto finalMovement;
 
 #finalMovement:
@@ -54,7 +54,7 @@
     setClawOpen(false), neckNeutral(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
     positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("netural movement done"), next };
     driveOmni(0.7,0,0), after 6in next, after 3000ms next;
-    driveOmni(0,0,-0.7), after 4.5in next, after 3000ms next;
+    driveOmni(0,0,-0.7), after 3.2in next, after 3000ms next;
     goto parking
 
 #parking:
