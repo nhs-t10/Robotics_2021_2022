@@ -23,7 +23,8 @@
     setMotorPower("Carousel", -0.5), after 3000ms next;
     setMotorPower("Carousel", 0), next;
     neckTall(), when (neckMovementFinished()) { log("movement done"), next };
-    driveOmni(-0.7,0,0), after 8.5in next;
+    driveOmni(-0.7,0,0), after 8.2in next;
+    driveOmni(0,0,0.7), after 1in next;
     let tError = delegate("helpers/pid-turn.autoauto", 90), if (tError < 5) next;
     goto split;
 
@@ -46,7 +47,7 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(-0.7,0,0), after 6in next;
+    driveOmni(-0.7,0,0), after 5.3in next;
     setClawOpen(true), after 1000ms goto finalMovement;
 
 #finalMovement:
@@ -54,7 +55,7 @@
     setClawOpen(false), neckNeutral(), when (hasEncodedMovement("NeckMotor") == false) { log("movement done"), next };
     positionNeutral(), when (hasEncodedMovement("ClawMotor") == false) { log("netural movement done"), next };
     driveOmni(0.7,0,0), after 6in next;
-    driveOmni(0,0,0.7), after 3.75in next;
+    driveOmni(0,0,0.7), after 3.55in next;
     goto parking
 
 #parking:
