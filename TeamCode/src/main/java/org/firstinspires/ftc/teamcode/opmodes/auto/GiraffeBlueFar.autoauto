@@ -38,7 +38,7 @@
     goto towerDropOff
 
 #towerDropOff:
-    driveOmni(-0.6,0,0), after 3in next;
+    driveOmni(-0.6,0,0), after 1.8in next;
     setClawOpen(true), after 1000ms goto finalMovement;
 
 #finalMovement:
