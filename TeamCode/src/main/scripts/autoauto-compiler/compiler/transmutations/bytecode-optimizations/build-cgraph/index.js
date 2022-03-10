@@ -19,8 +19,6 @@ function buildGraphFrom(bcode) {
     
     var stateKeys = keys.filter(x=>/^s\/[^/]+\/0$/.test(x));
     
-    console.log(stateKeys);
-    
     var r = {};
     for(var i = 0; i < keys.length; i++) {
         r[keys[i]] = findBlockTargets(bcode[keys[i]], stateKeys);

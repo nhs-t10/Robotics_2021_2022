@@ -1,8 +1,8 @@
 var test = require("./index");
 var seed = randomSeed();
 
-console.log(seed);
-console.log(test(seed));
+console.warn(seed);
+console.warn(test(seed));
 
 function randomSeed() {
     var r = "";

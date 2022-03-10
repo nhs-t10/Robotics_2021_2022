@@ -69,9 +69,6 @@ function geometryGrapher(geoCb) {
                 var bottomPixel = pixels[Math.floor(absPixIndex)];
 
                 var pixelProportion = 1 - (absPixIndex - Math.floor(absPixIndex));
-
-                //debug time!
-                if(!topPixel || !bottomPixel) console.log(pixels.length, absPixIndex);
                 
                 row.push(weightedAvgPixel(topPixel, bottomPixel, pixelProportion));
             }

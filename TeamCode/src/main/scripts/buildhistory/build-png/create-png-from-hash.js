@@ -10,7 +10,6 @@ var PHI = 1.61803399;
 
 
 module.exports = function(buildNumber, hash, pixelStrategySeed) {
-    console.log("percep hash: `" + hash + "`");
 
     var pixels = getHexPixels(hash);
     var normalizedPixels = normalizePixels(pixels);

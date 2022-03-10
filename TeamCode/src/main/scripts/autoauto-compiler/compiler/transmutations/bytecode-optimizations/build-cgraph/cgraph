@@ -312,12 +312,18 @@
     "s/dynamicGoto/0/stmt/0"
   ],
   "s/dgoto0/0/stmt/0": [
+    "undefined/stmt/1"
+  ],
+  "s/dgoto0/0/stmt/1": [
     "s/dgotoWorks/0"
   ],
   "s/dgoto0/0": [
     "s/dgoto0/0/stmt/0"
   ],
   "s/dgoto1/0/stmt/0": [
+    "undefined/stmt/1"
+  ],
+  "s/dgoto1/0/stmt/1": [
     "s/dgotoWorks/0"
   ],
   "s/dgoto1/0": [
@@ -357,10 +363,19 @@
     "s/undefinedTesting/2/stmt/0"
   ],
   "s/undefinedTesting/3/stmt/0": [
-    "s/mathOps/0"
+    "undefined/stmt/1"
+  ],
+  "s/undefinedTesting/3/stmt/1": [
+    "s/undefinedTesting/4"
   ],
   "s/undefinedTesting/3": [
     "s/undefinedTesting/3/stmt/0"
+  ],
+  "s/undefinedTesting/4/stmt/0": [
+    "s/mathOps/0"
+  ],
+  "s/undefinedTesting/4": [
+    "s/undefinedTesting/4/stmt/0"
   ],
   "s/mathOps/0/stmt/0": [
     "undefined/stmt/1"

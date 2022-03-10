@@ -2,7 +2,6 @@ This is a location for one-off tools that I made for one reason or another. They
 
 **Many of them don't work now.**
 
-- `visualise-autoauto-trees` needed to be explicitly called *by* the compiler.
 
 (`markov-generator` still works fine, though!)
 

@@ -9,6 +9,6 @@ var oldFiles = [
     path.join(__dirname, "../../java/org/firstinspires/ftc/teamcode/__compiledautoauto")
 ];
 oldFiles.forEach(x=>{
-    console.log("Deleting " + x);
+    console.warn("Deleting " + x);
     deleteIfExists(x)
 });

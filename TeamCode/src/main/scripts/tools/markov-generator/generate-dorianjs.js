@@ -20,7 +20,7 @@ var nonCharacterCorpus = nonCharacterSentences.map(x=>x.endsWith("”") ? x.subs
 var dissasociatedBody = {};
 
 for(var i = 0; i < nonCharacterCorpus.length; i++) {
-    console.log(i +"/" + nonCharacterCorpus.length);
+    console.warn(i +"/" + nonCharacterCorpus.length);
     var word = nonCharacterCorpus[i];
     
     if(bannedWords.includes(word)) continue;

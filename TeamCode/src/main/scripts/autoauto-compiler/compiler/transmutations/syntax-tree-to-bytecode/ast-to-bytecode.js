@@ -113,7 +113,7 @@ function astToBytecode(ast, block, constantPool, afterThisJumpToLabel) {
             
             match[2] = thisIndex + 1;
             var lbl = match.slice(0,3).join("/");
-            console.log(lbl);
+            
             return jumpToLabel(lbl, constantPool);
         
         case "UnitValue": 

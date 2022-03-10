@@ -39,7 +39,6 @@ function massageResIntoMessage(res, file, defaultKind) {
     if(!res.original) res.original = res.text;
     
     if(res instanceof Error) {
-        console.log(res);
         res = {
             kind: "ERROR",
             text: res.toString(),

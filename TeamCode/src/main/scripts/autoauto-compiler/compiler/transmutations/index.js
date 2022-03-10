@@ -26,8 +26,6 @@ module.exports = {
         var tasks = cachedParseSpecExpandAliases(s);
         insertDeps(tasks);
         
-        if(tasks.find(x=>x.id=="syntax-tree-to-bytecode")) console.log(tasks);
-        
         return idsToTras(tasks);
     }
 };

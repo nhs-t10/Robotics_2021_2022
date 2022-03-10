@@ -6,8 +6,8 @@ var inBuffs = ins.map(x=>Buffer.from(x, "ascii"));
 
 var hashes = inBuffs.map(x=>badPercepHash.hash(x));
 
-hashes.forEach(x=>console.log(x.toString("hex") + "\n"));
+hashes.forEach(x=>console.info(x.toString("hex") + "\n"));
 
-console.log("\n\n");
+console.info("\n\n");
 
-console.log(badPercepHash.combineHashes(hashes).toString("hex"));
+console.info(badPercepHash.combineHashes(hashes).toString("hex"));

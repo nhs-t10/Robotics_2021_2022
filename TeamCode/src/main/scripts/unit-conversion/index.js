@@ -33,7 +33,6 @@ function discriminateToUnique(unitNames) {
             used[record.conversionFactors] = true;
         }
     }
-    console.log(uniq);
     if(uniq.length == 1) return unitData.data[uniq[0]];
     else return uniq;
 }

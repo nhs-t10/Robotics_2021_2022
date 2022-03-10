@@ -50,9 +50,9 @@ var solvedSerialCorrectness = solvedSerial.map((x,i)=>+(JSON.stringify(x)==JSON.
 solvedSerialCorrectness *= 100;
 solvedSerialCorrectness += "%";
 
-console.log("===");
-console.log("Structured Serialise: ", structuredSerialiseTime);
-console.log("Structured Serialise Correctness: ", solvedSerialCorrectness);
+console.warn("===");
+console.warn("Structured Serialise: ", structuredSerialiseTime);
+console.warn("Structured Serialise Correctness: ", solvedSerialCorrectness);
 
 timeStart = Date.now();
 
@@ -63,5 +63,5 @@ t.forEach(x=> {
 
 var jsonTime = Date.now() - timeStart;
 
-console.log("JSON: ", jsonTime);
-console.log("===");
+console.warn("JSON: ", jsonTime);
+console.warn("===");
