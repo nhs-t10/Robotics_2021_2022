@@ -14,6 +14,7 @@ public class RobotConfiguration {
     public final static String littleBoyFileContent = "littleBoy";
     public final static String tankBoyFileContent = "tankBoy";
     public final static String giraffeBoyFileContent = "giraffeBoy";
+    public final static String SpeedyBoyFileContent = "gi";
 
     public WheelCoefficients motorCoefficients;
     public WheelCoefficients autoMotorCoefficients;

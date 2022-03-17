@@ -37,6 +37,17 @@ public class FeatureManager {
             PIDMAP()
     );
 
+    public static final RobotConfiguration speedyBoyConfiguration = new RobotConfiguration(
+            W(1,1,0,0), W(1,1,0,0),
+            new OmniCalcComponents(
+                    vertical      (-1f,1f,-1f,-1f),
+                    horizontal    (0f, 0f, 0f, 0f),
+                    rotational    (1f,-1f,-1f,-1f)
+            ),
+            0.03f, 1680, 1, 8.9, 1, 3f,
+            PIDMAP()
+    );
+
     public static final RobotConfiguration bigBoyConfiguration = new RobotConfiguration(
             W(1,1,-1,1), W(0.83f,0.83f,-1,1),
             new OmniCalcComponents(
@@ -107,6 +118,8 @@ public class FeatureManager {
                 return "giraffeBoy";
             case RobotConfiguration.tankBoyFileContent:
                 return "tankBoy";
+            case RobotConfiguration.SpeedyBoyFileContent:
+                return "Speedy";
             default:
                 return "mysteryBoy";
         }
@@ -130,6 +143,8 @@ public class FeatureManager {
                 return cachedConfiguration = littleBoyConfiguration;
             case RobotConfiguration.giraffeBoyFileContent:
                 return cachedConfiguration = giraffeBoyConfiguration;
+            case RobotConfiguration.SpeedyBoyFileContent:
+                return cachedConfiguration = speedyBoyConfiguration;
             default:
                 return cachedConfiguration = defaultConfiguration;
         }

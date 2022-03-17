@@ -9,6 +9,7 @@ function treeBlockToBytecode(block, constantPool, afterStateDoneJumpTo) {
         subblocks: [],
         entryLabel: block.label + "/stmt/" + 0,
         label: block.label,
+        stateCountInPath: block.stateCountInPath
     }
 
     bBlock.subblocks = block.treeStatements.map((x, i) => ({
@@ -17,7 +18,9 @@ function treeBlockToBytecode(block, constantPool, afterStateDoneJumpTo) {
     }));
 
     block.treeStatements.forEach((x, i) => {
-        var nextLabel = (i + 1 < block.treeStatements.length) ? (x.label + "/stmt/" + (i + 1)) : (afterStateDoneJumpTo || block.label);
+        var nextLabel = block.label + "/stmt/" + (i + 1);
+        if(i + 1 == block.treeStatements.length) nextLabel = afterStateDoneJumpTo || block.label;
+        
         var bcode = astToBytecode(x, bBlock, constantPool, nextLabel);
         if(i + 1 == block.treeStatements.length) {
             bcode.push(emitBytecodeWithLocation(bytecodeSpec.yield, x));
@@ -186,13 +189,19 @@ function skipStatementToBytecode(ast, block, constantPool, nextLabel) {
     if(isNaN(thisStateIndex)) throw "something went wrong in skipStatementToBytecode";
 
     var prefix = "s/" + stateBlockParams[1] + "/";
+    
+    if(ast.skip.type != "NumericValue") throw { text: "non-numeric skip!", location: ast.location };
+    
+    var deltaSkip = ast.skip.v;
+    var skipToIndex = thisStateIndex + deltaSkip;
+    if(!block.stateCountInPath) throw "aaa no statecountinpath";
+    var skipToIndexNorm = skipToIndex % block.stateCountInPath;
+    if(skipToIndexNorm < 0) skipToIndexNorm += block.stateCountInPath;
+    
+    var targetLabelName = prefix + skipToIndexNorm;
 
     return emitBytecodesWithLocation([
-        emitConstantWithLocation(prefix, constantPool, ast),
-        emitConstantWithLocation(thisStateIndex, constantPool, ast),
-        astToBytecode(ast.skip, block, constantPool),
-        bytecodeSpec.add, //add skip to current state
-        bytecodeSpec.add, //add that resulting number to the prefix, to form the state
+        emitConstantWithLocation(targetLabelName, constantPool, ast), // emit the target state's name
         bytecodeSpec.jmp_l, //jump to that label
     ], ast)
 }
@@ -219,10 +228,7 @@ function functionLiteralToBytecode(ast, block, constantPool) {
     var bodyBlockLabel = constantPool.subblockLabel(block.label, "func_enter");
     block.subblocks.push({
         label: bodyBlockLabel,
-        bcode: blockToBytecode(ast.body, {
-            label: constantPool.subblockLabel(block.label, "func_body"),
-            subblocks: block.subblocks
-        }, constantPool, endBlockLabel)
+        bcode: blockToBytecode(ast.body, block, constantPool, endBlockLabel, "func_body")
     });
     
     return [emitConstantWithLocation(bodyBlockLabel, constantPool, ast)]
@@ -241,11 +247,12 @@ function functionDefToBytecode(ast, block, constantPool, nextLabel) {
     ], ast));
 }
 
-function blockToBytecode(ast, block, constantPool, nextLabel) {
-    var pseudoblock = {
-        treeStatements: ast.state.statement,
-        label: constantPool.subblockLabel(block.label, "childscope"),
-    }
+function blockToBytecode(ast, block, constantPool, nextLabel, childScopeLabel) {
+    var pseudoblock = {};
+    Object.assign(pseudoblock, block);
+    pseudoblock.treeStatements = ast.state.statement;
+    pseudoblock.label = constantPool.subblockLabel(block.label, "childscope" + (childScopeLabel || ""));
+    pseudoblock.subblocks = [];
     
     var bytecoded = treeBlockToBytecode(pseudoblock, constantPool, nextLabel);
     

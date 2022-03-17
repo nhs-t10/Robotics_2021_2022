@@ -1,5 +1,5 @@
 $
-compilerMode: "default",
+compilerMode: "optimized-bytecode",
 expectedTestOutput: "\n3\n2\ncount: 1\ncount: 2\ncount: 3\ncount: 4\ncount: 5\ncount: 6\ncount: 7\ncount: 8\ncount: 9\ncount: 10\ncount: 11\ncount: 12\ncount: 13\ncount: 14\ncount: 15\ncount: 16\ncount: 17\ncount: 18\ncount: 19\ncount: 20\n3hah\nhahah\n24fefoop\n2fefoop\n21oop\ndgdg\nundefined\nundefined\nundefined\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\n"
 $
 
@@ -12,7 +12,7 @@ $
 log("ULS!"), goto ifStatements;
 
 #ifStatements:
-    if(true) { log("this works like java"), next };
+    if(true) { lsog("this works like java"), next };
     if(false) log("fail"), next; //this next should trigger, because it's outside of the `if`
     if(false) { log("fail") } else { next }; //else clauses
     goto letStatements;

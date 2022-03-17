@@ -1,6 +1,6 @@
 {
   "s/<init>/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/<init>/0/stmt/1"
   ],
   "s/<init>/0/stmt/1": [
     "s/ifStatements/0"
@@ -13,7 +13,7 @@
     "s/ifStatements/0/if_false/2"
   ],
   "s/ifStatements/0/childscope/4/stmt/0": [
-    "undefined/stmt/1"
+    "s/ifStatements/0/childscope/4/stmt/1"
   ],
   "s/ifStatements/0/childscope/4/stmt/1": [
     "s/ifStatements/1"
@@ -47,7 +47,7 @@
     "s/ifStatements/1/if_end/7"
   ],
   "s/ifStatements/1/if_end/7": [
-    "undefined/stmt/1"
+    "s/ifStatements/1/stmt/1"
   ],
   "s/ifStatements/1": [
     "s/ifStatements/1/stmt/0"
@@ -87,7 +87,7 @@
     "s/ifStatements/3/stmt/0"
   ],
   "s/letStatements/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/0/stmt/1"
   ],
   "s/letStatements/0/stmt/1": [
     "s/letStatements/1"
@@ -96,7 +96,7 @@
     "s/letStatements/0/stmt/0"
   ],
   "s/letStatements/1/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/1/stmt/1"
   ],
   "s/letStatements/1/stmt/1": [
     "s/letStatements/2"
@@ -105,7 +105,7 @@
     "s/letStatements/1/stmt/0"
   ],
   "s/letStatements/2/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/2/stmt/1"
   ],
   "s/letStatements/2/stmt/1": [
     "s/letStatements/3"
@@ -114,7 +114,7 @@
     "s/letStatements/2/stmt/0"
   ],
   "s/letStatements/3/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/3/stmt/1"
   ],
   "s/letStatements/3/stmt/1": [
     "s/letStatements/4"
@@ -123,7 +123,7 @@
     "s/letStatements/3/stmt/0"
   ],
   "s/letStatements/4/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/4/stmt/1"
   ],
   "s/letStatements/4/stmt/1": [
     "s/letStatements/5"
@@ -132,10 +132,10 @@
     "s/letStatements/4/stmt/0"
   ],
   "s/letStatements/5/stmt/0": [
-    "undefined/stmt/1"
+    "s/letStatements/5/stmt/1"
   ],
   "s/letStatements/5/stmt/1": [
-    "undefined/stmt/2"
+    "s/letStatements/5/stmt/2"
   ],
   "s/letStatements/5/stmt/2": [
     "s/letStatements/6"
@@ -150,7 +150,7 @@
     "s/letStatements/6/stmt/0"
   ],
   "s/loopingPath/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/loopingPath/0/stmt/1"
   ],
   "s/loopingPath/0/stmt/1": [
     "s/loopingPath/1"
@@ -159,10 +159,10 @@
     "s/loopingPath/0/stmt/0"
   ],
   "s/loopingPath/1/stmt/0": [
-    "undefined/stmt/1"
+    "s/loopingPath/1/stmt/1"
   ],
   "s/loopingPath/1/stmt/1": [
-    "undefined/stmt/2"
+    "s/loopingPath/1/stmt/2"
   ],
   "s/loopingPath/1/stmt/2": [
     "s/loopingPath/2"
@@ -205,29 +205,29 @@
     "s/loopingPath/3/stmt/0"
   ],
   "s/functionDefinition/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/functionDefinition/0/stmt/1"
   ],
   "s/functionDefinition/0/stmt/1": [
     "s/functionDefinition/1"
   ],
   "s/functionDefinition/0/func_end/12": [],
-  "s/functionDefinition/0/func_body/14/childscope/15/stmt/0": [
+  "s/functionDefinition/0/childscopefunc_body/14/stmt/0": [
     "s/functionDefinition/0/func_end/12"
   ],
-  "s/functionDefinition/0/func_body/14/childscope/15": [
-    "s/functionDefinition/0/func_body/14/childscope/15/stmt/0"
+  "s/functionDefinition/0/childscopefunc_body/14": [
+    "s/functionDefinition/0/childscopefunc_body/14/stmt/0"
   ],
   "s/functionDefinition/0/func_enter/13": [
-    "s/functionDefinition/0/func_body/14/childscope/15/stmt/0"
+    "s/functionDefinition/0/childscopefunc_body/14/stmt/0"
   ],
   "s/functionDefinition/0": [
     "s/functionDefinition/0/stmt/0"
   ],
   "s/functionDefinition/1/stmt/0": [
-    "undefined/stmt/1"
+    "s/functionDefinition/1/stmt/1"
   ],
   "s/functionDefinition/1/stmt/1": [
-    "undefined/stmt/2"
+    "s/functionDefinition/1/stmt/2"
   ],
   "s/functionDefinition/1/stmt/2": [
     "s/functionDefinition/2"
@@ -236,32 +236,32 @@
     "s/functionDefinition/1/stmt/0"
   ],
   "s/functionDefinition/2/stmt/0": [
-    "undefined/stmt/1"
+    "s/functionDefinition/2/stmt/1"
   ],
   "s/functionDefinition/2/stmt/1": [
     "s/functionDefinition/3"
   ],
-  "s/functionDefinition/2/func_end/16": [],
-  "s/functionDefinition/2/func_body/18/childscope/19/stmt/0": [
-    "s/functionDefinition/2/func_end/16"
+  "s/functionDefinition/2/func_end/15": [],
+  "s/functionDefinition/2/childscopefunc_body/17/stmt/0": [
+    "s/functionDefinition/2/func_end/15"
   ],
-  "s/functionDefinition/2/func_body/18/childscope/19": [
-    "s/functionDefinition/2/func_body/18/childscope/19/stmt/0"
+  "s/functionDefinition/2/childscopefunc_body/17": [
+    "s/functionDefinition/2/childscopefunc_body/17/stmt/0"
   ],
-  "s/functionDefinition/2/func_enter/17": [
-    "s/functionDefinition/2/func_body/18/childscope/19/stmt/0"
+  "s/functionDefinition/2/func_enter/16": [
+    "s/functionDefinition/2/childscopefunc_body/17/stmt/0"
   ],
   "s/functionDefinition/2": [
     "s/functionDefinition/2/stmt/0"
   ],
   "s/functionDefinition/3/stmt/0": [
-    "undefined/stmt/1"
+    "s/functionDefinition/3/stmt/1"
   ],
   "s/functionDefinition/3/stmt/1": [
-    "undefined/stmt/2"
+    "s/functionDefinition/3/stmt/2"
   ],
   "s/functionDefinition/3/stmt/2": [
-    "undefined/stmt/3"
+    "s/functionDefinition/3/stmt/3"
   ],
   "s/functionDefinition/3/stmt/3": [
     "s/functionDefinition/4"
@@ -276,7 +276,7 @@
     "s/functionDefinition/4/stmt/0"
   ],
   "s/skipWrapping/0/stmt/0": [
-    "s/skipWrapping/-1"
+    "s/skipWrapping/2"
   ],
   "s/skipWrapping/0": [
     "s/skipWrapping/0/stmt/0"
@@ -312,7 +312,7 @@
     "s/dynamicGoto/0/stmt/0"
   ],
   "s/dgoto0/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/dgoto0/0/stmt/1"
   ],
   "s/dgoto0/0/stmt/1": [
     "s/dgotoWorks/0"
@@ -321,7 +321,7 @@
     "s/dgoto0/0/stmt/0"
   ],
   "s/dgoto1/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/dgoto1/0/stmt/1"
   ],
   "s/dgoto1/0/stmt/1": [
     "s/dgotoWorks/0"
@@ -336,7 +336,7 @@
     "s/dgotoWorks/0/stmt/0"
   ],
   "s/undefinedTesting/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/undefinedTesting/0/stmt/1"
   ],
   "s/undefinedTesting/0/stmt/1": [
     "s/undefinedTesting/1"
@@ -345,7 +345,7 @@
     "s/undefinedTesting/0/stmt/0"
   ],
   "s/undefinedTesting/1/stmt/0": [
-    "undefined/stmt/1"
+    "s/undefinedTesting/1/stmt/1"
   ],
   "s/undefinedTesting/1/stmt/1": [
     "s/undefinedTesting/2"
@@ -354,7 +354,7 @@
     "s/undefinedTesting/1/stmt/0"
   ],
   "s/undefinedTesting/2/stmt/0": [
-    "undefined/stmt/1"
+    "s/undefinedTesting/2/stmt/1"
   ],
   "s/undefinedTesting/2/stmt/1": [
     "s/undefinedTesting/3"
@@ -363,7 +363,7 @@
     "s/undefinedTesting/2/stmt/0"
   ],
   "s/undefinedTesting/3/stmt/0": [
-    "undefined/stmt/1"
+    "s/undefinedTesting/3/stmt/1"
   ],
   "s/undefinedTesting/3/stmt/1": [
     "s/undefinedTesting/4"
@@ -378,7 +378,7 @@
     "s/undefinedTesting/4/stmt/0"
   ],
   "s/mathOps/0/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/0/stmt/1"
   ],
   "s/mathOps/0/stmt/1": [
     "s/mathOps/1"
@@ -387,7 +387,7 @@
     "s/mathOps/0/stmt/0"
   ],
   "s/mathOps/1/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/1/stmt/1"
   ],
   "s/mathOps/1/stmt/1": [
     "s/mathOps/2"
@@ -396,7 +396,7 @@
     "s/mathOps/1/stmt/0"
   ],
   "s/mathOps/2/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/2/stmt/1"
   ],
   "s/mathOps/2/stmt/1": [
     "s/mathOps/3"
@@ -405,7 +405,7 @@
     "s/mathOps/2/stmt/0"
   ],
   "s/mathOps/3/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/3/stmt/1"
   ],
   "s/mathOps/3/stmt/1": [
     "s/mathOps/4"
@@ -414,7 +414,7 @@
     "s/mathOps/3/stmt/0"
   ],
   "s/mathOps/4/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/4/stmt/1"
   ],
   "s/mathOps/4/stmt/1": [
     "s/mathOps/5"
@@ -423,7 +423,7 @@
     "s/mathOps/4/stmt/0"
   ],
   "s/mathOps/5/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/5/stmt/1"
   ],
   "s/mathOps/5/stmt/1": [
     "s/mathOps/6"
@@ -432,7 +432,7 @@
     "s/mathOps/5/stmt/0"
   ],
   "s/mathOps/6/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/6/stmt/1"
   ],
   "s/mathOps/6/stmt/1": [
     "s/mathOps/7"
@@ -441,7 +441,7 @@
     "s/mathOps/6/stmt/0"
   ],
   "s/mathOps/7/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/7/stmt/1"
   ],
   "s/mathOps/7/stmt/1": [
     "s/mathOps/8"
@@ -450,7 +450,7 @@
     "s/mathOps/7/stmt/0"
   ],
   "s/mathOps/8/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/8/stmt/1"
   ],
   "s/mathOps/8/stmt/1": [
     "s/mathOps/9"
@@ -459,7 +459,7 @@
     "s/mathOps/8/stmt/0"
   ],
   "s/mathOps/9/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/9/stmt/1"
   ],
   "s/mathOps/9/stmt/1": [
     "s/mathOps/10"
@@ -468,7 +468,7 @@
     "s/mathOps/9/stmt/0"
   ],
   "s/mathOps/10/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/10/stmt/1"
   ],
   "s/mathOps/10/stmt/1": [
     "s/mathOps/11"
@@ -477,7 +477,7 @@
     "s/mathOps/10/stmt/0"
   ],
   "s/mathOps/11/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/11/stmt/1"
   ],
   "s/mathOps/11/stmt/1": [
     "s/mathOps/12"
@@ -486,7 +486,7 @@
     "s/mathOps/11/stmt/0"
   ],
   "s/mathOps/12/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/12/stmt/1"
   ],
   "s/mathOps/12/stmt/1": [
     "s/mathOps/13"
@@ -495,7 +495,7 @@
     "s/mathOps/12/stmt/0"
   ],
   "s/mathOps/13/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/13/stmt/1"
   ],
   "s/mathOps/13/stmt/1": [
     "s/mathOps/14"
@@ -504,7 +504,7 @@
     "s/mathOps/13/stmt/0"
   ],
   "s/mathOps/14/stmt/0": [
-    "undefined/stmt/1"
+    "s/mathOps/14/stmt/1"
   ],
   "s/mathOps/14/stmt/1": [
     "s/mathOps/15"

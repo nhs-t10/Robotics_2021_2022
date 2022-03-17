@@ -9,6 +9,7 @@ require("../..").registerTransmutation({
         var heirarchalBytecode = context.inputs["bc-condense-constants"];
         
         context.output = buildGraphFrom(heirarchalBytecode);
+        context.status = "pass";
         
         fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(context.output, null, 2));
     }
@@ -44,28 +45,4 @@ function findBlockTargets(block, allBlockNames) {
     }
     
     return Array.from(new Set(res));
-}
-
-function getPossibleJumpTargets(heirCode, bkeys) {
-    if(heirCode.__value) return ["" + heirCode.__value];
-    
-    var rgx = new RegExp("^" + computePossibleStrValuesRegex(heirCode) + "$");
-    
-    return bkeys.filter(x=>rgx.test(x));
-}
-
-function computePossibleStrValuesRegex(heirCode) {
-    if(heirCode.__value) {
-        return regexcape("" + heirCode.value);
-    } else if(heirCode.code == bytecodeSpec.add.code) {
-        var left = heirCode.dep[0];
-        var right = heirCode.dep[1];
-        return computePossibleStrValuesRegex(left) + computePossibleStrValuesRegex(right);
-    } else {
-        return ".*";
-    }
-}
-
-function regexcape(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

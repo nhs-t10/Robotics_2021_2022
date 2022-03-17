@@ -32,9 +32,10 @@ module.exports = function(ast) {
 
 function programToTreeBlocks(program) {
     var blocks = program.statepaths.map(x=>
-        x.statepath.states.map((y,i)=>({
+        x.statepath.states.map((y,i,a)=>({
             label: "s/" + x.label + "/" + i,
-            treeStatements: y.statement
+            treeStatements: y.statement,
+            stateCountInPath: a.length
         }))
     ).flat();
     return blocks;   
