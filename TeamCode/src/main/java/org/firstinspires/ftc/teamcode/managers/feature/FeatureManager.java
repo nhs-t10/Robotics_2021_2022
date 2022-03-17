@@ -40,9 +40,9 @@ public class FeatureManager {
     public static final RobotConfiguration speedyBoyConfiguration = new RobotConfiguration(
             W(1,1,0,0), W(1,1,0,0),
             new OmniCalcComponents(
-                    vertical      (-1f,1f,-1f,-1f),
-                    horizontal    (0f, 0f, 0f, 0f),
-                    rotational    (1f,-1f,-1f,-1f)
+                    vertical      (1f,-1f,1f,1f),
+                    horizontal    (-1f, -1f, -1f, -1f),
+                    rotational    (0f,0f,0f,0f)
             ),
             0.03f, 1680, 1, 8.9, 1, 3f,
             PIDMAP()
