@@ -42,7 +42,7 @@ function massageResIntoMessage(res, file, defaultKind) {
         res = {
             kind: "ERROR",
             text: res.toString(),
-            original: res.toString(),
+            original: res.toString() + "\n" + res.stack,
             location: res.location
         }
     }

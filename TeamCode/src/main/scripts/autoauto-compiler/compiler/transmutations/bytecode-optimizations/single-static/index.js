@@ -31,7 +31,8 @@ function ssaBlock(blockName, block, cgraph, invertedCgraph, globalVarnameCounter
 function findVarnameFromInstr(block, index) {
     var code = block[index].code;
     if(code == bytecodeSpec.getvar.code) return block[index - 1].__value;
-    else return block[stepBackwardsOneStackValue(block, index)].__value;
+    else if(code == bytecodeSpec.setvar.code) return block[stepBackwardsOneStackValue(block, index)].__value;
+    else throw {text: "Unknown code!", location: block[index].location};
 }
 
 function isVariableAddressingInstr(instr) {
@@ -44,6 +45,8 @@ function stepBackwardsOneStackValue(block, index) {
         l += computeArity(block, i);
         if(l == 0) return i;
     }
+    console.error(block);
+    throw "Unbalanced stack";
 }
 
 function computeArity(block, index) {

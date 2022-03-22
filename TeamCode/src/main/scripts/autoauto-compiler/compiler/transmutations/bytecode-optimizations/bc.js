@@ -25,9 +25,9 @@ module.exports = {
         "mnemom": "jmp_i_cond"
     },
     0x005: {
-        "pop": 0,
+        "pop": 1,
         "push": 0,
-        "mnemom": "yield"
+        "mnemom": "yieldto"
     },
     0x006: {
         "pop": 0,

@@ -75,7 +75,7 @@ valueStatement =
  f:value { return { type: "ValueStatement", location: location(), call: f } }
 
 funcDefStatement = FUNCTION _
-	name:(IDENTIFIER/dynamicValue) _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
+	name:IDENTIFIER _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
     { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
 gotoStatement =

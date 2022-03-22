@@ -18,6 +18,10 @@ module.exports = function() {
             return 0x0F000000 | pid;
         },
         subblockLabel: function(label, subcategory) {
+            if(arguments.length == 1) {
+                subcategory = label;
+                label = "subcat";
+            }
             subId++
             return `${label}/${subcategory}/${subId.toString(16)}`;
         },

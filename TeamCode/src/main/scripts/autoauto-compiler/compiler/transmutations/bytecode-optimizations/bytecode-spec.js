@@ -4,7 +4,7 @@ module.exports = {
     jmp_l: { code: 0x002 },
     jmp_l_cond: { code: 0x003 },
     jmp_i_cond: { code: 0x004 },
-    yield: { code: 0x005 },
+    yieldto: { code: 0x005 },
     ret: { code: 0x006 },
     pop: { code: 0x100 },
     dup: { code: 0x101 },
