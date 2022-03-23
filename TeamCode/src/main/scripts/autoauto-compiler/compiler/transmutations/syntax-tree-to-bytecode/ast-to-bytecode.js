@@ -1,48 +1,66 @@
 var bytecodeSpec = require("./bytecode-spec");
 const constantPool = require("./constant-pool");
 
+var STATE_INIT_PREFIX = "{+STATE_INIT ";
+
 module.exports = treeBlockToBytecode;
 
 //this gets a "tree block", which is equivalent to a state.
 function treeBlockToBytecode(block, constantPool) {
     
-    var bBlock = {
-        subblocks: [],
-        entryLabel: block.label + "/stmt/" + 0,
-        label: block.label,
-        stateCountInPath: block.stateCountInPath
-    }
-
-    bBlock.subblocks = block.treeStatements.map((x, i) => ({
-        bcode: null,
-        label: block.label + "/stmt/" + i
-    }));
-
-    block.treeStatements.forEach((x, i) => {
-        var nextLabel = block.label + "/stmt/" + (i + 1);
-        if(i + 1 == block.treeStatements.length) nextLabel = afterStateDoneJumpTo || block.label;
-        
-        var bcode = astToBytecode(x, bBlock, constantPool, nextLabel);
-        if(i + 1 == block.treeStatements.length) {
-            bcode.push(emitBytecodeWithLocation(bytecodeSpec.yield, x));
-        }
-        bBlock.subblocks[i].bcode = bcode;
-    });
+    var statementLabels = block.treeStatements.map((x, i) => block.label + "/stmt/" + i);
     
-    bBlock.subblocks.push({
-        label: bBlock.label,
-        bcode: jumpToLabel(bBlock.entryLabel, constantPool)
-    });
-
-    return bBlock;
+    var stateStartBlock = {
+        label: block.label,
+        code: [],
+        jumps: [jumpToLabel(statementLabels[0], constantPool)]
+    };
+    
+    var stateEndBlock = {
+        label: block.label + "/end",
+        code: [],
+        jumps: [emitBytecodeWithLocation(bytecodeSpec.yieldto, [
+            emitConstantWithLocation(statementLabels[0], constantPool, {})
+        ], {})]
+    }
+    
+    var blocks = [];
+    
+    for(var i = 0; i < block.treeStatements.length; i++) {
+        var thisLabel = statementLabels[i];
+        var nextLabel = statementLabels[i + 1] || stateEndBlock.label;
+        
+        var stmtBlocks = statementToBytecodeBlocks(block.treeStatements[i], thisLabel, constantPool, nextLabel, block.stateCountInPath);
+        
+        blocks = blocks.concat(stmtBlocks);
+    }
+    
+    findAndRewriteStateInitBlocks(stateStartBlock, blocks, constantPool);
+    
+    return blocks.concat([stateStartBlock, stateEndBlock]);
 }
 
 /**
- * @typedef {object} Bytecode
- * @property {number} code
- * @property {*?} __value
- * @property {object} location
+ * 
+ * @param {Block} startBlock 
+ * @param {Block[]} allStatementBlocks
  */
+function findAndRewriteStateInitBlocks(startBlock, allStatementBlocks, constantPool) {
+    var stateInitBlocks = allStatementBlocks.filter(x=>x.label.startsWith(STATE_INIT_PREFIX));
+    
+    if(stateInitBlocks.length == 0) return;
+    
+    //make the last state init block go to wherever the start block was going
+    stateInitBlocks[stateInitBlocks.length - 1].jumps = startBlock.jumps;
+    //make the start block go to the first state init block
+    startBlock.jumps = [jumpToLabel(stateInitBlocks[0].label, constantPool)];
+    
+    for(var i = 0; i < stateInitBlocks.length - 1; i++) {
+        stateInitBlocks[i].jumps = [
+            jumpToLabel(stateInitBlocks[i + 1].label, constantPool)
+        ];
+    }
+}
 
 /**
  * @typedef {object} Block
@@ -59,7 +77,7 @@ function treeBlockToBytecode(block, constantPool) {
  * @param {string} afterThisJumpToLabel 
  * @returns {Block[]}
  */
-function astToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath) {
+function statementToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath) {
     
     if(!constantPool) constantPool.f;
     
@@ -73,7 +91,7 @@ function astToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, sta
         case "FunctionDefStatement":
             return functionDefToBytecode(ast, label, constantPool, afterThisJumpToLabel);    
         case "Block":
-            return codeBlockToBytecode(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath);
+            return compoundStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath);
         case "PassStatement":
             return passStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel);
         case "IfStatement":
@@ -85,7 +103,7 @@ function astToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, sta
         case "NextStatement":
             return nextStatementToBytecode(ast, label, constantPool, stateCountInPath);
         case "AfterStatement":
-            return afterStatementToBytecode(ast, block, constantPool, afterThisJumpToLabel, stateCountInPath);
+            return afterStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath);
         case "ValueStatement":
             return valueStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel);
         default:
@@ -98,7 +116,7 @@ function astToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, sta
 /**
  * @typedef {object} valueComputationBytecode
  * @property {Block[]} dependentBlocks
- * @property {Bytecode[]} computation
+ * @property {Bytecode} computation
  */
 
 /**
@@ -108,13 +126,13 @@ function astToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, sta
  * @returns {valueComputationBytecode}
  */
 function valueToBytecodeBlocks(valueAst, constantPool) {
-    var simpleBytecodeArray = valueToSimpleBytecodeArray(valueAst, constantPool);
+    var simpleBytecode = primitiveValueToSimpleBytecode(valueAst, constantPool);
     
     //if it was able to make that into a simple bytecode array, great!
-    if(simpleBytecodeArray !== undefined) {
+    if(simpleBytecode !== undefined) {
         return {
             dependentBlocks: [],
-            computation: simpleBytecodeArray
+            computation: simpleBytecode
         };
     }
 
@@ -124,50 +142,100 @@ function valueToBytecodeBlocks(valueAst, constantPool) {
             return functionLiteralToBytecode(valueAst, constantPool)
         case "OperatorExpression":
         case "ComparisonOperator":
-            return operationToBytecode(ast, constantPool);
+            return operationToBytecode(valueAst, constantPool);
         case "TitledArgument":
-            return valueToBytecode(ast.name, constantPool)
-            .concat(valueToBytecode(ast.value, constantPool))
-            .concat(emitBytecodeWithLocation(bytecodeSpec.construct_relation, ast));
+            return titledArgToBytecode(valueAst, constantPool);
         case "ArgumentList":
-            return ast.args.map(x => valueToBytecode(x, constantPool))
-                .concat(emitConstantWithLocation(ast.args.length, constantPool, ast));
+            throw "Must call argumentListToBytecode directly, as it returns an array of bytecodes!";
+        case "DynamicValue":
+            return valueToBytecodeBlocks(valueAst.value, constantPool);
+        case "ArrayLiteral":
+            return tableLiteralToBytecode(valueAst, constantPool);
+        case "FunctionCall":
+            return functionCallToBytecode(valueAst, constantPool);
+        case "TailedValue":
+            return tailedValueToBytecode(valueAst, constantPool);
+    }
+}
+
+function functionCallToBytecode(ast, constantPool) {
+    var funcToCall = valueToBytecodeBlocks(ast.func, constantPool);
+    var arguments = argumentListToBytecode(ast.args, constantPool);
+    
+    return {
+        computation: emitBytecodeWithLocation(bytecodeSpec.callfunction, 
+            [funcToCall.computation].concat(arguments.boundedCalculations)
+        , ast),
+        dependentBlocks: [].concat(funcToCall.dependentBlocks, arguments.dependentBlocks)
+    }
+    
+}
+
+function tableLiteralToBytecode(ast, constantPool) {
+    var elems = argumentListToBytecode(ast.elems, constantPool);
+    
+    return {
+        computation: emitBytecodeWithLocation(bytecodeSpec.construct_table, elems.boundedCalculations, ast),
+        dependentBlocks: elems.dependentBlocks
+    };
+}
+
+function tailedValueToBytecode(ast, constantPool) {
+    var head = valueToBytecodeBlocks(ast.head, constantPool);
+    var tail = valueToBytecodeBlocks(ast.tail, constantPool);
+    
+    return {
+        computation: emitBytecodeWithLocation(bytecodeSpec.getprop, [
+            head.computation,
+            tail.computation
+        ], ast),
+        dependentBlocks: [].concat(head.dependentBlocks, tail.dependentBlocks)
+    };
+}
+
+/**
+ * 
+ * @param {*} ast 
+ * @param {*} constantPool 
+ * @returns {({dependentBlocks: Block[], boundedCalculations: Bytecode[]})}
+ */
+function argumentListToBytecode(ast, constantPool) {
+    var blocks = [];
+    var calculations = [];
+    
+    for(var i = 0; i < ast.args.length; i++) {
+        var argBc = valueToBytecodeBlocks(ast.args[i], constantPool);
+        blocks = blocks.concat(argBc.dependentBlocks);
+        calculations.push(argBc.computation);
+    }
+    
+    return {
+        dependentBlocks: blocks,
+        boundedCalculations: calculations.concat(emitConstantWithLocation(ast.args.length, constantPool, ast))
     }
 }
 
 /**
  * 
  * @param {Ast} valueAst 
- * @returns {Bytecode[]}
+ * @returns {Bytecode}
  */
-function valueToSimpleBytecodeArray(valueAst, constantPool) {
+function primitiveValueToSimpleBytecode(valueAst, constantPool) {
     switch(valueAst.type) {
-        case "FunctionCall":
-            return valueToBytecode(ast.func, constantPool)
-                .concat(valueToBytecode(ast.args, constantPool))
-                .concat(emitBytecodeWithLocation(bytecodeSpec.callfunction, ast));
         case "Identifier":
-            return [emitConstantWithLocation(ast.value, constantPool, ast)];
+            return emitConstantWithLocation(valueAst.value, constantPool, valueAst);
         case "VariableReference":
-            return valueToBytecode(ast.variable, constantPool)
-                .concat(emitBytecodeWithLocation(bytecodeSpec.getvar, ast));
+            return emitBytecodeWithLocation(bytecodeSpec.getvar, [
+                primitiveValueToSimpleBytecode(valueAst.variable, constantPool)
+            ], valueAst);
         case "StringLiteral":
-            return [emitConstantWithLocation(ast.str, constantPool, ast)];
+            return emitConstantWithLocation(valueAst.str, constantPool, valueAst);
         case "NumericValue":
-            return [emitConstantWithLocation(ast.v, constantPool, ast)];
-        case "ArrayLiteral":
-            return valueToBytecode(ast.elems, constantPool)
-                .concat(emitBytecodeWithLocation(bytecodeSpec.construct_table, ast));
-        case "TailedValue":
-            return valueToBytecode(ast.head, constantPool)
-                .concat(valueToBytecode(ast.tail, constantPool))
-                .concat(emitBytecodeWithLocation(bytecodeSpec.getprop, ast));
-        case "DynamicValue":
-            return valueToBytecode(ast.value, constantPool);
+            return emitConstantWithLocation(valueAst.v, constantPool, valueAst);
         case "BooleanLiteral":
-            return [emitConstantWithLocation(ast.value, constantPool, ast)];
+            return emitConstantWithLocation(valueAst.value, constantPool, valueAst);
         case "UnitValue": 
-            return [emitConstantWithLocation(unitwrap(ast), constantPool, ast)];
+            return emitConstantWithLocation(unitwrap(valueAst), constantPool, valueAst);
     };
 }
 
@@ -181,13 +249,12 @@ function unitwrap(ast) {
  * 
  * @param {*} lbl 
  * @param {*} pool 
- * @returns {object[]}
+ * @returns {Bytecode[]}
  */
 function jumpToLabel(lbl, pool) {
-    return [
-        emitConstantWithLocation(lbl, pool, {}),
-        bytecodeSpec.jmp_l
-    ];
+    return emitBytecodeWithLocation(bytecodeSpec.jmp_l, [
+        emitConstantWithLocation(lbl, pool, {})
+    ], {});
 }
 
 /**
@@ -215,11 +282,32 @@ function getOperationBytecodeInstruction(comp) {
     throw "Unrecognized comparison " + comp;
 }
 
+/**
+ * 
+ * @param {*} ast 
+ * @param {*} constantPool 
+ * @returns {valueComputationBytecode}
+ */
+function titledArgToBytecode(ast, constantPool) {
+    var title = valueToBytecodeBlocks(ast.name, constantPool);
+    var value = valueToBytecodeBlocks(ast.value, constantPool);
+    
+    return {
+        dependentBlocks: [].concat(title.dependentBlocks, value.dependentBlocks),
+        computation: [
+            emitBytecodeWithLocation(bytecodeSpec.construct_relation, [
+                title.computation,
+                value.computation
+            ], ast)
+        ]
+    };
+}
+
 function passStatementToBytecode(ast, label, constantPool, nextLabel) {
     return [{
         label: label,
-        code: emitBytecodeWithLocation(bytecodeSpec.pass, ast),
-        jumps: jumpToLabel(afterThisJumpToLabel, constantPool)
+        code: [emitBytecodeWithLocation(bytecodeSpec.pass, [], ast)],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     }];
 }
 
@@ -229,11 +317,8 @@ function valueStatementToBytecode(ast, label, constantPool, nextLabel) {
     return [{
         label: label,
         //pop the value once it's calculated to ensure a clean stack :)
-        code: [].concat(
-            val.computation, 
-            emitBytecodeWithLocation(bytecodeSpec.pop, ast)
-        ),
-        jumps: jumpToLabel(nextLabel, constantPool)
+        code: [emitBytecodeWithLocation(bytecodeSpec.pop, val.computation, ast)],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     }].concat(val.dependentBlocks);
 }
 
@@ -243,19 +328,22 @@ function gotoStatementToBytecode(ast, label, constantPool) {
     return [{
         label: label,
         code: [],
-        jumps: [emitBytecodeWithLocation("s/", constantPool, ast)]
-        .concat(
-            pathName.computation,
-            emitConstantWithLocation("/0", constantPool, ast),
-            emitBytecodesWithLocation([bytecodeSpec.add, bytecodeSpec.add, bytecodeSpec.jmp_l], ast)
-        )
+        jumps: 
+            [emitBytecodeWithLocation(bytecodeSpec.jmp_l, 
+                [emitBytecodeWithLocation(bytecodeSpec.add, [
+                    emitBytecodeWithLocation(bytecodeSpec.add, [
+                            emitConstantWithLocation("s/", constantPool, ast),
+                            pathName.computation], ast),
+                    emitConstantWithLocation("/0", constantPool, ast)
+                    ], ast)
+                ], ast)]
     }].concat(pathName.dependentBlocks)
 }
 
 /**
  * 
  * @param {*} ast 
- * @param {*} block 
+ * @param {*} label 
  * @param {*} constantPool 
  * @param {*} nextLabel 
  * @returns {Block[]}
@@ -269,7 +357,7 @@ function skipStatementToBytecode(ast, label, constantPool, stateCountInPath) {
     return [{
         label: label,
         code: [],
-        jumps: jumpToLabel(targetLabelName, constantPool)
+        jumps: [jumpToLabel(targetLabelName, constantPool)]
     }];
 }
 
@@ -278,7 +366,7 @@ function nextStatementToBytecode(ast, label, constantPool, stateCountInPath) {
     return [{
         label: label,
         code: [],
-        jumps: jumpToLabel(toLabel, constantPool)
+        jumps: [jumpToLabel(toLabel, constantPool)]
     }];
 }
 
@@ -297,8 +385,8 @@ function calculateSkipToLabel(currentLabel, offsetNum, stateCountInPath, locatio
         }
     }
 
-    var skipToIndexNorm = skipToIndex % block.stateCountInPath;
-    if(skipToIndexNorm < 0) skipToIndexNorm += block.stateCountInPath;
+    var skipToIndexNorm = skipToIndex % stateCountInPath;
+    if(skipToIndexNorm < 0) skipToIndexNorm += stateCountInPath;
     
     return prefix + skipToIndexNorm; 
 }
@@ -309,12 +397,13 @@ function letStatementToBytecode(ast, label, constantPool, nextLabel) {
 
     return [{
         label: label,
-        code: [].concat(
-            variableName.computation,
-            value.computation,
-            emitBytecodeWithLocation(bytecodeSpec.setvar, ast)
-        ),
-        jumps: jumpToLabel(nextLabel, constantPool)
+        code: [
+            emitBytecodeWithLocation(bytecodeSpec.setvar, [
+                variableName.computation,
+                value.computation
+            ],ast)
+        ],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     }].concat(variableName.dependentBlocks, value.dependentBlocks);
 }
 
@@ -325,19 +414,18 @@ function letStatementToBytecode(ast, label, constantPool, nextLabel) {
 function letPropertyToBytecode(ast, label, constantPool, nextLabel) {
     if(ast.variable.type != "TailedValue") throw "Attempt to inappropriately `let` an unsettable value";
 
-    var headBytecode = valueToBytecodeBlocks(ast.variable.head, block, constantPool);
+    var headBytecode = valueToBytecodeBlocks(ast.variable.head, constantPool);
     var tailBytecode = valueToBytecodeBlocks(ast.variable.tail, constantPool);
     var setValueBytecode = valueToBytecodeBlocks(ast.value, constantPool);
 
     return [{
         label: label,
-        code: [].concat(
-            headBytecode.computation,
-            tailBytecode.computation,
-            setValueBytecode.computation,
-            emitBytecodesWithLocation([bytecodeSpec.setprop], ast)
-        ),
-        jumps: jumpToLabel(nextLabel, constantPool)
+        code: [emitBytecodeWithLocation(bytecodeSpec.setprop, [
+                headBytecode.computation,
+                tailBytecode.computation,
+                setValueBytecode.computation
+            ], ast)],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
 
     }].concat(headBytecode.dependentBlocks, tailBytecode.dependentBlocks, setValueBytecode.dependentBlocks);
 
@@ -353,49 +441,46 @@ function functionLiteralToBytecode(ast, constantPool) {
     var endBlockLabel = constantPool.subblockLabel("func_end");
     var endBlock = {
         label: endBlockLabel,
-        code: [emitBytecodeWithLocation(bytecodeSpec.ret, ast)],
+        code: [emitBytecodeWithLocation(bytecodeSpec.ret, [], ast)],
         jumps: []
     };
 
     var functionBodyLabel = constantPool.subblockLabel("func_body");
-    var functionBody = astToBytecodeBlocks(ast.body, functionBodyLabel, constantPool, endBlockLabel, NaN, NaN);
+    var functionBody = statementToBytecodeBlocks(ast.body, functionBodyLabel, constantPool, endBlockLabel, NaN, NaN);
     
     var entryBlockLabel = constantPool.subblockLabel("func_enter");
     var entryBlock = {
         label: entryBlockLabel,
         code: [],
-        jumps: jumpToLabel(functionBodyLabel, constantPool)
+        jumps: [jumpToLabel(functionBodyLabel, constantPool)]
     };
 
-    var argsCode = valueToBytecodeBlocks(ast.args, constantPool);
+    var argsCode = argumentListToBytecode(ast.args, constantPool);
 
-    var functionConstructionCode = [].concat(
-        [emitConstantWithLocation(entryBlockLabel, constantPool, ast)],
-        argsCode.computation,
-        emitBytecodeWithLocation(bytecodeSpec.makefunction, ast)
-    );
+    var functionConstructionCode = emitBytecodeWithLocation(bytecodeSpec.makefunction, 
+        [emitConstantWithLocation(entryBlockLabel, constantPool, ast)].concat(argsCode.boundedCalculations)
+    , ast);
     
     return {
-        computation: functionConstructionCode,
+        computation: [functionConstructionCode],
         dependentBlocks: [entryBlock, endBlock].concat(argsCode.dependentBlocks, functionBody)
     };
 }
 
 function functionDefToBytecode(ast, label, constantPool, nextLabel) {
-    var functionLiteral = functionLiteralToBytecode(ast, block, constantPool);
+    var functionLiteral = functionLiteralToBytecode(ast, constantPool);
     
     return [{
         label: label,
-        code: [].concat(
-            valueToSimpleBytecodeArray(ast.name, constantPool),
-            functionLiteral.computation,
-            emitBytecodesWithLocation([bytecodeSpec.setvar], ast)
-        ),
-        jumps: jumpToLabel(nextLabel, constantPool)
+        code: [emitBytecodeWithLocation(bytecodeSpec.setvar, [
+                primitiveValueToSimpleBytecode(ast.name, constantPool),
+                functionLiteral.computation
+            ], ast)],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     }].concat(functionLiteral.dependentBlocks);
 }
 
-function codeBlockToBytecode(ast, label, constantPool, nextLabel, stateCountInPath) {
+function compoundStatementToBytecode(ast, label, constantPool, nextLabel, stateCountInPath) {
     
     var bcBlocks = [];
 
@@ -406,8 +491,14 @@ function codeBlockToBytecode(ast, label, constantPool, nextLabel, stateCountInPa
         var lbl = statementLabels[i];
         var nextStmtLbl = statementLabels[i + 1] || nextLabel;
 
-        bcBlocks = bcBlocks.concat(astToBytecodeBlocks(statements[i], lbl, constantPool, nextStmtLbl, stateCountInPath));
+        bcBlocks = bcBlocks.concat(statementToBytecodeBlocks(statements[i], lbl, constantPool, nextStmtLbl, stateCountInPath));
     }
+    
+    bcBlocks.push({
+        label: label,
+        code: [],
+        jumps: [jumpToLabel(statementLabels[0], constantPool)]
+    });
     
     return bcBlocks;
 }
@@ -425,7 +516,12 @@ function operationToBytecode(ast, constantPool) {
     var right = valueToBytecodeBlocks(ast.right, constantPool);
     
     return {
-        computation: [].concat(left.computation, right.computation, emitBytecodeWithLocation(op, ast)),
+        computation: [
+            emitBytecodeWithLocation(op, [
+                left.computation,
+                right.computation
+            ], ast)
+        ],
         dependentBlocks: [].concat(left.dependentBlocks, right.dependentBlocks)
     };
 }
@@ -453,13 +549,13 @@ function ifStatementToBytecode(ast, label, constantPool, nextLabel, stateCountIn
         ifStatmentEnd: constantPool.subblockLabel(label, "if_end")
     };
     
-    var ifTrueCode = astToBytecodeBlocks(ast.statement, labels.ifStatementIfTrue, constantPool, labels.ifStatmentEnd, stateCountInPath);
-    var ifFalseCode = astToBytecodeBlocks(ast.elseClause, labels.ifStatementIfFalse, constantPool, labels.ifStatmentEnd, stateCountInPath);
+    var ifTrueCode = statementToBytecodeBlocks(ast.statement, labels.ifStatementIfTrue, constantPool, labels.ifStatmentEnd, stateCountInPath);
+    var ifFalseCode = statementToBytecodeBlocks(ast.elseClause, labels.ifStatementIfFalse, constantPool, labels.ifStatmentEnd, stateCountInPath);
     
     var ifStmtEndingBlock = {
         label: labels.ifStatmentEnd,
         code: [],
-        jumps: jumpToLabel(nextLabel, constantPool)
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     };
 
     var conditional = valueToBytecodeBlocks(ast.conditional, constantPool);
@@ -467,12 +563,13 @@ function ifStatementToBytecode(ast, label, constantPool, nextLabel, stateCountIn
     var ifStmtStartingBlock = {
         label: label,
         code: [],
-        jumps: [[].concat(
-            conditional.computation,
-            emitConstantWithLocation(labels.ifStatementIfTrue, constantPool, ast),
-            [emitBytecodeWithLocation(bytecodeSpec.jmp_l_cond, ast)],
+        jumps: [
+            emitBytecodeWithLocation(bytecodeSpec.jmp_l_cond, [
+                conditional.computation, 
+                emitConstantWithLocation(labels.ifStatementIfTrue, constantPool, ast)
+            ], ast),
             jumpToLabel(labels.ifStatementIfFalse, constantPool)
-        )]
+        ]
     };
     
     return [ifStmtEndingBlock, ifStmtStartingBlock].concat(ifTrueCode, ifFalseCode, conditional.dependentBlocks);
@@ -510,81 +607,94 @@ function afterStatementToBytecode(ast, label, constantPool, nextLabel, stateCoun
     var unitvalue = valueToBytecodeBlocks(ast.unitValue, constantPool);
     
     var labels = {
-        afterStatementInit: constantPool.subblockLabel(block.label, "after_init"),
-        afterStatementCheckingBody: constantPool.subblockLabel(block.label, "after_checking"),
-        afterStatementIfFinished: constantPool.subblockLabel(block.label, "after_if_finished_body"),
-        afterStatementDone: constantPool.subblockLabel(block.label, "after_done")
+        afterStatementInit: constantPool.subblockLabel(label, "after_init"),
+        afterStatementCheckingBody: constantPool.subblockLabel(label, "after_checking"),
+        afterStatementIfFinished: constantPool.subblockLabel(label, "after_if_finished_body"),
+        afterStatementDone: constantPool.subblockLabel(label, "after_done")
     };
 
     for(labelname in labels) {
         labels[labelname] = emitConstantWithLocation(labels[labelname], constantPool, ast);
     }
 
-    var stateEntryBlock = makeStateinitBlock(emitBytecodesWithLocation([tmp1name, const_true, bytecodeSpec.setvar]), constantPool);
+    var stateEntryBlock = makeStateinitBlock(
+        [
+            emitBytecodeWithLocation(bytecodeSpec.setvar, [tmp1name, const_true], ast)
+        ], constantPool
+    );
     
     var afterstmtMain = {
         label: label,
         code: [],
-        jumps: emitBytecodesWithLocation(
-            [tmp1name,
-            bytecodeSpec.getvar,
-            labels.afterStatementInit,
-            bytecodeSpec.jmp_l_cond,
-
-            labels.afterStatementCheckingBody,
-            bytecodeSpec.jmp_l]
-        , ast)
+        jumps: [
+            emitBytecodeWithLocation(bytecodeSpec.jmp_l_cond, [
+                emitBytecodeWithLocation(bytecodeSpec.getvar, [tmp1name], ast),
+                labels.afterStatementInit
+            ], ast),
+            emitBytecodeWithLocation(bytecodeSpec.jmp_l, [labels.afterStatementCheckingBody], ast)
+        ]
     };
 
     var afterstmtInit = {
         label: labels.afterStatementInit.__value,
-        code: emitBytecodesWithLocation([
-            tmp1name, const_false, bytecodeSpec.setvar,
-            tmp2name, unitvalue.computation, bytecodeSpec.unit_currentv, bytecodeSpec.setvar
-        ], ast),
-        jumps: [labels.afterStatementCheckingBody, bytecodeSpec.jmp_l]
+        code: [
+            emitBytecodeWithLocation(bytecodeSpec.setvar, [
+                tmp1name, const_false
+            ], ast),
+            emitBytecodeWithLocation(bytecodeSpec.setvar, [
+                tmp2name, emitBytecodeWithLocation(bytecodeSpec.unit_currentv, unitvalue.computation, ast)
+            ],ast)
+        ],
+        jumps: emitBytecodeWithLocation(bytecodeSpec.jmp_l, [labels.afterStatementCheckingBody], ast)
     };
 
     var afterstmtCheckingBody = {
         label: labels.afterStatementCheckingBody.__value,
-        jumps: emitBytecodesWithLocation([
-            //compute difference between current value and original.
-            unitvalue.computation, bytecodeSpec.unit_currentv, 
-            tmp2name, bytecodeSpec.getvar,
-            bytecodeSpec.abs_dif, 
-            //if it's bigger than the specified value...
-            bytecodeSpec.cmp_gte, unitvalue.computation,
-            //jump to the 'if finished' body.
-            labels.afterStatementIfFinished, bytecodeSpec.jmp_l_cond,
-
-            //otherwise, jump to the 'done' body
-            labels.afterStatementDone, bytecodeSpec.jmp_l
-        ], ast)
+        code: [],
+        jumps: [
+            emitBytecodeWithLocation(bytecodeSpec.jmp_l_cond, [
+                emitBytecodeWithLocation(bytecodeSpec.cmp_gte, [
+                    emitBytecodeWithLocation(bytecodeSpec.abs_dif, [
+                        emitBytecodeWithLocation(bytecodeSpec.unit_currentv, [
+                            unitvalue.computation
+                        ], ast),
+                        emitBytecodeWithLocation(bytecodeSpec.getvar, [
+                            tmp2name
+                        ], ast)
+                    ], ast),
+                    unitvalue.computation
+                ], ast),
+                labels.afterStatementIfFinished
+            ], ast),
+            emitBytecodeWithLocation(bytecodeSpec.jmp_l, [
+                labels.afterStatementDone
+            ], ast)
+        ]
     };
     
-    var afterstmtIfFinishedBody = astToBytecodeBlocks(ast.statement, labels.afterStatementIfFinished, constantPool, labels.afterStatementDone, stateCountInPath);
+    var afterstmtIfFinishedBody = statementToBytecodeBlocks(ast.statement, labels.afterStatementIfFinished.__value, constantPool, labels.afterStatementDone.__value, stateCountInPath);
 
     var afterstmtDone = {
         label: labels.afterStatementDone.__value,
         code: [],
-        jumps: jumpToLabel(nextLabel)
+        jumps: [jumpToLabel(nextLabel)]
     };
 
     return [].concat(
         unitvalue.dependentBlocks,
+        afterstmtIfFinishedBody,
         [
             stateEntryBlock,
             afterstmtMain,
             afterstmtInit,
             afterstmtCheckingBody,
-            afterstmtIfFinishedBody,
             afterstmtDone
         ]
     );
 }
 
 function makeStateinitBlock(bytecode, pool) {
-    var label = "+state entry label " + pool.tempVar();
+    var label = STATE_INIT_PREFIX + " " + pool.tempVar();
 
     return {
         label: label,
@@ -601,32 +711,33 @@ function makeStateinitBlock(bytecode, pool) {
  * @returns {object}
  */
 function emitConstantWithLocation(cons, pool, ast) {
-    var code = pool.getCodeFor(cons);
-    return emitBytecodeWithLocation({code: code, __value: cons}, ast);
+    return emitBytecodeWithLocation({ code: pool.getCodeFor(cons), __value: cons}, [], ast);
 }
 
 /**
- * 
- * @param {*} code 
- * @param {*} ast 
- * @returns {object}
+ * @typedef {object} Bytecode
+ * @property {number} code
+ * @property {*?} __value
+ * @property {Bytecode[]} args
+ * @property {object} location
  */
-function emitBytecodeWithLocation(code, ast) {
+
+/**
+ * 
+ * @param {number|{code:number}} code 
+ * @param {Bytecode[]} bcArgs
+ * @param {*} ast 
+ * @returns {Bytecode}
+ */
+function emitBytecodeWithLocation(code, bcArgs, ast) {
+    if(arguments.length != 3) throw "aaaa".fefds.tvgr;
+    
     var r = {};
     if (typeof code === "number") r.code = code;
     else Object.assign(r, code);
-
+    
+    r.args = bcArgs;
     r.location = ast.location;
     
     return r;
-}
-
-/**
- * 
- * @param {*} codes 
- * @param {*} ast 
- * @returns {object[]}
- */
-function emitBytecodesWithLocation(codes, ast) {
-    return codes.map(x => emitBytecodeWithLocation(x, ast));
 }

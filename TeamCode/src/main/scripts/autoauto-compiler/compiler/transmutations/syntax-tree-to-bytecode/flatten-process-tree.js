@@ -11,9 +11,9 @@ module.exports = function(ast) {
     
     var bytecodeBlocks = treeBlocks.map(x=>treeBlockToBytecodeBlock(x, constantPool));
     
-    var flattedBlocks = bytecodeBlocks.map(x=>x.subblocks).flat(Infinity);
+    var flattedBlocks = bytecodeBlocks.flat(1);
     
-    var blockRecords = Object.fromEntries(flattedBlocks.map(x=>[x.label, x.bcode.flat()]));
+    var blockRecords = Object.fromEntries(flattedBlocks.map(x=>[x.label, x]));
     
     if(blockRecords["ENTRY"]) {
         throw "entry block defined!"
