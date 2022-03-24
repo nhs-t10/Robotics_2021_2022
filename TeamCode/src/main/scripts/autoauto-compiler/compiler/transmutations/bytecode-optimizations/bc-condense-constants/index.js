@@ -6,35 +6,44 @@ require("../..").registerTransmutation({
         var bcBlocks = context.inputs["syntax-tree-to-bytecode"].blocks;
         var constants = context.inputs["syntax-tree-to-bytecode"].constants;
         
-        var o = {};
+        Object.values(bcBlocks).forEach(x=>{
+            modifyBcCondenseConstants(x.jumps, constants);
+            modifyBcCondenseConstants(x.code, constants);
+        });
         
-        Object.keys(bcBlocks).forEach(x=>o[x] = condenseConstantOps(bcBlocks[x], constants));
-        
-        context.output = o;
+        context.output = bcBlocks;
         context.status = "pass";
     }
 });
 
-function condenseConstantOps(block, constants) {
-    for(var i = 2; i < block.length; i++) {
-        if(isDecidableOpWithTwoArgs(block[i].code)) {
-            var left = block[i - 2];
-            var right = block[i - 1];
-            
-            if(left.hasOwnProperty("__value") && right.hasOwnProperty("__value")) {
-                var r = doOp(block[i].code, left.__value, right.__value);
-                if(r != r) r = undefined;
-                
-                block.splice(i - 2, 3, {
-                    code: constants.getCodeFor(r),
-                    __value: r,
-                    location: block[i].location
-                });
-                i -= 3;
-            }
+
+function modifyBcCondenseConstants(code, constants) {
+    code.forEach(x=>{
+        if(!x.args) x.args.map(x=>x);
+        modifyBcCondenseConstants(x.args, constants);
+        condenseConstantOps(x, constants);
+    });
+}
+
+function condenseConstantOps(codeObject, constants) {
+    if(isDecidableOpWithTwoArgs(codeObject.code)) {
+        if(codeObject.args.length != 2) throw "Malformed bytecode: improper amount of arguments";
+
+        var left = codeObject.args[0];
+        var right = codeObject.args[1];
+        
+        if(left.hasOwnProperty("__value") && right.hasOwnProperty("__value")) {
+            var r = doOp(codeObject.code, left.__value, right.__value);
+            if(r != r) r = undefined;
+
+            var newCodeObject = {
+                code: constants.getCodeFor(r),
+                __value: r,
+                args: []
+            };
+            Object.assign(codeObject, newCodeObject);
         }
     }
-    return block;
 }
 
 function isDecidableOpWithTwoArgs(code) {

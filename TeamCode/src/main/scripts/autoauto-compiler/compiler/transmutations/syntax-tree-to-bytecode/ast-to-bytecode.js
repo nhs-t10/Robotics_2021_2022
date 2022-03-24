@@ -294,12 +294,10 @@ function titledArgToBytecode(ast, constantPool) {
     
     return {
         dependentBlocks: [].concat(title.dependentBlocks, value.dependentBlocks),
-        computation: [
-            emitBytecodeWithLocation(bytecodeSpec.construct_relation, [
+        computation: emitBytecodeWithLocation(bytecodeSpec.construct_relation, [
                 title.computation,
                 value.computation
             ], ast)
-        ]
     };
 }
 
@@ -317,7 +315,7 @@ function valueStatementToBytecode(ast, label, constantPool, nextLabel) {
     return [{
         label: label,
         //pop the value once it's calculated to ensure a clean stack :)
-        code: [emitBytecodeWithLocation(bytecodeSpec.pop, val.computation, ast)],
+        code: [emitBytecodeWithLocation(bytecodeSpec.pop, [val.computation], ast)],
         jumps: [jumpToLabel(nextLabel, constantPool)]
     }].concat(val.dependentBlocks);
 }
@@ -462,7 +460,7 @@ function functionLiteralToBytecode(ast, constantPool) {
     , ast);
     
     return {
-        computation: [functionConstructionCode],
+        computation: functionConstructionCode,
         dependentBlocks: [entryBlock, endBlock].concat(argsCode.dependentBlocks, functionBody)
     };
 }
@@ -516,12 +514,11 @@ function operationToBytecode(ast, constantPool) {
     var right = valueToBytecodeBlocks(ast.right, constantPool);
     
     return {
-        computation: [
-            emitBytecodeWithLocation(op, [
+        computation: emitBytecodeWithLocation(op, [
                 left.computation,
                 right.computation
             ], ast)
-        ],
+        ,
         dependentBlocks: [].concat(left.dependentBlocks, right.dependentBlocks)
     };
 }
@@ -642,7 +639,7 @@ function afterStatementToBytecode(ast, label, constantPool, nextLabel, stateCoun
                 tmp1name, const_false
             ], ast),
             emitBytecodeWithLocation(bytecodeSpec.setvar, [
-                tmp2name, emitBytecodeWithLocation(bytecodeSpec.unit_currentv, unitvalue.computation, ast)
+                tmp2name, emitBytecodeWithLocation(bytecodeSpec.unit_currentv, [unitvalue.computation], ast)
             ],ast)
         ],
         jumps: emitBytecodeWithLocation(bytecodeSpec.jmp_l, [labels.afterStatementCheckingBody], ast)

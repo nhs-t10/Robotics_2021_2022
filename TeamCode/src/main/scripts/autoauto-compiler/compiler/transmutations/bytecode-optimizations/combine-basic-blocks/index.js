@@ -28,15 +28,16 @@ function combineBlocksFrom(entryName, bytecode, cgraph, previousBlocks) {
     
     var to = cgraph[entryName];
     
-    console.log(entryName, to);
-    
     to.forEach(x=>combineBlocksFrom(x, bytecode, cgraph, previousBlocks));
     
     if(to.length == 1) {
         var nextBlock = to[0];
         var entriesToNextBlock = Object.keys(cgraph).filter(x=>cgraph[x].includes(nextBlock));
         if(entriesToNextBlock.length == 1 && entriesToNextBlock[0] == entryName) {
-            bytecode[entryName] = bytecode[entryName].concat(bytecode[nextBlock]);
+
+            bytecode[entryName].code = bytecode[entryName].code.concat(bytecode[nextBlock].code);
+            bytecode[entryName].jumps = bytecode[nextBlock].jumps;
+            
             cgraph[entryName] = cgraph[nextBlock];
             delete cgraph[nextBlock];
         }

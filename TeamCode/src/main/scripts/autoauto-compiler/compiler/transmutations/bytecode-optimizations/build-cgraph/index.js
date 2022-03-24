@@ -30,17 +30,20 @@ function buildGraphFrom(bcode) {
 
 function findBlockTargets(block, allBlockNames) {
     
-    var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code];
+    var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code, bytecodeSpec.yieldto.code];
     
-    var jumps = block
-        .map((x,i)=>jumpLabelCodes.includes(x.code)?i:-1)
-        .filter(x=>x!=-1);
     
     var res = [];
     
-    for(var i = 0; i < jumps.length; i++) {        
-        var jmpTrgt = block[jumps[i] - 1];
-        if(!jmpTrgt || !jmpTrgt.__value) res = res.concat(allBlockNames);
+    for(var i = 0; i < block.jumps.length; i++) {
+        if(!jumpLabelCodes.includes(block.jumps[i].code)) {
+            throw `Malformed bytecode: non-jump root (${block.jumps[i].code}) in jumps section.`;
+        }
+
+        var jumpArgs = block.jumps[i].args;
+
+        var jmpTrgt = jumpArgs[jumpArgs.length - 1];
+        if(!jmpTrgt.__value) res = res.concat(allBlockNames);
         else res.push(jmpTrgt.__value);
     }
     

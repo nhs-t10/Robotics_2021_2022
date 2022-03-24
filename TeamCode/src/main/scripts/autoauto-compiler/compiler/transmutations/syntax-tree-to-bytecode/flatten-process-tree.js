@@ -18,10 +18,15 @@ module.exports = function(ast) {
     if(blockRecords["ENTRY"]) {
         throw "entry block defined!"
     } else {
-        blockRecords["ENTRY"] = [
-            {code: constantPool.getCodeFor(treeBlocks[0].label), __value: treeBlocks[0].label },
-            {code: bytecodeSpec.jmp_l.code}
-        ];
+        blockRecords["ENTRY"] = {
+            label: "ENTRY",
+            code: [],
+            jumps: [{
+                code: bytecodeSpec.jmp_l.code,
+                location: undefined,
+                args: [{ code: constantPool.getCodeFor(treeBlocks[0].label), __value: treeBlocks[0].label, args: [] }]
+            }]
+        };
     }
     
     return {
