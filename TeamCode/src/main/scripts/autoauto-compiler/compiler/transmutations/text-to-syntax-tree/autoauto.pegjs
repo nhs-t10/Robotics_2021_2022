@@ -341,7 +341,7 @@ LETTER "letter" = [A-Za-z_]
 NUMERIC_VALUE = m:MINUS? v:(
     h:DIGIT* '.' t:DIGIT+ { return h.join("") + "." + t.join("") }
     /
-    d:DIGIT+ { return d.join(""); }) 'f'?
+    d:DIGIT+ { return d.join(""); })
 {
     return { type: "NumericValue", location: location(), v: parseFloat((m||"") + v ) }
 }

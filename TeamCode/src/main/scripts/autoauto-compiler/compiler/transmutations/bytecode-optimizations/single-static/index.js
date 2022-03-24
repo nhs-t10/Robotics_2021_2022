@@ -17,8 +17,6 @@ require("../..").registerTransmutation({
         fs.writeFileSync(__dirname + "/icgraph", JSON.stringify(invertedCgraph, null, 2));
         
         var globalVarnameCounters = { blocks: {}, vars: {} };
-
-        console.log(bytecode);
         
         Object.values(bytecode).forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
 
@@ -30,15 +28,15 @@ require("../..").registerTransmutation({
 });
 
 function ssaBlock(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters) {
-    if(hasBeenSsadAlready(block, globalVarnameCounters)) return;
-
     initVariableCounter(block, globalVarnameCounters);
+    
+    if(hasBeenSsadAlready(block, globalVarnameCounters)) return;
     markAsSsad(block, globalVarnameCounters);
 
     ensureParentsAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters);
 
     if(!block.code) {
-        console.log(block);
+        console.error(block);
         throw "bad block";
     }
 
@@ -98,7 +96,7 @@ function initVariableCounter(block, globalVarnameCounters) {
 }
 
 function hasBeenSsadAlready(block, globalVarnameCounters) {
-    return globalVarnameCounters.blocks[block.label] && globalVarnameCounters.blocks[block.label].ssa;
+    return globalVarnameCounters.blocks[block.label].ssa;
 }
 
 function markAsSsad(block, globalVarnameCounters) {

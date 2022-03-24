@@ -46,7 +46,7 @@ function rewriteUnitvalue(unitValue, loggingFile) {
             androidStudioLogging.sendTreeLocationMessage({
                 kind: "WARNING",
                 location: unitValue.location,
-                text: "Couldn't decide between different units: " + fmtChoices(unitRecord) + ".\n Choosing " + unitRecord[0] + "."
+                text: "Couldn't decide between different units for abbreviation '" + uType + "': " + fmtChoices(unitRecord) + ".\n Choosing " + unitRecord[0] + "."
             }, loggingFile);
             unitRecord = unitConversion.getUnitForKey(unitRecord[0]);
         }

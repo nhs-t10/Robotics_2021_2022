@@ -79,8 +79,6 @@ function findAndRewriteStateInitBlocks(startBlock, allStatementBlocks, constantP
  */
 function statementToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath) {
     
-    if(!constantPool) constantPool.f;
-    
     switch (ast.type) {
         case "SkipStatement":
             return skipStatementToBytecode(ast, label, constantPool, stateCountInPath);
