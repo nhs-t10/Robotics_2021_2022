@@ -27,7 +27,12 @@ function modifyBcCondenseConstants(code, constants) {
 
 function condenseConstantOps(codeObject, constants) {
     if(isDecidableOpWithTwoArgs(codeObject.code)) {
-        if(codeObject.args.length != 2) throw "Malformed bytecode: improper amount of arguments";
+        if(codeObject.args.length != 2) {
+            throw {
+                text: "Malformed bytecode: improper amount of arguments for an operation",
+                location: codeObject.location
+            }
+        }
 
         var left = codeObject.args[0];
         var right = codeObject.args[1];

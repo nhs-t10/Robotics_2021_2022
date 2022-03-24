@@ -37,7 +37,10 @@ function findBlockTargets(block, allBlockNames) {
     
     for(var i = 0; i < block.jumps.length; i++) {
         if(!jumpLabelCodes.includes(block.jumps[i].code)) {
-            throw `Malformed bytecode: non-jump root (${block.jumps[i].code}) in jumps section.`;
+            throw {
+                text: `Malformed bytecode: non-jump root (0x${block.jumps[i].code.toString(16)}) in jumps section.`,
+                location: block.jumps[i].location
+            }
         }
 
         var jumpArgs = block.jumps[i].args;
