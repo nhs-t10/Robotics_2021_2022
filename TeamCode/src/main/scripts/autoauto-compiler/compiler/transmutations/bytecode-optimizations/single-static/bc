@@ -434,7 +434,7 @@
 
 
 's/mathOps/0/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("two@1")  (2) setvar
  ("s/mathOps/1/stmt/0") jmp_l
 
 
@@ -449,7 +449,7 @@
 
 
 's/mathOps/1/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (2) cmp_gte  (1) callfunction pop
  ("s/mathOps/2/stmt/0") jmp_l
 
 
@@ -459,7 +459,7 @@
 
 
 's/mathOps/2/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (3) cmp_gt  (false) cmp_eq  (1) callfunction pop
  ("s/mathOps/3/stmt/0") jmp_l
 
 
@@ -469,7 +469,7 @@
 
 
 's/mathOps/3/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (3) cmp_lt  (1) callfunction pop
  ("s/mathOps/4/stmt/0") jmp_l
 
 
@@ -479,7 +479,7 @@
 
 
 's/mathOps/4/stmt/0':
- ("log@0") getvar  (2)  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (2) cmp_lte  (1) callfunction pop
  ("s/mathOps/5/stmt/0") jmp_l
 
 
@@ -489,7 +489,7 @@
 
 
 's/mathOps/5/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop
  ("s/mathOps/6/stmt/0") jmp_l
 
 
@@ -499,7 +499,7 @@
 
 
 's/mathOps/6/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (2) cmp_eq  (1) callfunction pop
  ("s/mathOps/7/stmt/0") jmp_l
 
 
@@ -509,7 +509,7 @@
 
 
 's/mathOps/7/stmt/0':
- ("log@0") getvar  ("a")  (2) construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  ("fefe") cmp_neq  (1) callfunction pop
  ("s/mathOps/8/stmt/0") jmp_l
 
 
@@ -519,7 +519,7 @@
 
 
 's/mathOps/8/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("a")  ("two@0") getvar construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
  ("s/mathOps/9/stmt/0") jmp_l
 
 
@@ -529,7 +529,7 @@
 
 
 's/mathOps/9/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  ("e") add  ("2e") cmp_eq  (1) callfunction pop
  ("s/mathOps/10/stmt/0") jmp_l
 
 
@@ -539,7 +539,7 @@
 
 
 's/mathOps/10/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (2) add  (4) cmp_eq  (1) callfunction pop
  ("s/mathOps/11/stmt/0") jmp_l
 
 
@@ -549,7 +549,7 @@
 
 
 's/mathOps/11/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (4) div  (0.5) cmp_eq  (1) callfunction pop
  ("s/mathOps/12/stmt/0") jmp_l
 
 
@@ -559,7 +559,7 @@
 
 
 's/mathOps/12/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  ("two@0") getvar  (2) subtr  (0) cmp_eq  (1) callfunction pop
  ("s/mathOps/13/stmt/0") jmp_l
 
 
@@ -569,7 +569,7 @@
 
 
 's/mathOps/13/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  (3)  ("two@0") getvar exp  (9) cmp_eq  (1) callfunction pop
  ("s/mathOps/14/stmt/0") jmp_l
 
 
@@ -579,7 +579,7 @@
 
 
 's/mathOps/14/stmt/0':
- ("log@0") getvar  (true)  (1) callfunction pop
+ ("log@0") getvar  (3)  ("two@0") getvar exp  (9) cmp_eq  (1) callfunction pop
  ("s/mathOps/15/stmt/0") jmp_l
 
 
@@ -589,13 +589,23 @@
 
 
 's/mathOps/15/stmt/0':
-
- ("s/done/0") jmp_l
+ ("log@0") getvar  (3)  ("two@0") getvar mod  (1) cmp_eq  (1) callfunction pop
+ ("s/mathOps/16/stmt/0") jmp_l
 
 
 's/mathOps/15/end':
 
  ("s/mathOps/15/stmt/0") yieldto
+
+
+'s/mathOps/16/stmt/0':
+
+ ("s/done/0") jmp_l
+
+
+'s/mathOps/16/end':
+
+ ("s/mathOps/16/stmt/0") yieldto
 
 
 's/done/0/stmt/0':

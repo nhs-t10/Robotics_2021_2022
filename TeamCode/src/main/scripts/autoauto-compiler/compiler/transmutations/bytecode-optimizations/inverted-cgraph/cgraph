@@ -363,7 +363,7 @@
   ],
   "s/done/0": [
     "s/dynamicGoto/0/stmt/0",
-    "s/mathOps/15/stmt/0"
+    "s/mathOps/16/stmt/0"
   ],
   "s/dynamicGoto/0/end": [],
   "s/dgoto0/0/stmt/0": [
@@ -605,7 +605,18 @@
     "s/mathOps/15",
     "s/mathOps/15/end"
   ],
+  "s/mathOps/15/stmt/1": [
+    "s/mathOps/15/stmt/0"
+  ],
+  "s/mathOps/16": [
+    "s/mathOps/15/stmt/1"
+  ],
   "s/mathOps/15/end": [],
+  "s/mathOps/16/stmt/0": [
+    "s/mathOps/16",
+    "s/mathOps/16/end"
+  ],
+  "s/mathOps/16/end": [],
   "s/done/0/stmt/0": [
     "s/done/0",
     "s/done/0/end"
