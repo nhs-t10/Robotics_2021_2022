@@ -68,6 +68,10 @@ log("ULS!"), goto ifStatements;
     goto mathOps;
 
 #mathOps:
+    //the variable `two` only exists so that the compiler won't be helpful.
+    //if you do something like `2 + 2`, the compiler sees that & converts it to `4`!
+    //but with `two + 2`, even if `two` always equals `2`, there might be properties in `two`
+    //so it doesn't.
     let two = 2, next;
     log(two >= 2), next;
     log((two > 3) == false), next;
