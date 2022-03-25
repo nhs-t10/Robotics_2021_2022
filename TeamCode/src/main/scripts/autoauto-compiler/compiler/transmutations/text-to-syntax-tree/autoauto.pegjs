@@ -254,7 +254,7 @@ dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type:
 _ "whitespace" = [ \t\n\r]*
 
 commentedWhitespace "comment" =
-    _ c:comment* _ { return c; }
+    _ c:( comment _)* { return c.map(x=>x[1]); }
 
 comment = "//" t:[^\n]* (EOL/EOF) { return t.join("") }
   / "/*" t:commentText* END_OF_COMMENT { return t.join("") }
