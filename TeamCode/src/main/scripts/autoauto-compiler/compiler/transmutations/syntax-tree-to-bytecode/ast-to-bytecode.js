@@ -247,7 +247,7 @@ function unitwrap(ast) {
  * 
  * @param {*} lbl 
  * @param {*} pool 
- * @returns {Bytecode[]}
+ * @returns {Bytecode}
  */
 function jumpToLabel(lbl, pool) {
     return emitBytecodeWithLocation(bytecodeSpec.jmp_l, [
@@ -640,7 +640,7 @@ function afterStatementToBytecode(ast, label, constantPool, nextLabel, stateCoun
                 tmp2name, emitBytecodeWithLocation(bytecodeSpec.unit_currentv, [unitvalue.computation], ast)
             ],ast)
         ],
-        jumps: emitBytecodeWithLocation(bytecodeSpec.jmp_l, [labels.afterStatementCheckingBody], ast)
+        jumps: [emitBytecodeWithLocation(bytecodeSpec.jmp_l, [labels.afterStatementCheckingBody], ast)]
     };
 
     var afterstmtCheckingBody = {
@@ -672,7 +672,7 @@ function afterStatementToBytecode(ast, label, constantPool, nextLabel, stateCoun
     var afterstmtDone = {
         label: labels.afterStatementDone.__value,
         code: [],
-        jumps: [jumpToLabel(nextLabel)]
+        jumps: [jumpToLabel(nextLabel, constantPool)]
     };
 
     return [].concat(
@@ -731,8 +731,16 @@ function emitBytecodeWithLocation(code, bcArgs, ast) {
     if (typeof code === "number") r.code = code;
     else Object.assign(r, code);
     
-    r.args = bcArgs;
+    r.args = arrShallowCp(bcArgs);
     r.location = ast.location;
     
     return r;
+}
+
+function arrShallowCp(arr) {
+    return arr.map(x=>{
+        var c = {};
+        Object.assign(c, x);
+        return c;
+    });
 }

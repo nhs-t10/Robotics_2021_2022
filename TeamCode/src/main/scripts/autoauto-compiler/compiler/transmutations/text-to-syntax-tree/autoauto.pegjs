@@ -54,8 +54,12 @@ state =
 
 statement = singleStatement / multiStatement
 
-multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
-	return { type: "Block", state: s, location: location(), comments: c }
+multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state? CLOSE_CURLY_BRACKET _ {
+	return { type: "Block", 
+          state: s || {comments:[], type: "State", location: location(), statement: []},
+          location: location(), 
+          comments: c 
+        };
 }
 
 singleStatement =
@@ -164,7 +168,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
+ _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
    return x;
  }
 
@@ -182,7 +186,7 @@ baseExpression = a:atom _ t:tail* _ {
 
 tail = arrayStyleGetter / callFunction / dotStyleGetter
 
-callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
+callFunction "function call" = OPEN_PAREN _ a:valueList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
 
 arrayStyleGetter "array-style property getter (obj[i])" = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } }
 
@@ -192,7 +196,7 @@ variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
 
 arrayLiteral =
- OPEN_SQUARE_BRACKET _ a:argumentList? CLOSE_SQUARE_BRACKET {
+ OPEN_SQUARE_BRACKET _ a:valueList? CLOSE_SQUARE_BRACKET {
  return {
    type: "ArrayLiteral", location: location(),
    elems: a || {type:"ArgumentList",args:[], location: location()}
@@ -229,9 +233,20 @@ argumentList =
  }
 }
 
-argument = n:value v:(TITLE_ARG_SEP value)? {
-	if(v) return { type: "TitledArgument", value: v[1], name: n, location: location()  };
-    else return n;
+relationLiteral = titledArgument
+
+valueList = head:value tail:(COMMA value)* {
+  return {
+   type: "ArgumentList", location: location(),
+   len: tail.length + 1,
+   args: [head].concat(tail.map(x=> x[1]))
+ }
+}
+
+argument = titledArgument / _ f:IDENTIFIER _ { return f; }
+
+titledArgument = _ n:IDENTIFIER _ TITLE_ARG_SEP _ v:value {
+  return { type: "TitledArgument", value: v, name: n, location: location()  };
 }
 
 dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }
@@ -277,8 +292,8 @@ CLOSE_PAREN "closing paren" =
     ")"
 LET =
     "let"
-TITLE_ARG_SEP "titled argument separator (=)" =
-    EQUALS
+TITLE_ARG_SEP "key/value separator (= or :)" =
+    EQUALS / COLON
 EQUALS "equals sign" =
     "="
 NEXT =

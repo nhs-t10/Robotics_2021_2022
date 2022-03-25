@@ -12,7 +12,7 @@ require("../..").registerTransmutation({
         var bytecode = bb.bytecode;
         var cgraph = bb.cgraph;
 
-        var invertedCgraph = invertControlGraph(cgraph);
+        var invertedCgraph = bb.invertedCGraph;
 
         fs.writeFileSync(__dirname + "/icgraph", JSON.stringify(invertedCgraph, null, 2));
         
@@ -35,14 +35,10 @@ function ssaBlock(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters
 
     ensureParentsAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters);
 
-    if(!block.code) {
-        console.error(block);
-        throw "bad block";
-    }
-
     ssaBytecodeArray(block.code, block.label, cgraph, invertedCgraph, globalVarnameCounters);
     ssaBytecodeArray(block.jumps, block.label, cgraph, invertedCgraph, globalVarnameCounters);
 }
+
 
 function ssaBytecodeArray(bcArr, blockLabel, cgraph, invertedCgraph, globalVarnameCounters) {
     bcArr.forEach(x=>{
@@ -56,33 +52,52 @@ function ssaBytecodeInstruction(instr, blockLabel, cgraph, invertedCgraph, globa
     if(isVariableAddressingInstr(instr)) {
         var varInstr = findVarnameInstructionFromInstr(instr);
 
-        if(isVariableSettingInstr(instr)) incrementSingleStaticVariable(varInstr.__value, globalVarnameCounters);
+        if(isVariableSettingInstr(instr)) incrementSingleStaticVariable(blockLabel, varInstr.__value, globalVarnameCounters);
 
-        varInstr.__value = getSingleStaticVariableName(varInstr.__value, globalVarnameCounters);
+        varInstr.__value = getSingleStaticVariableName(blockLabel, varInstr.__value, globalVarnameCounters, varInstr);
     }
 }
 
-function incrementSingleStaticVariable(plainVariableName, globalVarnameCounters) {
-    var variableRecord = getVariableSSARecord(plainVariableName, globalVarnameCounters);
+function incrementSingleStaticVariable(blockLabel, plainVariableName, globalVarnameCounters) {
+    var variableRecord = getVariableSSARecord(blockLabel, plainVariableName, globalVarnameCounters);
 
-    variableRecord.counter++;
-    variableRecord.varname = plainVariableName + "@" + variableRecord.counter;
+    globalVarnameCounters.vars[plainVariableName]++;
+    variableRecord.blockScopeCounter++;
+    variableRecord.varname = plainVariableName + "@" + globalVarnameCounters.vars[plainVariableName];
 }
 
-function getSingleStaticVariableName(plainVariableName, globalVarnameCounters) {
-    var variableRecord = getVariableSSARecord(plainVariableName, globalVarnameCounters);
+function getSingleStaticVariableName(blockLabel, plainVariableName, globalVarnameCounters, instruction) {
+    var variableRecord = getVariableSSARecord(blockLabel, plainVariableName, globalVarnameCounters);
+    
+    if (variableRecord.blockScopeCounter == 0) {
+        setFirstReadInstructionForLaterPhi(blockLabel, plainVariableName, instruction, globalVarnameCounters);
+    }
 
     return variableRecord.varname;
 }
 
-function getVariableSSARecord(plainVariableName, globalVarnameCounters) {
-    var vc = globalVarnameCounters.vars;
+function setFirstReadInstructionForLaterPhi(blockLabel, plainVariableName, instruction, globalVarnameCounters) {
+    if (!globalVarnameCounters.blocks[blockLabel].firstreads) {
+        globalVarnameCounters.blocks[blockLabel].firstreads = {};
+    }
+    if (!globalVarnameCounters.blocks[blockLabel].firstreads[plainVariableName]) {
+        globalVarnameCounters.blocks[blockLabel].firstreads[plainVariableName] = [];
+    }
+    
+    globalVarnameCounters.blocks[blockLabel].firstreads[plainVariableName].push(instruction);
+}
+
+function getVariableSSARecord(blockLabel, plainVariableName, globalVarnameCounters) {
+    var vc = globalVarnameCounters.blocks[blockLabel].vars;
+    
+    if (!globalVarnameCounters.vars[plainVariableName]) globalVarnameCounters.vars[plainVariableName] = 0;
 
     if(!vc[plainVariableName]) vc[plainVariableName] = {
-        counter: 0,
+        plain: plainVariableName,
+        blockScopeCounter: 0,
         varname: plainVariableName + "@0"
     };
-
+    
     return vc[plainVariableName];
 }
 
@@ -130,18 +145,7 @@ function isVariableSettingInstr(instr) {
     return instr.code == bytecodeSpec.setvar.code;
 }
 
-function invertControlGraph(cgraph) {
-    var igc = {};
 
-    Object.entries(cgraph).forEach(x=> {
-        var from = x[0];
-        var tos = x[1];
-
-        tos.forEach(to=> {
-            if(!igc[to]) igc[to] = [];
-            
-            if(!igc[to].includes(from)) igc[to].push(from);
-        });
-    });
-    return igc;
+function uniqueValues(arr) {
+    return Array.from(new Set(arr));
 }

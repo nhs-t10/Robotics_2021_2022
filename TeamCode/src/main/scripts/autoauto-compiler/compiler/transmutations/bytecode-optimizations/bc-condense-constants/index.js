@@ -7,6 +7,10 @@ require("../..").registerTransmutation({
         var constants = context.inputs["syntax-tree-to-bytecode"].constants;
         
         Object.values(bcBlocks).forEach(x=>{
+            if (!x.jumps.forEach) {
+                console.error(x);
+                throw "bad block!"
+            }
             modifyBcCondenseConstants(x.jumps, constants);
             modifyBcCondenseConstants(x.code, constants);
         });
