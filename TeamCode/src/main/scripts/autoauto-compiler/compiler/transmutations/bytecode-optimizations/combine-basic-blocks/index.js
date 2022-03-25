@@ -9,9 +9,9 @@ require("../..").registerTransmutation({
         var cgraph = context.inputs["build-cgraph"];
         var invertedCGraph = context.inputs["inverted-cgraph"];
         
-        var entryBlockNames = findEntries(bytecode, invertedCGraph);
+        var entryBlockNames = findEntries(bytecode, invertedCGraph, cgraph);
         
-        entryBlockNames.forEach(x => combineBlocksFrom(x, bytecode, invertedCGraph, cgraph));
+        entryBlockNames.forEach(x => combineBlocksFrom(x, bytecode, cgraph, invertedCGraph));
         
         context.output = {
             bytecode: bytecode,
@@ -24,9 +24,9 @@ require("../..").registerTransmutation({
     }
 });
 
-function findEntries(bytecode, invertedCGraph) {
-    //entry blocks are blocks that don't have any jumps to them.    
-    return Object.keys(bytecode).filter(x=>invertedCGraph[x].length == 0);
+function findEntries(bytecode, invertedCGraph, cgraph) {
+    //entry blocks are blocks that don't have any jumps TO them, but DO have jumps FROM them 
+    return Object.keys(bytecode).filter(x=>invertedCGraph[x].length == 0 && cgraph[x].length > 0);
 }
 
 function combineBlocksFrom(entryName, bytecode, cgraph, invertedCGraph, previousBlocks) {
@@ -38,7 +38,7 @@ function combineBlocksFrom(entryName, bytecode, cgraph, invertedCGraph, previous
     var to = cgraph[entryName];
     
     to.forEach(x => combineBlocksFrom(x, bytecode, cgraph, invertedCGraph, previousBlocks));
-    
+
     if(to.length == 1) {
         var nextBlock = to[0];
         var nextFrom = invertedCGraph[nextBlock];

@@ -1,10 +1,5 @@
 's/<init>/0/stmt/0':
  ("log@0") getvar  ("ULS!")  (1) callfunction pop
- ("s/<init>/0/stmt/1") jmp_l
-
-
-'s/<init>/0/stmt/1':
-
  ("s/ifStatements/0") jmp_l
 
 
@@ -18,34 +13,19 @@
  ("s/<init>/0/stmt/0") yieldto
 
 
-'s/ifStatements/0/stmt/0/if_end/3':
-
- ("s/ifStatements/0/end") jmp_l
-
-
 's/ifStatements/0/stmt/0':
 
  (true)  ("s/ifStatements/0/stmt/0/if_true/1") jmp_l_cond  ("s/ifStatements/0/stmt/0/if_false/2") jmp_l
 
 
-'s/ifStatements/0/stmt/0/if_true/1/blockStatement0/4':
- ("log@0") getvar  ("this works like java")  (1) callfunction pop
- ("s/ifStatements/0/stmt/0/if_true/1/blockStatement1/5") jmp_l
-
-
-'s/ifStatements/0/stmt/0/if_true/1/blockStatement1/5':
-
- ("s/ifStatements/1") jmp_l
-
-
 's/ifStatements/0/stmt/0/if_true/1':
-
- ("s/ifStatements/0/stmt/0/if_true/1/blockStatement0/4") jmp_l
+ ("log@0") getvar  ("this works like java")  (1) callfunction pop
+ ("s/ifStatements/1/stmt/0") jmp_l
 
 
 's/ifStatements/0/stmt/0/if_false/2':
  pass
- ("s/ifStatements/0/stmt/0/if_end/3") jmp_l
+ ("s/ifStatements/0/stmt/0") yieldto
 
 
 's/ifStatements/0':
@@ -53,14 +33,9 @@
  ("s/ifStatements/0/stmt/0") jmp_l
 
 
-'s/ifStatements/0/end':
-
- ("s/ifStatements/0/stmt/0") yieldto
-
-
 's/ifStatements/1/stmt/0/if_end/8':
 
- ("s/ifStatements/1/stmt/1") jmp_l
+ ("s/ifStatements/2/stmt/0") jmp_l
 
 
 's/ifStatements/1/stmt/0':
@@ -78,24 +53,9 @@
  ("s/ifStatements/1/stmt/0/if_end/8") jmp_l
 
 
-'s/ifStatements/1/stmt/1':
-
- ("s/ifStatements/2") jmp_l
-
-
-'s/ifStatements/1':
-
- ("s/ifStatements/1/stmt/0") jmp_l
-
-
 's/ifStatements/1/end':
 
  ("s/ifStatements/1/stmt/0") yieldto
-
-
-'s/ifStatements/2/stmt/0/if_end/b':
-
- ("s/ifStatements/2/end") jmp_l
 
 
 's/ifStatements/2/stmt/0':
@@ -103,44 +63,19 @@
  (false)  ("s/ifStatements/2/stmt/0/if_true/9") jmp_l_cond  ("s/ifStatements/2/stmt/0/if_false/a") jmp_l
 
 
-'s/ifStatements/2/stmt/0/if_true/9/blockStatement0/c':
- ("log@0") getvar  ("fail")  (1) callfunction pop
- ("s/ifStatements/2/stmt/0/if_end/b") jmp_l
-
-
 's/ifStatements/2/stmt/0/if_true/9':
-
- ("s/ifStatements/2/stmt/0/if_true/9/blockStatement0/c") jmp_l
-
-
-'s/ifStatements/2/stmt/0/if_false/a/blockStatement0/d':
-
- ("s/ifStatements/3") jmp_l
+ ("log@0") getvar  ("fail")  (1) callfunction pop
+ ("s/ifStatements/2/stmt/0") yieldto
 
 
 's/ifStatements/2/stmt/0/if_false/a':
 
- ("s/ifStatements/2/stmt/0/if_false/a/blockStatement0/d") jmp_l
-
-
-'s/ifStatements/2':
-
- ("s/ifStatements/2/stmt/0") jmp_l
-
-
-'s/ifStatements/2/end':
-
- ("s/ifStatements/2/stmt/0") yieldto
+ ("s/ifStatements/3/stmt/0") jmp_l
 
 
 's/ifStatements/3/stmt/0':
 
  ("s/letStatements/0") jmp_l
-
-
-'s/ifStatements/3':
-
- ("s/ifStatements/3/stmt/0") jmp_l
 
 
 's/ifStatements/3/end':
@@ -150,12 +85,7 @@
 
 's/letStatements/0/stmt/0':
  ("table@1")  (0) construct_table setvar
- ("s/letStatements/0/stmt/1") jmp_l
-
-
-'s/letStatements/0/stmt/1':
-
- ("s/letStatements/1") jmp_l
+ ("s/letStatements/1/stmt/0") jmp_l
 
 
 's/letStatements/0':
@@ -170,17 +100,7 @@
 
 's/letStatements/1/stmt/0':
  ("table@0") getvar  ("foup")  ("jeremy") setprop
- ("s/letStatements/1/stmt/1") jmp_l
-
-
-'s/letStatements/1/stmt/1':
-
- ("s/letStatements/2") jmp_l
-
-
-'s/letStatements/1':
-
- ("s/letStatements/1/stmt/0") jmp_l
+ ("s/letStatements/2/stmt/0") jmp_l
 
 
 's/letStatements/1/end':
@@ -190,17 +110,7 @@
 
 's/letStatements/2/stmt/0':
  ("log@0") getvar  ("table@0") getvar  (1) callfunction pop
- ("s/letStatements/2/stmt/1") jmp_l
-
-
-'s/letStatements/2/stmt/1':
-
- ("s/letStatements/3") jmp_l
-
-
-'s/letStatements/2':
-
- ("s/letStatements/2/stmt/0") jmp_l
+ ("s/letStatements/3/stmt/0") jmp_l
 
 
 's/letStatements/2/end':
@@ -210,17 +120,7 @@
 
 's/letStatements/3/stmt/0':
  ("table@2")  (3) setvar
- ("s/letStatements/3/stmt/1") jmp_l
-
-
-'s/letStatements/3/stmt/1':
-
- ("s/letStatements/4") jmp_l
-
-
-'s/letStatements/3':
-
- ("s/letStatements/3/stmt/0") jmp_l
+ ("s/letStatements/4/stmt/0") jmp_l
 
 
 's/letStatements/3/end':
@@ -230,17 +130,7 @@
 
 's/letStatements/4/stmt/0':
  ("table@0") getvar  ("foofoo")  (2) setprop
- ("s/letStatements/4/stmt/1") jmp_l
-
-
-'s/letStatements/4/stmt/1':
-
- ("s/letStatements/5") jmp_l
-
-
-'s/letStatements/4':
-
- ("s/letStatements/4/stmt/0") jmp_l
+ ("s/letStatements/5/stmt/0") jmp_l
 
 
 's/letStatements/4/end':
@@ -249,23 +139,8 @@
 
 
 's/letStatements/5/stmt/0':
- ("log@0") getvar  ("table@0") getvar  (1) callfunction pop
- ("s/letStatements/5/stmt/1") jmp_l
-
-
-'s/letStatements/5/stmt/1':
- ("log@0") getvar  ("table@0") getvar  ("foofoo") getprop  (1) callfunction pop
- ("s/letStatements/5/stmt/2") jmp_l
-
-
-'s/letStatements/5/stmt/2':
-
- ("s/letStatements/6") jmp_l
-
-
-'s/letStatements/5':
-
- ("s/letStatements/5/stmt/0") jmp_l
+ ("log@0") getvar  ("table@0") getvar  (1) callfunction pop  ("log@0") getvar  ("table@0") getvar  ("foofoo") getprop  (1) callfunction pop
+ ("s/letStatements/6/stmt/0") jmp_l
 
 
 's/letStatements/5/end':
@@ -275,12 +150,7 @@
 
 's/letStatements/6/stmt/0':
 
- ("s/afterStatements/0") jmp_l
-
-
-'s/letStatements/6':
-
- ("s/letStatements/6/stmt/0") jmp_l
+ ("s/loopingPath/0") jmp_l
 
 
 's/letStatements/6/end':
@@ -288,148 +158,8 @@
  ("s/letStatements/6/stmt/0") yieldto
 
 
-'s/afterStatements/0/stmt/0/after_if_finished_body/10':
-
- ("s/afterStatements/1") jmp_l
-
-
-'{+STATE_INIT  @temp2':
- ("@temp0@1")  (true) setvar
- ("s/afterStatements/0/stmt/0") jmp_l
-
-
-'s/afterStatements/0/stmt/0':
-
- ("@temp0@0") getvar  ("s/afterStatements/0/stmt/0/after_init/e") jmp_l_cond  ("s/afterStatements/0/stmt/0/after_checking/f") jmp_l
-
-
-'s/afterStatements/0/stmt/0/after_init/e':
- ("@temp0@2")  (false) setvar  ("@temp1@1")  ([3000,"ms"]) unit_currentv setvar
- ("s/afterStatements/0/stmt/0/after_checking/f") jmp_l
-
-
-'s/afterStatements/0/stmt/0/after_checking/f':
-
- ([3000,"ms"]) unit_currentv  ("@temp1@0") getvar abs_dif  ([3000,"ms"]) cmp_gte  ("s/afterStatements/0/stmt/0/after_if_finished_body/10") jmp_l_cond  ("s/afterStatements/0/stmt/0/after_done/11") jmp_l
-
-
-'s/afterStatements/0/stmt/0/after_done/11':
-
- ("s/afterStatements/0/end") jmp_l
-
-
-'s/afterStatements/0':
-
- ("{+STATE_INIT  @temp2") jmp_l
-
-
-'s/afterStatements/0/end':
-
- ("s/afterStatements/0/stmt/0") yieldto
-
-
-'s/afterStatements/1/stmt/0/after_if_finished_body/14':
-
- ("s/afterStatements/2") jmp_l
-
-
-'{+STATE_INIT  @temp5':
- ("@temp3@1")  (true) setvar
- ("s/afterStatements/1/stmt/0") jmp_l
-
-
-'s/afterStatements/1/stmt/0':
-
- ("@temp3@0") getvar  ("s/afterStatements/1/stmt/0/after_init/12") jmp_l_cond  ("s/afterStatements/1/stmt/0/after_checking/13") jmp_l
-
-
-'s/afterStatements/1/stmt/0/after_init/12':
- ("@temp3@2")  (false) setvar  ("@temp4@1")  ([1800000,"ms"]) unit_currentv setvar
- ("s/afterStatements/1/stmt/0/after_checking/13") jmp_l
-
-
-'s/afterStatements/1/stmt/0/after_checking/13':
-
- ([1800000,"ms"]) unit_currentv  ("@temp4@0") getvar abs_dif  ([1800000,"ms"]) cmp_gte  ("s/afterStatements/1/stmt/0/after_if_finished_body/14") jmp_l_cond  ("s/afterStatements/1/stmt/0/after_done/15") jmp_l
-
-
-'s/afterStatements/1/stmt/0/after_done/15':
-
- ("s/afterStatements/1/end") jmp_l
-
-
-'s/afterStatements/1':
-
- ("{+STATE_INIT  @temp5") jmp_l
-
-
-'s/afterStatements/1/end':
-
- ("s/afterStatements/1/stmt/0") yieldto
-
-
-'s/afterStatements/2/stmt/0/after_if_finished_body/18':
-
- ("s/afterStatements/3") jmp_l
-
-
-'{+STATE_INIT  @temp8':
- ("@temp6@1")  (true) setvar
- ("s/afterStatements/2/stmt/0") jmp_l
-
-
-'s/afterStatements/2/stmt/0':
-
- ("@temp6@0") getvar  ("s/afterStatements/2/stmt/0/after_init/16") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_checking/17") jmp_l
-
-
-'s/afterStatements/2/stmt/0/after_init/16':
- ("@temp6@2")  (false) setvar  ("@temp7@1")  ([91.44018,"cm"]) unit_currentv setvar
- ("s/afterStatements/2/stmt/0/after_checking/17") jmp_l
-
-
-'s/afterStatements/2/stmt/0/after_checking/17':
-
- ([91.44018,"cm"]) unit_currentv  ("@temp7@0") getvar abs_dif  ([91.44018,"cm"]) cmp_gte  ("s/afterStatements/2/stmt/0/after_if_finished_body/18") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_done/19") jmp_l
-
-
-'s/afterStatements/2/stmt/0/after_done/19':
-
- ("s/afterStatements/2/end") jmp_l
-
-
-'s/afterStatements/2':
-
- ("{+STATE_INIT  @temp8") jmp_l
-
-
-'s/afterStatements/2/end':
-
- ("s/afterStatements/2/stmt/0") yieldto
-
-
-'s/afterStatements/3/stmt/0':
-
- ("s/loopingPath/0") jmp_l
-
-
-'s/afterStatements/3':
-
- ("s/afterStatements/3/stmt/0") jmp_l
-
-
-'s/afterStatements/3/end':
-
- ("s/afterStatements/3/stmt/0") yieldto
-
-
 's/loopingPath/0/stmt/0':
  ("counter@1")  (0) setvar
- ("s/loopingPath/0/stmt/1") jmp_l
-
-
-'s/loopingPath/0/stmt/1':
-
  ("s/loopingPath/1") jmp_l
 
 
@@ -444,18 +174,8 @@
 
 
 's/loopingPath/1/stmt/0':
- ("counter@2")  ("counter@0") getvar  (1) add setvar
- ("s/loopingPath/1/stmt/1") jmp_l
-
-
-'s/loopingPath/1/stmt/1':
- ("log@0") getvar  ("count: ")  ("counter@0") getvar add  (1) callfunction pop
- ("s/loopingPath/1/stmt/2") jmp_l
-
-
-'s/loopingPath/1/stmt/2':
-
- ("s/loopingPath/2") jmp_l
+ ("counter@2")  ("counter@0") getvar  (1) add setvar  ("log@0") getvar  ("count: ")  ("counter@2") getvar add  (1) callfunction pop
+ ("s/loopingPath/2/stmt/0") jmp_l
 
 
 's/loopingPath/1':
@@ -468,54 +188,29 @@
  ("s/loopingPath/1/stmt/0") yieldto
 
 
-'s/loopingPath/2/stmt/0/if_end/1c':
+'s/loopingPath/2/stmt/0/if_end/10':
 
- ("s/loopingPath/2/end") jmp_l
+ ("s/loopingPath/2/stmt/0") yieldto
 
 
 's/loopingPath/2/stmt/0':
 
- ("counter@0") getvar  (20) cmp_lt  ("s/loopingPath/2/stmt/0/if_true/1a") jmp_l_cond  ("s/loopingPath/2/stmt/0/if_false/1b") jmp_l
+ ("counter@0") getvar  (20) cmp_lt  ("s/loopingPath/2/stmt/0/if_true/e") jmp_l_cond  ("s/loopingPath/2/stmt/0/if_false/f") jmp_l
 
 
-'s/loopingPath/2/stmt/0/if_true/1a/blockStatement0/1d':
+'s/loopingPath/2/stmt/0/if_true/e':
 
  ("s/loopingPath/1") jmp_l
 
 
-'s/loopingPath/2/stmt/0/if_true/1a':
+'s/loopingPath/2/stmt/0/if_false/f':
 
- ("s/loopingPath/2/stmt/0/if_true/1a/blockStatement0/1d") jmp_l
-
-
-'s/loopingPath/2/stmt/0/if_false/1b/blockStatement0/1e':
-
- ("s/loopingPath/3") jmp_l
-
-
-'s/loopingPath/2/stmt/0/if_false/1b':
-
- ("s/loopingPath/2/stmt/0/if_false/1b/blockStatement0/1e") jmp_l
-
-
-'s/loopingPath/2':
-
- ("s/loopingPath/2/stmt/0") jmp_l
-
-
-'s/loopingPath/2/end':
-
- ("s/loopingPath/2/stmt/0") yieldto
+ ("s/loopingPath/3/stmt/0") jmp_l
 
 
 's/loopingPath/3/stmt/0':
 
  ("s/functionDefinition/0") jmp_l
-
-
-'s/loopingPath/3':
-
- ("s/loopingPath/3/stmt/0") jmp_l
 
 
 's/loopingPath/3/end':
@@ -524,33 +219,13 @@
 
 
 's/functionDefinition/0/stmt/0':
- ("f@1")  ("subcat/func_enter/22")  ("e")  (3) construct_relation  (1) makefunction setvar
- ("s/functionDefinition/0/stmt/1") jmp_l
+ ("f@1")  ("subcat/func_enter/16")  ("e")  (3) construct_relation  (1) makefunction setvar
+ ("s/functionDefinition/1/stmt/0") jmp_l
 
 
-'subcat/func_enter/22':
+'subcat/func_enter/16':
+ ("return@0") getvar  ("e@0") getvar  ("hah") add  (1) callfunction pop  ret
 
- ("subcat/func_body/20") jmp_l
-
-
-'subcat/func_end/1f':
- ret
-
-
-
-'subcat/func_body/20/blockStatement0/21':
- ("return@0") getvar  ("e@0") getvar  ("hah") add  (1) callfunction pop
- ("subcat/func_end/1f") jmp_l
-
-
-'subcat/func_body/20':
-
- ("subcat/func_body/20/blockStatement0/21") jmp_l
-
-
-'s/functionDefinition/0/stmt/1':
-
- ("s/functionDefinition/1") jmp_l
 
 
 's/functionDefinition/0':
@@ -564,23 +239,8 @@
 
 
 's/functionDefinition/1/stmt/0':
- ("log@0") getvar  ("f@0") getvar  (0) callfunction  (1) callfunction pop
- ("s/functionDefinition/1/stmt/1") jmp_l
-
-
-'s/functionDefinition/1/stmt/1':
- ("log@0") getvar  ("f@0") getvar  ("ha")  (1) callfunction  (1) callfunction pop
- ("s/functionDefinition/1/stmt/2") jmp_l
-
-
-'s/functionDefinition/1/stmt/2':
-
- ("s/functionDefinition/2") jmp_l
-
-
-'s/functionDefinition/1':
-
- ("s/functionDefinition/1/stmt/0") jmp_l
+ ("log@0") getvar  ("f@0") getvar  (0) callfunction  (1) callfunction pop  ("log@0") getvar  ("f@0") getvar  ("ha")  (1) callfunction  (1) callfunction pop
+ ("s/functionDefinition/2/stmt/0") jmp_l
 
 
 's/functionDefinition/1/end':
@@ -589,38 +249,13 @@
 
 
 's/functionDefinition/2/stmt/0':
- ("d@1")  ("subcat/func_enter/26")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar
- ("s/functionDefinition/2/stmt/1") jmp_l
+ ("d@1")  ("subcat/func_enter/1a")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar
+ ("s/functionDefinition/3/stmt/0") jmp_l
 
 
-'subcat/func_enter/26':
+'subcat/func_enter/1a':
+ ("return@0") getvar  ("e@0") getvar  ("k@0") getvar  ("oop") add add  (1) callfunction pop  ret
 
- ("subcat/func_body/24") jmp_l
-
-
-'subcat/func_end/23':
- ret
-
-
-
-'subcat/func_body/24/blockStatement0/25':
- ("return@0") getvar  ("e@0") getvar  ("k@0") getvar  ("oop") add add  (1) callfunction pop
- ("subcat/func_end/23") jmp_l
-
-
-'subcat/func_body/24':
-
- ("subcat/func_body/24/blockStatement0/25") jmp_l
-
-
-'s/functionDefinition/2/stmt/1':
-
- ("s/functionDefinition/3") jmp_l
-
-
-'s/functionDefinition/2':
-
- ("s/functionDefinition/2/stmt/0") jmp_l
 
 
 's/functionDefinition/2/end':
@@ -629,28 +264,8 @@
 
 
 's/functionDefinition/3/stmt/0':
- ("log@0") getvar  ("d@0") getvar  (0) callfunction  (1) callfunction pop
- ("s/functionDefinition/3/stmt/1") jmp_l
-
-
-'s/functionDefinition/3/stmt/1':
- ("log@0") getvar  ("d@0") getvar  (2)  (1) callfunction  (1) callfunction pop
- ("s/functionDefinition/3/stmt/2") jmp_l
-
-
-'s/functionDefinition/3/stmt/2':
- ("log@0") getvar  ("d@0") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
- ("s/functionDefinition/3/stmt/3") jmp_l
-
-
-'s/functionDefinition/3/stmt/3':
-
- ("s/functionDefinition/4") jmp_l
-
-
-'s/functionDefinition/3':
-
- ("s/functionDefinition/3/stmt/0") jmp_l
+ ("log@0") getvar  ("d@0") getvar  (0) callfunction  (1) callfunction pop  ("log@0") getvar  ("d@0") getvar  (2)  (1) callfunction  (1) callfunction pop  ("log@0") getvar  ("d@0") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
+ ("s/functionDefinition/4/stmt/0") jmp_l
 
 
 's/functionDefinition/3/end':
@@ -663,11 +278,6 @@
  ("s/skipWrapping/0") jmp_l
 
 
-'s/functionDefinition/4':
-
- ("s/functionDefinition/4/stmt/0") jmp_l
-
-
 's/functionDefinition/4/end':
 
  ("s/functionDefinition/4/stmt/0") yieldto
@@ -675,7 +285,7 @@
 
 's/skipWrapping/0/stmt/0':
 
- ("s/skipWrapping/2") jmp_l
+ ("s/skipWrapping/2/stmt/0") jmp_l
 
 
 's/skipWrapping/0':
@@ -690,7 +300,7 @@
 
 's/skipWrapping/1/stmt/0':
  ("log@0") getvar  ("IF WE GET HERE, SOMETHING IS WRONG!")  (1) callfunction pop
- ("s/skipWrapping/1/end") jmp_l
+ ("s/skipWrapping/1/stmt/0") yieldto
 
 
 's/skipWrapping/1':
@@ -698,19 +308,9 @@
  ("s/skipWrapping/1/stmt/0") jmp_l
 
 
-'s/skipWrapping/1/end':
-
- ("s/skipWrapping/1/stmt/0") yieldto
-
-
 's/skipWrapping/2/stmt/0':
 
  ("s/dynamicGoto/0") jmp_l
-
-
-'s/skipWrapping/2':
-
- ("s/skipWrapping/2/stmt/0") jmp_l
 
 
 's/skipWrapping/2/end':
@@ -735,11 +335,6 @@
 
 's/dgoto0/0/stmt/0':
  ("log@0") getvar  ("dgdg")  (1) callfunction pop
- ("s/dgoto0/0/stmt/1") jmp_l
-
-
-'s/dgoto0/0/stmt/1':
-
  ("s/dgotoWorks/0") jmp_l
 
 
@@ -755,11 +350,6 @@
 
 's/dgoto1/0/stmt/0':
  ("log@0") getvar  ("dgdg")  (1) callfunction pop
- ("s/dgoto1/0/stmt/1") jmp_l
-
-
-'s/dgoto1/0/stmt/1':
-
  ("s/dgotoWorks/0") jmp_l
 
 
@@ -790,12 +380,7 @@
 
 's/undefinedTesting/0/stmt/0':
  ("u@1")  ("undefinedvariablethatwedontknowof@0") getvar setvar
- ("s/undefinedTesting/0/stmt/1") jmp_l
-
-
-'s/undefinedTesting/0/stmt/1':
-
- ("s/undefinedTesting/1") jmp_l
+ ("s/undefinedTesting/1/stmt/0") jmp_l
 
 
 's/undefinedTesting/0':
@@ -810,17 +395,7 @@
 
 's/undefinedTesting/1/stmt/0':
  ("log@0") getvar  ("u@0") getvar  (1) callfunction pop
- ("s/undefinedTesting/1/stmt/1") jmp_l
-
-
-'s/undefinedTesting/1/stmt/1':
-
- ("s/undefinedTesting/2") jmp_l
-
-
-'s/undefinedTesting/1':
-
- ("s/undefinedTesting/1/stmt/0") jmp_l
+ ("s/undefinedTesting/2/stmt/0") jmp_l
 
 
 's/undefinedTesting/1/end':
@@ -830,17 +405,7 @@
 
 's/undefinedTesting/2/stmt/0':
  ("log@0") getvar  ("u@0") getvar  ("sjkdla") getprop  (1) callfunction pop
- ("s/undefinedTesting/2/stmt/1") jmp_l
-
-
-'s/undefinedTesting/2/stmt/1':
-
- ("s/undefinedTesting/3") jmp_l
-
-
-'s/undefinedTesting/2':
-
- ("s/undefinedTesting/2/stmt/0") jmp_l
+ ("s/undefinedTesting/3/stmt/0") jmp_l
 
 
 's/undefinedTesting/2/end':
@@ -850,17 +415,7 @@
 
 's/undefinedTesting/3/stmt/0':
  ("log@0") getvar  (undefined)  (1) callfunction pop
- ("s/undefinedTesting/3/stmt/1") jmp_l
-
-
-'s/undefinedTesting/3/stmt/1':
-
- ("s/undefinedTesting/4") jmp_l
-
-
-'s/undefinedTesting/3':
-
- ("s/undefinedTesting/3/stmt/0") jmp_l
+ ("s/undefinedTesting/4/stmt/0") jmp_l
 
 
 's/undefinedTesting/3/end':
@@ -873,11 +428,6 @@
  ("s/mathOps/0") jmp_l
 
 
-'s/undefinedTesting/4':
-
- ("s/undefinedTesting/4/stmt/0") jmp_l
-
-
 's/undefinedTesting/4/end':
 
  ("s/undefinedTesting/4/stmt/0") yieldto
@@ -885,12 +435,7 @@
 
 's/mathOps/0/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/0/stmt/1") jmp_l
-
-
-'s/mathOps/0/stmt/1':
-
- ("s/mathOps/1") jmp_l
+ ("s/mathOps/1/stmt/0") jmp_l
 
 
 's/mathOps/0':
@@ -905,17 +450,7 @@
 
 's/mathOps/1/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/1/stmt/1") jmp_l
-
-
-'s/mathOps/1/stmt/1':
-
- ("s/mathOps/2") jmp_l
-
-
-'s/mathOps/1':
-
- ("s/mathOps/1/stmt/0") jmp_l
+ ("s/mathOps/2/stmt/0") jmp_l
 
 
 's/mathOps/1/end':
@@ -925,17 +460,7 @@
 
 's/mathOps/2/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/2/stmt/1") jmp_l
-
-
-'s/mathOps/2/stmt/1':
-
- ("s/mathOps/3") jmp_l
-
-
-'s/mathOps/2':
-
- ("s/mathOps/2/stmt/0") jmp_l
+ ("s/mathOps/3/stmt/0") jmp_l
 
 
 's/mathOps/2/end':
@@ -945,17 +470,7 @@
 
 's/mathOps/3/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/3/stmt/1") jmp_l
-
-
-'s/mathOps/3/stmt/1':
-
- ("s/mathOps/4") jmp_l
-
-
-'s/mathOps/3':
-
- ("s/mathOps/3/stmt/0") jmp_l
+ ("s/mathOps/4/stmt/0") jmp_l
 
 
 's/mathOps/3/end':
@@ -965,17 +480,7 @@
 
 's/mathOps/4/stmt/0':
  ("log@0") getvar  (2)  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop
- ("s/mathOps/4/stmt/1") jmp_l
-
-
-'s/mathOps/4/stmt/1':
-
- ("s/mathOps/5") jmp_l
-
-
-'s/mathOps/4':
-
- ("s/mathOps/4/stmt/0") jmp_l
+ ("s/mathOps/5/stmt/0") jmp_l
 
 
 's/mathOps/4/end':
@@ -985,17 +490,7 @@
 
 's/mathOps/5/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/5/stmt/1") jmp_l
-
-
-'s/mathOps/5/stmt/1':
-
- ("s/mathOps/6") jmp_l
-
-
-'s/mathOps/5':
-
- ("s/mathOps/5/stmt/0") jmp_l
+ ("s/mathOps/6/stmt/0") jmp_l
 
 
 's/mathOps/5/end':
@@ -1005,17 +500,7 @@
 
 's/mathOps/6/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/6/stmt/1") jmp_l
-
-
-'s/mathOps/6/stmt/1':
-
- ("s/mathOps/7") jmp_l
-
-
-'s/mathOps/6':
-
- ("s/mathOps/6/stmt/0") jmp_l
+ ("s/mathOps/7/stmt/0") jmp_l
 
 
 's/mathOps/6/end':
@@ -1024,18 +509,8 @@
 
 
 's/mathOps/7/stmt/0':
- ("log@0") getvar  ("a")  (2) construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  ("dgdg2@0") getvar construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
- ("s/mathOps/7/stmt/1") jmp_l
-
-
-'s/mathOps/7/stmt/1':
-
- ("s/mathOps/8") jmp_l
-
-
-'s/mathOps/7':
-
- ("s/mathOps/7/stmt/0") jmp_l
+ ("log@0") getvar  ("a")  (2) construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
+ ("s/mathOps/8/stmt/0") jmp_l
 
 
 's/mathOps/7/end':
@@ -1045,17 +520,7 @@
 
 's/mathOps/8/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/8/stmt/1") jmp_l
-
-
-'s/mathOps/8/stmt/1':
-
- ("s/mathOps/9") jmp_l
-
-
-'s/mathOps/8':
-
- ("s/mathOps/8/stmt/0") jmp_l
+ ("s/mathOps/9/stmt/0") jmp_l
 
 
 's/mathOps/8/end':
@@ -1065,17 +530,7 @@
 
 's/mathOps/9/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/9/stmt/1") jmp_l
-
-
-'s/mathOps/9/stmt/1':
-
- ("s/mathOps/10") jmp_l
-
-
-'s/mathOps/9':
-
- ("s/mathOps/9/stmt/0") jmp_l
+ ("s/mathOps/10/stmt/0") jmp_l
 
 
 's/mathOps/9/end':
@@ -1085,17 +540,7 @@
 
 's/mathOps/10/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/10/stmt/1") jmp_l
-
-
-'s/mathOps/10/stmt/1':
-
- ("s/mathOps/11") jmp_l
-
-
-'s/mathOps/10':
-
- ("s/mathOps/10/stmt/0") jmp_l
+ ("s/mathOps/11/stmt/0") jmp_l
 
 
 's/mathOps/10/end':
@@ -1105,17 +550,7 @@
 
 's/mathOps/11/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/11/stmt/1") jmp_l
-
-
-'s/mathOps/11/stmt/1':
-
- ("s/mathOps/12") jmp_l
-
-
-'s/mathOps/11':
-
- ("s/mathOps/11/stmt/0") jmp_l
+ ("s/mathOps/12/stmt/0") jmp_l
 
 
 's/mathOps/11/end':
@@ -1125,17 +560,7 @@
 
 's/mathOps/12/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/12/stmt/1") jmp_l
-
-
-'s/mathOps/12/stmt/1':
-
- ("s/mathOps/13") jmp_l
-
-
-'s/mathOps/12':
-
- ("s/mathOps/12/stmt/0") jmp_l
+ ("s/mathOps/13/stmt/0") jmp_l
 
 
 's/mathOps/12/end':
@@ -1145,17 +570,7 @@
 
 's/mathOps/13/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/13/stmt/1") jmp_l
-
-
-'s/mathOps/13/stmt/1':
-
- ("s/mathOps/14") jmp_l
-
-
-'s/mathOps/13':
-
- ("s/mathOps/13/stmt/0") jmp_l
+ ("s/mathOps/14/stmt/0") jmp_l
 
 
 's/mathOps/13/end':
@@ -1165,17 +580,7 @@
 
 's/mathOps/14/stmt/0':
  ("log@0") getvar  (true)  (1) callfunction pop
- ("s/mathOps/14/stmt/1") jmp_l
-
-
-'s/mathOps/14/stmt/1':
-
- ("s/mathOps/15") jmp_l
-
-
-'s/mathOps/14':
-
- ("s/mathOps/14/stmt/0") jmp_l
+ ("s/mathOps/15/stmt/0") jmp_l
 
 
 's/mathOps/14/end':
@@ -1188,11 +593,6 @@
  ("s/done/0") jmp_l
 
 
-'s/mathOps/15':
-
- ("s/mathOps/15/stmt/0") jmp_l
-
-
 's/mathOps/15/end':
 
  ("s/mathOps/15/stmt/0") yieldto
@@ -1200,17 +600,12 @@
 
 's/done/0/stmt/0':
  pass
- ("s/done/0/end") jmp_l
+ ("s/done/0/stmt/0") yieldto
 
 
 's/done/0':
 
  ("s/done/0/stmt/0") jmp_l
-
-
-'s/done/0/end':
-
- ("s/done/0/stmt/0") yieldto
 
 
 'ENTRY':
