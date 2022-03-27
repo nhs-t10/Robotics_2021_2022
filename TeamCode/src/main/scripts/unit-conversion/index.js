@@ -7,7 +7,8 @@ var unitData = loadData();
 
 module.exports = {
     getUnitForAbbreviation: getUnitForAbbreviation,
-    getUnitForKey: getUnitForKey
+    getUnitForKey: getUnitForKey,
+    dimensions: require("./dimensions")
 }
 
 function getUnitForKey(k) {

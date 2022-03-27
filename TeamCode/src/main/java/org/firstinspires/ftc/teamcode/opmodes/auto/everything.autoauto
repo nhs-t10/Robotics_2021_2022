@@ -14,7 +14,7 @@ log("ULS!"), goto afterStatements;
     after 2s next;
     //meters, not minutes!
     after 40m next;
-    after 30deg next;
+after 30s        next;
     after 3cm next;
     after 2ly goto ifStatements
 

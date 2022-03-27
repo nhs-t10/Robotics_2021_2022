@@ -141,11 +141,9 @@ function getAllParentSetsOfVariable(variable, parentLabels, globalVarnameCounter
     var sets = [];
     
     for(var i = 0; i < parentLabels.length; i++) {
-        sets.push(globalVarnameCounters.blocks[parentLabels[i]].lastsets[variable] || []);
-        
+        uniquelyPush(sets, globalVarnameCounters.blocks[parentLabels[i]].lastsets[variable] || []);        
     }
-    //console.log(variable, parentLabels, sets.flat(1));
-    return sets.flat(1);
+    return sets;
 }
 
 function setLastSetNameForLaterPhi(blockLabel, plainVariableName, vName, globalVarnameCounters) {

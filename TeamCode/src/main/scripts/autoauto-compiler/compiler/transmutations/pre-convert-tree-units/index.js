@@ -1,6 +1,7 @@
 var query = require("./query");
 var unitConversion = require("../../../../unit-conversion");
 const androidStudioLogging = require("../../../../script-helpers/android-studio-logging");
+var collapseSpace = require("../../../../script-helpers/collapsespace-templatetag");
 
 require("..").registerTransmutation({
     requires: ["text-to-syntax-tree"],
@@ -42,7 +43,7 @@ function rewriteUnitvalue(unitValue, loggingFile, frontmatter) {
 
         var unitRecord = unitConversion.getUnitForAbbreviation(uType);
 
-        if (!unitRecord) throw { kind: "WARNING", location: unitValue.location, text: `Unknown unit ${uType}` }
+        if (!unitRecord) errorUnknownUnit(uVal, uType, unitValue.location); 
 
         if (unitRecord.constructor == Array) {
             androidStudioLogging.sendTreeLocationMessage({
@@ -67,9 +68,20 @@ function rewriteUnitvalue(unitValue, loggingFile, frontmatter) {
                 unitValue.location, loggingFile
             );
         } else {
-            throw { kind: "WARNING", location: unitValue.location, text: "No standard measurement for dimension " + dimension }
+            errorNoMeasurement(uType, uVal,
+                                        unitRecord, loggingFile, unitValue.location);
         }
     }
+}
+
+function errorUnknownUnit(unitAmount, unitAbbreviation, loggingLocation) {
+    throw {
+        kind: "ERROR", 
+        location: unitValue.location,
+        text: `Unknown unit ${uType}`,
+        original: collapseSpace`This program uses the unit ${unitAmount}${unitAbbreviation}. '${unitAbbreviation}' is not a known abbreviation,
+        so Autoauto can't convert it to a base unit. Please make sure that you didn't make a typo.\n\nThat's all we know.`
+    };
 }
 
 function fmtChoices(u) {
@@ -78,17 +90,51 @@ function fmtChoices(u) {
     else return u.slice(0, -1).join(", ") + " or " + u[u.length - 1];
 }
 
-function notifyUserOfPrecisionLoss(newUnit, newUnitQuant, newUnitPreciseDescrip, oldUnit, oldUnitQuant, loggingLocation, loggingFile) {
+function errorNoMeasurement(oldUnit, oldUnitQuant, parsedAsUnit, loggingFile, loggingLocation) {
+    
+    var dimension = parsedAsUnit.dimension;
+    var dimensionKey = dimension.replace(/\W/g, "_");
+    var dimensionExplanation = unitConversion.dimensions.getHumanDescriptionOfDimension(dimension);
+    
+    var err = {
+        kind: "ERROR",
+        location: loggingLocation,
+        text: `Can't measure ${parsedAsUnit.unit}`,
+        original: collapseSpace`This program uses the unit ${oldUnitQuant}${oldUnit}. The abbreviation was
+        successfully expanded (${parsedAsUnit.unit}), but Autoauto doesn't have support for measuring ${dimensionExplanation}.\nTo fix this, you may:\n`
+        + `a) Add a unit. If your runtime supports measuring this dimension, add 'measured_dimension_${dimensionKey}_base_unit: "unit abbreviation"
+        to the frontmatter at the start of the file. For example,
+          $
+          measured_dimension_${dimensionKey}_base_unit: "${oldUnit}"
+          $
+        Please make sure that you can *actually* measure ${oldUnit} before doing this!`
+        + `\nb) Rephrase as multiple units. Distance, planar angle, and time are guaranteed support.`
+    };
+    
+    throw err;
+}
+
+function notifyUserOfPrecisionLoss(newUnit, newUnitQuant, newUnitPreciseDescrip, oldUnit, oldUnitQuant, loggingLocation, loggingFile, frontmatter) {
     if(newUnitQuant > Number.MAX_SAFE_INTEGER || newUnitQuant < Number.MIN_SAFE_INTEGER) {
+        
+        if (frontmatter.ignorewarning_unit_conversion_precision_loss === true) return;
+        
         var crossedBarrierInt = newUnitQuant > 0 ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
         var overagePercentage = (newUnitQuant / crossedBarrierInt) - 1;
         
-        var description = `This program uses the unit '${oldUnitQuant}${oldUnit}' (${newUnitPreciseDescrip}), which Autoauto converts into ${newUnitQuant}${newUnit}. `
-            + `Autoauto *must* convert values to compare units, but this is ${Math.round(overagePercentage * 100)}% `
-            + `${newUnitQuant > 0 ? "more" : "less"} than the ${newUnitQuant > 0 ? "highest" : "lowest"} number `
-            + `that IEEE-754 double-precision numbers can represent safely. `
-            + `This may produce odd behavior. There is currently no easy way to avoid this in Autoauto, but you can try breaking your `
-            + `unit into separate 'after' statements (e.g. two 'after's with ${oldUnitQuant / 2}${oldUnit} instead of one with ${oldUnitQuant}${oldUnit}).`;
+        var description = collapseSpace`This program uses the unit '${oldUnitQuant}${oldUnit}' (${newUnitPreciseDescrip}), which
+            Autoauto converts into ${newUnitQuant}${newUnit}.
+            Autoauto *must* convert values to compare units, but this is ${Math.round(overagePercentage * 100)}%
+            ${newUnitQuant > 0 ? "more" : "less"} than the ${newUnitQuant > 0 ? "highest" : "lowest"} number
+            that IEEE-754 double-precision numbers can represent safely.
+            This may produce odd behavior. There is currently no easy way to avoid this in Autoauto, but you can try breaking your
+            unit into separate 'after' statements (e.g. two 'after's with ${oldUnitQuant / 2}${oldUnit} instead of one
+            with ${oldUnitQuant}${oldUnit}).
+            a) To remove this warning, add 'ignorewarning_unit_conversion_precision_loss: true' to the frontmatter at the start of your file. For example,
+            \t$
+            \tignorewarning_unit_conversion_precision_loss: true
+            \t$
+            The frontmatter flag will NOT remove the precision-loss, but it will hide this warning.`;
         
         androidStudioLogging.sendTreeLocationMessage({
             kind: "WARNING",
