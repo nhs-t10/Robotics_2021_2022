@@ -1,5 +1,5 @@
 's/<init>/0/stmt/0':
- ("log") getvar  ("ULS!")  (1) callfunction pop
+ ("log") getvar  ("ULS!")  (1)  (0) callfunction pop
  ("s/<init>/0/stmt/1") jmp_l
 
 
@@ -109,13 +109,13 @@
 
 
 's/afterStatements/2/stmt/0/after_init/9':
- ("@temp6")  (false) setvar  ("@temp7")  ([29.999999999999996,"degs"]) unit_currentv setvar
+ ("@temp6")  (false) setvar  ("@temp7")  ([30000,"ms"]) unit_currentv setvar
  ("s/afterStatements/2/stmt/0/after_checking/a") jmp_l
 
 
 's/afterStatements/2/stmt/0/after_checking/a':
 
- ([29.999999999999996,"degs"]) unit_currentv  ("@temp7") getvar abs_dif  ([29.999999999999996,"degs"]) cmp_gte  ("s/afterStatements/2/stmt/0/after_if_finished_body/b") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_done/c") jmp_l
+ ([30000,"ms"]) unit_currentv  ("@temp7") getvar abs_dif  ([30000,"ms"]) cmp_gte  ("s/afterStatements/2/stmt/0/after_if_finished_body/b") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_done/c") jmp_l
 
 
 's/afterStatements/2/stmt/0/after_done/c':
@@ -224,7 +224,7 @@
 
 
 's/ifStatements/0/stmt/0/if_true/15/blockStatement0/18':
- ("log") getvar  ("this works like java")  (1) callfunction pop
+ ("log") getvar  ("this works like java")  (1)  (0) callfunction pop
  ("s/ifStatements/0/stmt/0/if_true/15/blockStatement1/19") jmp_l
 
 
@@ -264,7 +264,7 @@
 
 
 's/ifStatements/1/stmt/0/if_true/1a':
- ("log") getvar  ("fail")  (1) callfunction pop
+ ("log") getvar  ("fail")  (1)  (0) callfunction pop
  ("s/ifStatements/1/stmt/0/if_end/1c") jmp_l
 
 
@@ -294,7 +294,7 @@
 
 
 's/ifStatements/2/stmt/0/if_true/1d/blockStatement0/20':
- ("log") getvar  ("fail")  (1) callfunction pop
+ ("log") getvar  ("fail")  (1)  (0) callfunction pop
  ("s/ifStatements/2/stmt/0/if_end/1f") jmp_l
 
 
@@ -364,7 +364,7 @@
 
 
 's/letStatements/2/stmt/0':
- ("log") getvar  ("table") getvar  (1) callfunction pop
+ ("log") getvar  ("table") getvar  (1)  (0) callfunction pop
  ("s/letStatements/2/stmt/1") jmp_l
 
 
@@ -409,12 +409,12 @@
 
 
 's/letStatements/5/stmt/0':
- ("log") getvar  ("table") getvar  (1) callfunction pop
+ ("log") getvar  ("table") getvar  (1)  (0) callfunction pop
  ("s/letStatements/5/stmt/1") jmp_l
 
 
 's/letStatements/5/stmt/1':
- ("log") getvar  ("table") getvar  ("foofoo") getprop  (1) callfunction pop
+ ("log") getvar  ("table") getvar  ("foofoo") getprop  (1)  (0) callfunction pop
  ("s/letStatements/5/stmt/2") jmp_l
 
 
@@ -459,7 +459,7 @@
 
 
 's/loopingPath/1/stmt/1':
- ("log") getvar  ("count: ")  ("counter") getvar add  (1) callfunction pop
+ ("log") getvar  ("count: ")  ("counter") getvar add  (1)  (0) callfunction pop
  ("s/loopingPath/1/stmt/2") jmp_l
 
 
@@ -514,7 +514,7 @@
 
 
 's/functionDefinition/0/stmt/0':
- ("f")  ("subcat/func_enter/2a")  ("e")  (3) construct_relation  (1) makefunction setvar
+ ("f")  ("subcat/func_enter/2a")  ("e")  (3)  (1) makefunction setvar
  ("s/functionDefinition/0/stmt/1") jmp_l
 
 
@@ -529,7 +529,7 @@
 
 
 'subcat/func_body/28/blockStatement0/29':
- ("return") getvar  ("e") getvar  ("hah") add  (1) callfunction pop
+ ("return") getvar  ("e") getvar  ("hah") add  (1)  (0) callfunction pop
  ("subcat/func_end/27") jmp_l
 
 
@@ -549,12 +549,12 @@
 
 
 's/functionDefinition/1/stmt/0':
- ("log") getvar  ("f") getvar  (0) callfunction  (1) callfunction pop
+ ("log") getvar  ("f") getvar  (0)  (0) callfunction  (1)  (0) callfunction pop
  ("s/functionDefinition/1/stmt/1") jmp_l
 
 
 's/functionDefinition/1/stmt/1':
- ("log") getvar  ("f") getvar  ("ha")  (1) callfunction  (1) callfunction pop
+ ("log") getvar  ("f") getvar  ("ha")  (1)  (0) callfunction  (1)  (0) callfunction pop
  ("s/functionDefinition/1/stmt/2") jmp_l
 
 
@@ -569,7 +569,7 @@
 
 
 's/functionDefinition/2/stmt/0':
- ("d")  ("subcat/func_enter/2e")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar
+ ("d")  ("subcat/func_enter/2e")  ("e")  (undefined)  ("k")  ("fef")  (2) makefunction setvar
  ("s/functionDefinition/2/stmt/1") jmp_l
 
 
@@ -584,7 +584,7 @@
 
 
 'subcat/func_body/2c/blockStatement0/2d':
- ("return") getvar  ("e") getvar  ("k") getvar  ("oop") add add  (1) callfunction pop
+ ("return") getvar  ("e") getvar  ("k") getvar  ("oop") add add  (1)  (0) callfunction pop
  ("subcat/func_end/2b") jmp_l
 
 
@@ -604,17 +604,17 @@
 
 
 's/functionDefinition/3/stmt/0':
- ("log") getvar  ("d") getvar  (0) callfunction  (1) callfunction pop
+ ("log") getvar  ("d") getvar  (24)  (1)  ("nonexistent")  (32)  (1) callfunction  (1)  (0) callfunction pop
  ("s/functionDefinition/3/stmt/1") jmp_l
 
 
 's/functionDefinition/3/stmt/1':
- ("log") getvar  ("d") getvar  (2)  (1) callfunction  (1) callfunction pop
+ ("log") getvar  ("d") getvar  (0)  ("k")  (2)  (1) callfunction  (1)  (0) callfunction pop
  ("s/functionDefinition/3/stmt/2") jmp_l
 
 
 's/functionDefinition/3/stmt/2':
- ("log") getvar  ("d") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
+ ("log") getvar  ("d") getvar  (2)  (1)  (2)  (0) callfunction  (1)  (0) callfunction pop
  ("s/functionDefinition/3/stmt/3") jmp_l
 
 
@@ -629,13 +629,73 @@
 
 
 's/functionDefinition/4/stmt/0':
+ ("g")  ("subcat/func_enter/32")  (0) makefunction setvar
+ ("s/functionDefinition/4/stmt/1") jmp_l
 
- ("s/skipWrapping/0") jmp_l
+
+'subcat/func_enter/32':
+
+ ("subcat/func_body/30") jmp_l
+
+
+'subcat/func_end/2f':
+ ret
+
+
+
+'subcat/func_body/30/blockStatement0/31':
+ ("log") getvar  ("I don't return anything")  (1)  (0) callfunction pop
+ ("subcat/func_end/2f") jmp_l
+
+
+'subcat/func_body/30':
+
+ ("subcat/func_body/30/blockStatement0/31") jmp_l
+
+
+'s/functionDefinition/4/stmt/1':
+
+ ("s/functionDefinition/5") jmp_l
 
 
 's/functionDefinition/4':
 
  ("s/functionDefinition/4/stmt/0") jmp_l
+
+
+'s/functionDefinition/5/stmt/0':
+ ("g") getvar  (0)  (0) callfunction pop
+ ("s/functionDefinition/5/stmt/1") jmp_l
+
+
+'s/functionDefinition/5/stmt/1':
+ ("g") getvar  (3)  (1)  (0) callfunction pop
+ ("s/functionDefinition/5/stmt/2") jmp_l
+
+
+'s/functionDefinition/5/stmt/2':
+ ("g") getvar  (0)  ("ff")  ("still nonexistent; do nothing")  (1) callfunction pop
+ ("s/functionDefinition/5/stmt/3") jmp_l
+
+
+'s/functionDefinition/5/stmt/3':
+
+ ("s/functionDefinition/6") jmp_l
+
+
+'s/functionDefinition/5':
+
+ ("s/functionDefinition/5/stmt/0") jmp_l
+
+
+'s/functionDefinition/6/stmt/0':
+
+ ("s/skipWrapping/0") jmp_l
+
+
+'s/functionDefinition/6':
+
+ ("s/functionDefinition/6/stmt/0") jmp_l
 
 
 's/skipWrapping/0/stmt/0':
@@ -660,7 +720,7 @@
 
 's/dynamicGoto/0/stmt/0':
 
- ("s/")  ("dgoto")  ("Math") getvar  ("floor") getprop  ("Math") getvar  ("random") getprop  (0) callfunction  (2) mul  (1) callfunction add add  ("/0") add jmp_l
+ ("s/")  ("dgoto")  ("Math") getvar  ("floor") getprop  ("Math") getvar  ("random") getprop  (0)  (0) callfunction  (2) mul  (1)  (0) callfunction add add  ("/0") add jmp_l
 
 
 's/dynamicGoto/0':
@@ -669,7 +729,7 @@
 
 
 's/dgoto0/0/stmt/0':
- ("log") getvar  ("dgdg")  (1) callfunction pop
+ ("log") getvar  ("dgdg")  (1)  (0) callfunction pop
  ("s/dgoto0/0/stmt/1") jmp_l
 
 
@@ -684,7 +744,7 @@
 
 
 's/dgoto1/0/stmt/0':
- ("log") getvar  ("dgdg")  (1) callfunction pop
+ ("log") getvar  ("dgdg")  (1)  (0) callfunction pop
  ("s/dgoto1/0/stmt/1") jmp_l
 
 
@@ -724,7 +784,7 @@
 
 
 's/undefinedTesting/1/stmt/0':
- ("log") getvar  ("u") getvar  (1) callfunction pop
+ ("log") getvar  ("u") getvar  (1)  (0) callfunction pop
  ("s/undefinedTesting/1/stmt/1") jmp_l
 
 
@@ -739,7 +799,7 @@
 
 
 's/undefinedTesting/2/stmt/0':
- ("log") getvar  ("u") getvar  ("sjkdla") getprop  (1) callfunction pop
+ ("log") getvar  ("u") getvar  ("sjkdla") getprop  (1)  (0) callfunction pop
  ("s/undefinedTesting/2/stmt/1") jmp_l
 
 
@@ -754,7 +814,7 @@
 
 
 's/undefinedTesting/3/stmt/0':
- ("log") getvar  (undefined)  (1) callfunction pop
+ ("log") getvar  (undefined)  (1)  (0) callfunction pop
  ("s/undefinedTesting/3/stmt/1") jmp_l
 
 
@@ -794,7 +854,7 @@
 
 
 's/mathOps/1/stmt/0':
- ("log") getvar  ("two") getvar  (2) cmp_gte  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (2) cmp_gte  (1)  (0) callfunction pop
  ("s/mathOps/1/stmt/1") jmp_l
 
 
@@ -809,7 +869,7 @@
 
 
 's/mathOps/2/stmt/0':
- ("log") getvar  ("two") getvar  (3) cmp_gt  (false) cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (3) cmp_gt  (false) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/2/stmt/1") jmp_l
 
 
@@ -824,7 +884,7 @@
 
 
 's/mathOps/3/stmt/0':
- ("log") getvar  ("two") getvar  (3) cmp_lt  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (3) cmp_lt  (1)  (0) callfunction pop
  ("s/mathOps/3/stmt/1") jmp_l
 
 
@@ -839,7 +899,7 @@
 
 
 's/mathOps/4/stmt/0':
- ("log") getvar  ("two") getvar  (2) cmp_lte  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (2) cmp_lte  (1)  (0) callfunction pop
  ("s/mathOps/4/stmt/1") jmp_l
 
 
@@ -854,7 +914,7 @@
 
 
 's/mathOps/5/stmt/0':
- ("log") getvar  ("two") getvar  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop
+ ("log") getvar  (0)  ("two") getvar  (1) construct_table  (0)  (2)  (1) construct_table cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/5/stmt/1") jmp_l
 
 
@@ -869,7 +929,7 @@
 
 
 's/mathOps/6/stmt/0':
- ("log") getvar  ("two") getvar  (2) cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (2) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/6/stmt/1") jmp_l
 
 
@@ -884,7 +944,7 @@
 
 
 's/mathOps/7/stmt/0':
- ("log") getvar  ("two") getvar  ("fefe") cmp_neq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  ("fefe") cmp_neq  (1)  (0) callfunction pop
  ("s/mathOps/7/stmt/1") jmp_l
 
 
@@ -899,7 +959,7 @@
 
 
 's/mathOps/8/stmt/0':
- ("log") getvar  ("a")  ("two") getvar construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
+ ("log") getvar  ("a")  ("two") getvar  (1) construct_table  ("b")  (6)  (1) construct_table add  ("a")  (2)  ("b")  (6)  (2) construct_table cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/8/stmt/1") jmp_l
 
 
@@ -914,7 +974,7 @@
 
 
 's/mathOps/9/stmt/0':
- ("log") getvar  ("two") getvar  ("e") add  ("2e") cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  ("e") add  ("2e") cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/9/stmt/1") jmp_l
 
 
@@ -929,7 +989,7 @@
 
 
 's/mathOps/10/stmt/0':
- ("log") getvar  ("two") getvar  (2) add  (4) cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (2) add  (4) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/10/stmt/1") jmp_l
 
 
@@ -944,7 +1004,7 @@
 
 
 's/mathOps/11/stmt/0':
- ("log") getvar  ("two") getvar  (4) div  (0.5) cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (4) div  (0.5) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/11/stmt/1") jmp_l
 
 
@@ -959,7 +1019,7 @@
 
 
 's/mathOps/12/stmt/0':
- ("log") getvar  ("two") getvar  (2) subtr  (0) cmp_eq  (1) callfunction pop
+ ("log") getvar  ("two") getvar  (2) subtr  (0) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/12/stmt/1") jmp_l
 
 
@@ -974,7 +1034,7 @@
 
 
 's/mathOps/13/stmt/0':
- ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1) callfunction pop
+ ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/13/stmt/1") jmp_l
 
 
@@ -989,7 +1049,7 @@
 
 
 's/mathOps/14/stmt/0':
- ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1) callfunction pop
+ ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/14/stmt/1") jmp_l
 
 
@@ -1004,7 +1064,7 @@
 
 
 's/mathOps/15/stmt/0':
- ("log") getvar  (3)  ("two") getvar mod  (1) cmp_eq  (1) callfunction pop
+ ("log") getvar  (3)  ("two") getvar mod  (1) cmp_eq  (1)  (0) callfunction pop
  ("s/mathOps/15/stmt/1") jmp_l
 
 

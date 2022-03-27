@@ -150,6 +150,7 @@
   ],
   "subcat/func_enter/2a": [],
   "subcat/func_enter/2e": [],
+  "subcat/func_enter/32": [],
   "s/skipWrapping/0": [
     "s/functionDefinition/0",
     "s/dynamicGoto/0"

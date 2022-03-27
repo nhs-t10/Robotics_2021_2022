@@ -144,6 +144,7 @@
     "s/skipWrapping/0"
   ],
   "subcat/func_enter/2e": [],
+  "subcat/func_enter/32": [],
   "s/skipWrapping/0": [
     "s/dynamicGoto/0"
   ],

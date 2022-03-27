@@ -46,10 +46,14 @@ after 30s        next;
         return(e + "hah")
     }, next;
     log(f()), log(f("ha")), next;
-    let d = func(e = 24, k = "fef") {
+    let d = func(e, k = "fef") {
         return(e + k + "oop")
     }, next;
-    log(d()), log(d(2)), log(d(2, 1)), next;
+    log(d(24, nonexistent = 32)), log(d(k = 2)), log(d(2, 1)), next;
+    let g = func() {
+        log("I don't return anything")
+    }, next;
+    g(), g(3), g(ff = "still nonexistent; do nothing"), next;
     goto skipWrapping
 
 #skipWrapping:

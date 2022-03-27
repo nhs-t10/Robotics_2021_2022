@@ -445,13 +445,53 @@
     "s/functionDefinition/3/stmt/0"
   ],
   "s/functionDefinition/4/stmt/0": [
-    "s/skipWrapping/0"
+    "s/functionDefinition/4/stmt/1"
+  ],
+  "subcat/func_enter/32": [
+    "subcat/func_body/30"
+  ],
+  "subcat/func_end/2f": [],
+  "subcat/func_body/30/blockStatement0/31": [
+    "subcat/func_end/2f"
+  ],
+  "subcat/func_body/30": [
+    "subcat/func_body/30/blockStatement0/31"
+  ],
+  "s/functionDefinition/4/stmt/1": [
+    "s/functionDefinition/5"
   ],
   "s/functionDefinition/4": [
     "s/functionDefinition/4/stmt/0"
   ],
   "s/functionDefinition/4/end": [
     "s/functionDefinition/4/stmt/0"
+  ],
+  "s/functionDefinition/5/stmt/0": [
+    "s/functionDefinition/5/stmt/1"
+  ],
+  "s/functionDefinition/5/stmt/1": [
+    "s/functionDefinition/5/stmt/2"
+  ],
+  "s/functionDefinition/5/stmt/2": [
+    "s/functionDefinition/5/stmt/3"
+  ],
+  "s/functionDefinition/5/stmt/3": [
+    "s/functionDefinition/6"
+  ],
+  "s/functionDefinition/5": [
+    "s/functionDefinition/5/stmt/0"
+  ],
+  "s/functionDefinition/5/end": [
+    "s/functionDefinition/5/stmt/0"
+  ],
+  "s/functionDefinition/6/stmt/0": [
+    "s/skipWrapping/0"
+  ],
+  "s/functionDefinition/6": [
+    "s/functionDefinition/6/stmt/0"
+  ],
+  "s/functionDefinition/6/end": [
+    "s/functionDefinition/6/stmt/0"
   ],
   "s/skipWrapping/0/stmt/0": [
     "s/skipWrapping/2"

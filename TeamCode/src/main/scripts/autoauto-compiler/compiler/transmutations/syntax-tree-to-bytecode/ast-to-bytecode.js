@@ -158,7 +158,7 @@ function valueToBytecodeBlocks(valueAst, constantPool) {
 
 function functionCallToBytecode(ast, constantPool) {
     var funcToCall = valueToBytecodeBlocks(ast.func, constantPool);
-    var arguments = argumentListToBytecode(ast.args, constantPool);
+    var arguments = argumentListToBytecodeAsPositionalThenNamed(ast.args, constantPool);
     
     return {
         computation: emitBytecodeWithLocation(bytecodeSpec.callfunction, 
@@ -170,7 +170,7 @@ function functionCallToBytecode(ast, constantPool) {
 }
 
 function tableLiteralToBytecode(ast, constantPool) {
-    var elems = argumentListToBytecode(ast.elems, constantPool);
+    var elems = argumentListToBytecodeAsProperties(ast.elems, constantPool);
     
     return {
         computation: emitBytecodeWithLocation(bytecodeSpec.construct_table, elems.boundedCalculations, ast),
@@ -207,6 +207,92 @@ function argumentListToBytecode(ast, constantPool) {
         calculations.push(argBc.computation);
     }
     
+    return {
+        dependentBlocks: blocks,
+        boundedCalculations: calculations.concat(emitConstantWithLocation(ast.args.length, constantPool, ast))
+    }
+}
+
+function argumentListToBytecodeAsPositionalThenNamed(ast, constantPool) {
+    var blocks = [];
+    var calculationsPositional = [], calculationsNamed = [];
+    
+    for (var i = 0; i < ast.args.length; i++) {
+        var arg = ast.args[i];
+        var argBc = valueToBytecodeBlocks(arg, constantPool);
+
+        if (arg.type == "TitledArgument") {
+            //argBc should be a construct_relation bytecode. Use its args!
+            if (argBc.computation.code != bytecodeSpec.construct_relation.code) throw new Error("Unexpected non-construct_relation");
+
+            calculationsNamed.push(argBc.computation.args[0], argBc.computation.args[1]);
+        } else {
+            calculationsPositional.push(argBc.computation);
+        }
+
+        blocks = blocks.concat(argBc.dependentBlocks);
+    }
+    
+    return {
+        dependentBlocks: blocks,
+        boundedCalculations: [].concat(
+            calculationsPositional,
+            emitConstantWithLocation(calculationsPositional.length, constantPool, ast),
+            
+            calculationsNamed,
+            emitConstantWithLocation(calculationsNamed.length / 2, constantPool, ast)
+        )
+    }
+}
+
+function argumentListToBytecodeAsFuncParamNames(ast, constantPool) {
+    var blocks = [];
+    var calculations = [];
+
+    for (var i = 0; i < ast.args.length; i++) {
+        var arg = ast.args[i];
+        var argBc = valueToBytecodeBlocks(arg, constantPool);
+
+        if (arg.type == "TitledArgument") {
+            //argBc should be a construct_relation bytecode. Use its args!
+            if (argBc.computation.code != bytecodeSpec.construct_relation.code) throw new Error("Unexpected non-construct_relation");
+
+            calculations.push(argBc.computation.args[0], argBc.computation.args[1]);
+        } else {
+            //make a default value of `undefined`
+            calculations.push(argBc.computation, emitConstantWithLocation(undefined, constantPool, ast));
+        }
+
+        blocks = blocks.concat(argBc.dependentBlocks);
+    }
+
+    return {
+        dependentBlocks: blocks,
+        boundedCalculations: calculations.concat(emitConstantWithLocation(ast.args.length, constantPool, ast))
+    }
+}
+
+function argumentListToBytecodeAsProperties(ast, constantPool) {
+    var blocks = [];
+    var calculations = [];
+
+    for (var i = 0; i < ast.args.length; i++) {
+        var arg = ast.args[i];
+        var argBc = valueToBytecodeBlocks(arg, constantPool);
+        
+        if (arg.type == "TitledArgument") {
+            //argBc should be a construct_relation bytecode. Use its args!
+            if(argBc.computation.code != bytecodeSpec.construct_relation.code) throw new Error("Unexpected non-construct_relation");
+            
+            calculations.push(argBc.computation.args[0], argBc.computation.args[1]);
+        } else {
+            //make an index
+            calculations.push(emitConstantWithLocation(i, constantPool, ast), argBc.computation);
+        }
+        
+        blocks = blocks.concat(argBc.dependentBlocks);
+    }
+
     return {
         dependentBlocks: blocks,
         boundedCalculations: calculations.concat(emitConstantWithLocation(ast.args.length, constantPool, ast))
@@ -451,7 +537,7 @@ function functionLiteralToBytecode(ast, constantPool) {
         jumps: [jumpToLabel(functionBodyLabel, constantPool)]
     };
 
-    var argsCode = argumentListToBytecode(ast.args, constantPool);
+    var argsCode = argumentListToBytecodeAsFuncParamNames(ast.args, constantPool);
 
     var functionConstructionCode = emitBytecodeWithLocation(bytecodeSpec.makefunction, 
         [emitConstantWithLocation(entryBlockLabel, constantPool, ast)].concat(argsCode.boundedCalculations)

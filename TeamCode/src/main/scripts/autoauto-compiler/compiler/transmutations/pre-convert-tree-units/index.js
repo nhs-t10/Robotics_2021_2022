@@ -65,7 +65,7 @@ function rewriteUnitvalue(unitValue, loggingFile, frontmatter) {
             notifyUserOfPrecisionLoss(
                 dimConv.autoautoBase, unitValue.value.v, unitRecord.unit,
                 uType, uVal, 
-                unitValue.location, loggingFile
+                unitValue.location, loggingFile, frontmatter
             );
         } else {
             errorNoMeasurement(uType, uVal,
