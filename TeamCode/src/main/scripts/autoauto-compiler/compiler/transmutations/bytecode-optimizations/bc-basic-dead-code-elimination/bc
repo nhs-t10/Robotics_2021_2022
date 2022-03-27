@@ -1,0 +1,1049 @@
+'s/<init>/0/stmt/0':
+ ("log") getvar  ("ULS!")  (1) callfunction pop
+ ("s/<init>/0/stmt/1") jmp_l
+
+
+'s/<init>/0/stmt/1':
+
+ ("s/afterStatements/0") jmp_l
+
+
+'s/<init>/0':
+
+ ("s/<init>/0/stmt/0") jmp_l
+
+
+'s/afterStatements/0/stmt/0/after_if_finished_body/3':
+
+ ("s/afterStatements/1") jmp_l
+
+
+'{+STATE_INIT  @temp2':
+ ("@temp0")  (true) setvar
+ ("s/afterStatements/0/stmt/0") jmp_l
+
+
+'s/afterStatements/0/stmt/0':
+
+ ("@temp0") getvar  ("s/afterStatements/0/stmt/0/after_init/1") jmp_l_cond  ("s/afterStatements/0/stmt/0/after_checking/2") jmp_l
+
+
+'s/afterStatements/0/stmt/0/after_init/1':
+ ("@temp0")  (false) setvar  ("@temp1")  ([2000,"ms"]) unit_currentv setvar
+ ("s/afterStatements/0/stmt/0/after_checking/2") jmp_l
+
+
+'s/afterStatements/0/stmt/0/after_checking/2':
+
+ ([2000,"ms"]) unit_currentv  ("@temp1") getvar abs_dif  ([2000,"ms"]) cmp_gte  ("s/afterStatements/0/stmt/0/after_if_finished_body/3") jmp_l_cond  ("s/afterStatements/0/stmt/0/after_done/4") jmp_l
+
+
+'s/afterStatements/0/stmt/0/after_done/4':
+
+ ("s/afterStatements/0/end") jmp_l
+
+
+'s/afterStatements/0':
+
+ ("{+STATE_INIT  @temp2") jmp_l
+
+
+'s/afterStatements/0/end':
+
+ ("s/afterStatements/0/stmt/0") yieldto
+
+
+'s/afterStatements/1/stmt/0/after_if_finished_body/7':
+
+ ("s/afterStatements/2") jmp_l
+
+
+'{+STATE_INIT  @temp5':
+ ("@temp3")  (true) setvar
+ ("s/afterStatements/1/stmt/0") jmp_l
+
+
+'s/afterStatements/1/stmt/0':
+
+ ("@temp3") getvar  ("s/afterStatements/1/stmt/0/after_init/5") jmp_l_cond  ("s/afterStatements/1/stmt/0/after_checking/6") jmp_l
+
+
+'s/afterStatements/1/stmt/0/after_init/5':
+ ("@temp3")  (false) setvar  ("@temp4")  ([4000,"cm"]) unit_currentv setvar
+ ("s/afterStatements/1/stmt/0/after_checking/6") jmp_l
+
+
+'s/afterStatements/1/stmt/0/after_checking/6':
+
+ ([4000,"cm"]) unit_currentv  ("@temp4") getvar abs_dif  ([4000,"cm"]) cmp_gte  ("s/afterStatements/1/stmt/0/after_if_finished_body/7") jmp_l_cond  ("s/afterStatements/1/stmt/0/after_done/8") jmp_l
+
+
+'s/afterStatements/1/stmt/0/after_done/8':
+
+ ("s/afterStatements/1/end") jmp_l
+
+
+'s/afterStatements/1':
+
+ ("{+STATE_INIT  @temp5") jmp_l
+
+
+'s/afterStatements/1/end':
+
+ ("s/afterStatements/1/stmt/0") yieldto
+
+
+'s/afterStatements/2/stmt/0/after_if_finished_body/b':
+
+ ("s/afterStatements/3") jmp_l
+
+
+'{+STATE_INIT  @temp8':
+ ("@temp6")  (true) setvar
+ ("s/afterStatements/2/stmt/0") jmp_l
+
+
+'s/afterStatements/2/stmt/0':
+
+ ("@temp6") getvar  ("s/afterStatements/2/stmt/0/after_init/9") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_checking/a") jmp_l
+
+
+'s/afterStatements/2/stmt/0/after_init/9':
+ ("@temp6")  (false) setvar  ("@temp7")  ([29.999999999999996,"degs"]) unit_currentv setvar
+ ("s/afterStatements/2/stmt/0/after_checking/a") jmp_l
+
+
+'s/afterStatements/2/stmt/0/after_checking/a':
+
+ ([29.999999999999996,"degs"]) unit_currentv  ("@temp7") getvar abs_dif  ([29.999999999999996,"degs"]) cmp_gte  ("s/afterStatements/2/stmt/0/after_if_finished_body/b") jmp_l_cond  ("s/afterStatements/2/stmt/0/after_done/c") jmp_l
+
+
+'s/afterStatements/2/stmt/0/after_done/c':
+
+ ("s/afterStatements/2/end") jmp_l
+
+
+'s/afterStatements/2':
+
+ ("{+STATE_INIT  @temp8") jmp_l
+
+
+'s/afterStatements/2/end':
+
+ ("s/afterStatements/2/stmt/0") yieldto
+
+
+'s/afterStatements/3/stmt/0/after_if_finished_body/f':
+
+ ("s/afterStatements/4") jmp_l
+
+
+'{+STATE_INIT  @temp11':
+ ("@temp9")  (true) setvar
+ ("s/afterStatements/3/stmt/0") jmp_l
+
+
+'s/afterStatements/3/stmt/0':
+
+ ("@temp9") getvar  ("s/afterStatements/3/stmt/0/after_init/d") jmp_l_cond  ("s/afterStatements/3/stmt/0/after_checking/e") jmp_l
+
+
+'s/afterStatements/3/stmt/0/after_init/d':
+ ("@temp9")  (false) setvar  ("@temp10")  ([3,"cm"]) unit_currentv setvar
+ ("s/afterStatements/3/stmt/0/after_checking/e") jmp_l
+
+
+'s/afterStatements/3/stmt/0/after_checking/e':
+
+ ([3,"cm"]) unit_currentv  ("@temp10") getvar abs_dif  ([3,"cm"]) cmp_gte  ("s/afterStatements/3/stmt/0/after_if_finished_body/f") jmp_l_cond  ("s/afterStatements/3/stmt/0/after_done/10") jmp_l
+
+
+'s/afterStatements/3/stmt/0/after_done/10':
+
+ ("s/afterStatements/3/end") jmp_l
+
+
+'s/afterStatements/3':
+
+ ("{+STATE_INIT  @temp11") jmp_l
+
+
+'s/afterStatements/3/end':
+
+ ("s/afterStatements/3/stmt/0") yieldto
+
+
+'s/afterStatements/4/stmt/0/after_if_finished_body/13':
+
+ ("s/ifStatements/0") jmp_l
+
+
+'{+STATE_INIT  @temp14':
+ ("@temp12")  (true) setvar
+ ("s/afterStatements/4/stmt/0") jmp_l
+
+
+'s/afterStatements/4/stmt/0':
+
+ ("@temp12") getvar  ("s/afterStatements/4/stmt/0/after_init/11") jmp_l_cond  ("s/afterStatements/4/stmt/0/after_checking/12") jmp_l
+
+
+'s/afterStatements/4/stmt/0/after_init/11':
+ ("@temp12")  (false) setvar  ("@temp13")  ([1892160000000000000,"cm"]) unit_currentv setvar
+ ("s/afterStatements/4/stmt/0/after_checking/12") jmp_l
+
+
+'s/afterStatements/4/stmt/0/after_checking/12':
+
+ ([1892160000000000000,"cm"]) unit_currentv  ("@temp13") getvar abs_dif  ([1892160000000000000,"cm"]) cmp_gte  ("s/afterStatements/4/stmt/0/after_if_finished_body/13") jmp_l_cond  ("s/afterStatements/4/stmt/0/after_done/14") jmp_l
+
+
+'s/afterStatements/4/stmt/0/after_done/14':
+
+ ("s/afterStatements/4/end") jmp_l
+
+
+'s/afterStatements/4':
+
+ ("{+STATE_INIT  @temp14") jmp_l
+
+
+'s/afterStatements/4/end':
+
+ ("s/afterStatements/4/stmt/0") yieldto
+
+
+'s/ifStatements/0/stmt/0/if_end/17':
+
+ ("s/ifStatements/0/end") jmp_l
+
+
+'s/ifStatements/0/stmt/0':
+
+ (true)  ("s/ifStatements/0/stmt/0/if_true/15") jmp_l_cond  ("s/ifStatements/0/stmt/0/if_false/16") jmp_l
+
+
+'s/ifStatements/0/stmt/0/if_true/15/blockStatement0/18':
+ ("log") getvar  ("this works like java")  (1) callfunction pop
+ ("s/ifStatements/0/stmt/0/if_true/15/blockStatement1/19") jmp_l
+
+
+'s/ifStatements/0/stmt/0/if_true/15/blockStatement1/19':
+
+ ("s/ifStatements/1") jmp_l
+
+
+'s/ifStatements/0/stmt/0/if_true/15':
+
+ ("s/ifStatements/0/stmt/0/if_true/15/blockStatement0/18") jmp_l
+
+
+'s/ifStatements/0/stmt/0/if_false/16':
+ pass
+ ("s/ifStatements/0/stmt/0/if_end/17") jmp_l
+
+
+'s/ifStatements/0':
+
+ ("s/ifStatements/0/stmt/0") jmp_l
+
+
+'s/ifStatements/0/end':
+
+ ("s/ifStatements/0/stmt/0") yieldto
+
+
+'s/ifStatements/1/stmt/0/if_end/1c':
+
+ ("s/ifStatements/1/stmt/1") jmp_l
+
+
+'s/ifStatements/1/stmt/0':
+
+ (false)  ("s/ifStatements/1/stmt/0/if_true/1a") jmp_l_cond  ("s/ifStatements/1/stmt/0/if_false/1b") jmp_l
+
+
+'s/ifStatements/1/stmt/0/if_true/1a':
+ ("log") getvar  ("fail")  (1) callfunction pop
+ ("s/ifStatements/1/stmt/0/if_end/1c") jmp_l
+
+
+'s/ifStatements/1/stmt/0/if_false/1b':
+ pass
+ ("s/ifStatements/1/stmt/0/if_end/1c") jmp_l
+
+
+'s/ifStatements/1/stmt/1':
+
+ ("s/ifStatements/2") jmp_l
+
+
+'s/ifStatements/1':
+
+ ("s/ifStatements/1/stmt/0") jmp_l
+
+
+'s/ifStatements/2/stmt/0/if_end/1f':
+
+ ("s/ifStatements/2/end") jmp_l
+
+
+'s/ifStatements/2/stmt/0':
+
+ (false)  ("s/ifStatements/2/stmt/0/if_true/1d") jmp_l_cond  ("s/ifStatements/2/stmt/0/if_false/1e") jmp_l
+
+
+'s/ifStatements/2/stmt/0/if_true/1d/blockStatement0/20':
+ ("log") getvar  ("fail")  (1) callfunction pop
+ ("s/ifStatements/2/stmt/0/if_end/1f") jmp_l
+
+
+'s/ifStatements/2/stmt/0/if_true/1d':
+
+ ("s/ifStatements/2/stmt/0/if_true/1d/blockStatement0/20") jmp_l
+
+
+'s/ifStatements/2/stmt/0/if_false/1e/blockStatement0/21':
+
+ ("s/ifStatements/3") jmp_l
+
+
+'s/ifStatements/2/stmt/0/if_false/1e':
+
+ ("s/ifStatements/2/stmt/0/if_false/1e/blockStatement0/21") jmp_l
+
+
+'s/ifStatements/2':
+
+ ("s/ifStatements/2/stmt/0") jmp_l
+
+
+'s/ifStatements/2/end':
+
+ ("s/ifStatements/2/stmt/0") yieldto
+
+
+'s/ifStatements/3/stmt/0':
+
+ ("s/letStatements/0") jmp_l
+
+
+'s/ifStatements/3':
+
+ ("s/ifStatements/3/stmt/0") jmp_l
+
+
+'s/letStatements/0/stmt/0':
+ ("table")  (0) construct_table setvar
+ ("s/letStatements/0/stmt/1") jmp_l
+
+
+'s/letStatements/0/stmt/1':
+
+ ("s/letStatements/1") jmp_l
+
+
+'s/letStatements/0':
+
+ ("s/letStatements/0/stmt/0") jmp_l
+
+
+'s/letStatements/1/stmt/0':
+ ("table") getvar  ("foup")  ("jeremy") setprop
+ ("s/letStatements/1/stmt/1") jmp_l
+
+
+'s/letStatements/1/stmt/1':
+
+ ("s/letStatements/2") jmp_l
+
+
+'s/letStatements/1':
+
+ ("s/letStatements/1/stmt/0") jmp_l
+
+
+'s/letStatements/2/stmt/0':
+ ("log") getvar  ("table") getvar  (1) callfunction pop
+ ("s/letStatements/2/stmt/1") jmp_l
+
+
+'s/letStatements/2/stmt/1':
+
+ ("s/letStatements/3") jmp_l
+
+
+'s/letStatements/2':
+
+ ("s/letStatements/2/stmt/0") jmp_l
+
+
+'s/letStatements/3/stmt/0':
+ ("table")  (3) setvar
+ ("s/letStatements/3/stmt/1") jmp_l
+
+
+'s/letStatements/3/stmt/1':
+
+ ("s/letStatements/4") jmp_l
+
+
+'s/letStatements/3':
+
+ ("s/letStatements/3/stmt/0") jmp_l
+
+
+'s/letStatements/4/stmt/0':
+ ("table") getvar  ("foofoo")  (2) setprop
+ ("s/letStatements/4/stmt/1") jmp_l
+
+
+'s/letStatements/4/stmt/1':
+
+ ("s/letStatements/5") jmp_l
+
+
+'s/letStatements/4':
+
+ ("s/letStatements/4/stmt/0") jmp_l
+
+
+'s/letStatements/5/stmt/0':
+ ("log") getvar  ("table") getvar  (1) callfunction pop
+ ("s/letStatements/5/stmt/1") jmp_l
+
+
+'s/letStatements/5/stmt/1':
+ ("log") getvar  ("table") getvar  ("foofoo") getprop  (1) callfunction pop
+ ("s/letStatements/5/stmt/2") jmp_l
+
+
+'s/letStatements/5/stmt/2':
+
+ ("s/letStatements/6") jmp_l
+
+
+'s/letStatements/5':
+
+ ("s/letStatements/5/stmt/0") jmp_l
+
+
+'s/letStatements/6/stmt/0':
+
+ ("s/loopingPath/0") jmp_l
+
+
+'s/letStatements/6':
+
+ ("s/letStatements/6/stmt/0") jmp_l
+
+
+'s/loopingPath/0/stmt/0':
+ ("counter")  (0) setvar
+ ("s/loopingPath/0/stmt/1") jmp_l
+
+
+'s/loopingPath/0/stmt/1':
+
+ ("s/loopingPath/1") jmp_l
+
+
+'s/loopingPath/0':
+
+ ("s/loopingPath/0/stmt/0") jmp_l
+
+
+'s/loopingPath/1/stmt/0':
+ ("counter")  ("counter") getvar  (1) add setvar
+ ("s/loopingPath/1/stmt/1") jmp_l
+
+
+'s/loopingPath/1/stmt/1':
+ ("log") getvar  ("count: ")  ("counter") getvar add  (1) callfunction pop
+ ("s/loopingPath/1/stmt/2") jmp_l
+
+
+'s/loopingPath/1/stmt/2':
+
+ ("s/loopingPath/2") jmp_l
+
+
+'s/loopingPath/1':
+
+ ("s/loopingPath/1/stmt/0") jmp_l
+
+
+'s/loopingPath/2/stmt/0':
+
+ ("counter") getvar  (20) cmp_lt  ("s/loopingPath/2/stmt/0/if_true/22") jmp_l_cond  ("s/loopingPath/2/stmt/0/if_false/23") jmp_l
+
+
+'s/loopingPath/2/stmt/0/if_true/22/blockStatement0/25':
+
+ ("s/loopingPath/1") jmp_l
+
+
+'s/loopingPath/2/stmt/0/if_true/22':
+
+ ("s/loopingPath/2/stmt/0/if_true/22/blockStatement0/25") jmp_l
+
+
+'s/loopingPath/2/stmt/0/if_false/23/blockStatement0/26':
+
+ ("s/loopingPath/3") jmp_l
+
+
+'s/loopingPath/2/stmt/0/if_false/23':
+
+ ("s/loopingPath/2/stmt/0/if_false/23/blockStatement0/26") jmp_l
+
+
+'s/loopingPath/2':
+
+ ("s/loopingPath/2/stmt/0") jmp_l
+
+
+'s/loopingPath/3/stmt/0':
+
+ ("s/functionDefinition/0") jmp_l
+
+
+'s/loopingPath/3':
+
+ ("s/loopingPath/3/stmt/0") jmp_l
+
+
+'s/functionDefinition/0/stmt/0':
+ ("f")  ("subcat/func_enter/2a")  ("e")  (3) construct_relation  (1) makefunction setvar
+ ("s/functionDefinition/0/stmt/1") jmp_l
+
+
+'subcat/func_enter/2a':
+
+ ("subcat/func_body/28") jmp_l
+
+
+'subcat/func_end/27':
+ ret
+
+
+
+'subcat/func_body/28/blockStatement0/29':
+ ("return") getvar  ("e") getvar  ("hah") add  (1) callfunction pop
+ ("subcat/func_end/27") jmp_l
+
+
+'subcat/func_body/28':
+
+ ("subcat/func_body/28/blockStatement0/29") jmp_l
+
+
+'s/functionDefinition/0/stmt/1':
+
+ ("s/functionDefinition/1") jmp_l
+
+
+'s/functionDefinition/0':
+
+ ("s/functionDefinition/0/stmt/0") jmp_l
+
+
+'s/functionDefinition/1/stmt/0':
+ ("log") getvar  ("f") getvar  (0) callfunction  (1) callfunction pop
+ ("s/functionDefinition/1/stmt/1") jmp_l
+
+
+'s/functionDefinition/1/stmt/1':
+ ("log") getvar  ("f") getvar  ("ha")  (1) callfunction  (1) callfunction pop
+ ("s/functionDefinition/1/stmt/2") jmp_l
+
+
+'s/functionDefinition/1/stmt/2':
+
+ ("s/functionDefinition/2") jmp_l
+
+
+'s/functionDefinition/1':
+
+ ("s/functionDefinition/1/stmt/0") jmp_l
+
+
+'s/functionDefinition/2/stmt/0':
+ ("d")  ("subcat/func_enter/2e")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar
+ ("s/functionDefinition/2/stmt/1") jmp_l
+
+
+'subcat/func_enter/2e':
+
+ ("subcat/func_body/2c") jmp_l
+
+
+'subcat/func_end/2b':
+ ret
+
+
+
+'subcat/func_body/2c/blockStatement0/2d':
+ ("return") getvar  ("e") getvar  ("k") getvar  ("oop") add add  (1) callfunction pop
+ ("subcat/func_end/2b") jmp_l
+
+
+'subcat/func_body/2c':
+
+ ("subcat/func_body/2c/blockStatement0/2d") jmp_l
+
+
+'s/functionDefinition/2/stmt/1':
+
+ ("s/functionDefinition/3") jmp_l
+
+
+'s/functionDefinition/2':
+
+ ("s/functionDefinition/2/stmt/0") jmp_l
+
+
+'s/functionDefinition/3/stmt/0':
+ ("log") getvar  ("d") getvar  (0) callfunction  (1) callfunction pop
+ ("s/functionDefinition/3/stmt/1") jmp_l
+
+
+'s/functionDefinition/3/stmt/1':
+ ("log") getvar  ("d") getvar  (2)  (1) callfunction  (1) callfunction pop
+ ("s/functionDefinition/3/stmt/2") jmp_l
+
+
+'s/functionDefinition/3/stmt/2':
+ ("log") getvar  ("d") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
+ ("s/functionDefinition/3/stmt/3") jmp_l
+
+
+'s/functionDefinition/3/stmt/3':
+
+ ("s/functionDefinition/4") jmp_l
+
+
+'s/functionDefinition/3':
+
+ ("s/functionDefinition/3/stmt/0") jmp_l
+
+
+'s/functionDefinition/4/stmt/0':
+
+ ("s/skipWrapping/0") jmp_l
+
+
+'s/functionDefinition/4':
+
+ ("s/functionDefinition/4/stmt/0") jmp_l
+
+
+'s/skipWrapping/0/stmt/0':
+
+ ("s/skipWrapping/2") jmp_l
+
+
+'s/skipWrapping/0':
+
+ ("s/skipWrapping/0/stmt/0") jmp_l
+
+
+'s/skipWrapping/2/stmt/0':
+
+ ("s/dynamicGoto/0") jmp_l
+
+
+'s/skipWrapping/2':
+
+ ("s/skipWrapping/2/stmt/0") jmp_l
+
+
+'s/dynamicGoto/0/stmt/0':
+
+ ("s/")  ("dgoto")  ("Math") getvar  ("floor") getprop  ("Math") getvar  ("random") getprop  (0) callfunction  (2) mul  (1) callfunction add add  ("/0") add jmp_l
+
+
+'s/dynamicGoto/0':
+
+ ("s/dynamicGoto/0/stmt/0") jmp_l
+
+
+'s/dgoto0/0/stmt/0':
+ ("log") getvar  ("dgdg")  (1) callfunction pop
+ ("s/dgoto0/0/stmt/1") jmp_l
+
+
+'s/dgoto0/0/stmt/1':
+
+ ("s/dgotoWorks/0") jmp_l
+
+
+'s/dgoto0/0':
+
+ ("s/dgoto0/0/stmt/0") jmp_l
+
+
+'s/dgoto1/0/stmt/0':
+ ("log") getvar  ("dgdg")  (1) callfunction pop
+ ("s/dgoto1/0/stmt/1") jmp_l
+
+
+'s/dgoto1/0/stmt/1':
+
+ ("s/dgotoWorks/0") jmp_l
+
+
+'s/dgoto1/0':
+
+ ("s/dgoto1/0/stmt/0") jmp_l
+
+
+'s/dgotoWorks/0/stmt/0':
+
+ ("s/undefinedTesting/0") jmp_l
+
+
+'s/dgotoWorks/0':
+
+ ("s/dgotoWorks/0/stmt/0") jmp_l
+
+
+'s/undefinedTesting/0/stmt/0':
+ ("u")  ("undefinedvariablethatwedontknowof") getvar setvar
+ ("s/undefinedTesting/0/stmt/1") jmp_l
+
+
+'s/undefinedTesting/0/stmt/1':
+
+ ("s/undefinedTesting/1") jmp_l
+
+
+'s/undefinedTesting/0':
+
+ ("s/undefinedTesting/0/stmt/0") jmp_l
+
+
+'s/undefinedTesting/1/stmt/0':
+ ("log") getvar  ("u") getvar  (1) callfunction pop
+ ("s/undefinedTesting/1/stmt/1") jmp_l
+
+
+'s/undefinedTesting/1/stmt/1':
+
+ ("s/undefinedTesting/2") jmp_l
+
+
+'s/undefinedTesting/1':
+
+ ("s/undefinedTesting/1/stmt/0") jmp_l
+
+
+'s/undefinedTesting/2/stmt/0':
+ ("log") getvar  ("u") getvar  ("sjkdla") getprop  (1) callfunction pop
+ ("s/undefinedTesting/2/stmt/1") jmp_l
+
+
+'s/undefinedTesting/2/stmt/1':
+
+ ("s/undefinedTesting/3") jmp_l
+
+
+'s/undefinedTesting/2':
+
+ ("s/undefinedTesting/2/stmt/0") jmp_l
+
+
+'s/undefinedTesting/3/stmt/0':
+ ("log") getvar  (undefined)  (1) callfunction pop
+ ("s/undefinedTesting/3/stmt/1") jmp_l
+
+
+'s/undefinedTesting/3/stmt/1':
+
+ ("s/undefinedTesting/4") jmp_l
+
+
+'s/undefinedTesting/3':
+
+ ("s/undefinedTesting/3/stmt/0") jmp_l
+
+
+'s/undefinedTesting/4/stmt/0':
+
+ ("s/mathOps/0") jmp_l
+
+
+'s/undefinedTesting/4':
+
+ ("s/undefinedTesting/4/stmt/0") jmp_l
+
+
+'s/mathOps/0/stmt/0':
+ ("two")  (2) setvar
+ ("s/mathOps/0/stmt/1") jmp_l
+
+
+'s/mathOps/0/stmt/1':
+
+ ("s/mathOps/1") jmp_l
+
+
+'s/mathOps/0':
+
+ ("s/mathOps/0/stmt/0") jmp_l
+
+
+'s/mathOps/1/stmt/0':
+ ("log") getvar  ("two") getvar  (2) cmp_gte  (1) callfunction pop
+ ("s/mathOps/1/stmt/1") jmp_l
+
+
+'s/mathOps/1/stmt/1':
+
+ ("s/mathOps/2") jmp_l
+
+
+'s/mathOps/1':
+
+ ("s/mathOps/1/stmt/0") jmp_l
+
+
+'s/mathOps/2/stmt/0':
+ ("log") getvar  ("two") getvar  (3) cmp_gt  (false) cmp_eq  (1) callfunction pop
+ ("s/mathOps/2/stmt/1") jmp_l
+
+
+'s/mathOps/2/stmt/1':
+
+ ("s/mathOps/3") jmp_l
+
+
+'s/mathOps/2':
+
+ ("s/mathOps/2/stmt/0") jmp_l
+
+
+'s/mathOps/3/stmt/0':
+ ("log") getvar  ("two") getvar  (3) cmp_lt  (1) callfunction pop
+ ("s/mathOps/3/stmt/1") jmp_l
+
+
+'s/mathOps/3/stmt/1':
+
+ ("s/mathOps/4") jmp_l
+
+
+'s/mathOps/3':
+
+ ("s/mathOps/3/stmt/0") jmp_l
+
+
+'s/mathOps/4/stmt/0':
+ ("log") getvar  ("two") getvar  (2) cmp_lte  (1) callfunction pop
+ ("s/mathOps/4/stmt/1") jmp_l
+
+
+'s/mathOps/4/stmt/1':
+
+ ("s/mathOps/5") jmp_l
+
+
+'s/mathOps/4':
+
+ ("s/mathOps/4/stmt/0") jmp_l
+
+
+'s/mathOps/5/stmt/0':
+ ("log") getvar  ("two") getvar  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop
+ ("s/mathOps/5/stmt/1") jmp_l
+
+
+'s/mathOps/5/stmt/1':
+
+ ("s/mathOps/6") jmp_l
+
+
+'s/mathOps/5':
+
+ ("s/mathOps/5/stmt/0") jmp_l
+
+
+'s/mathOps/6/stmt/0':
+ ("log") getvar  ("two") getvar  (2) cmp_eq  (1) callfunction pop
+ ("s/mathOps/6/stmt/1") jmp_l
+
+
+'s/mathOps/6/stmt/1':
+
+ ("s/mathOps/7") jmp_l
+
+
+'s/mathOps/6':
+
+ ("s/mathOps/6/stmt/0") jmp_l
+
+
+'s/mathOps/7/stmt/0':
+ ("log") getvar  ("two") getvar  ("fefe") cmp_neq  (1) callfunction pop
+ ("s/mathOps/7/stmt/1") jmp_l
+
+
+'s/mathOps/7/stmt/1':
+
+ ("s/mathOps/8") jmp_l
+
+
+'s/mathOps/7':
+
+ ("s/mathOps/7/stmt/0") jmp_l
+
+
+'s/mathOps/8/stmt/0':
+ ("log") getvar  ("a")  ("two") getvar construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop
+ ("s/mathOps/8/stmt/1") jmp_l
+
+
+'s/mathOps/8/stmt/1':
+
+ ("s/mathOps/9") jmp_l
+
+
+'s/mathOps/8':
+
+ ("s/mathOps/8/stmt/0") jmp_l
+
+
+'s/mathOps/9/stmt/0':
+ ("log") getvar  ("two") getvar  ("e") add  ("2e") cmp_eq  (1) callfunction pop
+ ("s/mathOps/9/stmt/1") jmp_l
+
+
+'s/mathOps/9/stmt/1':
+
+ ("s/mathOps/10") jmp_l
+
+
+'s/mathOps/9':
+
+ ("s/mathOps/9/stmt/0") jmp_l
+
+
+'s/mathOps/10/stmt/0':
+ ("log") getvar  ("two") getvar  (2) add  (4) cmp_eq  (1) callfunction pop
+ ("s/mathOps/10/stmt/1") jmp_l
+
+
+'s/mathOps/10/stmt/1':
+
+ ("s/mathOps/11") jmp_l
+
+
+'s/mathOps/10':
+
+ ("s/mathOps/10/stmt/0") jmp_l
+
+
+'s/mathOps/11/stmt/0':
+ ("log") getvar  ("two") getvar  (4) div  (0.5) cmp_eq  (1) callfunction pop
+ ("s/mathOps/11/stmt/1") jmp_l
+
+
+'s/mathOps/11/stmt/1':
+
+ ("s/mathOps/12") jmp_l
+
+
+'s/mathOps/11':
+
+ ("s/mathOps/11/stmt/0") jmp_l
+
+
+'s/mathOps/12/stmt/0':
+ ("log") getvar  ("two") getvar  (2) subtr  (0) cmp_eq  (1) callfunction pop
+ ("s/mathOps/12/stmt/1") jmp_l
+
+
+'s/mathOps/12/stmt/1':
+
+ ("s/mathOps/13") jmp_l
+
+
+'s/mathOps/12':
+
+ ("s/mathOps/12/stmt/0") jmp_l
+
+
+'s/mathOps/13/stmt/0':
+ ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1) callfunction pop
+ ("s/mathOps/13/stmt/1") jmp_l
+
+
+'s/mathOps/13/stmt/1':
+
+ ("s/mathOps/14") jmp_l
+
+
+'s/mathOps/13':
+
+ ("s/mathOps/13/stmt/0") jmp_l
+
+
+'s/mathOps/14/stmt/0':
+ ("log") getvar  (3)  ("two") getvar exp  (9) cmp_eq  (1) callfunction pop
+ ("s/mathOps/14/stmt/1") jmp_l
+
+
+'s/mathOps/14/stmt/1':
+
+ ("s/mathOps/15") jmp_l
+
+
+'s/mathOps/14':
+
+ ("s/mathOps/14/stmt/0") jmp_l
+
+
+'s/mathOps/15/stmt/0':
+ ("log") getvar  (3)  ("two") getvar mod  (1) cmp_eq  (1) callfunction pop
+ ("s/mathOps/15/stmt/1") jmp_l
+
+
+'s/mathOps/15/stmt/1':
+
+ ("s/mathOps/16") jmp_l
+
+
+'s/mathOps/15':
+
+ ("s/mathOps/15/stmt/0") jmp_l
+
+
+'s/mathOps/16/stmt/0':
+
+ ("s/done/0") jmp_l
+
+
+'s/mathOps/16':
+
+ ("s/mathOps/16/stmt/0") jmp_l
+
+
+'s/done/0/stmt/0':
+ pass
+ ("s/done/0/end") jmp_l
+
+
+'s/done/0':
+
+ ("s/done/0/stmt/0") jmp_l
+
+
+'s/done/0/end':
+
+ ("s/done/0/stmt/0") yieldto
+
+
+'ENTRY':
+
+ ("s/<init>/0") jmp_l
+

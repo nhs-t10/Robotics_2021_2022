@@ -18,10 +18,14 @@ require("../..").registerTransmutation({
         
         var globalVarnameCounters = { blocks: {}, vars: {} };
         
-        var leafBlocks = getBlocksWithoutChildren(bytecode, cgraph);
+        var rootBlocks = getBlocksWithoutParents(bytecode, invertedCgraph);
         
-        leafBlocks.forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
-        leafBlocks.forEach(x=>insertPhiNodes(x, invertedCgraph, globalVarnameCounters));
+        console.log(rootBlocks);
+        
+        rootBlocks.forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
+        rootBlocks.forEach(x => copyLastSetToChildrenRecursiveNetwork(x.label, cgraph, globalVarnameCounters));
+        
+        Object.values(bytecode).forEach(x=>insertPhiNodes(x, invertedCgraph, globalVarnameCounters));
 
         context.output = bytecode;
         context.status = "pass";
@@ -30,11 +34,12 @@ require("../..").registerTransmutation({
     }
 });
 
-function getBlocksWithoutChildren(bytecode, cgraph) {
-    return Object.values(bytecode).filter(x=>cgraph[x.label].length == 0);
+function getBlocksWithoutParents(bytecode, invertedCgraph) {
+    return Object.values(bytecode).filter(x => invertedCgraph[x.label].length == 0);
 }
 
 function insertPhiNodes(block, invertedCgraph, globalVarnameCounters) {
+    console.log(block.label);
     var varsGotten = globalVarnameCounters.blocks[block.label].firstreads;
     for(var k in varsGotten) {
         var parentSets = getAllParentSetsOfVariable(k, invertedCgraph[block.label], globalVarnameCounters);
@@ -52,11 +57,10 @@ function ssaBlock(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters
     if(hasBeenSsadAlready(block, globalVarnameCounters)) return;
     markAsSsad(block, globalVarnameCounters);
 
-    ensureParentsAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters);
-    copyLastSetInfoFromParents(block, invertedCgraph, globalVarnameCounters);
-
     ssaBytecodeArray(block.code, block.label, cgraph, invertedCgraph, globalVarnameCounters);
     ssaBytecodeArray(block.jumps, block.label, cgraph, invertedCgraph, globalVarnameCounters);
+    
+    ensureChildrenAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters);
 }
 
 
@@ -98,26 +102,36 @@ function getSingleStaticVariableName(blockLabel, plainVariableName, instruction,
     return variableRecord.varname;
 }
 
-function copyLastSetInfoFromParents(block, invertedCgraph, globalVarnameCounters) {
-    if (!globalVarnameCounters.blocks[block.label].lastsets) {
-        globalVarnameCounters.blocks[block.label].lastsets = {};
+function copyLastSetToChildrenRecursiveNetwork(blockLabel, cgraph, globalVarnameCounters) {
+    //recursion protection
+    if (globalVarnameCounters.blocks[blockLabel].hasPhiCopied) return;
+    globalVarnameCounters.blocks[blockLabel].hasPhiCopied = true;
+    
+    copyLastSetInfoToChildren(blockLabel, cgraph, globalVarnameCounters);
+    
+    var children = cgraph[blockLabel];
+    children.forEach(x=>{
+        copyLastSetToChildrenRecursiveNetwork(x, cgraph, globalVarnameCounters);
+    });
+}
+
+function copyLastSetInfoToChildren(blockLabel, cgraph, globalVarnameCounters) {
+    if (!globalVarnameCounters.blocks[blockLabel].lastsets) {
+        globalVarnameCounters.blocks[blockLabel].lastsets = {};
     }
     
-    var thisLastsets = globalVarnameCounters.blocks[block.label].lastsets;
+    var thisLastsets = globalVarnameCounters.blocks[blockLabel].lastsets;
     
-    var parents = invertedCgraph[block.label];
+    var children = cgraph[blockLabel];
     
-    for(var i = 0; i < parents.length; i++) {
-        var parentLastsets = globalVarnameCounters.blocks[parents[i]].lastsets;
-        for(var k in parentLastsets) {
-            if(!thisLastsets[k]) thisLastsets[k] = [];
-            uniquelyPush(thisLastsets[k], parentLastsets[k]);
+    for (var k in thisLastsets) {
+        for(var i = 0; i < children.length; i++) {
+            if (!globalVarnameCounters.blocks[children[i]].lastsets) globalVarnameCounters.blocks[children[i]].lastsets = {};
+            
+            var childLastsets = globalVarnameCounters.blocks[children[i]].lastsets;
+            if (!childLastsets[k]) childLastsets[k] = [];
+            uniquelyPush(childLastsets[k], thisLastsets[k]);
         }
-    }
-    if (block.label == "s/loopingPath/2/stmt/0/if_true/22") {
-        console.log(block.label, thisLastsets.counter);
-        console.log(parents);
-        console.log(parents[0], globalVarnameCounters.blocks[parents[0]])
     }
 }
 
@@ -182,10 +196,10 @@ function markAsSsad(block, globalVarnameCounters) {
     globalVarnameCounters.blocks[block.label].ssa = true;
 }
 
-function ensureParentsAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters) {
-    var parents = invertedCgraph[block.label] || [];
+function ensureChildrenAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters) {
+    var children = cgraph[block.label] || [];
 
-    parents.forEach(x=>ssaBlock(bytecode[x], bytecode, cgraph, invertedCgraph, globalVarnameCounters));
+    children.forEach(x=>ssaBlock(bytecode[x], bytecode, cgraph, invertedCgraph, globalVarnameCounters));
 }
 
 function findVarnameInstructionFromInstr(instr) {

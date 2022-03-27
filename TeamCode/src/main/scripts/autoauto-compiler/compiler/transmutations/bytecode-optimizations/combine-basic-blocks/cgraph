@@ -147,12 +147,6 @@
   "s/skipWrapping/0": [
     "s/dynamicGoto/0"
   ],
-  "s/skipWrapping/1/stmt/0": [
-    "s/skipWrapping/1/end"
-  ],
-  "s/skipWrapping/1/end": [
-    "s/skipWrapping/1/stmt/0"
-  ],
   "s/dynamicGoto/0": [
     "s/<init>/0",
     "s/afterStatements/0",
