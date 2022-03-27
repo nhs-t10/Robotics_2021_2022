@@ -2,25 +2,23 @@ var fs = require("fs");
 
 require("../..").registerTransmutation({
     id: "combine-basic-blocks",
-    requires: ["build-cgraph", "inverted-cgraph", "bc-condense-constants"],
+    requires: ["bc-basic-dead-code-elimination"],
     type: "transmutation",
     run: function(context) {
-        var bytecode = context.inputs["bc-condense-constants"];
-        var cgraph = context.inputs["build-cgraph"];
-        var invertedCGraph = context.inputs["inverted-cgraph"];
+        var dced = context.inputs["bc-basic-dead-code-elimination"];
         
-        var entryBlockNames = findEntries(bytecode, invertedCGraph, cgraph);
+        var entryBlockNames = findEntries(dced.bytecode, dced.invertedCGraph, dced.cgraph);
         
-        entryBlockNames.forEach(x => combineBlocksFrom(x, bytecode, cgraph, invertedCGraph));
+        entryBlockNames.forEach(x => combineBlocksFrom(x, dced.bytecode, dced.cgraph, dced.invertedCGraph));
         
         context.output = {
-            bytecode: bytecode,
-            cgraph: cgraph,
-            invertedCGraph: invertedCGraph
+            bytecode: dced.bytecode,
+            cgraph: dced.cgraph,
+            invertedCGraph: dced.invertedCGraph
         };
         context.status = "pass";
         
-        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(cgraph, null, 2));
+        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(dced.cgraph, null, 2));
     }
 });
 

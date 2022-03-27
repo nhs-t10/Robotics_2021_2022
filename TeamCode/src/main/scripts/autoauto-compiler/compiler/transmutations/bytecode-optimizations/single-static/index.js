@@ -5,10 +5,10 @@ const bytecodeSpec = require("../bytecode-spec");
 
 require("../..").registerTransmutation({
     id: "single-static",
-    requires: ["combine-basic-blocks"],
+    requires: ["bc-basic-dead-code-elimination"],
     type: "transmutation",
     run: function(context) {
-        var bb = context.inputs["combine-basic-blocks"];
+        var bb = context.inputs["bc-basic-dead-code-elimination"];
         var bytecode = bb.bytecode;
         var cgraph = bb.cgraph;
 
@@ -18,7 +18,10 @@ require("../..").registerTransmutation({
         
         var globalVarnameCounters = { blocks: {}, vars: {} };
         
-        Object.values(bytecode).forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
+        var leafBlocks = getBlocksWithoutChildren(bytecode, cgraph);
+        
+        leafBlocks.forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
+        leafBlocks.forEach(x=>insertPhiNodes(x, invertedCgraph, globalVarnameCounters));
 
         context.output = bytecode;
         context.status = "pass";
@@ -27,6 +30,22 @@ require("../..").registerTransmutation({
     }
 });
 
+function getBlocksWithoutChildren(bytecode, cgraph) {
+    return Object.values(bytecode).filter(x=>cgraph[x.label].length == 0);
+}
+
+function insertPhiNodes(block, invertedCgraph, globalVarnameCounters) {
+    var varsGotten = globalVarnameCounters.blocks[block.label].firstreads;
+    for(var k in varsGotten) {
+        var parentSets = getAllParentSetsOfVariable(k, invertedCgraph[block.label], globalVarnameCounters);
+        if(parentSets.length <= 1) parentSets = parentSets[0];
+        else parentSets = {__phi: parentSets};
+        
+        varsGotten[k].forEach(x=>x.__value = parentSets);
+    }
+    
+}
+
 function ssaBlock(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters) {
     initVariableCounter(block, globalVarnameCounters);
     
@@ -34,6 +53,7 @@ function ssaBlock(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters
     markAsSsad(block, globalVarnameCounters);
 
     ensureParentsAreSsad(block, bytecode, cgraph, invertedCgraph, globalVarnameCounters);
+    copyLastSetInfoFromParents(block, invertedCgraph, globalVarnameCounters);
 
     ssaBytecodeArray(block.code, block.label, cgraph, invertedCgraph, globalVarnameCounters);
     ssaBytecodeArray(block.jumps, block.label, cgraph, invertedCgraph, globalVarnameCounters);
@@ -52,9 +72,9 @@ function ssaBytecodeInstruction(instr, blockLabel, cgraph, invertedCgraph, globa
     if(isVariableAddressingInstr(instr)) {
         var varInstr = findVarnameInstructionFromInstr(instr);
 
-        if(isVariableSettingInstr(instr)) incrementSingleStaticVariable(blockLabel, varInstr.__value, globalVarnameCounters);
+        if (isVariableSettingInstr(instr)) incrementSingleStaticVariable(blockLabel, varInstr.__value, globalVarnameCounters);
 
-        varInstr.__value = getSingleStaticVariableName(blockLabel, varInstr.__value, globalVarnameCounters, varInstr);
+        varInstr.__value = getSingleStaticVariableName(blockLabel, varInstr.__value, varInstr, globalVarnameCounters);
     }
 }
 
@@ -64,9 +84,11 @@ function incrementSingleStaticVariable(blockLabel, plainVariableName, globalVarn
     globalVarnameCounters.vars[plainVariableName]++;
     variableRecord.blockScopeCounter++;
     variableRecord.varname = plainVariableName + "@" + globalVarnameCounters.vars[plainVariableName];
+    
+    setLastSetNameForLaterPhi(blockLabel, plainVariableName, variableRecord.varname, globalVarnameCounters);
 }
 
-function getSingleStaticVariableName(blockLabel, plainVariableName, globalVarnameCounters, instruction) {
+function getSingleStaticVariableName(blockLabel, plainVariableName, instruction, globalVarnameCounters) {
     var variableRecord = getVariableSSARecord(blockLabel, plainVariableName, globalVarnameCounters);
     
     if (variableRecord.blockScopeCounter == 0) {
@@ -74,6 +96,48 @@ function getSingleStaticVariableName(blockLabel, plainVariableName, globalVarnam
     }
 
     return variableRecord.varname;
+}
+
+function copyLastSetInfoFromParents(block, invertedCgraph, globalVarnameCounters) {
+    if (!globalVarnameCounters.blocks[block.label].lastsets) {
+        globalVarnameCounters.blocks[block.label].lastsets = {};
+    }
+    
+    var thisLastsets = globalVarnameCounters.blocks[block.label].lastsets;
+    
+    var parents = invertedCgraph[block.label];
+    
+    for(var i = 0; i < parents.length; i++) {
+        var parentLastsets = globalVarnameCounters.blocks[parents[i]].lastsets;
+        for(var k in parentLastsets) {
+            if(!thisLastsets[k]) thisLastsets[k] = [];
+            uniquelyPush(thisLastsets[k], parentLastsets[k]);
+        }
+    }
+    if (block.label == "s/loopingPath/2/stmt/0/if_true/22") {
+        console.log(block.label, thisLastsets.counter);
+        console.log(parents);
+        console.log(parents[0], globalVarnameCounters.blocks[parents[0]])
+    }
+}
+
+function getAllParentSetsOfVariable(variable, parentLabels, globalVarnameCounters) {
+    var sets = [];
+    
+    for(var i = 0; i < parentLabels.length; i++) {
+        sets.push(globalVarnameCounters.blocks[parentLabels[i]].lastsets[variable] || []);
+        
+    }
+    //console.log(variable, parentLabels, sets.flat(1));
+    return sets.flat(1);
+}
+
+function setLastSetNameForLaterPhi(blockLabel, plainVariableName, vName, globalVarnameCounters) {
+    if (!globalVarnameCounters.blocks[blockLabel].lastsets) {
+        globalVarnameCounters.blocks[blockLabel].lastsets = {};
+    }
+    
+    globalVarnameCounters.blocks[blockLabel].lastsets[plainVariableName] = [vName];
 }
 
 function setFirstReadInstructionForLaterPhi(blockLabel, plainVariableName, instruction, globalVarnameCounters) {
@@ -148,4 +212,10 @@ function isVariableSettingInstr(instr) {
 
 function uniqueValues(arr) {
     return Array.from(new Set(arr));
+}
+
+function uniquelyPush(arr, valuesToPush) {
+    for(var i = 0; i < valuesToPush.length; i++) {
+        if(!arr.includes(valuesToPush[i])) arr.push(valuesToPush[i]);
+    }
 }

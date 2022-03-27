@@ -1,3 +1,5 @@
+//https://github.com/zawn/android-gradle-plugin-src/blob/master/sdk-common/src/main/java/com/android/ide/common/blame/MessageJsonSerializer.java
+
 module.exports = {
     sendPlainMessage: sendPlainMessage,
     sendTreeLocationMessage: sendTreeLocationMessage,
@@ -18,7 +20,35 @@ function sendWarn(msgStr) {
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
-    if(logLevel <= l) console.error("AGPBI: " + JSON.stringify(msg));
+    if (logLevel <= l || l === undefined) formatAndSendJsonFormat(msg);
+}
+
+function formatAndSendJsonFormat(msg) {
+    msg.original = humanReadableFormat(msg);
+    console.error("AGPBI: " + JSON.stringify(msg));
+}
+
+function formatAndSendHumanyFormat(msg) {
+    console.error(humanReadableFormat(msg));
+}
+
+function humanReadableFormat(msg) {
+    var mForm = "";
+
+    if (msg.sources[0]) {
+        mForm += msg.sources[0].file + ":";
+        if (msg.sources[0].location) {
+            mForm += msg.sources[0].location.startLine + ":";
+        }
+        mForm += " ";
+    }
+
+    mForm += msg.kind.toLowerCase() + ": "
+
+    mForm += msg.text + ":\n" + (msg.original || "");
+    mForm += "\n ^\n";
+
+    return mForm;
 }
 
 function sendTreeLocationMessage(res, file, defaultKind) {
@@ -56,7 +86,6 @@ function massageResIntoMessage(res, file, defaultKind) {
         }];
     }
     if(res.location && !res.sources[0].location) {
-        res.original = `Line ${res.location.start.line}\n\n${res.original}`;
         res.sources[0].location = {
             startLine: res.location.start.line,
             startColumn: res.location.start.column,

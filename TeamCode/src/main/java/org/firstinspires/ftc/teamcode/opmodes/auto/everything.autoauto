@@ -8,7 +8,15 @@ $
 */
 
 //this is an unlabeled statepath. It's the first statepath!
-log("ULS!"), goto ifStatements;
+log("ULS!"), goto afterStatements;
+
+#afterStatements:
+    after 2s next;
+    //meters, not minutes!
+    after 40m next;
+    after 30deg next;
+    after 3cm next;
+    after 2ly goto ifStatements
 
 #ifStatements:
     if(true) { log("this works like java"), next };

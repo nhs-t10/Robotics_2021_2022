@@ -22,13 +22,13 @@ function buildGraphFrom(bcode) {
     
     var r = {};
     for(var i = 0; i < keys.length; i++) {
-        r[keys[i]] = findBlockTargets(bcode[keys[i]], stateKeys);
+        r[keys[i]] = findBlockTargets(bcode[keys[i]], stateKeys, keys);
     }
     
     return r;
 }
 
-function findBlockTargets(block, allBlockNames) {
+function findBlockTargets(block, allStateBlockLabels, allBlockLabels) {
     
     var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code, bytecodeSpec.yieldto.code];
     
@@ -45,10 +45,35 @@ function findBlockTargets(block, allBlockNames) {
 
         var jumpArgs = block.jumps[i].args;
 
-        var jmpTrgt = jumpArgs[jumpArgs.length - 1];
-        if(!jmpTrgt.__value) res = res.concat(allBlockNames);
-        else res.push(jmpTrgt.__value);
+        var staticJmpTrgt = jumpArgs[jumpArgs.length - 1].__value;
+        
+        //use slice to make a clone. That way, `allStateBlockLabels` won't be shared across different jump targets.
+        var jumpTargets = staticJmpTrgt ? [staticJmpTrgt] : allStateBlockLabels.slice();
+        
+        checkJumpTargetsExist(jumpTargets, allBlockLabels, block.jumps[i].location);
+        
+        res = res.concat(jumpTargets);
     }
     
-    return Array.from(new Set(res));
+    var uniqdTargets = Array.from(new Set(res));
+    return uniqdTargets;
+}
+
+function checkJumpTargetsExist(targets, validTargets, reportingLocation) {    
+    var isValid = true, invalidCause;
+    for(var i = 0; i < targets.length; i++) {
+        if(validTargets.indexOf(targets[i]) == -1) {
+            isValid = false;
+            invalidCause = targets[i];
+            break;
+        }
+    }
+    
+    if(!isValid) {
+        throw {
+            kind: "ERROR",
+            text: "Unable to find `" + invalidCause + "` as a jump-location. Please make sure that you didn't make a typo in your 'goto' statement!",
+            location: reportingLocation
+        }
+    }
 }

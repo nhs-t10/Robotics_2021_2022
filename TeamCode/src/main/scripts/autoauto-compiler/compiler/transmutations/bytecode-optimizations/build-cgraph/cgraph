@@ -3,7 +3,7 @@
     "s/<init>/0/stmt/1"
   ],
   "s/<init>/0/stmt/1": [
-    "s/ifStatements/0"
+    "s/afterStatements/0"
   ],
   "s/<init>/0": [
     "s/<init>/0/stmt/0"
@@ -11,24 +11,154 @@
   "s/<init>/0/end": [
     "s/<init>/0/stmt/0"
   ],
-  "s/ifStatements/0/stmt/0/if_end/3": [
+  "s/afterStatements/0/stmt/0/after_if_finished_body/3": [
+    "s/afterStatements/1"
+  ],
+  "{+STATE_INIT  @temp2": [
+    "s/afterStatements/0/stmt/0"
+  ],
+  "s/afterStatements/0/stmt/0": [
+    "s/afterStatements/0/stmt/0/after_init/1",
+    "s/afterStatements/0/stmt/0/after_checking/2"
+  ],
+  "s/afterStatements/0/stmt/0/after_init/1": [
+    "s/afterStatements/0/stmt/0/after_checking/2"
+  ],
+  "s/afterStatements/0/stmt/0/after_checking/2": [
+    "s/afterStatements/0/stmt/0/after_if_finished_body/3",
+    "s/afterStatements/0/stmt/0/after_done/4"
+  ],
+  "s/afterStatements/0/stmt/0/after_done/4": [
+    "s/afterStatements/0/end"
+  ],
+  "s/afterStatements/0": [
+    "{+STATE_INIT  @temp2"
+  ],
+  "s/afterStatements/0/end": [
+    "s/afterStatements/0/stmt/0"
+  ],
+  "s/afterStatements/1/stmt/0/after_if_finished_body/7": [
+    "s/afterStatements/2"
+  ],
+  "{+STATE_INIT  @temp5": [
+    "s/afterStatements/1/stmt/0"
+  ],
+  "s/afterStatements/1/stmt/0": [
+    "s/afterStatements/1/stmt/0/after_init/5",
+    "s/afterStatements/1/stmt/0/after_checking/6"
+  ],
+  "s/afterStatements/1/stmt/0/after_init/5": [
+    "s/afterStatements/1/stmt/0/after_checking/6"
+  ],
+  "s/afterStatements/1/stmt/0/after_checking/6": [
+    "s/afterStatements/1/stmt/0/after_if_finished_body/7",
+    "s/afterStatements/1/stmt/0/after_done/8"
+  ],
+  "s/afterStatements/1/stmt/0/after_done/8": [
+    "s/afterStatements/1/end"
+  ],
+  "s/afterStatements/1": [
+    "{+STATE_INIT  @temp5"
+  ],
+  "s/afterStatements/1/end": [
+    "s/afterStatements/1/stmt/0"
+  ],
+  "s/afterStatements/2/stmt/0/after_if_finished_body/b": [
+    "s/afterStatements/3"
+  ],
+  "{+STATE_INIT  @temp8": [
+    "s/afterStatements/2/stmt/0"
+  ],
+  "s/afterStatements/2/stmt/0": [
+    "s/afterStatements/2/stmt/0/after_init/9",
+    "s/afterStatements/2/stmt/0/after_checking/a"
+  ],
+  "s/afterStatements/2/stmt/0/after_init/9": [
+    "s/afterStatements/2/stmt/0/after_checking/a"
+  ],
+  "s/afterStatements/2/stmt/0/after_checking/a": [
+    "s/afterStatements/2/stmt/0/after_if_finished_body/b",
+    "s/afterStatements/2/stmt/0/after_done/c"
+  ],
+  "s/afterStatements/2/stmt/0/after_done/c": [
+    "s/afterStatements/2/end"
+  ],
+  "s/afterStatements/2": [
+    "{+STATE_INIT  @temp8"
+  ],
+  "s/afterStatements/2/end": [
+    "s/afterStatements/2/stmt/0"
+  ],
+  "s/afterStatements/3/stmt/0/after_if_finished_body/f": [
+    "s/afterStatements/4"
+  ],
+  "{+STATE_INIT  @temp11": [
+    "s/afterStatements/3/stmt/0"
+  ],
+  "s/afterStatements/3/stmt/0": [
+    "s/afterStatements/3/stmt/0/after_init/d",
+    "s/afterStatements/3/stmt/0/after_checking/e"
+  ],
+  "s/afterStatements/3/stmt/0/after_init/d": [
+    "s/afterStatements/3/stmt/0/after_checking/e"
+  ],
+  "s/afterStatements/3/stmt/0/after_checking/e": [
+    "s/afterStatements/3/stmt/0/after_if_finished_body/f",
+    "s/afterStatements/3/stmt/0/after_done/10"
+  ],
+  "s/afterStatements/3/stmt/0/after_done/10": [
+    "s/afterStatements/3/end"
+  ],
+  "s/afterStatements/3": [
+    "{+STATE_INIT  @temp11"
+  ],
+  "s/afterStatements/3/end": [
+    "s/afterStatements/3/stmt/0"
+  ],
+  "s/afterStatements/4/stmt/0/after_if_finished_body/13": [
+    "s/ifStatements/0"
+  ],
+  "{+STATE_INIT  @temp14": [
+    "s/afterStatements/4/stmt/0"
+  ],
+  "s/afterStatements/4/stmt/0": [
+    "s/afterStatements/4/stmt/0/after_init/11",
+    "s/afterStatements/4/stmt/0/after_checking/12"
+  ],
+  "s/afterStatements/4/stmt/0/after_init/11": [
+    "s/afterStatements/4/stmt/0/after_checking/12"
+  ],
+  "s/afterStatements/4/stmt/0/after_checking/12": [
+    "s/afterStatements/4/stmt/0/after_if_finished_body/13",
+    "s/afterStatements/4/stmt/0/after_done/14"
+  ],
+  "s/afterStatements/4/stmt/0/after_done/14": [
+    "s/afterStatements/4/end"
+  ],
+  "s/afterStatements/4": [
+    "{+STATE_INIT  @temp14"
+  ],
+  "s/afterStatements/4/end": [
+    "s/afterStatements/4/stmt/0"
+  ],
+  "s/ifStatements/0/stmt/0/if_end/17": [
     "s/ifStatements/0/end"
   ],
   "s/ifStatements/0/stmt/0": [
-    "s/ifStatements/0/stmt/0/if_true/1",
-    "s/ifStatements/0/stmt/0/if_false/2"
+    "s/ifStatements/0/stmt/0/if_true/15",
+    "s/ifStatements/0/stmt/0/if_false/16"
   ],
-  "s/ifStatements/0/stmt/0/if_true/1/blockStatement0/4": [
-    "s/ifStatements/0/stmt/0/if_true/1/blockStatement1/5"
+  "s/ifStatements/0/stmt/0/if_true/15/blockStatement0/18": [
+    "s/ifStatements/0/stmt/0/if_true/15/blockStatement1/19"
   ],
-  "s/ifStatements/0/stmt/0/if_true/1/blockStatement1/5": [
+  "s/ifStatements/0/stmt/0/if_true/15/blockStatement1/19": [
     "s/ifStatements/1"
   ],
-  "s/ifStatements/0/stmt/0/if_true/1": [
-    "s/ifStatements/0/stmt/0/if_true/1/blockStatement0/4"
+  "s/ifStatements/0/stmt/0/if_true/15": [
+    "s/ifStatements/0/stmt/0/if_true/15/blockStatement0/18"
   ],
-  "s/ifStatements/0/stmt/0/if_false/2": [
-    "s/ifStatements/0/stmt/0/if_end/3"
+  "s/ifStatements/0/stmt/0/if_false/16": [
+    "s/ifStatements/0/stmt/0/if_end/17"
   ],
   "s/ifStatements/0": [
     "s/ifStatements/0/stmt/0"
@@ -36,18 +166,18 @@
   "s/ifStatements/0/end": [
     "s/ifStatements/0/stmt/0"
   ],
-  "s/ifStatements/1/stmt/0/if_end/8": [
+  "s/ifStatements/1/stmt/0/if_end/1c": [
     "s/ifStatements/1/stmt/1"
   ],
   "s/ifStatements/1/stmt/0": [
-    "s/ifStatements/1/stmt/0/if_true/6",
-    "s/ifStatements/1/stmt/0/if_false/7"
+    "s/ifStatements/1/stmt/0/if_true/1a",
+    "s/ifStatements/1/stmt/0/if_false/1b"
   ],
-  "s/ifStatements/1/stmt/0/if_true/6": [
-    "s/ifStatements/1/stmt/0/if_end/8"
+  "s/ifStatements/1/stmt/0/if_true/1a": [
+    "s/ifStatements/1/stmt/0/if_end/1c"
   ],
-  "s/ifStatements/1/stmt/0/if_false/7": [
-    "s/ifStatements/1/stmt/0/if_end/8"
+  "s/ifStatements/1/stmt/0/if_false/1b": [
+    "s/ifStatements/1/stmt/0/if_end/1c"
   ],
   "s/ifStatements/1/stmt/1": [
     "s/ifStatements/2"
@@ -58,24 +188,24 @@
   "s/ifStatements/1/end": [
     "s/ifStatements/1/stmt/0"
   ],
-  "s/ifStatements/2/stmt/0/if_end/b": [
+  "s/ifStatements/2/stmt/0/if_end/1f": [
     "s/ifStatements/2/end"
   ],
   "s/ifStatements/2/stmt/0": [
-    "s/ifStatements/2/stmt/0/if_true/9",
-    "s/ifStatements/2/stmt/0/if_false/a"
+    "s/ifStatements/2/stmt/0/if_true/1d",
+    "s/ifStatements/2/stmt/0/if_false/1e"
   ],
-  "s/ifStatements/2/stmt/0/if_true/9/blockStatement0/c": [
-    "s/ifStatements/2/stmt/0/if_end/b"
+  "s/ifStatements/2/stmt/0/if_true/1d/blockStatement0/20": [
+    "s/ifStatements/2/stmt/0/if_end/1f"
   ],
-  "s/ifStatements/2/stmt/0/if_true/9": [
-    "s/ifStatements/2/stmt/0/if_true/9/blockStatement0/c"
+  "s/ifStatements/2/stmt/0/if_true/1d": [
+    "s/ifStatements/2/stmt/0/if_true/1d/blockStatement0/20"
   ],
-  "s/ifStatements/2/stmt/0/if_false/a/blockStatement0/d": [
+  "s/ifStatements/2/stmt/0/if_false/1e/blockStatement0/21": [
     "s/ifStatements/3"
   ],
-  "s/ifStatements/2/stmt/0/if_false/a": [
-    "s/ifStatements/2/stmt/0/if_false/a/blockStatement0/d"
+  "s/ifStatements/2/stmt/0/if_false/1e": [
+    "s/ifStatements/2/stmt/0/if_false/1e/blockStatement0/21"
   ],
   "s/ifStatements/2": [
     "s/ifStatements/2/stmt/0"
@@ -203,24 +333,24 @@
   "s/loopingPath/1/end": [
     "s/loopingPath/1/stmt/0"
   ],
-  "s/loopingPath/2/stmt/0/if_end/10": [
+  "s/loopingPath/2/stmt/0/if_end/24": [
     "s/loopingPath/2/end"
   ],
   "s/loopingPath/2/stmt/0": [
-    "s/loopingPath/2/stmt/0/if_true/e",
-    "s/loopingPath/2/stmt/0/if_false/f"
+    "s/loopingPath/2/stmt/0/if_true/22",
+    "s/loopingPath/2/stmt/0/if_false/23"
   ],
-  "s/loopingPath/2/stmt/0/if_true/e/blockStatement0/11": [
+  "s/loopingPath/2/stmt/0/if_true/22/blockStatement0/25": [
     "s/loopingPath/1"
   ],
-  "s/loopingPath/2/stmt/0/if_true/e": [
-    "s/loopingPath/2/stmt/0/if_true/e/blockStatement0/11"
+  "s/loopingPath/2/stmt/0/if_true/22": [
+    "s/loopingPath/2/stmt/0/if_true/22/blockStatement0/25"
   ],
-  "s/loopingPath/2/stmt/0/if_false/f/blockStatement0/12": [
+  "s/loopingPath/2/stmt/0/if_false/23/blockStatement0/26": [
     "s/loopingPath/3"
   ],
-  "s/loopingPath/2/stmt/0/if_false/f": [
-    "s/loopingPath/2/stmt/0/if_false/f/blockStatement0/12"
+  "s/loopingPath/2/stmt/0/if_false/23": [
+    "s/loopingPath/2/stmt/0/if_false/23/blockStatement0/26"
   ],
   "s/loopingPath/2": [
     "s/loopingPath/2/stmt/0"
@@ -240,15 +370,15 @@
   "s/functionDefinition/0/stmt/0": [
     "s/functionDefinition/0/stmt/1"
   ],
-  "subcat/func_enter/16": [
-    "subcat/func_body/14"
+  "subcat/func_enter/2a": [
+    "subcat/func_body/28"
   ],
-  "subcat/func_end/13": [],
-  "subcat/func_body/14/blockStatement0/15": [
-    "subcat/func_end/13"
+  "subcat/func_end/27": [],
+  "subcat/func_body/28/blockStatement0/29": [
+    "subcat/func_end/27"
   ],
-  "subcat/func_body/14": [
-    "subcat/func_body/14/blockStatement0/15"
+  "subcat/func_body/28": [
+    "subcat/func_body/28/blockStatement0/29"
   ],
   "s/functionDefinition/0/stmt/1": [
     "s/functionDefinition/1"
@@ -277,15 +407,15 @@
   "s/functionDefinition/2/stmt/0": [
     "s/functionDefinition/2/stmt/1"
   ],
-  "subcat/func_enter/1a": [
-    "subcat/func_body/18"
+  "subcat/func_enter/2e": [
+    "subcat/func_body/2c"
   ],
-  "subcat/func_end/17": [],
-  "subcat/func_body/18/blockStatement0/19": [
-    "subcat/func_end/17"
+  "subcat/func_end/2b": [],
+  "subcat/func_body/2c/blockStatement0/2d": [
+    "subcat/func_end/2b"
   ],
-  "subcat/func_body/18": [
-    "subcat/func_body/18/blockStatement0/19"
+  "subcat/func_body/2c": [
+    "subcat/func_body/2c/blockStatement0/2d"
   ],
   "s/functionDefinition/2/stmt/1": [
     "s/functionDefinition/3"
@@ -352,6 +482,7 @@
   ],
   "s/dynamicGoto/0/stmt/0": [
     "s/<init>/0",
+    "s/afterStatements/0",
     "s/ifStatements/0",
     "s/letStatements/0",
     "s/loopingPath/0",

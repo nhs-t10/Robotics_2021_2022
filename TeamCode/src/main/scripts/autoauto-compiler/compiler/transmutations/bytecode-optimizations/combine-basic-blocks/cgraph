@@ -1,198 +1,161 @@
 {
-  "s/<init>/0/stmt/0": [
+  "s/<init>/0": [
+    "s/afterStatements/0"
+  ],
+  "s/afterStatements/0/stmt/0/after_if_finished_body/3": [
+    "s/afterStatements/1/stmt/0"
+  ],
+  "s/afterStatements/0/stmt/0": [
+    "s/afterStatements/0/stmt/0/after_init/1",
+    "s/afterStatements/0/stmt/0/after_checking/2"
+  ],
+  "s/afterStatements/0/stmt/0/after_init/1": [
+    "s/afterStatements/0/stmt/0/after_checking/2"
+  ],
+  "s/afterStatements/0/stmt/0/after_checking/2": [
+    "s/afterStatements/0/stmt/0/after_if_finished_body/3",
+    "s/afterStatements/0/stmt/0/after_done/4"
+  ],
+  "s/afterStatements/0/stmt/0/after_done/4": [
+    "s/afterStatements/0/stmt/0"
+  ],
+  "s/afterStatements/0": [
+    "s/afterStatements/0/stmt/0"
+  ],
+  "s/afterStatements/1/stmt/0/after_if_finished_body/7": [
+    "s/afterStatements/2/stmt/0"
+  ],
+  "s/afterStatements/1/stmt/0": [
+    "s/afterStatements/1/stmt/0/after_init/5",
+    "s/afterStatements/1/stmt/0/after_checking/6"
+  ],
+  "s/afterStatements/1/stmt/0/after_init/5": [
+    "s/afterStatements/1/stmt/0/after_checking/6"
+  ],
+  "s/afterStatements/1/stmt/0/after_checking/6": [
+    "s/afterStatements/1/stmt/0/after_if_finished_body/7",
+    "s/afterStatements/1/stmt/0/after_done/8"
+  ],
+  "s/afterStatements/1/stmt/0/after_done/8": [
+    "s/afterStatements/1/stmt/0"
+  ],
+  "s/afterStatements/2/stmt/0/after_if_finished_body/b": [
+    "s/afterStatements/3/stmt/0"
+  ],
+  "s/afterStatements/2/stmt/0": [
+    "s/afterStatements/2/stmt/0/after_init/9",
+    "s/afterStatements/2/stmt/0/after_checking/a"
+  ],
+  "s/afterStatements/2/stmt/0/after_init/9": [
+    "s/afterStatements/2/stmt/0/after_checking/a"
+  ],
+  "s/afterStatements/2/stmt/0/after_checking/a": [
+    "s/afterStatements/2/stmt/0/after_if_finished_body/b",
+    "s/afterStatements/2/stmt/0/after_done/c"
+  ],
+  "s/afterStatements/2/stmt/0/after_done/c": [
+    "s/afterStatements/2/stmt/0"
+  ],
+  "s/afterStatements/3/stmt/0/after_if_finished_body/f": [
+    "s/afterStatements/4/stmt/0"
+  ],
+  "s/afterStatements/3/stmt/0": [
+    "s/afterStatements/3/stmt/0/after_init/d",
+    "s/afterStatements/3/stmt/0/after_checking/e"
+  ],
+  "s/afterStatements/3/stmt/0/after_init/d": [
+    "s/afterStatements/3/stmt/0/after_checking/e"
+  ],
+  "s/afterStatements/3/stmt/0/after_checking/e": [
+    "s/afterStatements/3/stmt/0/after_if_finished_body/f",
+    "s/afterStatements/3/stmt/0/after_done/10"
+  ],
+  "s/afterStatements/3/stmt/0/after_done/10": [
+    "s/afterStatements/3/stmt/0"
+  ],
+  "s/afterStatements/4/stmt/0/after_if_finished_body/13": [
     "s/ifStatements/0"
   ],
-  "s/<init>/0": [
-    "s/<init>/0/stmt/0"
+  "s/afterStatements/4/stmt/0": [
+    "s/afterStatements/4/stmt/0/after_init/11",
+    "s/afterStatements/4/stmt/0/after_checking/12"
   ],
-  "s/<init>/0/end": [
-    "s/<init>/0/stmt/0"
+  "s/afterStatements/4/stmt/0/after_init/11": [
+    "s/afterStatements/4/stmt/0/after_checking/12"
+  ],
+  "s/afterStatements/4/stmt/0/after_checking/12": [
+    "s/afterStatements/4/stmt/0/after_if_finished_body/13",
+    "s/afterStatements/4/stmt/0/after_done/14"
+  ],
+  "s/afterStatements/4/stmt/0/after_done/14": [
+    "s/afterStatements/4/stmt/0"
   ],
   "s/ifStatements/0/stmt/0": [
-    "s/ifStatements/0/stmt/0/if_true/1",
-    "s/ifStatements/0/stmt/0/if_false/2"
+    "s/ifStatements/0/stmt/0/if_true/15",
+    "s/ifStatements/0/stmt/0/if_false/16"
   ],
-  "s/ifStatements/0/stmt/0/if_true/1": [
-    "s/ifStatements/1/stmt/0"
+  "s/ifStatements/0/stmt/0/if_true/15": [
+    "s/ifStatements/1/stmt/0/if_true/1a",
+    "s/ifStatements/1/stmt/0/if_false/1b"
   ],
-  "s/ifStatements/0/stmt/0/if_false/2": [
+  "s/ifStatements/0/stmt/0/if_false/16": [
     "s/ifStatements/0/stmt/0"
   ],
   "s/ifStatements/0": [
     "s/ifStatements/0/stmt/0"
   ],
-  "s/ifStatements/1/stmt/0/if_end/8": [
+  "s/ifStatements/1/stmt/0/if_end/1c": [
     "s/ifStatements/2/stmt/0"
   ],
-  "s/ifStatements/1/stmt/0": [
-    "s/ifStatements/1/stmt/0/if_true/6",
-    "s/ifStatements/1/stmt/0/if_false/7"
+  "s/ifStatements/1/stmt/0/if_true/1a": [
+    "s/ifStatements/1/stmt/0/if_end/1c"
   ],
-  "s/ifStatements/1/stmt/0/if_true/6": [
-    "s/ifStatements/1/stmt/0/if_end/8"
-  ],
-  "s/ifStatements/1/stmt/0/if_false/7": [
-    "s/ifStatements/1/stmt/0/if_end/8"
-  ],
-  "s/ifStatements/1/end": [
-    "s/ifStatements/1/stmt/0"
+  "s/ifStatements/1/stmt/0/if_false/1b": [
+    "s/ifStatements/1/stmt/0/if_end/1c"
   ],
   "s/ifStatements/2/stmt/0": [
-    "s/ifStatements/2/stmt/0/if_true/9",
-    "s/ifStatements/2/stmt/0/if_false/a"
+    "s/ifStatements/2/stmt/0/if_true/1d",
+    "s/ifStatements/2/stmt/0/if_false/1e"
   ],
-  "s/ifStatements/2/stmt/0/if_true/9": [
+  "s/ifStatements/2/stmt/0/if_true/1d": [
     "s/ifStatements/2/stmt/0"
   ],
-  "s/ifStatements/2/stmt/0/if_false/a": [
-    "s/ifStatements/3/stmt/0"
-  ],
-  "s/ifStatements/3/stmt/0": [
+  "s/ifStatements/2/stmt/0/if_false/1e": [
     "s/letStatements/0"
   ],
-  "s/ifStatements/3/end": [
-    "s/ifStatements/3/stmt/0"
-  ],
-  "s/letStatements/0/stmt/0": [
-    "s/letStatements/1/stmt/0"
-  ],
   "s/letStatements/0": [
-    "s/letStatements/0/stmt/0"
-  ],
-  "s/letStatements/0/end": [
-    "s/letStatements/0/stmt/0"
-  ],
-  "s/letStatements/1/stmt/0": [
-    "s/letStatements/2/stmt/0"
-  ],
-  "s/letStatements/1/end": [
-    "s/letStatements/1/stmt/0"
-  ],
-  "s/letStatements/2/stmt/0": [
-    "s/letStatements/3/stmt/0"
-  ],
-  "s/letStatements/2/end": [
-    "s/letStatements/2/stmt/0"
-  ],
-  "s/letStatements/3/stmt/0": [
-    "s/letStatements/4/stmt/0"
-  ],
-  "s/letStatements/3/end": [
-    "s/letStatements/3/stmt/0"
-  ],
-  "s/letStatements/4/stmt/0": [
-    "s/letStatements/5/stmt/0"
-  ],
-  "s/letStatements/4/end": [
-    "s/letStatements/4/stmt/0"
-  ],
-  "s/letStatements/5/stmt/0": [
-    "s/letStatements/6/stmt/0"
-  ],
-  "s/letStatements/5/end": [
-    "s/letStatements/5/stmt/0"
-  ],
-  "s/letStatements/6/stmt/0": [
     "s/loopingPath/0"
   ],
-  "s/letStatements/6/end": [
-    "s/letStatements/6/stmt/0"
-  ],
-  "s/loopingPath/0/stmt/0": [
-    "s/loopingPath/1"
-  ],
   "s/loopingPath/0": [
-    "s/loopingPath/0/stmt/0"
-  ],
-  "s/loopingPath/0/end": [
-    "s/loopingPath/0/stmt/0"
-  ],
-  "s/loopingPath/1/stmt/0": [
-    "s/loopingPath/2/stmt/0"
+    "s/loopingPath/1"
   ],
   "s/loopingPath/1": [
-    "s/loopingPath/1/stmt/0"
+    "s/loopingPath/2/stmt/0/if_true/22",
+    "s/loopingPath/2/stmt/0/if_false/23"
   ],
-  "s/loopingPath/1/end": [
-    "s/loopingPath/1/stmt/0"
-  ],
-  "s/loopingPath/2/stmt/0/if_end/10": [
-    "s/loopingPath/2/stmt/0"
-  ],
-  "s/loopingPath/2/stmt/0": [
-    "s/loopingPath/2/stmt/0/if_true/e",
-    "s/loopingPath/2/stmt/0/if_false/f"
-  ],
-  "s/loopingPath/2/stmt/0/if_true/e": [
+  "s/loopingPath/2/stmt/0/if_true/22": [
     "s/loopingPath/1"
   ],
-  "s/loopingPath/2/stmt/0/if_false/f": [
-    "s/loopingPath/3/stmt/0"
-  ],
-  "s/loopingPath/3/stmt/0": [
+  "s/loopingPath/2/stmt/0/if_false/23": [
     "s/functionDefinition/0"
   ],
-  "s/loopingPath/3/end": [
-    "s/loopingPath/3/stmt/0"
-  ],
-  "s/functionDefinition/0/stmt/0": [
-    "s/functionDefinition/1/stmt/0"
-  ],
-  "subcat/func_enter/16": [],
+  "subcat/func_enter/2a": [],
   "s/functionDefinition/0": [
-    "s/functionDefinition/0/stmt/0"
-  ],
-  "s/functionDefinition/0/end": [
-    "s/functionDefinition/0/stmt/0"
-  ],
-  "s/functionDefinition/1/stmt/0": [
-    "s/functionDefinition/2/stmt/0"
-  ],
-  "s/functionDefinition/1/end": [
-    "s/functionDefinition/1/stmt/0"
-  ],
-  "s/functionDefinition/2/stmt/0": [
-    "s/functionDefinition/3/stmt/0"
-  ],
-  "subcat/func_enter/1a": [],
-  "s/functionDefinition/2/end": [
-    "s/functionDefinition/2/stmt/0"
-  ],
-  "s/functionDefinition/3/stmt/0": [
-    "s/functionDefinition/4/stmt/0"
-  ],
-  "s/functionDefinition/3/end": [
-    "s/functionDefinition/3/stmt/0"
-  ],
-  "s/functionDefinition/4/stmt/0": [
     "s/skipWrapping/0"
   ],
-  "s/functionDefinition/4/end": [
-    "s/functionDefinition/4/stmt/0"
-  ],
-  "s/skipWrapping/0/stmt/0": [
-    "s/skipWrapping/2/stmt/0"
-  ],
+  "subcat/func_enter/2e": [],
   "s/skipWrapping/0": [
-    "s/skipWrapping/0/stmt/0"
-  ],
-  "s/skipWrapping/0/end": [
-    "s/skipWrapping/0/stmt/0"
-  ],
-  "s/skipWrapping/1/stmt/0": [
-    "s/skipWrapping/1/stmt/0"
-  ],
-  "s/skipWrapping/1": [
-    "s/skipWrapping/1/stmt/0"
-  ],
-  "s/skipWrapping/2/stmt/0": [
     "s/dynamicGoto/0"
   ],
-  "s/skipWrapping/2/end": [
-    "s/skipWrapping/2/stmt/0"
+  "s/skipWrapping/1/stmt/0": [
+    "s/skipWrapping/1/end"
   ],
-  "s/dynamicGoto/0/stmt/0": [
+  "s/skipWrapping/1/end": [
+    "s/skipWrapping/1/stmt/0"
+  ],
+  "s/dynamicGoto/0": [
     "s/<init>/0",
+    "s/afterStatements/0",
     "s/ifStatements/0",
     "s/letStatements/0",
     "s/loopingPath/0",
@@ -206,176 +169,20 @@
     "s/mathOps/0",
     "s/done/0"
   ],
-  "s/dynamicGoto/0": [
-    "s/dynamicGoto/0/stmt/0"
-  ],
-  "s/dynamicGoto/0/end": [
-    "s/dynamicGoto/0/stmt/0"
-  ],
-  "s/dgoto0/0/stmt/0": [
-    "s/dgotoWorks/0"
-  ],
   "s/dgoto0/0": [
-    "s/dgoto0/0/stmt/0"
-  ],
-  "s/dgoto0/0/end": [
-    "s/dgoto0/0/stmt/0"
-  ],
-  "s/dgoto1/0/stmt/0": [
     "s/dgotoWorks/0"
   ],
   "s/dgoto1/0": [
-    "s/dgoto1/0/stmt/0"
-  ],
-  "s/dgoto1/0/end": [
-    "s/dgoto1/0/stmt/0"
-  ],
-  "s/dgotoWorks/0/stmt/0": [
-    "s/undefinedTesting/0"
+    "s/dgotoWorks/0"
   ],
   "s/dgotoWorks/0": [
-    "s/dgotoWorks/0/stmt/0"
-  ],
-  "s/dgotoWorks/0/end": [
-    "s/dgotoWorks/0/stmt/0"
-  ],
-  "s/undefinedTesting/0/stmt/0": [
-    "s/undefinedTesting/1/stmt/0"
+    "s/undefinedTesting/0"
   ],
   "s/undefinedTesting/0": [
-    "s/undefinedTesting/0/stmt/0"
-  ],
-  "s/undefinedTesting/0/end": [
-    "s/undefinedTesting/0/stmt/0"
-  ],
-  "s/undefinedTesting/1/stmt/0": [
-    "s/undefinedTesting/2/stmt/0"
-  ],
-  "s/undefinedTesting/1/end": [
-    "s/undefinedTesting/1/stmt/0"
-  ],
-  "s/undefinedTesting/2/stmt/0": [
-    "s/undefinedTesting/3/stmt/0"
-  ],
-  "s/undefinedTesting/2/end": [
-    "s/undefinedTesting/2/stmt/0"
-  ],
-  "s/undefinedTesting/3/stmt/0": [
-    "s/undefinedTesting/4/stmt/0"
-  ],
-  "s/undefinedTesting/3/end": [
-    "s/undefinedTesting/3/stmt/0"
-  ],
-  "s/undefinedTesting/4/stmt/0": [
     "s/mathOps/0"
   ],
-  "s/undefinedTesting/4/end": [
-    "s/undefinedTesting/4/stmt/0"
-  ],
-  "s/mathOps/0/stmt/0": [
-    "s/mathOps/1/stmt/0"
-  ],
   "s/mathOps/0": [
-    "s/mathOps/0/stmt/0"
-  ],
-  "s/mathOps/0/end": [
-    "s/mathOps/0/stmt/0"
-  ],
-  "s/mathOps/1/stmt/0": [
-    "s/mathOps/2/stmt/0"
-  ],
-  "s/mathOps/1/end": [
-    "s/mathOps/1/stmt/0"
-  ],
-  "s/mathOps/2/stmt/0": [
-    "s/mathOps/3/stmt/0"
-  ],
-  "s/mathOps/2/end": [
-    "s/mathOps/2/stmt/0"
-  ],
-  "s/mathOps/3/stmt/0": [
-    "s/mathOps/4/stmt/0"
-  ],
-  "s/mathOps/3/end": [
-    "s/mathOps/3/stmt/0"
-  ],
-  "s/mathOps/4/stmt/0": [
-    "s/mathOps/5/stmt/0"
-  ],
-  "s/mathOps/4/end": [
-    "s/mathOps/4/stmt/0"
-  ],
-  "s/mathOps/5/stmt/0": [
-    "s/mathOps/6/stmt/0"
-  ],
-  "s/mathOps/5/end": [
-    "s/mathOps/5/stmt/0"
-  ],
-  "s/mathOps/6/stmt/0": [
-    "s/mathOps/7/stmt/0"
-  ],
-  "s/mathOps/6/end": [
-    "s/mathOps/6/stmt/0"
-  ],
-  "s/mathOps/7/stmt/0": [
-    "s/mathOps/8/stmt/0"
-  ],
-  "s/mathOps/7/end": [
-    "s/mathOps/7/stmt/0"
-  ],
-  "s/mathOps/8/stmt/0": [
-    "s/mathOps/9/stmt/0"
-  ],
-  "s/mathOps/8/end": [
-    "s/mathOps/8/stmt/0"
-  ],
-  "s/mathOps/9/stmt/0": [
-    "s/mathOps/10/stmt/0"
-  ],
-  "s/mathOps/9/end": [
-    "s/mathOps/9/stmt/0"
-  ],
-  "s/mathOps/10/stmt/0": [
-    "s/mathOps/11/stmt/0"
-  ],
-  "s/mathOps/10/end": [
-    "s/mathOps/10/stmt/0"
-  ],
-  "s/mathOps/11/stmt/0": [
-    "s/mathOps/12/stmt/0"
-  ],
-  "s/mathOps/11/end": [
-    "s/mathOps/11/stmt/0"
-  ],
-  "s/mathOps/12/stmt/0": [
-    "s/mathOps/13/stmt/0"
-  ],
-  "s/mathOps/12/end": [
-    "s/mathOps/12/stmt/0"
-  ],
-  "s/mathOps/13/stmt/0": [
-    "s/mathOps/14/stmt/0"
-  ],
-  "s/mathOps/13/end": [
-    "s/mathOps/13/stmt/0"
-  ],
-  "s/mathOps/14/stmt/0": [
-    "s/mathOps/15/stmt/0"
-  ],
-  "s/mathOps/14/end": [
-    "s/mathOps/14/stmt/0"
-  ],
-  "s/mathOps/15/stmt/0": [
-    "s/mathOps/16/stmt/0"
-  ],
-  "s/mathOps/15/end": [
-    "s/mathOps/15/stmt/0"
-  ],
-  "s/mathOps/16/stmt/0": [
     "s/done/0"
-  ],
-  "s/mathOps/16/end": [
-    "s/mathOps/16/stmt/0"
   ],
   "s/done/0/stmt/0": [
     "s/done/0/stmt/0"
