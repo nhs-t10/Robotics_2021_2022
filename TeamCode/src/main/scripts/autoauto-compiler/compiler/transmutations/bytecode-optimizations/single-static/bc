@@ -1,5 +1,5 @@
 's/<init>/0':
- (undefined) getvar  ("ULS!")  (1) callfunction pop
+ ("log@0") getvar  ("ULS!")  (1) callfunction pop
  ("s/afterStatements/0") jmp_l
 
 
@@ -139,7 +139,7 @@
 
 
 's/ifStatements/0/stmt/0/if_true/15':
- (undefined) getvar  ("this works like java")  (1) callfunction pop
+ ("log@0") getvar  ("this works like java")  (1) callfunction pop
  (false)  ("s/ifStatements/1/stmt/0/if_true/1a") jmp_l_cond  ("s/ifStatements/1/stmt/0/if_false/1b") jmp_l
 
 
@@ -159,7 +159,7 @@
 
 
 's/ifStatements/1/stmt/0/if_true/1a':
- (undefined) getvar  ("fail")  (1) callfunction pop
+ ("log@0") getvar  ("fail")  (1) callfunction pop
  ("s/ifStatements/1/stmt/0/if_end/1c") jmp_l
 
 
@@ -174,7 +174,7 @@
 
 
 's/ifStatements/2/stmt/0/if_true/1d':
- (undefined) getvar  ("fail")  (1) callfunction pop
+ ("log@0") getvar  ("fail")  (1) callfunction pop
  ("s/ifStatements/2/stmt/0") yieldto
 
 
@@ -184,7 +184,7 @@
 
 
 's/letStatements/0':
- ("table@1")  (0) construct_table setvar  ("table@1") getvar  ("foup")  ("jeremy") setprop  (undefined) getvar  ("table@1") getvar  (1) callfunction pop  ("table@2")  (3) setvar  ("table@2") getvar  ("foofoo")  (2) setprop  (undefined) getvar  ("table@2") getvar  (1) callfunction pop  (undefined) getvar  ("table@2") getvar  ("foofoo") getprop  (1) callfunction pop
+ ("table@1")  (0) construct_table setvar  ("table@1") getvar  ("foup")  ("jeremy") setprop  ("log@0") getvar  ("table@1") getvar  (1) callfunction pop  ("table@2")  (3) setvar  ("table@2") getvar  ("foofoo")  (2) setprop  ("log@0") getvar  ("table@2") getvar  (1) callfunction pop  ("log@0") getvar  ("table@2") getvar  ("foofoo") getprop  (1) callfunction pop
  ("s/loopingPath/0") jmp_l
 
 
@@ -194,7 +194,7 @@
 
 
 's/loopingPath/1':
- ("counter@2")  ({"__phi":["counter@1","counter@2","counter@2","counter@1"]}) getvar  (1) add setvar  (undefined) getvar  ("count: ")  ("counter@2") getvar add  (1) callfunction pop
+ ("counter@2")  ({"__phi":["counter@1","counter@2","counter@2","counter@1"]}) getvar  (1) add setvar  ("log@0") getvar  ("count: ")  ("counter@2") getvar add  (1) callfunction pop
  ("counter@2") getvar  (20) cmp_lt  ("s/loopingPath/2/stmt/0/if_true/22") jmp_l_cond  ("s/loopingPath/2/stmt/0/if_false/23") jmp_l
 
 
@@ -209,17 +209,17 @@
 
 
 'subcat/func_enter/2a':
- (undefined) getvar  (undefined) getvar  ("hah") add  (1) callfunction pop  ret
+ ("return@0") getvar  ("e@0") getvar  ("hah") add  (1) callfunction pop  ret
 
 
 
 's/functionDefinition/0':
- ("f@1")  ("subcat/func_enter/2a")  ("e")  (3) construct_relation  (1) makefunction setvar  (undefined) getvar  ("f@1") getvar  (0) callfunction  (1) callfunction pop  (undefined) getvar  ("f@1") getvar  ("ha")  (1) callfunction  (1) callfunction pop  ("d@1")  ("subcat/func_enter/2e")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar  (undefined) getvar  ("d@1") getvar  (0) callfunction  (1) callfunction pop  (undefined) getvar  ("d@1") getvar  (2)  (1) callfunction  (1) callfunction pop  (undefined) getvar  ("d@1") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
+ ("f@1")  ("subcat/func_enter/2a")  ("e")  (3) construct_relation  (1) makefunction setvar  ("log@0") getvar  ("f@1") getvar  (0) callfunction  (1) callfunction pop  ("log@0") getvar  ("f@1") getvar  ("ha")  (1) callfunction  (1) callfunction pop  ("d@1")  ("subcat/func_enter/2e")  ("e")  (24) construct_relation  ("k")  ("fef") construct_relation  (2) makefunction setvar  ("log@0") getvar  ("d@1") getvar  (0) callfunction  (1) callfunction pop  ("log@0") getvar  ("d@1") getvar  (2)  (1) callfunction  (1) callfunction pop  ("log@0") getvar  ("d@1") getvar  (2)  (1)  (2) callfunction  (1) callfunction pop
  ("s/skipWrapping/0") jmp_l
 
 
 'subcat/func_enter/2e':
- (undefined) getvar  (undefined) getvar  (undefined) getvar  ("oop") add add  (1) callfunction pop  ret
+ ("return@0") getvar  ("e@0") getvar  ("k@0") getvar  ("oop") add add  (1) callfunction pop  ret
 
 
 
@@ -230,16 +230,16 @@
 
 's/dynamicGoto/0':
 
- ("s/")  ("dgoto")  (undefined) getvar  ("floor") getprop  (undefined) getvar  ("random") getprop  (0) callfunction  (2) mul  (1) callfunction add add  ("/0") add jmp_l
+ ("s/")  ("dgoto")  ("Math@0") getvar  ("floor") getprop  ("Math@0") getvar  ("random") getprop  (0) callfunction  (2) mul  (1) callfunction add add  ("/0") add jmp_l
 
 
 's/dgoto0/0':
- (undefined) getvar  ("dgdg")  (1) callfunction pop
+ ("log@0") getvar  ("dgdg")  (1) callfunction pop
  ("s/dgotoWorks/0") jmp_l
 
 
 's/dgoto1/0':
- (undefined) getvar  ("dgdg")  (1) callfunction pop
+ ("log@0") getvar  ("dgdg")  (1) callfunction pop
  ("s/dgotoWorks/0") jmp_l
 
 
@@ -249,12 +249,12 @@
 
 
 's/undefinedTesting/0':
- ("u@1")  (undefined) getvar setvar  (undefined) getvar  ("u@1") getvar  (1) callfunction pop  (undefined) getvar  ("u@1") getvar  ("sjkdla") getprop  (1) callfunction pop  (undefined) getvar  (undefined)  (1) callfunction pop
+ ("u@1")  ("undefinedvariablethatwedontknowof@0") getvar setvar  ("log@0") getvar  ("u@1") getvar  (1) callfunction pop  ("log@0") getvar  ("u@1") getvar  ("sjkdla") getprop  (1) callfunction pop  ("log@0") getvar  (undefined)  (1) callfunction pop
  ("s/mathOps/0") jmp_l
 
 
 's/mathOps/0':
- ("two@1")  (2) setvar  (undefined) getvar  ("two@1") getvar  (2) cmp_gte  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (3) cmp_gt  (false) cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (3) cmp_lt  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (2) cmp_lte  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (2) cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  ("fefe") cmp_neq  (1) callfunction pop  (undefined) getvar  ("a")  ("two@1") getvar construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  ("e") add  ("2e") cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (2) add  (4) cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (4) div  (0.5) cmp_eq  (1) callfunction pop  (undefined) getvar  ("two@1") getvar  (2) subtr  (0) cmp_eq  (1) callfunction pop  (undefined) getvar  (3)  ("two@1") getvar exp  (9) cmp_eq  (1) callfunction pop  (undefined) getvar  (3)  ("two@1") getvar exp  (9) cmp_eq  (1) callfunction pop  (undefined) getvar  (3)  ("two@1") getvar mod  (1) cmp_eq  (1) callfunction pop
+ ("two@1")  (2) setvar  ("log@0") getvar  ("two@1") getvar  (2) cmp_gte  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (3) cmp_gt  (false) cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (3) cmp_lt  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (2) cmp_lte  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (1) construct_table  (2)  (1) construct_table cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (2) cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  ("fefe") cmp_neq  (1) callfunction pop  ("log@0") getvar  ("a")  ("two@1") getvar construct_relation  (1) construct_table  ("b")  (6) construct_relation  (1) construct_table add  ("a")  (2) construct_relation  ("b")  (6) construct_relation  (2) construct_table cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  ("e") add  ("2e") cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (2) add  (4) cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (4) div  (0.5) cmp_eq  (1) callfunction pop  ("log@0") getvar  ("two@1") getvar  (2) subtr  (0) cmp_eq  (1) callfunction pop  ("log@0") getvar  (3)  ("two@1") getvar exp  (9) cmp_eq  (1) callfunction pop  ("log@0") getvar  (3)  ("two@1") getvar exp  (9) cmp_eq  (1) callfunction pop  ("log@0") getvar  (3)  ("two@1") getvar mod  (1) cmp_eq  (1) callfunction pop
  ("s/done/0") jmp_l
 
 

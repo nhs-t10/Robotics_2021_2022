@@ -39,11 +39,13 @@ function getBlocksWithoutParents(bytecode, invertedCgraph) {
 }
 
 function insertPhiNodes(block, invertedCgraph, globalVarnameCounters) {
-    console.log(block.label);
+    
     var varsGotten = globalVarnameCounters.blocks[block.label].firstreads;
     for(var k in varsGotten) {
         var parentSets = getAllParentSetsOfVariable(k, invertedCgraph[block.label], globalVarnameCounters);
-        if(parentSets.length <= 1) parentSets = parentSets[0];
+        
+        if(parentSets.length == 0) parentSets = k + "@0";
+        else if(parentSets.length == 1) parentSets = parentSets[0];
         else parentSets = {__phi: parentSets};
         
         varsGotten[k].forEach(x=>x.__value = parentSets);
