@@ -1,5 +1,3 @@
-var fs = require("fs");
-
 require("../..").registerTransmutation({
     id: "inverted-cgraph",
     requires: ["build-cgraph"],
@@ -8,8 +6,6 @@ require("../..").registerTransmutation({
 
         context.output = invertControlGraph(context.inputs["build-cgraph"]);
         context.status = "pass";
-
-        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(context.output, null, 2));
     }
 });
 

@@ -10,8 +10,6 @@ require("../..").registerTransmutation({
         
         context.output = buildGraphFrom(heirarchalBytecode);
         context.status = "pass";
-        
-        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(context.output, null, 2));
     }
 });
 

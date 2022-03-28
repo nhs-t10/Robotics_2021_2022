@@ -17,8 +17,6 @@ require("../..").registerTransmutation({
             invertedCGraph: dced.invertedCGraph
         };
         context.status = "pass";
-        
-        fs.writeFileSync(__dirname + "/cgraph", JSON.stringify(dced.cgraph, null, 2));
     }
 });
 

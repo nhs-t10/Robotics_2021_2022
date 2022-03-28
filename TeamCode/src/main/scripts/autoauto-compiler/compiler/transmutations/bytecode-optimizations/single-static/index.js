@@ -1,6 +1,3 @@
-const fs = require("fs");
-const bytecodeTools = require("../bytecode-tools");
-const bc = require("../bc");
 const bytecodeSpec = require("../bytecode-spec");
 
 require("../..").registerTransmutation({
@@ -13,14 +10,10 @@ require("../..").registerTransmutation({
         var cgraph = bb.cgraph;
 
         var invertedCgraph = bb.invertedCGraph;
-
-        fs.writeFileSync(__dirname + "/icgraph", JSON.stringify(invertedCgraph, null, 2));
         
         var globalVarnameCounters = { blocks: {}, vars: {} };
         
         var rootBlocks = getBlocksWithoutParents(bytecode, invertedCgraph);
-        
-        console.log(rootBlocks);
         
         rootBlocks.forEach(x=>ssaBlock(x, bytecode, cgraph, invertedCgraph, globalVarnameCounters));
         rootBlocks.forEach(x => copyLastSetToChildrenRecursiveNetwork(x.label, cgraph, globalVarnameCounters));
@@ -29,8 +22,6 @@ require("../..").registerTransmutation({
 
         context.output = bytecode;
         context.status = "pass";
-
-        fs.writeFileSync(__dirname + "/bc", bytecodeTools.formatBc(bytecode));
     }
 });
 

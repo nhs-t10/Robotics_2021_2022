@@ -10,7 +10,7 @@ module.exports = {
      * @param {Transmutation} t 
      */
      registerTransmutation: function (t) {
-        if (transmutations[t.id]) throw "Re-registered " + t.id;
+        if (transmutations[t.id]) throw new Error("Re-registered " + t.id);
         transmutations[t.id] = t;
     },
     /**

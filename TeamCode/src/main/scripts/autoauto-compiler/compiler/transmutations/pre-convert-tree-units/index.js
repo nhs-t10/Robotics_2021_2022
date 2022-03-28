@@ -131,10 +131,10 @@ function notifyUserOfPrecisionLoss(newUnit, newUnitQuant, newUnitPreciseDescrip,
             unit into separate 'after' statements (e.g. two 'after's with ${oldUnitQuant / 2}${oldUnit} instead of one
             with ${oldUnitQuant}${oldUnit}).
             a) To remove this warning, add 'ignorewarning_unit_conversion_precision_loss: true' to the frontmatter at the start of your file. For example,
-            \t$
-            \tignorewarning_unit_conversion_precision_loss: true
-            \t$
-            The frontmatter flag will NOT remove the precision-loss, but it will hide this warning.`;
+\t\u001b[40m\u001b[32m\u001b[1m$
+\tignorewarning_unit_conversion_precision_loss: true
+\t$\u001b[m
+The frontmatter flag will NOT remove the precision-loss, but it will hide this warning.`;
         
         androidStudioLogging.sendTreeLocationMessage({
             kind: "WARNING",

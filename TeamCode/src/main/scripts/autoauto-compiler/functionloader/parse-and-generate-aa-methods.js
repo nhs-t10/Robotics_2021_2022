@@ -38,7 +38,10 @@ module.exports = function(javaSource, preexistingNames) {
     var overloads = groupMethodsIntoOverloads(methods);
 
     var processedMethodClassLocs = overloads.map(x=>generateRobotFunction(x, fullClassName, preexistingNames));
-    return [fullClassName, processedMethodClassLocs.map(x=>x.shimClassFunction), processedMethodClassLocs.map(x=>x.cachableFunctionIndexLines)];
+    return {
+        sourceClass: fullClassName,
+        methods: processedMethodClassLocs
+    };
 }
 
 function packageNameToString(packageName) {
@@ -47,12 +50,12 @@ function packageNameToString(packageName) {
 }
 
 function generateRobotFunction(overload, definedClass, preexistingNames) {
-    var name = overload[0];
+    var name = overload.name;
     
     var noConflictName = name;
     while(preexistingNames.includes(noConflictName)) noConflictName += definedClass.split(".").slice(-1)[0];
     
-    var typemaps = overload[1];
+    var typemaps = overload.overloadTyping;
 
     var functionIndexLines = [];
     
@@ -63,7 +66,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
     var argumentNames = [];
     
     for(var i = 0; ; i++) {
-        var overloadsWithNArgs = typemaps.filter(x=>x.args.length == i);
+        var overloadsWithNArgs = typemaps.filter(x=>x.argTypes.length == i);
         //exit if we've done all of them.
         if(overloadsWithNArgs.length == 0) {
             if(processedOverloads >= typemaps.length) {
@@ -77,16 +80,17 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         callMethodSource += `if(args.length == ${i}) {`;
 
         var widestOverload = findWidestOverload(overloadsWithNArgs);
-        
+        functionIndexLines.push({ argCount: i, argumentTypes: widestOverload });
 
-        if(widestOverload.argnames.length > argumentNames.length) argumentNames = widestOverload.argnames;
+        if (widestOverload.argNames.length > argumentNames.length) argumentNames = widestOverload.argNames;
 
         
-        if(widestOverload.type != "void") callMethodSource += `return new ${equivAutoautoClass(widestOverload.type)}(`;
+        if(widestOverload.type != "void") callMethodSource += `return new ${equivAutoautoClass(widestOverload.returnType)}(`;
+        
         callMethodSource += `manager.${name}(`;
-        callMethodSource += widestOverload.args.map((x,k)=>`${caster(x)}args[${k}].${rawValueGetter(x)}`).join(",");
+        callMethodSource += widestOverload.argTypes.map((x,k)=>`${caster(x)}args[${k}].${rawValueGetter(x)}`).join(",");
 
-        if(widestOverload.type != "void") callMethodSource += `));`;
+        if(widestOverload.returnType != "void") callMethodSource += `));`;
         else callMethodSource += "); return new AutoautoUndefined();";
 
 
@@ -108,8 +112,9 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
      fs.writeFileSync(ourPath, template); //SAFE
 
     return {
-        shimClassFunction: [noConflictName, classname],
-        cachableFunctionIndexLines: functionIndexLines
+        shimClassFunction: { nameToUseInAutoauto: noConflictName, javaImplementationClass: classname},
+        functionTypes: functionIndexLines,
+        originalSourceClass: definedClass
     }
 }
 
@@ -119,7 +124,7 @@ function findWidestOverload(overloads) {
 
     for(var i = 0; i < overloads.length; i++) {
         var w = 0;
-        overloads[i].args.forEach(x=> w += getTypeWideness(x));
+        overloads[i].argTypes.forEach(x=> w += getTypeWideness(x));
 
         if(w > maxWidenessScore) {
             maxWidenessScore = w;
@@ -230,9 +235,9 @@ function getTypeCode(type) {
 
 function getBasicTypeInfo(method) {
     return {
-        type: getTypeCode(method.returnType2),
-        args: method.parameters.map(x=>getTypeCode(x.type)),
-        argnames: method.parameters.map(x=>x.name.identifier)
+        returnType: getTypeCode(method.returnType2),
+        argTypes: method.parameters.map(x=>getTypeCode(x.type)),
+        argNames: method.parameters.map(x=>x.name.identifier)
     };
 }
 
@@ -245,7 +250,7 @@ function groupMethodsIntoOverloads(methods) {
         var name = nameSet[i];
         var overloads = methods.filter(x=>x.name.identifier == name);
         var overloadTypes = overloads.map(x=>getBasicTypeInfo(x));
-        entries.push([name, overloadTypes]);
+        entries.push({ name: name, overloadTyping: overloadTypes});
     }
     return entries;
 }

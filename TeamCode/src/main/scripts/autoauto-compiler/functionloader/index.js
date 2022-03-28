@@ -8,16 +8,16 @@ var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinsp
 
 var cache = require("../../cache");
 
-var CACHE_VERSION = 9003;
+var functionLoaderConfig = require("./config");
 
-var cacheManagers = cache.get("autoauto-managers", {});
+var cacheManagers = cache.get(functionLoaderConfig.CACHE_KEY, {});
 
-if(cacheManagers.cacheVersion != CACHE_VERSION) cacheManagers = {};
+if (cacheManagers.cacheVersion != functionLoaderConfig.CACHE_VERSION) cacheManagers = {};
 
 var robotFunctionsDirectory = path.join(rootDirectory, "TeamCode/gen/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/robotfunctions");
-if(!fs.existsSync(robotFunctionsDirectory)) cacheManagers = {};
+if (!fs.existsSync(robotFunctionsDirectory)) cacheManagers = {};
 
-cacheManagers.cacheVersion = CACHE_VERSION;
+cacheManagers.cacheVersion = functionLoaderConfig.CACHE_VERSION;
 
 var managerArgs = {};
 
@@ -32,37 +32,40 @@ var methods = [];
 for (var i = 0; i < managers.length; i++) {
     var manager = managers[i];
     var fileContent = fs.readFileSync(manager).toString();
-    
+
     var sha = crypto.createHash("sha256").update(fileContent).digest("hex");
-    
-    if(cacheManagers[manager] === undefined) cacheManagers[manager] = {};
-    
-    if(cacheManagers[manager].javaSha === sha) {
-        methods.push(cacheManagers[manager].methods);
+
+    if (cacheManagers[manager] === undefined) cacheManagers[manager] = {};
+
+    if (cacheManagers[manager].javaSha === sha) {
+        methods = methods.concat(cacheManagers[manager].data.methods);
     } else {
-        cacheManagers[manager].javaSha = sha
-        var preexistingNames = methods.map(x=>x[1].map(y=>y[0])).flat();
-        
+        cacheManagers[manager].javaSha = sha;
+        var preexistingNames = methods.map(x => x.shimClassFunction.nameToUseInAutoauto).flat();
+
         var generated = generateAaMethods(fileContent, preexistingNames);
 
-        if(generated) cacheManagers[manager].methods = generated;
-        
-        methods.push(cacheManagers[manager].methods);
+        if (generated) cacheManagers[manager].data = generated;
+
+        methods = methods.concat(cacheManagers[manager].data.methods);
     }
 }
 
-deleteUnusedMethodClasses(methods.map(x=>x[1].map(y=>y[1])).flat());
+deleteUnusedMethodClasses(methods.map(x => x.shimClassFunction.javaImplementationClass).flat());
 
 var robotFunctionLoaderAddress = path.join(rootDirectory, "TeamCode/gen/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/RobotFunctionLoader.java");
-if(!fs.existsSync(path.dirname(robotFunctionLoaderAddress))) fs.mkdirSync(path.dirname(robotFunctionLoaderAddress), { recursive: true });
+if (!fs.existsSync(path.dirname(robotFunctionLoaderAddress))) fs.mkdirSync(path.dirname(robotFunctionLoaderAddress), { recursive: true });
 
 var robotFunctionsTemplate = require("./make-robotfunctionloader.js");
 var robotFunctionLoader = robotFunctionsTemplate(
     methods
-    .map(x =>
-        x[1].map(y =>
-            ({ funcname: y[0], varname: "func_" + y[0], classname: y[1], manager: makeManagerName(x[0])})
-        )).flat(),
+        .map(x => ({
+            funcname: x.shimClassFunction.nameToUseInAutoauto,
+            varname: "func_" + x.shimClassFunction.nameToUseInAutoauto,
+            classname: x.shimClassFunction.javaImplementationClass,
+            manager: makeManagerName(x.originalSourceClass)
+        })
+        ),
     Object.entries(managerArgs),
 );
 fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
@@ -70,12 +73,12 @@ fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
 cache.save("autoauto-managers", cacheManagers);
 
 function makeManagerName(name) {
-    if(name == "") return "";
-    
-    if(managerArgs[name]) return managerArgs[name];
-    
+    if (name == "") return "";
+
+    if (managerArgs[name]) return managerArgs[name];
+
     var basename = name.split(".").slice(-1)[0].replace(/Manager$/, "");
-    
+
     managerArgs[name] = "man" + basename;
     return managerArgs[name] || "";
 }

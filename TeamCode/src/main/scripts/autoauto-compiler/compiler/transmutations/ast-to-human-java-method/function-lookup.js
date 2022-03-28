@@ -3,11 +3,12 @@
 var fs = require("fs");
 var cache = require("../../../../cache");
 
-var functionLoaderCache = cache.get("autoauto-managers", {});
+var functionLoaderCache = cache.get(require("../../../functionloader/config").CACHE_KEY, {});
 var cachedManagers = Object.values(functionLoaderCache).filter(x=>typeof x === "object");
 var invertedMapByFunctionName = {};
 cachedManagers.forEach(x=>
-    x.methods[1].forEach(y=>invertedMapByFunctionName[y[0]] = x.methods[0])
+    x.data.methods.forEach(y => 
+        invertedMapByFunctionName[y.shimClassFunction.nameToUseInAutoauto] = y.originalSourceClass)
 );
 
 var templateText = fs.readFileSync(__dirname + "/../../transmutations/process-template/template.notjava").toString();

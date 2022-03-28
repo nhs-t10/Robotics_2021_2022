@@ -1,6 +1,3 @@
-var fs = require("fs");
-var bytecodeTools = require("../bytecode-tools");
-
 require("../..").registerTransmutation({
     id: "bc-basic-dead-code-elimination",
     requires: ["build-cgraph", "inverted-cgraph", "bc-condense-constants"],
@@ -24,9 +21,6 @@ require("../..").registerTransmutation({
             invertedCGraph: invertedCGraph
         };
         context.status = "pass";
-        
-        fs.writeFileSync(__dirname + "/out", JSON.stringify(context.output, null, 2));
-        fs.writeFileSync(__dirname + "/bc", bytecodeTools.formatBc(bytecode));
 
     }
 });
