@@ -12,8 +12,14 @@ require("../..").registerTransmutation({
         var bytecode = context.inputs["single-static"];
         var typeSystem = typeSystemCreator();
         
-        console.log(typeSystem["getCaptionValueSeparator@0"]);
-        console.log(typeSystem.string);
-
+        console.log(typeSystem["Math@0"]);
     }
 });
+
+function processBytecodeBlock(block, typeSystem) {
+    console.log(block);
+}
+
+function addAllLocalVariablesToTypeSystem(codeArray, typeSystem) {
+    
+} 

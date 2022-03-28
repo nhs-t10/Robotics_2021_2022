@@ -98,3 +98,15 @@ function massageResIntoMessage(res, file, defaultKind) {
     }
     return res;
 }
+
+function rgb216(r, g, b) {
+    if (typeof r === "string") {
+        r = r.replace("#", "");
+
+        b = parseInt(r.substring(4, 6), 16) / 0xff;
+        g = parseInt(r.substring(2, 4), 16) / 0xff;
+        r = parseInt(r.substring(0, 2), 16) / 0xff;
+    }
+    var rf = Math.round(r * 5), gf = Math.round(g * 5), bf = Math.round(b * 5);
+    return (rf * 36) + (gf * 6) + (bf) + 16
+}
