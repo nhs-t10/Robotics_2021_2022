@@ -1,6 +1,7 @@
 module.exports = {
-    "Math@0": {
+    "var Math@0": {
         type: "object",
+        some: "undefined",
         properties: {
             "abs": "Math@0/abs",
             "acos": "Math@0/acos",
@@ -37,14 +38,14 @@ module.exports = {
             "trunc": "Math@0/trunc",
             "sign": "Math@0/sign",
             "cbrt": "Math@0/cbrt",
-            "E": "Math@0/E",
-            "LOG2E": "Math@0/LOG2E",
-            "LOG10E": "Math@0/LOG10E",
-            "LN2": "Math@0/LN2",
-            "LN10": "Math@0/LN10",
-            "PI": "Math@0/PI",
-            "SQRT2": "Math@0/SQRT2",
-            "SQRT1_2": "Math@0/SQRT1_2"
+            "E": "number",
+            "LOG2E": "number",
+            "LOG10E": "number",
+            "LN2": "number",
+            "LN10": "number",
+            "PI": "number",
+            "SQRT2": "number",
+            "SQRT1_2": "number"
         }
     },
     "Math@0/abs": { "type": "function", "args": ["number"], "return": "number|undefined" },
@@ -82,15 +83,7 @@ module.exports = {
     "Math@0/trunc": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "Math@0/sign": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "Math@0/cbrt": { "type": "function", "args": ["number"], "return": "number|undefined" },
-    "Math@0/E": "number",
-    "Math@0/LOG2E": "number",
-    "Math@0/LOG10E": "number",
-    "Math@0/LN2": "number",
-    "Math@0/LN10": "number",
-    "Math@0/PI": "number",
-    "Math@0/SQRT2": "number",
-    "Math@0/SQRT1_2": "number",
-    "log@0": { type: "function", "args": [], varargs: "*", "return": "undefined" },
+    "var log@0": { type: "function", "args": [], varargs: "*", "return": "undefined" },
     "number|undefined": { type: "union", types: ["undefined", "number"] },
     "unit_currentv<>": { type: "bytecode", pop: ["unit"], push: ["number"] },
     "abs_dif<>": { type: "bytecode", pop: ["number", "number"], push: ["number"] },

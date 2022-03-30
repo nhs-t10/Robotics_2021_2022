@@ -4,17 +4,30 @@ var javaFuncs = require("./java-functions");
 
 module.exports = function() {
     var tsMap = {};
-    var anonymousInnerTypeCounter = { k: 0 };
+    var anonymousInnerTypeCounter = { k: 0, inverseMap: new Map() };
     
     restoreFromMappings(tsMap, initial, anonymousInnerTypeCounter);
     restoreFromMappings(tsMap, javaFuncs, anonymousInnerTypeCounter);
     
-    return tsMap;
+    return {
+        __t: tsMap,
+        getKeyOf: function(type) {
+            return anonymousInnerTypeCounter.inverseMap.get(type);
+        },
+        getType: function(key) {
+            return getType(tsMap, key, anonymousInnerTypeCounter);  
+        },
+        upsertType: function (mappingTitle, uninterpertedMapping) {
+            return upsertInterpretMapping(tsMap, mappingTitle, uninterpertedMapping, anonymousInnerTypeCounter);
+        },
+        makeAnonymousTypeName: function() {
+            return makeAnonymousTypeName(anonymousInnerTypeCounter);
+        }
+    };
 }
 
 function restoreFromMappings(cannonical, historical, a) {
     for(var k in historical) {
-        console.log(k);
         upsertInterpretMapping(cannonical, k, historical[k], a);
     }
 }
@@ -25,23 +38,28 @@ function upsertInterpretMapping(cannonical, mappingTitle, uninterpertedMapping, 
     return original;
 }
 
-function getType(cannonical, typeName, anonymousInnerTypeCounter) {
+function makeAnonymousTypeName(anonymousInnerTypeCounter) {
+    if (anonymousInnerTypeCounter === undefined) throw new Error("no aitc");
+    var anonKey = "$$anonymous inner type #" + anonymousInnerTypeCounter.k;
+    anonymousInnerTypeCounter.k++;
+    return anonKey;
+}
+
+function getType(cannonical, typeName, a) {
     if(typeof typeName !== "string") {
         var type = typeName;
-        if(anonymousInnerTypeCounter === undefined) throw new Error("no aitc");
-        var anonKey = "$$anonymous inner type #" + anonymousInnerTypeCounter.k;
-        anonymousInnerTypeCounter.k++;
-        return upsertInterpretMapping(cannonical, anonKey, type, anonymousInnerTypeCounter);
+        var anonKey = makeAnonymousTypeName(a);
+        return upsertInterpretMapping(cannonical, anonKey, type, a);
     }
     
     if(!cannonical[typeName]) {
         cannonical[typeName] = { type: "?" };
+        a.inverseMap.set(cannonical[typeName], typeName);
     }
     return cannonical[typeName];
 }
 
 function interpertMapping(cannonical, mapping, a) {
-    if(typeof mapping === "string") return getType(cannonical, mapping, a);
     
     switch(mapping.type) {
         case "primitive": return Object.assign({}, mapping);
@@ -51,10 +69,28 @@ function interpertMapping(cannonical, mapping, a) {
         case "object": return resolveObjectType(cannonical, mapping, a);
         case "function": return resolveFunctionType(cannonical, mapping, a);
         case "bytecode": return resolveBytecodeType(cannonical, mapping, a);
+        case "binary_operator": return resolveBinaryOperatorType(cannonical, mapping, a);
+        case "apply": return resolveFunctionApplicationType(cannonical, mapping, a);
     }
     console.log(mapping);
     console.log(new Error().stack);
     throw new Error("Unknown type-mapping variant '" + mapping.type + "'");
+}
+
+function resolveFunctionApplicationType(cannonical, mapping, a) {
+    return {
+        type: "apply",
+        operand: getType(cannonical, mapping.operand, a)
+    };
+}
+
+function resolveBinaryOperatorType(cannonical, bOpMapping, a) {
+    return {
+        type: "binary_operator",
+        op: bOpMapping.op + "",
+        left: getType(cannonical, bOpMapping.left, a),
+        right: getType(cannonical, bOpMapping.right, a)
+    }
 }
 
 function resolveAliasType(cannonical, aliasMapping, a) {
@@ -80,7 +116,11 @@ function resolveUnionType(cannonical, unionMapping, a) {
 }
 
 function resolveObjectType(cannonical, mapping, a) {
-    var r = { type: "object", properties: {} };
+    var r = { 
+        type: "object",
+        some: getType(cannonical, mapping.some || "undefined", a),
+        properties: {}
+    };
     
     for(var k in mapping.properties) {
         r.properties[k] = getType(cannonical, mapping.properties[k], a);

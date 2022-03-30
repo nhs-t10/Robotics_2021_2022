@@ -22,7 +22,7 @@ function flCacheToTypes(flCache) {
 
 function insertMethod(method, methodTypeMap) {
     //the '@0' indicates that it's a built-in
-    var key = method.shimClassFunction.nameToUseInAutoauto + "@0";
+    var key = "var " + method.shimClassFunction.nameToUseInAutoauto + "@0";
     
     var returnPossibilities = [];
     var argPossibilities = [];
