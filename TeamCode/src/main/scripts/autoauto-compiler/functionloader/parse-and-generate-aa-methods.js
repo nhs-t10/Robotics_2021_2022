@@ -85,7 +85,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
         if (widestOverload.argNames.length > argumentNames.length) argumentNames = widestOverload.argNames;
 
         
-        if(widestOverload.type != "void") callMethodSource += `return new ${equivAutoautoClass(widestOverload.returnType)}(`;
+        if (widestOverload.returnType != "void") callMethodSource += `return new ${equivAutoautoClass(widestOverload.returnType)}(`;
         
         callMethodSource += `manager.${name}(`;
         callMethodSource += widestOverload.argTypes.map((x,k)=>`${caster(x)}args[${k}].${rawValueGetter(x)}`).join(",");

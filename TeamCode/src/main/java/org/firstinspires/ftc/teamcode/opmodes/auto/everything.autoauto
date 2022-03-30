@@ -77,6 +77,13 @@ after 30s        next;
     log(u), next;
     log(u.sjkdla), next;
     log(0/0), next;
+    goto typing;
+
+#typing:
+    if(Math.random() > 0.5) { let fif = 3 } else { let fif = "" }, next;
+    log(fif), next;
+    if(Math.random() > 0.5) { let ire = 2 }, next;
+    log(ire), next;
     goto mathOps;
 
 #mathOps:

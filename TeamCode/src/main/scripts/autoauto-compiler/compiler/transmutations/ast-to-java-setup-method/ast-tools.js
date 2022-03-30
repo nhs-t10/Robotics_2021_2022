@@ -319,11 +319,16 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             break;
         case "ArgumentList":
             var childDefs = ast.args.map(x => process(x));
+            
+            var arrType = "AutoautoValue";
+            //if one item is an Identifer, then all of them must be.
+            if (ast.args[0] && ast.args[0].type == "Identifier") arrType = "String";
+            
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
                 depends: childDefs.map(x => x.varname),
-                definition: `AutoautoValue[] ${nonce} = {${childDefs.map(x => x.varname).join(", ")}};`
+                definition: `${arrType}[] ${nonce} = {${childDefs.map(x => x.varname).join(", ")}};`
             });
 
             result = {
