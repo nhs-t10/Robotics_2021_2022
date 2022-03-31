@@ -19,25 +19,20 @@ module.exports = function(ast, filename) {
         try {
             var res = check.run(ast);
             if(res) {
-                var msgArr = massageResIntoArrayOfMessages(res, tag, filename);
-
-                msgArr.forEach(x=>androidStudioLogging.sendPlainMessage(x));
+                androidStudioLogging.sendTreeLocationMessage(res, filename);
                 
-                if(shouldStopAnalysis(msgArr)) {
+                if(shouldStopAnalysis(res)) {
                     failed = true;
                     break;
                 }
             }
         } catch(e) {
             if(e instanceof Error) tag += " | failed to execute";
-            androidStudioLogging.sendPlainMessage({
+            androidStudioLogging.sendTreeLocationMessage({
                 kind: "ERROR",
                 text: tag, 
-                original: e.toString() + "\n" + (e.stack||""),
-                sources: [{
-                    file: filename
-                }]
-            });
+                original: e.toString() + "\n" + (e.stack||"")
+            }, filename);
             failed = true;
             break;
         }
@@ -46,38 +41,11 @@ module.exports = function(ast, filename) {
 }
 
 function shouldStopAnalysis(messageArray) {
-    return !!messageArray.find(x=>x.kind == "ERROR" || x.fail == true);
+    if(typeof messageArray.find != "function") messageArray = [messageArray];
+    
+    return !!messageArray.find(x=>x instanceof Error || x.kind == "ERROR" || x.fail == true);
 }
 
-function massageResIntoArrayOfMessages(res, tag, filename) {
-    if(res.constructor === Array) return res.map(x=>massageResIntoMessage(x, tag, filename));
-    else return [massageResIntoMessage(res, tag, filename)];
-}
-
-function massageResIntoMessage(res, tag, filename) {
-    if(!res.original) res.original = res.text;
-    res.text = tag;
-
-    if(res.fail) res.text += " | Skipping File";
-    else if(res.titleNote) res.text += " | " + res.titleNote;
-
-    if(res.sources === undefined) {
-            res.sources = [{
-            file: filename
-        }];
-        
-        if(res.location) res.sources[0].location = {
-            startLine: res.location.start.line,
-            startColumn: res.location.start.column,
-            startOffset: res.location.start.offset,
-            endLine: res.location.end.line,
-            endColumn: res.location.end.line,
-            endOffset: res.location.end.offset
-        }
-        delete res.location;
-    }
-    return res;
-}
 
 function loadChecksFromFolder(folder) {
     if(!fs.existsSync(folder)) return [];
