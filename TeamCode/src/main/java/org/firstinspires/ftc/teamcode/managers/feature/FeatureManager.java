@@ -41,7 +41,7 @@ public class FeatureManager {
             W(1,1,0,0), W(1,1,0,0),
             new OmniCalcComponents(
                     vertical      (1f,-1f,1f,1f),
-                    horizontal    (-1f, -1f, -1f, -1f),
+                    horizontal    (-0.5f, -0.5f, -1f, -1f),
                     rotational    (0f,0f,0f,0f)
             ),
             0.03f, 1680, 1, 8.9, 1, 3f,
