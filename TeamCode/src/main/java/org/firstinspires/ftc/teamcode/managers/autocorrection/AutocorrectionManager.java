@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.managers.autocorrection;
 
 import org.firstinspires.ftc.teamcode.auxilary.PaulMath;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.statements.AfterStatement;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoNumericValue;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
 
-public class Autocorrection extends FeatureManager {
+public class AutocorrectionManager extends FeatureManager {
     MovementManager driving;
     ImuManager imu;
+
     private int lastFL;
     private int lastFR;
     private int lastBL;
@@ -18,7 +23,7 @@ public class Autocorrection extends FeatureManager {
     private float lastY;
     private float Theta;
     private float[] correction;
-    public Autocorrection(MovementManager driving, ImuManager imu){
+    public AutocorrectionManager(MovementManager driving, ImuManager imu){
         this.driving =driving;
         this.imu = imu;
     }
