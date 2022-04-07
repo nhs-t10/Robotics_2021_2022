@@ -52,13 +52,21 @@ public class AutocorrectionManager extends FeatureManager {
         float dev_m2 = displ_m2 - displ_average;
         float dev_m3 = displ_m3 - displ_average;
 //Compute the displacement of the holonomic drive, in robot reference frame
-        float twoSqrtTwo = (float) (2.0*Math.sqrt(2));
-        float delt_Xr = (dev_m0 + dev_m1 - dev_m2 - dev_m3) / twoSqrtTwo;
-        float delt_Yr = (dev_m0 - dev_m1 - dev_m2 + dev_m3) / twoSqrtTwo;
+        //float twoSqrtTwo = (float) (2.0*Math.sqrt(2));
+        if(displ_m1 == displ_m2&&displ_m2 == displ_m0&&displ_m0 == displ_m3){
+            logger.log("Displacements match (Moving forward or backward");
+            float delt_Xr = displ_average;
+            float delt_Yr = 0;
+        }
+        if(displ_m0 == displ_m2&&displ_m2 == -displ_m0&&displ_m1 == displ_m3){
+            logger.log("Displacements inverse (Moving left or right)");
+            float delt_Xr = displ_average;
+            float delt_Yr = 0;
+        }
 //Move this holonomic displacement from robot to field frame of reference
         float robotTheta = imu.getThirdAngleOrientation();
-        float sinTheta = (float) Math.sin(robotTheta);
-        float cosTheta = (float) Math.cos(robotTheta);
+        float cosTheta = (float)Math.cos(robotTheta);
+        float sinTheta = (float)Math.sin(robotTheta);
         float delt_Xf = delt_Xr * cosTheta - delt_Yr * sinTheta;
         float delt_Yf = delt_Yr * cosTheta + delt_Xr * sinTheta;
 //Update the position
