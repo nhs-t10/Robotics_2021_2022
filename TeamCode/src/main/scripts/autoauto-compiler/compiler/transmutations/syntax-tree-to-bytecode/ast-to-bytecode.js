@@ -19,7 +19,7 @@ function treeBlockToBytecode(block, constantPool) {
     var stateEndBlock = {
         label: block.label + "/end",
         code: [],
-        jumps: [emitBytecodeWithLocation(bytecodeSpec.yieldto, [
+        jumps: [emitBytecodeWithLocation(bytecodeSpec.yieldto_l, [
             emitConstantWithLocation(statementLabels[0], constantPool, {})
         ], {})]
     }
@@ -98,6 +98,8 @@ function statementToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabe
             return letStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel);
         case "GotoStatement":
             return gotoStatementToBytecode(ast, label, constantPool);
+        case "ReturnStatement":
+            return returnStatementToBytecode(ast, label, constantPool);
         case "NextStatement":
             return nextStatementToBytecode(ast, label, constantPool, stateCountInPath);
         case "AfterStatement":
@@ -422,6 +424,20 @@ function gotoStatementToBytecode(ast, label, constantPool) {
     }].concat(pathName.dependentBlocks)
 }
 
+function returnStatementToBytecode(ast, label, constantPool) {
+    var val = valueToBytecodeBlocks(ast.value, constantPool);
+    
+    return [
+        {
+            label: label,
+            code: [
+                emitBytecodeWithLocation(bytecodeSpec.ret, [val.computation], ast)
+            ],
+            jumps:[],
+        }
+    ].concat(val.dependentBlocks)
+}
+
 /**
  * 
  * @param {*} ast 
@@ -523,7 +539,7 @@ function functionLiteralToBytecode(ast, constantPool) {
     var endBlockLabel = constantPool.subblockLabel("func_end");
     var endBlock = {
         label: endBlockLabel,
-        code: [emitBytecodeWithLocation(bytecodeSpec.ret, [], ast)],
+        code: [emitBytecodeWithLocation(bytecodeSpec.ret, [emitConstantWithLocation(undefined, constantPool, ast)], ast)],
         jumps: []
     };
 

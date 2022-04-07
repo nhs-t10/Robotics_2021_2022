@@ -28,7 +28,7 @@ function buildGraphFrom(bcode) {
 
 function findBlockTargets(block, allStateBlockLabels, allBlockLabels) {
     
-    var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code, bytecodeSpec.yieldto.code];
+    var jumpLabelCodes = [bytecodeSpec.jmp_l.code, bytecodeSpec.jmp_l_cond.code, bytecodeSpec.yieldto_l.code];
     
     
     var res = [];

@@ -94,7 +94,7 @@ function massageResIntoMessage(res, file, defaultKind) {
             endColumn: res.location.end.line,
             endOffset: res.location.end.offset
         };
-        res.original += "\n\n" + formatPointerToCode(file, res.location, res.kind, res.text, res.hints || []);
+        res.original = formatPointerToCode(file, res.location, res.kind, res.text, res.hints || []) + "\n" + res.original;
         delete res.location;
     }
     return res;

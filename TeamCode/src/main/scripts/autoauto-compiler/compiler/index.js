@@ -71,7 +71,7 @@ function tryRunTransmutation(transmutation, fileContext) {
         
         if(m) androidStudioLogging.sendTreeLocationMessage(m, fileContext.sourceFullFileName);
         
-        if(fileContext.status != "pass") throw {kind: "WARNING", text: `Task ${transmutation.id} didn't report success` };
+        if(fileContext.status != "pass") throw {kind: "ERROR", text: `Task ${transmutation.id} didn't report success` };
         
         return true;
     } catch(e) {

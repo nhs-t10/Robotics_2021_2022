@@ -59,17 +59,6 @@ log("ULS!"), goto afterStatements;
 #skipWrapping:
     skip -1;
     log("IF WE GET HERE, SOMETHING IS WRONG!");
-    goto dynamicGoto
-
-#dynamicGoto:
-    goto ["dgoto" + Math.floor(Math.random() * 2)]
-
-#dgoto0:
-    log("dgdg"), goto dgotoWorks
-#dgoto1:
-    log("dgdg"), goto dgotoWorks
-
-#dgotoWorks:
     goto undefinedTesting
 
 #undefinedTesting:

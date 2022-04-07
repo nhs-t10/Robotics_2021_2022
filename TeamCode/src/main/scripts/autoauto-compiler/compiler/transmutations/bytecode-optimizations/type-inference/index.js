@@ -12,27 +12,67 @@ require("../..").registerTransmutation({
         var bytecode = context.inputs["single-static"];
         var typeSystem = typeSystemCreator();
         
-        Object.values(bytecode).forEach(x=> processBytecodeBlock(x, typeSystem));
+        Object.values(bytecode).forEach(x=> processBytecodeBlock(x, bytecode, typeSystem) );
+        
+        context.output = typeSystem.__t;
+        context.status = "pass";
     }
 });
 
-function processBytecodeBlock(block, typeSystem) {
-    addAllLocalVariablesToTypeSystem(block.code, typeSystem);
-    addAllLocalVariablesToTypeSystem(block.jumps, typeSystem);
+function processBytecodeBlock(block, blocks, typeSystem) {
+    if(block.__hasTypes) return;
+    addAllLocalVariablesToTypeSystem(block.code, blocks, typeSystem);
+    addAllLocalVariablesToTypeSystem(block.jumps, blocks, typeSystem);
+    block.__hasTypes = true;
 }
 
-function addAllLocalVariablesToTypeSystem(codeArray, typeSystem) {
+function addAllLocalVariablesToTypeSystem(codeArray, blocks, typeSystem) {
     for(var i = 0; i < codeArray.length; i++) {
-        addLocalTypes(codeArray[i], typeSystem);
+        addLocalTypes(codeArray[i], blocks, typeSystem);
     }
 } 
-function addLocalTypes(bcInstruction, typeSystem) {
-    addAllLocalVariablesToTypeSystem(bcInstruction.args, typeSystem);
+function addLocalTypes(bcInstruction, blocks, typeSystem) {
+    addAllLocalVariablesToTypeSystem(bcInstruction.args, blocks, typeSystem);
     
-    bcInstruction.__typekey = calcType(bcInstruction, typeSystem.makeAnonymousTypeName(), typeSystem);
+    bcInstruction.__typekey = calcType(bcInstruction, typeSystem.makeAnonymousTypeName(), typeSystem, blocks);
 }
 
-function calcType(instruction, currentTypeKey, typeSystem) {
+function gatherReturnTypeFrom(entryBlock, blocks, typeSystem) {
+    var possibleTypes = processBlockChildrenForReturnTypes(entryBlock, blocks, typeSystem);
+    var uniqTypes = Array.from(new Set(possibleTypes));
+    
+    if(uniqTypes.length == 1) return uniqTypes[0];
+    else return { type: "union", types: uniqTypes };
+    
+}
+function findReturnTypeInSingleBlock(block) {
+    for(var i = 0; i < block.code.length; i++) {
+        if(block.code[i].code == bytecodeSpec.ret.code) {
+            return block.code[i].args[0].__typekey;
+        }
+    }
+}
+function processBlockChildrenForReturnTypes(block, blocks, typeSystem) {
+    processBytecodeBlock(block, blocks, typeSystem);
+    
+    var returnTypes = [findReturnTypeInSingleBlock(block)];
+    
+    var jmps = block.jumps;
+    var children = jmps.map(x=>x.args[x.args.length - 1].__value);
+    
+    for(var i = 0; i < children.length; i++) {
+        var childBlock = blocks[children[i]];
+        if (!childBlock) throw "bad key " + children[i];
+        
+        returnTypes = returnTypes.concat(
+            processBlockChildrenForReturnTypes(childBlock, blocks, typeSystem)
+        );
+    }
+    
+    return returnTypes;
+}
+
+function calcType(instruction, currentTypeKey, typeSystem, blocks) {
     if(instruction.hasOwnProperty("__value")) return getAutoautoTypeOfPrimitive(instruction.__value);
     
     switch(instruction.code) {
@@ -58,7 +98,8 @@ function calcType(instruction, currentTypeKey, typeSystem) {
         case bytecodeSpec.jmp_i_cond.code:
         case bytecodeSpec.jmp_l.code:
         case bytecodeSpec.jmp_l_cond.code:
-        case bytecodeSpec.yieldto.code:
+        case bytecodeSpec.yieldto_l.code:
+        case bytecodeSpec.yieldto_i.code:
         
         case bytecodeSpec.ret.code:
         case bytecodeSpec.pass.code:
@@ -96,7 +137,7 @@ function calcType(instruction, currentTypeKey, typeSystem) {
             return getBinaryOperatorType(instruction, currentTypeKey, typeSystem, "-");
         
         case bytecodeSpec.makefunction.code:
-            return recordFunctionType(instruction, currentTypeKey, typeSystem);
+            return recordFunctionType(instruction, currentTypeKey, typeSystem, blocks);
             
         default: 
             //console.error(instruction);
@@ -104,7 +145,7 @@ function calcType(instruction, currentTypeKey, typeSystem) {
     }
 }
 
-function recordFunctionType(instruction, currentTypeKey, typeSystem) {
+function recordFunctionType(instruction, currentTypeKey, typeSystem, blocks) {
     var t = {
         type: "function",
         args: [],
@@ -114,15 +155,28 @@ function recordFunctionType(instruction, currentTypeKey, typeSystem) {
     };
     
     var lbl = instruction.args[0].__value;
+    var fEntryBlock = blocks[lbl];
+    if(!fEntryBlock) throw "Malformed function! no " + lbl;
+    t.return = gatherReturnTypeFrom(fEntryBlock, blocks, typeSystem);
     
     for(var i = 2; i < instruction.args.length; i += 2) {
-        t.argnames.push(instruction.args[i - 1].__value + "");
-        t.args.push(instruction.args[i].__typekey + "");
+        var argname = instruction.args[i - 1].__value;
+        t.argnames.push(argname + "");
+        t.args.push(makeArgumentType(instruction.args[i].__typekey, argname, lbl, typeSystem, instruction.location));
     }
     
-    typeSystem.upsertType(currentTypeKey, t);
+    typeSystem.upsertType(currentTypeKey, t, instruction.location);
     
     return currentTypeKey;
+}
+
+function makeArgumentType(type, name, functionBodyLabel, typeSystem, loc) {
+    var tName = "var " + functionBodyLabel + "|arg:" + name;
+    typeSystem.upsertType(tName, {
+        type: "alias",
+        typeTo: type
+    }, loc);
+    return tName;
 }
 
 function getBinaryOperatorType(instruction, key, typeSystem, op) {
@@ -131,7 +185,7 @@ function getBinaryOperatorType(instruction, key, typeSystem, op) {
         op: op,
         left: instruction.args[0].__typekey,
         right: instruction.args[1].__typekey
-    });
+    }, instruction.location);
     return key;
 }
 
@@ -162,17 +216,41 @@ function getGetpropReturnType(getpropInstr, key, typeSystem) {
 function getFunctionReturnType(callfunctionInstr, key, typeSystem) {
     var functionTypeName = callfunctionInstr.args[0].__typekey;
     
+    var namedArgs = {};
+    var posArgs = [];
+    
+    var namedArgCount = callfunctionInstr.args[callfunctionInstr.args.length - 1].__value;
+    var i = callfunctionInstr.args.length - 2;
+    for(; namedArgCount > 0; i -= 2, namedArgCount--) {
+        namedArgs[callfunctionInstr.args[i - 1].__value] = callfunctionInstr.args[i].__typekey;
+    }
+    var posArgCount = callfunctionInstr.args[i].__value;
+    i--;
+    for(; posArgCount > 0; i--, posArgCount--) {
+        posArgs.unshift(callfunctionInstr.args[i].__typekey);
+    }
+    
+    
     typeSystem.upsertType(key, {
         type: "apply",
-        operand: functionTypeName
-    });
+        operand: functionTypeName,
+        positionalArguments: posArgs,
+        namedArguments: namedArgs
+    }, callfunctionInstr.location);
     
     return key;
 }
 
 function getVariableType(getvarInstruction, key, typeSystem) {
     var vname = getvarInstruction.args[0].__value;
-    return "var " + vname;
+    if (!vname.__phi) return "var " + vname;
+    
+    typeSystem.upsertType(key, {
+        type: "union",
+        types: vname.__phi.map(x=> "var " + x)
+    }, getvarInstruction.location);
+    return key;
+    
 }
 function setVariableType(setvarInstruction, key, typeSystem) {
     
@@ -180,10 +258,7 @@ function setVariableType(setvarInstruction, key, typeSystem) {
     
     var vtype = setvarInstruction.args[1].__typekey;
     
-    Object.assign(
-        typeSystem.getType("var " + vname),
-        { type: "alias", typeTo: typeSystem.__t[vtype] }
-    );
+    typeSystem.upsertType("var " + vname, { type: "alias", typeTo: vtype }, setvarInstruction.location);
     
     return "undefined";
 }
@@ -196,24 +271,22 @@ function getAutoautoTypeOfPrimitive(v) {
 function assembleRelationType(crInstr, currentTypeKey, typeSystem) {
     var t = {
         type: "object",
-        properties: {
-        }
+        some: "undefined",
+        properties: {}
     };
     
     var k = crInstr.args[0].__value;
     var vT = crInstr.args[1].__typekey;
     t.properties[k] = vT;
     
-    typeSystem.upsertType(currentTypeKey, t);
+    typeSystem.upsertType(currentTypeKey, t, crInstr.location);
     return currentTypeKey;
 }
 
 function assembleObjectType(constructTableInstr, currentTypeKey, typeSystem) {
-    
-    var valueUnion = { type: "union", types: [] };
     var t = {
         type: "object",
-        some: valueUnion,
+        some: { type: "union", types: [] },
         properties: {}
     };
     for(var i = 0; i < constructTableInstr.args.length; i += 2) {
@@ -221,11 +294,10 @@ function assembleObjectType(constructTableInstr, currentTypeKey, typeSystem) {
         if(key === undefined) continue;
         
         var valueType = constructTableInstr.args[i].__typekey;
-        valueUnion.types.push(valueType);
         t.properties[key] = valueType;
     }
     
-    typeSystem.upsertType(currentTypeKey, t);
+    typeSystem.upsertType(currentTypeKey, t, constructTableInstr.location);
     
     return currentTypeKey;
 }

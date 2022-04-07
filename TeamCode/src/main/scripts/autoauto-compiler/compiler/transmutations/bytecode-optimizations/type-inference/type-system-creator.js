@@ -15,10 +15,12 @@ module.exports = function() {
             return anonymousInnerTypeCounter.inverseMap.get(type);
         },
         getType: function(key) {
-            return getType(tsMap, key, anonymousInnerTypeCounter);  
+            return tsMap[getType(tsMap, key, anonymousInnerTypeCounter)];  
         },
-        upsertType: function (mappingTitle, uninterpertedMapping) {
-            return upsertInterpretMapping(tsMap, mappingTitle, uninterpertedMapping, anonymousInnerTypeCounter);
+        upsertType: function (mappingTitle, uninterpertedMapping, location) {
+            if(!location) throw new Error("bad location!");
+            
+            return upsertInterpretMapping(tsMap, mappingTitle, uninterpertedMapping, anonymousInnerTypeCounter, location);
         },
         makeAnonymousTypeName: function() {
             return makeAnonymousTypeName(anonymousInnerTypeCounter);
@@ -32,9 +34,12 @@ function restoreFromMappings(cannonical, historical, a) {
     }
 }
 
-function upsertInterpretMapping(cannonical, mappingTitle, uninterpertedMapping, a) {
-    var original = getType(cannonical, mappingTitle, a);
+function upsertInterpretMapping(cannonical, mappingTitle, uninterpertedMapping, a, loc) {
+    var original = cannonical[getType(cannonical, mappingTitle, a)];
+    
     Object.assign(original, interpertMapping(cannonical, uninterpertedMapping, a));
+    original.location = loc;
+    
     return original;
 }
 
@@ -49,14 +54,15 @@ function getType(cannonical, typeName, a) {
     if(typeof typeName !== "string") {
         var type = typeName;
         var anonKey = makeAnonymousTypeName(a);
-        return upsertInterpretMapping(cannonical, anonKey, type, a);
+        upsertInterpretMapping(cannonical, anonKey, type, a);
+        return anonKey;
     }
     
     if(!cannonical[typeName]) {
         cannonical[typeName] = { type: "?" };
         a.inverseMap.set(cannonical[typeName], typeName);
     }
-    return cannonical[typeName];
+    return typeName;
 }
 
 function interpertMapping(cannonical, mapping, a) {
@@ -78,8 +84,15 @@ function interpertMapping(cannonical, mapping, a) {
 }
 
 function resolveFunctionApplicationType(cannonical, mapping, a) {
+    var nArgs = {};
+    for(var n in mapping.namedArguments) nArgs[n] = getType(cannonical, mapping.namedArguments[n], a);
+    
+    var pArgs = mapping.positionalArguments.map(x => getType(cannonical, x, a));
+    
     return {
         type: "apply",
+        positionalArguments: pArgs,
+        namedArguments: nArgs,
         operand: getType(cannonical, mapping.operand, a)
     };
 }
@@ -116,7 +129,7 @@ function resolveUnionType(cannonical, unionMapping, a) {
 }
 
 function resolveObjectType(cannonical, mapping, a) {
-    var r = { 
+    var r = {
         type: "object",
         some: getType(cannonical, mapping.some || "undefined", a),
         properties: {}

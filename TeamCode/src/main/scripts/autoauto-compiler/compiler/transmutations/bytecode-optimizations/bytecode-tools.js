@@ -1,7 +1,12 @@
 const bcMnemoms = require("./bc");
 
 module.exports = {
-    formatBc: formatBc
+    formatBc: formatBc,
+    formatFlattened: formatFlattened
+}
+
+function formatFlattened(bcArr) {
+    return bcArr.map(x=>formatBcInstr(x)).join("\n");
 }
 
 function formatBc(bytecode) {

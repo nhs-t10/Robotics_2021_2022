@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 public abstract class AutoautoPrimitive extends AutoautoValue implements AutoautoPropertyBearingObject {
 
+    public final static AutoautoPrimitive[] EMPTY_ARRAY = new AutoautoPrimitive[0];
+
     public AutoautoPrimitive() {
         setPrototype(UniversalPrototype.getMap());
     }

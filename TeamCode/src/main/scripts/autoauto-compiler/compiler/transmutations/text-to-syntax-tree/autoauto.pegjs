@@ -54,7 +54,7 @@ state =
 
 statement = singleStatement / multiStatement
 
-multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state? CLOSE_CURLY_BRACKET _ {
+multiStatement "block" = c:commentedWhitespace OPEN_CURLY_BRACKET s:state? CLOSE_CURLY_BRACKET _ {
 	return { type: "Block", 
           state: s || {comments:[], type: "State", location: location(), statement: []},
           location: location(), 
@@ -62,8 +62,8 @@ multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state? CLOSE_CURLY_B
         };
 }
 
-singleStatement =
-  c:commentedWhitespace  s:(passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)
+singleStatement "statement" =
+  c:commentedWhitespace  s:(returnStatement/provideStatement/passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)
 
   {
     if(s.comments && s.comments.length) s.comments = c.concat(s.comments);
@@ -71,6 +71,24 @@ singleStatement =
     
     return s;
   }
+ 
+provideStatement = PROVIDE _ v:value {return { type: "ProvideStatement", value:v, location: location() }; }
+
+delegateStatement = DELEGATE _ f:(
+	OPEN_PAREN d:stringLiteral _ a:(COMMA valueList)? CLOSE_PAREN { return [d, (a||[])[1] ] } / 
+    d:stringLiteral a:(_ WITH _ valueList)? { return [d, (a||[])[3] ]; }
+) {
+   return {
+       type: "DelegateStatement",
+       delegateTo: f[0],
+       location: location(),
+       args: f[1] || {type:"ArgumentList",args:[], location: location()}
+   }
+}
+  
+returnStatement = RETURN u:(_ value)? { 
+	return { type: "ReturnStatement", location:location(), value:u?u[1]:undefined }; 
+}
 
 afterStatement =
  AFTER _ u:value _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
@@ -83,7 +101,7 @@ funcDefStatement = FUNCTION _
     { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
 gotoStatement =
- GOTO _ p:(IDENTIFIER/dynamicValue) { return { type: "GotoStatement", location: location(), path: p } }
+ GOTO _ p:IDENTIFIER { return { type: "GotoStatement", location: location(), path: p } }
 
 ifStatement =
  (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? {
@@ -168,7 +186,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
+ _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens / delegateStatement) _ {
    return x;
  }
 
@@ -339,14 +357,18 @@ OPEN_CURLY_BRACKET "opening curly bracket" =
 CLOSE_CURLY_BRACKET "closing curly bracket" =
     "}"
 DOT "dot (.)" = "."
+RETURN = "return"
+PROVIDE = "provide"
+DELEGATE = "delegate"
 PASS = "pass"
 ELSE = "else"
 OTHERWISE = "otherwise"
+WITH = "with"
 IDENTIFIER =
     l:(LETTER / DIGIT)+
     &{
     var name = l.join("");
-    var reserved = ["if", "goto", "skip", "let", "next", "function", "func", "when", "after"];
+    var reserved = ["if", "goto", "skip", "let", "next", "function", "func", "when", "after","return","provide","delegate"];
     if(reserved.indexOf(name) == -1) return true;
     else return false;
     }
