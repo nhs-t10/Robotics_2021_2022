@@ -489,66 +489,81 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             break;
         case "ProvideStatement":
             result = process({
-                type: "FunctionCall",
+                type: "ValueStatement",
                 location: ast.location,
-                func: {
-                    type: "VariableReference",
+                call: {
+                    type: "FunctionCall",
                     location: ast.location,
-                    variable: {
-                        type: "Identifier",
+                    func: {
+                        type: "VariableReference",
                         location: ast.location,
-                        value: "provide"
+                        variable: {
+                            type: "Identifier",
+                            location: ast.location,
+                            value: "provide"
+                        }
+                    },
+                    args: {
+                        type: "ArgumentList",
+                        location: ast.location,
+                        len: 1,
+                        args: [ast.value]
                     }
-                },
-                args: {
-                    type: "ArgumentList",
-                    location: ast.location,
-                    len: 1,
-                    args: [ast.value]
                 }
             });
+            result.noLocation = true;
             break;
         case "ReturnStatement":
             result = process({
-                type: "FunctionCall",
+                type: "ValueStatement",
                 location: ast.location,
-                func: {
-                    type: "VariableReference",
+                call: {
+                    type: "FunctionCall",
                     location: ast.location,
-                    variable: {
-                        type: "Identifier",
+                    func: {
+                        type: "VariableReference",
                         location: ast.location,
-                        value: "return"
+                        variable: {
+                            type: "Identifier",
+                            location: ast.location,
+                            value: "return"
+                        }
+                    },
+                    args: {
+                        type: "ArgumentList",
+                        location: ast.location,
+                        len: ast.value ? 1 : 0,
+                        args: ast.value ? [ast.value] : []
                     }
-                },
-                args: {
-                    type: "ArgumentList",
-                    location: ast.location,
-                    len: ast.value ? 1 : 0,
-                    args: ast.value ? [ast.value] : []
                 }
             });
+            result.noLocation = true;
             break;
         case "DelegateStatement":
             result = process({
-                type: "FunctionCall",
+                type: "ValueStatement",
                 location: ast.location,
-                func: {
-                    type: "VariableReference",
+                call: {
+                    type: "FunctionCall",
                     location: ast.location,
-                    variable: {
-                        type: "Identifier",
+                    func: {
+                        type: "VariableReference",
                         location: ast.location,
-                        value: "delegate"
+                        variable: {
+                            type: "Identifier",
+                            location: ast.location,
+                            value: "delegate"
+                        }
+                    },
+                    args: {
+                        type: "ArgumentList",
+                        location: ast.location,
+                        len: ast.args.len + 1,
+                        args: [ast.delegateTo].concat(ast.args.args)
                     }
-                },
-                args: {
-                    type: "ArgumentList",
-                    location: ast.location,
-                    len: ast.args.len + 1,
-                    args: [ast.delegateTo].concat(ast.args.args)
                 }
             });
+            result.noLocation = true;
             break;
         case "BooleanLiteral":
             addDepthMappedDefinition({
