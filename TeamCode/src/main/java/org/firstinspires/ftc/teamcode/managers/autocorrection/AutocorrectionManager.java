@@ -61,7 +61,7 @@ public class AutocorrectionManager extends FeatureManager {
             delt_Xr = 0;
         }else if(displ_m0 == displ_m3&&displ_m3 == -displ_m1&&displ_m1 == displ_m2){
             logger.log("Displacements inverse (Moving left or right)");
-            delt_Xr = 0;
+            delt_Xr = (float) ((float)displ_m3*0.675);
         }
 //Move this holonomic displacement from robot to field frame of reference
         float robotTheta = imu.getThirdAngleOrientation();
