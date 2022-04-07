@@ -53,15 +53,16 @@ public class AutocorrectionManager extends FeatureManager {
         float dev_m3 = displ_m3 - displ_average;
 //Compute the displacement of the holonomic drive, in robot reference frame
         //float twoSqrtTwo = (float) (2.0*Math.sqrt(2));
+        float delt_Xr = 0;
+        float delt_Yr = 0;
         if(displ_m1 == displ_m2&&displ_m2 == displ_m0&&displ_m0 == displ_m3){
             logger.log("Displacements match (Moving forward or backward");
-            float delt_Xr = displ_average;
-            float delt_Yr = 0;
-        }
-        if(displ_m0 == displ_m2&&displ_m2 == -displ_m0&&displ_m1 == displ_m3){
+            delt_Xr = displ_average;
+            delt_Yr = 0;
+        }else if(displ_m0 == displ_m2&&displ_m2 == -displ_m0&&displ_m1 == displ_m3){
             logger.log("Displacements inverse (Moving left or right)");
-            float delt_Xr = displ_average;
-            float delt_Yr = 0;
+            delt_Xr = displ_average;
+            delt_Yr = 0;
         }
 //Move this holonomic displacement from robot to field frame of reference
         float robotTheta = imu.getThirdAngleOrientation();
@@ -96,6 +97,12 @@ public class AutocorrectionManager extends FeatureManager {
         Theta=0;
     }
     public void doCorrection(float targetX, float targetY, float targetTheta){
-
+        //delta = final - initial
+        float deltaX = targetX - correction[0];
+        float deltaY = targetY - correction[1];
+        float deltaTheta = targetTheta - correction[2];
+        //other axes (y, theta)
+        //x and y have a much bigger range than theta, so they need a larger coefficient
+        driving.driveOmni(deltaX*0.1f, deltaY*0.1f, deltaTheta*0.05f); //this is using driveOmni like it's HVR; i think it's VHR though
     }
 }
