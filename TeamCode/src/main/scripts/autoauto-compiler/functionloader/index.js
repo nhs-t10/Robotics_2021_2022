@@ -8,7 +8,7 @@ var managersDir = path.join(rootDirectory, "TeamCode/src/main/java/org/firstinsp
 
 var cache = require("../../cache");
 
-var functionLoaderConfig = require("./config");
+var functionLoaderConfig = require("../config");
 
 var cacheManagers = cache.get(functionLoaderConfig.CACHE_KEY, {});
 

@@ -16,7 +16,7 @@ module.exports = {
     save: function(key, value) {
         var encodedKey = sha(key);
         
-        var file = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
+        var file = keyFile(encodedKey);
         
         safeFsUtils.createDirectoryIfNotExist(file);
 
@@ -25,7 +25,7 @@ module.exports = {
     get: function(key, defaultValue) {        
         var encodedKey = sha(key);
         
-        var newFile = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
+        var newFile = keyFile(encodedKey);
         var file = path.join(cacheDir, encodedKey);
         
         if(fs.existsSync(file)) return JSON.parse(fs.readFileSync(file).toString());
@@ -33,7 +33,16 @@ module.exports = {
         else if(fs.existsSync(newFile)) return JSON.parse(fs.readFileSync(newFile).toString());
         
         else return defaultValue;
+    },
+    remove: function(key) {
+        var encodedKey = sha(key);
+        var file = keyFile(encodedKey);
+        if(fs.existsSync(file)) fs.unlinkSync(file);
     }
+}
+
+function keyFile(encodedKey) {
+    return path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
 }
 
 function migrateKeys(oldKey, newKey) {

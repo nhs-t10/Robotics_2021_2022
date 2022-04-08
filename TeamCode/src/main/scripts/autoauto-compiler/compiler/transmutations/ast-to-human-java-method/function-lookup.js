@@ -3,7 +3,7 @@
 var fs = require("fs");
 var cache = require("../../../../cache");
 
-var functionLoaderCache = cache.get(require("../../../functionloader/config").CACHE_KEY, {});
+var functionLoaderCache = cache.get(require("../../../config").CACHE_KEY, {});
 var cachedManagers = Object.values(functionLoaderCache).filter(x=>typeof x === "object");
 var invertedMapByFunctionName = {};
 cachedManagers.forEach(x=>

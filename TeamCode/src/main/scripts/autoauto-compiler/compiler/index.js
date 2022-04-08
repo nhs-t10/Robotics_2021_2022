@@ -1,8 +1,12 @@
 var fs = require("fs");
 var path = require("path");
+var crypto = require("crypto");
+
 const androidStudioLogging = require("../../script-helpers/android-studio-logging");
 
 var transmutations = require("./transmutations");
+const cache = require("../../cache");
+const CACHE_VERSION = require("../config").CACHE_VERSION;
 
 var directory = __dirname.split(path.sep);
 
@@ -33,7 +37,8 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         resultRoot: COMPILED_RESULT_DIRECTORY,
         fileFrontmatter: frontmatter,
         lastInput: null,
-        inputs: {}
+        inputs: {},
+        cacheKey: undefined
     };
     
     autoautoFileContexts[file] = fileContext;
@@ -49,7 +54,7 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
             continue;
         }
         
-        var mutRan = tryRunTransmutation(mut, fileContext);
+        var mutRan = cachedTryRunTransmutation(mut, fileContext);
         
         if(!mutRan) break;
     }
@@ -63,13 +68,38 @@ for(var j = 0; j < codebaseTasks.length; j++) {
     mut.run(allFileContexts[0], allFileContexts);
 }
 
-function tryRunTransmutation(transmutation, fileContext) {
+function cachedRunTransmutation(transmutation, fileContext) {
+    if (!fileContext.cacheKey) fileContext.cacheKey = sha(fileContext.sourceFullFileName + " " + transmutation.id);
+    var miss = {};
+    var k = `${CACHE_VERSION} autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
+    
+    var cacheEntry = cache.get(k, miss);
+    if(cacheEntry == miss) {
+        runTransmutation(transmutation, fileContext);
+        
+        if(fileContext.status == "pass") {
+            cache.save(k, fileContext.inputs[transmutation.id]);
+            fileContext.cacheKey = sha(fileContext.cacheKey + JSON.stringify(fileContext.inputs[transmutation.id]));
+        }
+        
+    } else {
+        fileContext.status = "pass";
+        
+        fileContext.inputs[transmutation.id] = cacheEntry;
+        if (cacheEntry != undefined && !transmutation.isDependency) fileContext.lastInput = cacheEntry;
+    }
+}
+
+function sha(s) {
+    return crypto.createHash("sha256").update(s + "").digest("hex");
+}
+
+
+function cachedTryRunTransmutation(transmutation, fileContext) {
     try {
         delete fileContext.status;
         
-        var m = runTransmutation(transmutation, fileContext);
-        
-        if(m) androidStudioLogging.sendTreeLocationMessage(m, fileContext.sourceFullFileName);
+        cachedRunTransmutation(transmutation, fileContext);
         
         if(fileContext.status != "pass") throw {kind: "ERROR", text: `Task ${transmutation.id} didn't report success` };
         

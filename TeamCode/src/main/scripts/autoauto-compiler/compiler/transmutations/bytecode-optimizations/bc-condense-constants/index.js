@@ -4,15 +4,14 @@ require("../..").registerTransmutation({
     type: "information",
     run: function(context) {
         var bcBlocks = context.inputs["syntax-tree-to-bytecode"].blocks;
-        var constants = context.inputs["syntax-tree-to-bytecode"].constants;
         
         Object.values(bcBlocks).forEach(x=>{
             if (!x.jumps.forEach) {
                 console.error(x);
                 throw "bad block!"
             }
-            modifyBcCondenseConstants(x.jumps, constants);
-            modifyBcCondenseConstants(x.code, constants);
+            modifyBcCondenseConstants(x.jumps);
+            modifyBcCondenseConstants(x.code);
         });
         
         context.output = bcBlocks;
@@ -21,15 +20,15 @@ require("../..").registerTransmutation({
 });
 
 
-function modifyBcCondenseConstants(code, constants) {
+function modifyBcCondenseConstants(code) {
     code.forEach(x=>{
         if(!x.args) x.args.map(x=>x);
-        modifyBcCondenseConstants(x.args, constants);
-        condenseConstantOps(x, constants);
+        modifyBcCondenseConstants(x.args);
+        condenseConstantOps(x);
     });
 }
 
-function condenseConstantOps(codeObject, constants) {
+function condenseConstantOps(codeObject) {
     if(isDecidableOpWithTwoArgs(codeObject.code)) {
         if(codeObject.args.length != 2) {
             throw {
@@ -45,12 +44,9 @@ function condenseConstantOps(codeObject, constants) {
             var r = doOp(codeObject.code, left.__value, right.__value);
             if(r != r) r = undefined;
 
-            var newCodeObject = {
-                code: constants.getCodeFor(r),
-                __value: r,
-                args: []
-            };
-            Object.assign(codeObject, newCodeObject);
+            codeObject.code = left.code;
+            codeObject.__value = r;
+            codeObject.args =  [];
         }
     }
 }

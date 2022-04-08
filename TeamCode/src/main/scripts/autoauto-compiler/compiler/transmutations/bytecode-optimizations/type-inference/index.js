@@ -140,8 +140,9 @@ function calcType(instruction, currentTypeKey, typeSystem, blocks) {
             return recordFunctionType(instruction, currentTypeKey, typeSystem, blocks);
             
         default: 
-            //console.error(instruction);
-            console.error("untyped bytecode! " + bc[instruction.code].mnemom);
+            console.error(instruction);
+            var f = bc[instruction.code];
+            console.error("untyped bytecode! " + (f ? f.mnemom:instruction.code));
     }
 }
 
