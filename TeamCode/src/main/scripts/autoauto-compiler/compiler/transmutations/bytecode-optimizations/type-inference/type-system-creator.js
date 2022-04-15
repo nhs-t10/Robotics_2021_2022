@@ -78,8 +78,6 @@ function interpertMapping(cannonical, mapping, a) {
         case "binary_operator": return resolveBinaryOperatorType(cannonical, mapping, a);
         case "apply": return resolveFunctionApplicationType(cannonical, mapping, a);
     }
-    console.log(mapping);
-    console.log(new Error().stack);
     throw new Error("Unknown type-mapping variant '" + mapping.type + "'");
 }
 

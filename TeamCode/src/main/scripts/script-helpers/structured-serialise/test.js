@@ -1,17 +1,7 @@
 var structuredSerialise = require("./index");
 
 
-var t = [{
-    foo: 3,
-    fef: [
-        32,
-        24,
-        "fhaisld",
-        {
-            fef: 3
-        }
-    ]
-}];
+var t = [require("./test-file.json")];
 
 for(var i = 0; i < 100; i++) {
     t.push(generateRandomObject(3));

@@ -11,12 +11,12 @@ $
 log("ULS!"), goto afterStatements;
 
 #afterStatements:
-    after 2s next;
+    log("zero seconds..."), after 0s next;
     //meters, not minutes!
-    after 40m next;
-    after 30s next;
-    after 3cm next;
-    after 2ly goto ifStatements
+    log("zero meters..."), after 0m next;
+    log("zero milliseconds..."), after 0ms next;
+    log("zero centimeters..."), after 0cm next;
+    log("zero light-years..."), after 0ly goto ifStatements
 
 #ifStatements:
     if(true) { log("this works like java"), next };

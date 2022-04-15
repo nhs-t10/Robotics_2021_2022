@@ -541,26 +541,22 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             break;
         case "DelegateStatement":
             result = process({
-                type: "ValueStatement",
+                type: "FunctionCall",
                 location: ast.location,
-                call: {
-                    type: "FunctionCall",
+                func: {
+                    type: "VariableReference",
                     location: ast.location,
-                    func: {
-                        type: "VariableReference",
+                    variable: {
+                        type: "Identifier",
                         location: ast.location,
-                        variable: {
-                            type: "Identifier",
-                            location: ast.location,
-                            value: "delegate"
-                        }
-                    },
-                    args: {
-                        type: "ArgumentList",
-                        location: ast.location,
-                        len: ast.args.len + 1,
-                        args: [ast.delegateTo].concat(ast.args.args)
+                        value: "delegate"
                     }
+                },
+                args: {
+                    type: "ArgumentList",
+                    location: ast.location,
+                    len: ast.args.len + 1,
+                    args: [ast.delegateTo].concat(ast.args.args)
                 }
             });
             result.noLocation = true;

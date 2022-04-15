@@ -71,22 +71,32 @@ for(var j = 0; j < codebaseTasks.length; j++) {
 function cachedRunTransmutation(transmutation, fileContext) {
     if (!fileContext.cacheKey) fileContext.cacheKey = sha(fileContext.sourceFullFileName + " " + transmutation.id);
     var miss = {};
-    var k = `${CACHE_VERSION} autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
+    var k = `autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
     
     var cacheEntry = cache.get(k, miss);
-    if(cacheEntry == miss) {
+    if(cacheEntry == miss || cacheEntry.v != CACHE_VERSION) {
+        
+        androidStudioLogging.beginOutputCapture();
         runTransmutation(transmutation, fileContext);
+        var log = androidStudioLogging.getCapturedOutput();
         
         if(fileContext.status == "pass") {
-            cache.save(k, fileContext.inputs[transmutation.id]);
-            fileContext.cacheKey = sha(fileContext.cacheKey + JSON.stringify(fileContext.inputs[transmutation.id]));
+            try {
+                cache.save(k, { v: CACHE_VERSION, c: fileContext.inputs[transmutation.id], log: log });
+
+                fileContext.cacheKey = sha(fileContext.cacheKey + JSON.stringify(fileContext.inputs[transmutation.id]));
+            } catch(e) {
+                throw "Problem caching result of " + transmutation.id;
+            }
         }
         
     } else {
         fileContext.status = "pass";
+
+        if(cacheEntry.log) androidStudioLogging.sendRawText(cacheEntry.log);
         
-        fileContext.inputs[transmutation.id] = cacheEntry;
-        if (cacheEntry != undefined && !transmutation.isDependency) fileContext.lastInput = cacheEntry;
+        fileContext.inputs[transmutation.id] = cacheEntry.c;
+        if (cacheEntry.c !== undefined && !transmutation.isDependency) fileContext.lastInput = cacheEntry.c;
     }
 }
 

@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.bytecode.Auto
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.Stack;
 
@@ -33,6 +34,7 @@ public class BytecodeEvaluationProgram implements AutoautoProgram {
 
     public void runUntilYield() {
         while(!yield) {
+            FeatureManager.logger.log("calling: " + pc);
             bytecodeRecords[program[pc]].invoke(this, scope, stack, callStack);
             pc++;
         }

@@ -30,8 +30,7 @@ module.exports = function(ast) {
     }
     
     return {
-        blocks: blockRecords,
-        constants: constantPool
+        blocks: blockRecords
     };
 }
 

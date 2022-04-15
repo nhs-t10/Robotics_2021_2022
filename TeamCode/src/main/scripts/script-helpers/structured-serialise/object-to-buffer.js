@@ -1,4 +1,5 @@
 var version = require("./version");
+var magic = require("./magic");
 
 var typeCodes = require("./types");
 var bitwiseyTools = require("../../script-helpers/bitwisey-helpers");
@@ -14,8 +15,10 @@ module.exports = function(obj) {
 
     var buffer = valuePool.pool.map(x=>x.bytes).flat(6);
     
-    buffer.splice(0, 0, version);
-    return Buffer.from(buffer);
+
+    return Buffer.from(
+        [].concat(magic, [version], buffer)
+    );
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
@@ -26,7 +29,10 @@ function createOrGetIdInValuepool(obj, valuePool) {
         if(cstr) type = "wellKnownObject";
     }
     
-    if(typeCodes[type] === undefined) throw "Could not serialise value of type " + type;
+    if(typeCodes[type] === undefined) {
+        console.error(obj);
+        throw new Error("Could not serialise value of type " + type);
+    }
 
     //by searching from the back, we get more-recent values first
     if(valuePool.invertedPoolMap.has(obj)) return valuePool.invertedPoolMap.get(obj);

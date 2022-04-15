@@ -9,7 +9,6 @@ var gp = structuredSerialize.fromBuffer(fs.readFileSync(__dirname + "/vis.sseria
 var traversed = new Map();
 
 var b = basicTraverse(gp);
-console.log(b);
 
 
 function basicTraverse(x, path) {

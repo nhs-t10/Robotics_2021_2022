@@ -4,6 +4,7 @@ var fs = require("fs");
 var path = require("path");
 
 var safeFsUtils = require("../script-helpers/safe-fs-utils");
+const structuredSerialise = require("../script-helpers/structured-serialise");
 
 var cacheDir = path.join(__dirname, ".cache");
 if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
@@ -20,7 +21,7 @@ module.exports = {
         
         safeFsUtils.createDirectoryIfNotExist(file);
 
-        fs.writeFileSync(file, JSON.stringify(value) || null);
+        fs.writeFileSync(file, serialiseData(value) || null);
     },
     get: function(key, defaultValue) {        
         var encodedKey = sha(key);
@@ -28,9 +29,9 @@ module.exports = {
         var newFile = keyFile(encodedKey);
         var file = path.join(cacheDir, encodedKey);
         
-        if(fs.existsSync(file)) return JSON.parse(fs.readFileSync(file).toString());
+        if(fs.existsSync(file)) return deserialiseData(fs.readFileSync(file));
         
-        else if(fs.existsSync(newFile)) return JSON.parse(fs.readFileSync(newFile).toString());
+        else if(fs.existsSync(newFile)) return deserialiseData(fs.readFileSync(newFile));
         
         else return defaultValue;
     },
@@ -39,6 +40,26 @@ module.exports = {
         var file = keyFile(encodedKey);
         if(fs.existsSync(file)) fs.unlinkSync(file);
     }
+}
+
+function serialiseData(data) {
+    try {
+        return structuredSerialise.toBuffer(data);
+    } catch(e) {
+        console.error(data);
+        throw new Error("Couldn't serialise. " + e.message);
+    }
+}
+
+function deserialiseData(dataBuffer) {
+    if(isStructuredSerialised(dataBuffer)) return structuredSerialise.fromBuffer(dataBuffer);
+    else return JSON.parse(dataBuffer.toString());
+}
+
+function isStructuredSerialised(dataBuffer) {
+    var maybeMagic = dataBuffer.slice(0, structuredSerialise.magic.length);
+    if(maybeMagic.join(",") == structuredSerialise.magic.join(",")) return true;
+    else return false;
 }
 
 function keyFile(encodedKey) {

@@ -1,3 +1,4 @@
+var magic = require("./magic");
 var version = require("./version");
 var arrayReader = require("../../script-helpers/array-reader");
 var bitwiseyHelpers = require("../bitwisey-helpers");
@@ -8,10 +9,12 @@ var typesInverted = Object.fromEntries(Object.entries(types).map(x=>[x[1], x[0]]
 
 module.exports = function(buf) {
     buf = Array.from(buf);
+
+    buf = buf.slice(magic.length);
     
     var bVersion = buf[0];
     buf = buf.slice(1);
-    if(version != bVersion) throw "Version mismatch in structured-serialise!";
+    if(version != bVersion) throw new Error("Version mismatch in structured-serialise!");
     
     var pool = [];
     

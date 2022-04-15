@@ -6,11 +6,31 @@ module.exports = {
     sendPlainMessage: sendPlainMessage,
     sendTreeLocationMessage: sendTreeLocationMessage,
     
-    warning: sendWarn
-}
+    warning: sendWarn,
+
+    beginOutputCapture: beginOutputCapture,
+    getCapturedOutput: getCapturedOutput,
+
+    sendRawText: sendRawText,
+};
+
+var capturingOutput = false;
+var captured = "";
 
 var logLevel = 0;
 if(process.argv.includes("-q")) logLevel = 2;
+
+function beginOutputCapture() {
+    capturingOutput = true;
+    captured = "";
+}
+
+function getCapturedOutput() {
+    capturingOutput = false;
+    var t = captured;
+    captured = "";
+    return t;
+}
 
 function sendWarn(msgStr) {
     sendPlainMessage({
@@ -22,20 +42,27 @@ function sendWarn(msgStr) {
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
-    if (logLevel <= l || l === undefined) formatAndSendJsonFormat(msg);
+    if (logLevel <= l || l === -1) formatAndSendHumanyFormat(msg);
 }
 
 function formatAndSendJsonFormat(msg) {
     msg.original = humanReadableFormat(msg);
-    console.error("AGPBI: " + JSON.stringify(msg));
+    sendRawText("AGPBI: " + JSON.stringify(msg));
 }
 
 function formatAndSendHumanyFormat(msg) {
-    console.error(humanReadableFormat(msg));
+    sendRawText(humanReadableFormat(msg));
+}
+
+function sendRawText(txt) {
+    if(capturingOutput) captured += txt + "\n";
+    console.log(txt);
 }
 
 function humanReadableFormat(msg) {
     var mForm = "";
+
+    mForm += msg.kind.toLowerCase() + ": "
 
     if (msg.sources[0]) {
         mForm += msg.sources[0].file + ":";
@@ -45,11 +72,19 @@ function humanReadableFormat(msg) {
         mForm += " ";
     }
 
-    mForm += msg.kind.toLowerCase() + ": "
+    mForm += singleLine(msg.text) + ":\n" + indent("  ", msg.original || "");
 
-    mForm += msg.text + ":\n" + (msg.original || "");
+    mForm += "\n\n";
 
     return mForm;
+}
+
+function singleLine(t) {
+    return t.replace(/\n/g, " ");
+}
+
+function indent(indentBy, t) {
+    return t.split("\n").map(x=>indentBy + x).join("\n");
 }
 
 function sendTreeLocationMessage(res, file, defaultKind) {
