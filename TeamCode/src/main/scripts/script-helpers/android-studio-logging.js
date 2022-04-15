@@ -42,12 +42,16 @@ function sendWarn(msgStr) {
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
-    if (logLevel <= l || l === -1) formatAndSendHumanyFormat(msg);
+    if (logLevel <= l || l === -1) {
+        formatAndSendJsonFormat(msg);
+        formatAndSendHumanyFormat(msg);
+    }
 }
 
 function formatAndSendJsonFormat(msg) {
-    msg.original = humanReadableFormat(msg);
-    sendRawText("AGPBI: " + JSON.stringify(msg));
+    var f = Object.assign({}, msg);
+    f.original = humanReadableFormat(msg);
+    sendRawText("AGPBI: " + JSON.stringify(f));
 }
 
 function formatAndSendHumanyFormat(msg) {
@@ -62,8 +66,6 @@ function sendRawText(txt) {
 function humanReadableFormat(msg) {
     var mForm = "";
 
-    mForm += msg.kind.toLowerCase() + ": "
-
     if (msg.sources[0]) {
         mForm += msg.sources[0].file + ":";
         if (msg.sources[0].location) {
@@ -71,6 +73,8 @@ function humanReadableFormat(msg) {
         }
         mForm += " ";
     }
+
+    mForm += msg.kind.toLowerCase() + ": ";
 
     mForm += singleLine(msg.text) + ":\n" + indent("  ", msg.original || "");
 

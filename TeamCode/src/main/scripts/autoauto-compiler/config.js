@@ -1,4 +1,4 @@
 module.exports = {
     CACHE_KEY: "autoauto-managers",
-    CACHE_VERSION: 9009
+    CACHE_VERSION: 9010
 };

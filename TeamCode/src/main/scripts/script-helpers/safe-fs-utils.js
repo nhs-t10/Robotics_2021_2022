@@ -1,6 +1,9 @@
 var fs = require("fs");
 var path = require("path");
 
+
+var cachedGitDirectory = getGitRootDirectory();
+
 module.exports = {
     createDirectoryIfNotExist: function(fileName) {
         var dirName = fileName;
@@ -29,5 +32,41 @@ module.exports = {
     
         if(filesLeft == 0) fs.rmdirSync(dir);
         return filesLeft == 0;
+    },
+    getGitRootDirectory: function() {
+        return cachedGitDirectory;
+    },
+    addToGitignore: function(path) {
+        var gitRoot = cachedGitDirectory;
+        if(!gitRoot) return false;
+
+        var gitignore = path.join(gitRoot, ".gitignore");
+        //if it doesn't exist, just create it with the required content
+        if(!fs.existsSync(gitignore)) {
+            fs.writeFileSync(gitignore, path + "\n");
+            return true;
+        }
+        
+        var gContent = fs.readFileSync(gitignore).toString();
+        var gLines = gContent.split(/\r?\n/);
+
+        //early exit if the gitignore already has the path
+        if(gLines.includes(path)) return true;
+        else gLines.push(path);
+
+        fs.writeFileSync(gitignore, gLines.join("\n"));
+        return true;
     }
+}
+
+function getGitRootDirectory() {
+    var dir = process.cwd().split(path.sep);
+    while(true) {
+        var dirPath = dir.join(path.sep);
+        if(fs.existsSync(path.join(dirPath, ".git"))) break;
+        else dir.pop();
+
+        if(dir.length == 0) return undefined;
+    }
+    return dir.join(path.sep);
 }

@@ -6,8 +6,9 @@ var path = require("path");
 var safeFsUtils = require("../script-helpers/safe-fs-utils");
 const structuredSerialise = require("../script-helpers/structured-serialise");
 
-var cacheDir = path.join(__dirname, ".cache");
-if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
+var oldCacheDir = path.join(__dirname, ".cache");
+
+var cacheDir = findCacheDirectory();
 
 var CACHE_MAX_BYTES = 100000000; //100 MB
 
@@ -23,23 +24,48 @@ module.exports = {
 
         fs.writeFileSync(file, serialiseData(value) || null);
     },
-    get: function(key, defaultValue) {        
+    get: function(key, defaultValue) {
         var encodedKey = sha(key);
         
-        var newFile = keyFile(encodedKey);
-        var file = path.join(cacheDir, encodedKey);
+        var possibleFilesInAgeOrder = [
+            keyFile(encodedKey),
+            keyFile(encodedKey, 3, oldCacheDir),
+            keyFile(encodedKey, 0, oldCacheDir)
+        ];
+
+        for(var i = 0; i < possibleFilesInAgeOrder.length; i++) {
+            var f = possibleFilesInAgeOrder[i];
+            if(fs.existsSync(f)) return deserialiseData(fs.readFileSync(f));
+        }
         
-        if(fs.existsSync(file)) return deserialiseData(fs.readFileSync(file));
-        
-        else if(fs.existsSync(newFile)) return deserialiseData(fs.readFileSync(newFile));
-        
-        else return defaultValue;
+        return defaultValue;
     },
     remove: function(key) {
         var encodedKey = sha(key);
         var file = keyFile(encodedKey);
         if(fs.existsSync(file)) fs.unlinkSync(file);
     }
+}
+
+function findCacheDirectory() {
+    var SIGIL = ".autoauto-compiler-cache-directory";
+
+    var gitRoot = safeFsUtils.getGitRootDirectory();
+    var folder = "";
+    if(gitRoot) {
+        var gradleFolder = path.join(gitRoot, ".gradle");
+        if(fs.existsSync(gradleFolder)) {
+            folder = path.join(gradleFolder, SIGIL)
+        } else {
+            folder = path.join(gitRoot, SIGIL);
+            safeFsUtils.addToGitignore(SIGIL + "/**");
+        }
+    } else {
+        folder = path.join(require("os").homedir(), SIGIL);
+    }
+
+    if(!fs.existsSync(folder)) fs.mkdirSync(folder);
+    return folder;
 }
 
 function serialiseData(data) {
@@ -62,15 +88,11 @@ function isStructuredSerialised(dataBuffer) {
     else return false;
 }
 
-function keyFile(encodedKey) {
-    return path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
-}
+function keyFile(encodedKey, n, pfx) {
+    if(n === undefined) n = 2;
+    if(!pfx) pfx = cacheDir;
 
-function migrateKeys(oldKey, newKey) {
-    var oldFile = path.join(cacheDir, oldKey);
-    var newFile = path.join(cacheDir, newKey);
-    
-    if(fs.existsSync(oldFile) && !fs.existsSync(newFile)) fs.renameSync(oldFile, newFile);
+    return path.join(pfx, encodedKey.substring(0,n), encodedKey.substring(n) + ".cached");
 }
 
 function sha(k) {
