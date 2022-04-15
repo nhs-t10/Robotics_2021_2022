@@ -24,7 +24,8 @@ var codebaseTasks = [];
 for(var i = 0; i < autoautoFileNames.length; i++) {
     var file = autoautoFileNames[i];
     var resultFile = getResultFor(file);
-    var frontmatter = loadFrontmatter(file);
+    var fileContent = fs.readFileSync(file).toString();
+    var frontmatter = loadFrontmatter(fileContent);
     
     var fileContext = {
         sourceBaseFileName: path.basename(file),
@@ -36,6 +37,7 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         resultFullFileName: resultFile,
         resultRoot: COMPILED_RESULT_DIRECTORY,
         fileFrontmatter: frontmatter,
+        fileContentText: fileContent,
         lastInput: null,
         inputs: {},
         cacheKey: undefined
@@ -69,7 +71,9 @@ for(var j = 0; j < codebaseTasks.length; j++) {
 }
 
 function cachedRunTransmutation(transmutation, fileContext) {
-    if (!fileContext.cacheKey) fileContext.cacheKey = sha(fileContext.sourceFullFileName + " " + transmutation.id);
+    if (!fileContext.cacheKey) {
+        fileContext.cacheKey = sha(fileContext.sourceFullFileName + " " + transmutation.id + "\0" + fileContext.fileContentText);
+    }
     var miss = {};
     var k = `autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
     
@@ -157,8 +161,7 @@ function capitalize(str) {
     return str[0].toUpperCase() + str.substring(1);
 }
 
-function loadFrontmatter(filename) {
-    var fCont = fs.readFileSync(filename).toString();
+function loadFrontmatter(fCont) {
     
     try {
         var fmI = fCont.indexOf("$");
