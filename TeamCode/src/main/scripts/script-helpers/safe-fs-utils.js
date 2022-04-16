@@ -5,66 +5,76 @@ var path = require("path");
 var cachedGitDirectory = getGitRootDirectory();
 
 module.exports = {
-    safeWriteFile: function(fileName, content) {
-        var dir = path.dirname(fileName);
-        this.createDirectoryIfNotExist(dir);
+    safeWriteFile: safeWriteFile,
+    createDirectoryIfNotExist: createDirectoryIfNotExist,
+    cleanDirectory: cleanDirectory,
+    addToGitignore: addToGitignore,
+    safeReadFile: safeReadFile,
+    getGitRootDirectory: ()=>cachedGitDirectory
+}
 
-        console.log("writing " + fileName);
+function safeReadFile(filename) {
+    if(fs.existsSync(filename)) return fs.readFileSync(filename);
+    else return Buffer.from([]);
+}
 
-        fs.writeFileSync(fileName, content);
-    },
-    createDirectoryIfNotExist: function(fileName) {
-        var dirName = fileName;
-        
-        //if the final term has a dot, assume it's a filename
-        if(path.basename(fileName).includes(".")) dirName = path.dirname(fileName);
-        
-        if(!fs.existsSync(dirName)) {
-            fs.mkdirSync(dirName, {recursive: true});
-        }
-    },
-    cleanDirectory: function (dir, dontDeleteFiles) {
-        var files = fs.readdirSync(dir, { withFileTypes: true });
-        var filesLeft = files.length;
-        files.forEach(x=> {
-            var name = path.join(dir, x.name);
-            if(x.isFile()) {
-                if(!dontDeleteFiles.includes(name)) {
-                    fs.unlinkSync(name);
-                    filesLeft--;
-                }
-            } else if(x.isDirectory()) {
-                if(clearDirectory(name, dontDeleteFiles)) filesLeft--;
-            }
-        });
-    
-        if(filesLeft == 0) fs.rmdirSync(dir);
-        return filesLeft == 0;
-    },
-    getGitRootDirectory: function() {
-        return cachedGitDirectory;
-    },
-    addToGitignore: function(path) {
-        var gitRoot = cachedGitDirectory;
-        if(!gitRoot) return false;
+function safeWriteFile(fileName, content) {
+    var dir = path.dirname(fileName);
+    createDirectoryIfNotExist(dir);
 
-        var gitignore = path.join(gitRoot, ".gitignore");
-        //if it doesn't exist, just create it with the required content
-        if(!fs.existsSync(gitignore)) {
-            fs.writeFileSync(gitignore, path + "\n");
-            return true;
-        }
-        
-        var gContent = fs.readFileSync(gitignore).toString();
-        var gLines = gContent.split(/\r?\n/);
+    fs.writeFileSync(fileName, content);
+}
 
-        //early exit if the gitignore already has the path
-        if(gLines.includes(path)) return true;
-        else gLines.push(path);
+function addToGitignore(path) {
+    var gitRoot = cachedGitDirectory;
+    if(!gitRoot) return false;
 
-        fs.writeFileSync(gitignore, gLines.join("\n"));
+    var gitignore = path.join(gitRoot, ".gitignore");
+    //if it doesn't exist, just create it with the required content
+    if(!fs.existsSync(gitignore)) {
+        fs.writeFileSync(gitignore, path + "\n");
         return true;
     }
+    
+    var gContent = fs.readFileSync(gitignore).toString();
+    var gLines = gContent.split(/\r?\n/);
+
+    //early exit if the gitignore already has the path
+    if(gLines.includes(path)) return true;
+    else gLines.push(path);
+
+    fs.writeFileSync(gitignore, gLines.join("\n"));
+    return true;
+}
+
+function createDirectoryIfNotExist(fileName) {
+    var dirName = fileName;
+    
+    //if the final term has a dot, assume it's a filename
+    if(path.basename(fileName).includes(".")) dirName = path.dirname(fileName);
+    
+    if(!fs.existsSync(dirName)) {
+        fs.mkdirSync(dirName, {recursive: true});
+    }
+}
+
+function cleanDirectory(dir, dontDeleteFiles) {
+    var files = fs.readdirSync(dir, { withFileTypes: true });
+    var filesLeft = files.length;
+    files.forEach(x=> {
+        var name = path.join(dir, x.name);
+        if(x.isFile()) {
+            if(!dontDeleteFiles.includes(name)) {
+                fs.unlinkSync(name);
+                filesLeft--;
+            }
+        } else if(x.isDirectory()) {
+            if(cleanDirectory(name, dontDeleteFiles)) filesLeft--;
+        }
+    });
+
+    if(filesLeft == 0) fs.rmdirSync(dir);
+    return filesLeft == 0;
 }
 
 function getGitRootDirectory() {

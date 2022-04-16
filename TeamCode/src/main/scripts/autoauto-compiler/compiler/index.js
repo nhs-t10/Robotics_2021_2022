@@ -13,7 +13,6 @@ var directory = __dirname.split(path.sep);
 var SRC_DIRECTORY = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
 
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
-createDirectoryIfNotExist(COMPILED_RESULT_DIRECTORY);
 
 var autoautoFileNames = loadAutoautoFilesFromFolder(SRC_DIRECTORY);
 
@@ -181,13 +180,6 @@ function loadFrontmatter(fCont) {
         
     } catch(e) {
         return {};
-    }
-}
-
-function createDirectoryIfNotExist(fileName) {
-    var dirName = path.dirname(fileName);
-    if(!fs.existsSync(dirName)) {
-        fs.mkdirSync(dirName, {recursive: true});
     }
 }
 

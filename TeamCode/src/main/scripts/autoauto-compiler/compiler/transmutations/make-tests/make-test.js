@@ -1,8 +1,7 @@
-var fs = require("fs");
 var path = require("path");
 var safeFsUtils = require("../../../../script-helpers/safe-fs-utils");
 
-var template = fs.readFileSync(__dirname + "/test.notjava").toString();
+var template = safeFsUtils.safeReadFile(__dirname + "/test.notjava").toString();
 
 
 /**
@@ -38,9 +37,7 @@ module.exports = function(testRecords, testsDir) {
 
     var resultFile = path.join(testsDir, testName + ".java");
 
-    safeFsUtils.createDirectoryIfNotExist(resultFile);
-
-    fs.writeFileSync(resultFile, result);
+    safeFsUtils.safeWriteFile(resultFile, result);
 }
 
 function makeAssert(frontMatter) {

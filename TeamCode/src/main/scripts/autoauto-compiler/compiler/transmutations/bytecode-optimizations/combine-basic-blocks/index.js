@@ -1,5 +1,3 @@
-var fs = require("fs");
-
 require("../..").registerTransmutation({
     id: "combine-basic-blocks",
     requires: ["bc-basic-dead-code-elimination"],

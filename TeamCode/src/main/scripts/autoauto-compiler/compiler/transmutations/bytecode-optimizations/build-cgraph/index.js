@@ -1,4 +1,3 @@
-var fs = require("fs");
 const bytecodeSpec = require("../bytecode-spec");
 
 require("../..").registerTransmutation({

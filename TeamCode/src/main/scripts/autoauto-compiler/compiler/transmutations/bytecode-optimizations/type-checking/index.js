@@ -1,4 +1,3 @@
-const fs = require("fs");
 const bytecodeTools = require("../bytecode-tools");
 const bc = require("../bc");
 const bytecodeSpec = require("../bytecode-spec");
