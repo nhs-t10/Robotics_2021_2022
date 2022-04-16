@@ -45,7 +45,7 @@ log("ULS!"), goto afterStatements;
     function f(e = 3) {
         return(e + "hah")
     }, next;
-    log(f()), log(f("ha")), next;
+    log(f(2)), log(f("ha")), next;
     let d = func(e, k = "fef") {
         return(e + k + "oop")
     }, next;

@@ -10,11 +10,12 @@ module.exports = function(denseCodes, constantPool, bytecode) {
     var bcMapArray = makeBytecodeMapArray(denseCodes, denseConstantMap.map);
     var values = denseConstantMap.valueArray.map(x=>wrapInPrimConstr(x));
     
-    return `AutoautoPrimitive[] constants = new AutoautoPrimitive[] { ${values} };
-    return new ${PROGRAM_TYPE_PACKAGE}.BytecodeEvaluationProgram(
-        new int[] {${instrs}},
-        new ${BYTECODE_PACKAGE}.AutoautoBytecode[] {${bcMapArray}}
-    );`
+    return {
+        constants: `AutoautoPrimitive[] constants = new AutoautoPrimitive[] { ${values} };`,
+        fullExtendsName: `${PROGRAM_TYPE_PACKAGE}.BytecodeEvaluationProgram`,
+        instructions: `new int[] {${instrs}}`,
+        bytecodes: `new ${BYTECODE_PACKAGE}.AutoautoBytecode[] {${bcMapArray}}`
+    }
 }
 
 function wrapInPrimConstr(v) {

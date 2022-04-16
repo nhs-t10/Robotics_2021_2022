@@ -40,8 +40,11 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         fileContentText: fileContent,
         lastInput: null,
         inputs: {},
-        cacheKey: undefined
+        cacheKey: undefined,
+        usedFiles: []
     };
+
+    fileContext.usedFiles.push(fileContext.resultFullFileName);
     
     autoautoFileContexts[file] = fileContext;
     
@@ -78,7 +81,7 @@ function cachedRunTransmutation(transmutation, fileContext) {
     var k = `autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
     
     var cacheEntry = cache.get(k, miss);
-    if(cacheEntry == miss || cacheEntry.v != CACHE_VERSION) {
+    if(transmutation.neverCache || cacheEntry == miss || cacheEntry.v != CACHE_VERSION) {
         
         androidStudioLogging.beginOutputCapture();
         runTransmutation(transmutation, fileContext);
@@ -97,7 +100,7 @@ function cachedRunTransmutation(transmutation, fileContext) {
     } else {
         fileContext.status = "pass";
 
-        if(cacheEntry.log) androidStudioLogging.sendRawText(cacheEntry.log);
+        if(cacheEntry.log) androidStudioLogging.sendMessages(cacheEntry.log);
         
         fileContext.inputs[transmutation.id] = cacheEntry.c;
         if (cacheEntry.c !== undefined && !transmutation.isDependency) fileContext.lastInput = cacheEntry.c;
@@ -131,10 +134,12 @@ function runTransmutation(transmutation, fileContext) {
     
     var c = {};
     Object.assign(c, fileContext);
+    c.usedFiles = null;
     
     transmutation.run(c);
     
     fileContext.status = c.status;
+    if(c.usedFiles) fileContext.usedFiles = fileContext.usedFiles.concat(c.usedFiles);
     
     fileContext.inputs[transmutation.id] = c.output;
     if(c.output !== undefined && !transmutation.isDependency) fileContext.lastInput = c.output;

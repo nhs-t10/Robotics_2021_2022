@@ -1,6 +1,7 @@
 var fs = require("fs");
 const path = require("path");
-var cache = require("../../../cache");
+
+var memoizeParsedAliases = {};
 
 var transmutations = {};
 
@@ -44,17 +45,17 @@ function idsToTras(ids) {
 function cachedParseSpecExpandAliases(sp) {
     var keys = Object.keys(transmutations);
     
-    var t = {
+    var t = JSON.stringify({
         k: "aa-compiler-transmutation-cache",
         ver: keys,
         v: sp
-    };
+    });
     
-    var cVal = false;//cache.get(t, false);
+    var cVal = memoizeParsedAliases[t];
     
-    if(cVal === false) {
+    if(!cVal) {
         cVal = parseSpecExpandAliases(sp);
-        cache.save(t, cVal);
+        memoizeParsedAliases[t] = cVal;
     }
     return cVal;
 }
@@ -145,6 +146,7 @@ function loadTransmutations(dirname) {
  * @property {string} id
  * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
  * @property {TransmutationFunction} run
+ * @property {boolean} neverCache
  */
 
 /**
@@ -171,6 +173,8 @@ function loadTransmutations(dirname) {
  *
  * @property {string} resultRoot
  * @property {string} sourceRoot
+ * 
+ * @property {string[]} usedFiles
  *
  * @property {object} fileFrontmatter
  */

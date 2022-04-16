@@ -11,24 +11,24 @@ module.exports = {
     beginOutputCapture: beginOutputCapture,
     getCapturedOutput: getCapturedOutput,
 
-    sendRawText: sendRawText,
+    sendMessages: sendMessages
 };
 
 var capturingOutput = false;
-var captured = "";
+var captured = [];
 
 var logLevel = 0;
 if(process.argv.includes("-q")) logLevel = 2;
 
 function beginOutputCapture() {
     capturingOutput = true;
-    captured = "";
+    captured = [];
 }
 
 function getCapturedOutput() {
     capturingOutput = false;
     var t = captured;
-    captured = "";
+    captured = [];
     return t;
 }
 
@@ -39,10 +39,16 @@ function sendWarn(msgStr) {
     });
 }
 
+function sendMessages(msgs) {
+    msgs.forEach(x=>sendPlainMessage(x));
+}
+
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
     if (logLevel <= l || l === -1) {
+        if(capturingOutput) captured.push(msg);
+
         formatAndSendJsonFormat(msg);
         formatAndSendHumanyFormat(msg);
     }
@@ -59,7 +65,6 @@ function formatAndSendHumanyFormat(msg) {
 }
 
 function sendRawText(txt) {
-    if(capturingOutput) captured += txt + "\n";
     console.log(txt);
 }
 

@@ -2,6 +2,7 @@ var calculateBlockLength = require("./block-length");
 var replaceLabelWithIndex = require("./label-to-index");
 var flattenBlock = require("./block-flatten");
 var makeOrderedBlocks = require("./ordered-block-array");
+const { writeFileSync } = require("fs");
 
 require("..").registerTransmutation({
     id: "bytecode-flatten",
@@ -26,6 +27,8 @@ require("..").registerTransmutation({
         
         //and finally, flatten! this WILL remove blocks.
         var flatBc = blocks.map(x=>flattenBlock(x)).flat(1);
+
+        writeFileSync(__dirname + "/fbc", (require("../bytecode-optimizations/bytecode-tools").formatFlattened(flatBc)));
         
         context.output = flatBc;
         context.status = "pass";

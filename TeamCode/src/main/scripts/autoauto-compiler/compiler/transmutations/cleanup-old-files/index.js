@@ -6,7 +6,7 @@ require("..").registerTransmutation({
     id: "cleanup-old-files",
     type: "codebase_postprocess",
     run: function(context, contexts) {
-        clearDirectory(context.resultRoot, contexts.map(x=>x.resultFullFileName));
+        clearDirectory(context.resultRoot, contexts.map(x=>x.usedFiles).flat());
     }
 });
 

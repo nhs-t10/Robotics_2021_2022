@@ -22,7 +22,7 @@ public class makefunction_Bytecode extends AutoautoBytecode {
         String[] argNames = new String[numArgs];
         AutoautoPrimitive[] defaults = new AutoautoPrimitive[numArgs];
 
-        for(int i = numArgs - 1; i >= 0; i++) {
+        for(int i = numArgs - 1; i >= 0; i--) {
             defaults[i] = stack.pop();
             argNames[i] = stack.pop().getString();
         }
@@ -71,7 +71,6 @@ public class makefunction_Bytecode extends AutoautoBytecode {
                 scope.systemSet(argNames[i], defaults[i]);
             }
 
-            callStack.push(this.bytecodeEvaluationProgram.pc);
             bytecodeEvaluationProgram.setScope(scope);
             this.bytecodeEvaluationProgram.pc = functionStart;
 

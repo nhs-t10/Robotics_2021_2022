@@ -159,14 +159,14 @@ function valueToBytecodeBlocks(valueAst, constantPool) {
 }
 
 function functionCallToBytecode(ast, constantPool) {
-    var funcToCall = valueToBytecodeBlocks(ast.func, constantPool);
+    var toBeCalled = valueToBytecodeBlocks(ast.func, constantPool);
     var arguments = argumentListToBytecodeAsPositionalThenNamed(ast.args, constantPool);
     
     return {
         computation: emitBytecodeWithLocation(bytecodeSpec.callfunction, 
-            [funcToCall.computation].concat(arguments.boundedCalculations)
+            [toBeCalled.computation].concat(arguments.boundedCalculations)
         , ast),
-        dependentBlocks: [].concat(funcToCall.dependentBlocks, arguments.dependentBlocks)
+        dependentBlocks: [].concat(toBeCalled.dependentBlocks, arguments.dependentBlocks)
     }
     
 }

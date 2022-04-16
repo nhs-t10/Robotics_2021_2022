@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.Autoau
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoPrimitive;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives.AutoautoUndefined;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
+import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 
 import java.util.List;
 import java.util.Arrays;
@@ -14,6 +15,9 @@ public class callfunction_Bytecode extends AutoautoBytecode {
 
     @Override
     public void invoke(BytecodeEvaluationProgram bytecodeEvaluationProgram, AutoautoRuntimeVariableScope scope, Stack<AutoautoPrimitive> stack, Stack<Integer> callStack) {
+
+        FeatureManager.logger.log("Named arguments: " + stack.peek().getString());
+
         int numNamedArgs = stack.pop().castToNumber().getInt();
         String[] argnames = new String[numNamedArgs];
         AutoautoPrimitive[] namedargs = new AutoautoPrimitive[numNamedArgs];
@@ -22,11 +26,15 @@ public class callfunction_Bytecode extends AutoautoBytecode {
             argnames[i] = stack.pop().getString();
         }
 
+        FeatureManager.logger.log("Position arguments: " + stack.peek().getString());
+
         int numPosArgs = stack.pop().castToNumber().getInt();
         AutoautoPrimitive[] posargs = new AutoautoPrimitive[numPosArgs];
         for(int i = numPosArgs - 1; i>=0; i--) posargs[i] = stack.pop();
 
         AutoautoPrimitive func = stack.pop();
+
+        callStack.push(bytecodeEvaluationProgram.pc);
 
         if(func instanceof AutoautoCallableValue) {
             AutoautoCallableValue fFunc = (AutoautoCallableValue)func;
@@ -36,6 +44,7 @@ public class callfunction_Bytecode extends AutoautoBytecode {
             stack.push(new AutoautoUndefined());
         }
 
+        callStack.pop();
     }
 
     private AutoautoPrimitive[] mergeArgs(String[] cannonicalArgNames, AutoautoPrimitive[] namedargs, String[] namedArgNames, AutoautoPrimitive[] positionalArgs) {

@@ -1,11 +1,17 @@
 const cpool = require("./constant-pool");
 const makeJava = require("./make-java");
+const writeHelperClass = require("./write-helper-class");
+
+var path = require("path");
 
 require("..").registerTransmutation({
     id: "bytecode-for-java",
-    requires: ["bytecode-flatten"],
+    requires: ["bytecode-flatten", "get-result-package"],
     type: "transmutation",
+    neverCache: true,
     run: function (context) {
+        var package = context.inputs["get-result-package"];
+
         var constantPool = cpool();
         
         var bytecode = context.inputs["bytecode-flatten"];
@@ -23,9 +29,13 @@ require("..").registerTransmutation({
             x.denseCode = denseCodes.indexOf(x.code);
         });
         
-        
-        
-        context.output = makeJava(denseCodes, constantPool, bytecode);
+        var helperClassName = context.resultBaseFileName.replace(".java", "") + "____AutoautoProgram";
+        var helperFile = path.join(context.resultDir, helperClassName + ".java");
+
+        writeHelperClass(helperFile, package, helperClassName, makeJava(denseCodes, constantPool, bytecode));
+
+        context.usedFiles = [helperFile];
+        context.output = `return new ${helperClassName}();`;
         context.status = "pass";
     }
 });

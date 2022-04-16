@@ -5,6 +5,14 @@ var path = require("path");
 var cachedGitDirectory = getGitRootDirectory();
 
 module.exports = {
+    safeWriteFile: function(fileName, content) {
+        var dir = path.dirname(fileName);
+        this.createDirectoryIfNotExist(dir);
+
+        console.log("writing " + fileName);
+
+        fs.writeFileSync(fileName, content);
+    },
     createDirectoryIfNotExist: function(fileName) {
         var dirName = fileName;
         
