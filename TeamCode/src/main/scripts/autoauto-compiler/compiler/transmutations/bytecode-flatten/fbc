@@ -32,17 +32,17 @@
  (false)
  setvar
  ("@temp1")
- ([0,"ms"])
+ ([0,"s"])
  unit_currentv
  setvar
  (39)
  jmp_i
- ([0,"ms"])
+ ([0,"s"])
  unit_currentv
  ("@temp1")
  getvar
  abs_dif
- ([0,"ms"])
+ ([0,"s"])
  cmp_gte
  (25)
  jmp_i_cond
@@ -72,17 +72,17 @@
  (false)
  setvar
  ("@temp4")
- ([0,"cm"])
+ ([0,"m"])
  unit_currentv
  setvar
  (79)
  jmp_i
- ([0,"cm"])
+ ([0,"m"])
  unit_currentv
  ("@temp4")
  getvar
  abs_dif
- ([0,"cm"])
+ ([0,"m"])
  cmp_gte
  (65)
  jmp_i_cond
@@ -189,17 +189,17 @@
  (false)
  setvar
  ("@temp13")
- ([0,"cm"])
+ ([0,"ly"])
  unit_currentv
  setvar
  (196)
  jmp_i
- ([0,"cm"])
+ ([0,"ly"])
  unit_currentv
  ("@temp13")
  getvar
  abs_dif
- ([0,"cm"])
+ ([0,"ly"])
  cmp_gte
  (185)
  jmp_i_cond

@@ -1,6 +1,7 @@
 //https://github.com/zawn/android-gradle-plugin-src/blob/master/sdk-common/src/main/java/com/android/ide/common/blame/MessageJsonSerializer.java
 
 var cFs = require("./cached-fs");
+const commandLineArguments = require("../command-line-interface");
 
 module.exports = {
     sendPlainMessage: sendPlainMessage,
@@ -18,7 +19,7 @@ var capturingOutput = false;
 var captured = [];
 
 var logLevel = 0;
-if(process.argv.includes("-q")) logLevel = 2;
+if(commandLineArguments.quiet) logLevel = 2;
 
 function beginOutputCapture() {
     capturingOutput = true;
@@ -198,6 +199,8 @@ function addRowNumbers(text, startRow) {
     
     var maxRow = startRow + rows.length - 1;
     var w = (maxRow + "").length;
+
+    var lineCharacter = commandLineArguments.ascii ? "\u2502" : "|";
     
     return rows
         .map((x,i)=> {
