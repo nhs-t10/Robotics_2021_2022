@@ -8,23 +8,6 @@ var transmutations = {};
 module.exports = {
     /**
      * 
-     * @param {Transmutation} t 
-     */
-     registerTransmutation: function (t) {
-        if (transmutations[t.id]) throw new Error("Re-registered " + t.id);
-        transmutations[t.id] = t;
-    },
-    /**
-     * 
-     * @param {string|string[]} id 
-     * @returns {TransmutationFunction}
-     */
-    get: function(id) {
-        if (!transmutations[id]) throw "No such registered " + id;
-        return require(transmutations[id].sourceFile);
-    },
-    /**
-     * 
      * @param {string} s 
      * @returns {SerializableTransmutationInstance[]}
      */

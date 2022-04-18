@@ -6,8 +6,9 @@ module.exports = function(context) {
     var fileContent = context.lastInput;
     var warning = getUnicodeWarning(fileContent);
     
-    if(warning) return warning;
-    else context.status = "pass";
+    if(warning) throw warning;
+    
+    context.status = "pass";
 }
 
 function getUnicodeWarning(fileContent) {
