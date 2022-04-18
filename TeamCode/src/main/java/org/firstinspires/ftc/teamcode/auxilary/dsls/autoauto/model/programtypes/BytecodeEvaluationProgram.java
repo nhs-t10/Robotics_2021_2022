@@ -34,8 +34,9 @@ public class BytecodeEvaluationProgram implements AutoautoProgram {
 
     public void runUntilYield() {
         while(!yield) {
-            FeatureManager.logger.log("calling: " + pc + (bytecodeRecords[program[pc]].toString()));
+            //FeatureManager.logger.log("calling: " + pc + " " + (bytecodeRecords[program[pc]].toString()));
             bytecodeRecords[program[pc]].invoke(this, scope, stack, callStack);
+            //FeatureManager.logger.log(stack.toString());
             pc++;
         }
         yield = false;

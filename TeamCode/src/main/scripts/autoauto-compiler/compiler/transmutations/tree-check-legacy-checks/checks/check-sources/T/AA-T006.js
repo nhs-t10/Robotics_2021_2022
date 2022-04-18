@@ -14,7 +14,7 @@ module.exports = {
             if(stmt.state.statement.length == 1) {
                 return {
                     kind: "WARNING",
-                    text: `This block only has 1 statement. The curly brackets can be removed!`,
+                    text: `This block only has 1 statement; the curly brackets can be removed.`,
                     location: stmt.location
                 }
             }

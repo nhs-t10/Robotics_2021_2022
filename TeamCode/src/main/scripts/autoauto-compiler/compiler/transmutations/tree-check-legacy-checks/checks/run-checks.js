@@ -2,12 +2,8 @@ var fs = require("fs");
 var path = require("path");
 var androidStudioLogging = require("../../../../../script-helpers/android-studio-logging");
 
-var checkSubfolders = ["T"];
 
-var checks = checkSubfolders
-    .map(x=>loadChecksFromFolder(path.join(__dirname, "check-sources", x)))
-    .flat();
-
+var checks = loadChecksFromFiles(require("./check-file-names"));
 
 module.exports = function(ast, filename) {
     var failed = false;
@@ -47,13 +43,10 @@ function shouldStopAnalysis(messageArray) {
 }
 
 
-function loadChecksFromFolder(folder) {
-    if(!fs.existsSync(folder)) return [];
-
-    var checkDir = fs.readdirSync(folder);
-    return checkDir.sort().map(x=> {
-        var check = require(path.join(folder, x));
-        check.id = x.replace(".js", "").toUpperCase();
+function loadChecksFromFiles(files) {
+    return files.map(x=> {
+        var check = require(x);
+        check.id = path.basename(x).replace(".js", "").toUpperCase();
         return check;
     });
 }

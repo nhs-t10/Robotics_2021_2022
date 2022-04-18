@@ -1,7 +1,8 @@
-var path = require("path");
 var fs = require("fs");
 
-var template = fs.readFileSync(__dirname + "/template.notjava").toString();
+var TEMPLATE_FILENAME = require("./template-filename");
+
+var template = fs.readFileSync(TEMPLATE_FILENAME).toString();
 
 var n = 0;
 
@@ -11,7 +12,9 @@ require("..").registerTransmutation({
     requires: ["make-runtime-flag-setters", "text-to-syntax-tree", "get-json-outline-java", "get-result-package"],
     id: "process-template",
     type: "information",
+    readsFiles: [TEMPLATE_FILENAME],
     run: function(context) {
+
         var className = context.resultBaseFileName.split(".")[0];
         
         var java = context.lastInput;

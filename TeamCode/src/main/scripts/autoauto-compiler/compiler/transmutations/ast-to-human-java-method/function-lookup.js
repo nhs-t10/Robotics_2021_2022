@@ -11,7 +11,7 @@ cachedManagers.forEach(x=>
         invertedMapByFunctionName[y.shimClassFunction.nameToUseInAutoauto] = y.originalSourceClass)
 );
 
-var templateText = fs.readFileSync(__dirname + "/../../transmutations/process-template/template.notjava").toString();
+var templateText = fs.readFileSync(require("./template-file-name")).toString();
 var managerVarDeclarations = Array.from(templateText.matchAll(/^\s*(\w+)\s+(\w+);\s*$/gm)).map(x=>[x[1], x[2]]);
 var managerVariableNames = Object.fromEntries(managerVarDeclarations);
 

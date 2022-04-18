@@ -29,8 +29,9 @@ module.exports = {
     setprop: { code: 0x303 },
     getprop: { code: 0x304 },
     callfunction: { code: 0x305 },
-    makefunction: { code: 0x306 },
+    makefunction_l: { code: 0x306 },
     unit_currentv: { code: 0x307 },
     construct_table: { code: 0x308 }, 
-    construct_relation: { code: 0x309 }
+    construct_relation: { code: 0x309 },
+    makefunction_i: { code: 0x30A }
 }

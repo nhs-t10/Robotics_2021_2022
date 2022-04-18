@@ -193,28 +193,6 @@ function tailedValueToBytecode(ast, constantPool) {
     };
 }
 
-/**
- * 
- * @param {*} ast 
- * @param {*} constantPool 
- * @returns {({dependentBlocks: Block[], boundedCalculations: Bytecode[]})}
- */
-function argumentListToBytecode(ast, constantPool) {
-    var blocks = [];
-    var calculations = [];
-    
-    for(var i = 0; i < ast.args.length; i++) {
-        var argBc = valueToBytecodeBlocks(ast.args[i], constantPool);
-        blocks = blocks.concat(argBc.dependentBlocks);
-        calculations.push(argBc.computation);
-    }
-    
-    return {
-        dependentBlocks: blocks,
-        boundedCalculations: calculations.concat(emitConstantWithLocation(ast.args.length, constantPool, ast))
-    }
-}
-
 function argumentListToBytecodeAsPositionalThenNamed(ast, constantPool) {
     var blocks = [];
     var calculationsPositional = [], calculationsNamed = [];
@@ -239,10 +217,10 @@ function argumentListToBytecodeAsPositionalThenNamed(ast, constantPool) {
         dependentBlocks: blocks,
         boundedCalculations: [].concat(
             calculationsPositional,
-            emitConstantWithLocation(calculationsPositional.length, constantPool, ast),
+            [emitConstantWithLocation(calculationsPositional.length, constantPool, ast)],
             
             calculationsNamed,
-            emitConstantWithLocation(calculationsNamed.length / 2, constantPool, ast)
+            [emitConstantWithLocation(calculationsNamed.length / 2, constantPool, ast)]
         )
     }
 }
@@ -555,7 +533,7 @@ function functionLiteralToBytecode(ast, constantPool) {
 
     var argsCode = argumentListToBytecodeAsFuncParamNames(ast.args, constantPool);
 
-    var functionConstructionCode = emitBytecodeWithLocation(bytecodeSpec.makefunction, 
+    var functionConstructionCode = emitBytecodeWithLocation(bytecodeSpec.makefunction_l, 
         [emitConstantWithLocation(entryBlockLabel, constantPool, ast)].concat(argsCode.boundedCalculations)
     , ast);
     

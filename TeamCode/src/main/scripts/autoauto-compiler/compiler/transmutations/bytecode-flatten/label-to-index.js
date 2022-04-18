@@ -20,7 +20,8 @@ function bcLabelToIndex(bc, bytecodeBlocks) {
         bc.code = bytecodeSpec.jmp_i_cond.code;
         mutOffset(bc.args[1], bytecodeBlocks);
         
-    } else if(bc.code == bytecodeSpec.makefunction.code) {
+    } else if(bc.code == bytecodeSpec.makefunction_l.code) {
+        bc.code = bytecodeSpec.makefunction_i.code;
         mutOffset(bc.args[0], bytecodeBlocks);
         
     } else if(bc.code == bytecodeSpec.yieldto_l.code) {

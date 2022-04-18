@@ -249,7 +249,7 @@ function isVariableAddressingInstr(instr) {
 }
 
 function isFuncDefInstr(instr) {
-    return instr.code == bytecodeSpec.makefunction.code;
+    return instr.code == bytecodeSpec.makefunction_l.code;
 }
 
 function isVariableSettingInstr(instr) {

@@ -11,7 +11,7 @@ $
 log("ULS!"), goto afterStatements;
 
 #afterStatements:
-    log("zero seconds..."), after 0s next;
+    log("zero seconds..."), after 1ms next;
     //meters, not minutes!
     log("zero meters..."), after 0m next;
     log("zero milliseconds..."), after 0ms next;

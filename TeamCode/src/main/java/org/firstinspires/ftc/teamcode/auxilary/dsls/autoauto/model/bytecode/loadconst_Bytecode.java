@@ -17,4 +17,8 @@ public class loadconst_Bytecode extends AutoautoBytecode {
     public void invoke(BytecodeEvaluationProgram bytecodeEvaluationProgram, AutoautoRuntimeVariableScope scope, Stack<AutoautoPrimitive> stack, Stack<Integer> callStack) {
         stack.push(constant);
     }
+
+    public String toString() {
+        return "loadconst " + constant.toString();
+    }
 }

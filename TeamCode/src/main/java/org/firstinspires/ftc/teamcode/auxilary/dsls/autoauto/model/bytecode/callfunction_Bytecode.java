@@ -16,7 +16,6 @@ public class callfunction_Bytecode extends AutoautoBytecode {
     @Override
     public void invoke(BytecodeEvaluationProgram bytecodeEvaluationProgram, AutoautoRuntimeVariableScope scope, Stack<AutoautoPrimitive> stack, Stack<Integer> callStack) {
 
-        FeatureManager.logger.log("Named arguments: " + stack.peek().getString());
 
         int numNamedArgs = stack.pop().castToNumber().getInt();
         String[] argnames = new String[numNamedArgs];
@@ -25,8 +24,6 @@ public class callfunction_Bytecode extends AutoautoBytecode {
             namedargs[i] = stack.pop();
             argnames[i] = stack.pop().getString();
         }
-
-        FeatureManager.logger.log("Position arguments: " + stack.peek().getString());
 
         int numPosArgs = stack.pop().castToNumber().getInt();
         AutoautoPrimitive[] posargs = new AutoautoPrimitive[numPosArgs];

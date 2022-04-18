@@ -152,7 +152,7 @@ module.exports = {
     0x306: {
         "pop": [undefined, 1],
         "push": 1,
-        "mnemom": "makefunction"
+        "mnemom": "makefunction_l"
     },
     0x307: {
         "pop": 1,
@@ -168,5 +168,10 @@ module.exports = {
         "pop": 2,
         "push": 1,
         "mnemom": "construct_relation"
+    },
+    0x30A: {
+        "pop": [undefined, 1],
+        "push": 1,
+        "mnemom": "makefunction_i"
     }
 }

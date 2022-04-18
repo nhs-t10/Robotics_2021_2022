@@ -24,7 +24,7 @@ module.exports = {
         return transmutations[id];
     },
     expandTasks: function(s) {
-        var tasks = cachedParseSpecExpandAliases(s);
+        var tasks = memoizedParseSpecExpandAliases(s);
         insertDeps(tasks);
         
         return idsToTras(tasks);
@@ -42,14 +42,9 @@ function idsToTras(ids) {
     });
 }
 
-function cachedParseSpecExpandAliases(sp) {
-    var keys = Object.keys(transmutations);
+function memoizedParseSpecExpandAliases(sp) {
     
-    var t = JSON.stringify({
-        k: "aa-compiler-transmutation-cache",
-        ver: keys,
-        v: sp
-    });
+    var t = JSON.stringify(sp);
     
     var cVal = memoizeParsedAliases[t];
     
@@ -87,7 +82,7 @@ function insertDeps(insertInto, findDepsIn) {
     
     for(var i = 0; i < findDepsIn.length; i++) {
         var req = transmutations[findDepsIn[i].id].requires;
-        var reqExpanded = cachedParseSpecExpandAliases(req);
+        var reqExpanded = memoizedParseSpecExpandAliases(req);
         
         var intoIndex = insertInto.findIndex(x=>x.id == findDepsIn[i].id);
         
@@ -146,7 +141,7 @@ function loadTransmutations(dirname) {
  * @property {string} id
  * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
  * @property {TransmutationFunction} run
- * @property {boolean} neverCache
+ * @property {string[]?} readsFiles
  */
 
 /**
@@ -163,6 +158,7 @@ function loadTransmutations(dirname) {
  * @property {Object.<string, *>} inputs
  * @property {*} lastInput
  *
+ * @property {string} fileContentText
  * @property {string} sourceDir
  * @property {string} sourceBaseFileName
  * @property {string} sourceFullFileName
@@ -174,7 +170,11 @@ function loadTransmutations(dirname) {
  * @property {string} resultRoot
  * @property {string} sourceRoot
  * 
- * @property {string[]} usedFiles
+ * @property {Object.<string, string>} writtenFiles
+ * @property {string[]} readsAllFiles
  *
  * @property {object} fileFrontmatter
+ * @property {string[]} transmutationIds
+ * 
+ * @property {string} cacheKey
  */

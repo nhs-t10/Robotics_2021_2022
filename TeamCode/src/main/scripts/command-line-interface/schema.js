@@ -3,6 +3,7 @@
  * @property {boolean} ascii
  * @property {boolean} color
  * @property {boolean} quiet
+ * @property {boolean} no-cache
  */
 
 
@@ -18,5 +19,9 @@ module.exports = {
     color: {
         value: true,
         short: ["c"]
+    },
+    "no-cache": {
+        value: false,
+        short: []
     }
 }

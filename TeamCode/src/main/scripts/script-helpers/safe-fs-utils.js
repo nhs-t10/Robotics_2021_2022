@@ -1,5 +1,6 @@
 var fs = require("fs");
 var path = require("path");
+const cachedFs = require("./cached-fs");
 
 
 var cachedGitDirectory = getGitRootDirectory();
@@ -10,7 +11,13 @@ module.exports = {
     cleanDirectory: cleanDirectory,
     addToGitignore: addToGitignore,
     safeReadFile: safeReadFile,
+    cachedSafeReadFile: cachedSafeReadFile,
     getGitRootDirectory: ()=>cachedGitDirectory
+}
+
+function cachedSafeReadFile(filename) {
+    if(fs.existsSync(filename)) return cachedFs.readFileSync(filename);
+    else return Buffer.from([]);
 }
 
 function safeReadFile(filename) {
@@ -73,7 +80,12 @@ function cleanDirectory(dir, dontDeleteFiles) {
         }
     });
 
-    if(filesLeft == 0) fs.rmdirSync(dir);
+    try {
+        if(filesLeft == 0) fs.rmdirSync(dir);
+    } catch(e) {
+        return false;
+    }
+
     return filesLeft == 0;
 }
 

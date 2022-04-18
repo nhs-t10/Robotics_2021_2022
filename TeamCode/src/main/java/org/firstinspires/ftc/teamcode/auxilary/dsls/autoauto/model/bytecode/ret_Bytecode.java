@@ -10,7 +10,7 @@ public class ret_Bytecode extends AutoautoBytecode {
 
     @Override
     public void invoke(BytecodeEvaluationProgram bytecodeEvaluationProgram, AutoautoRuntimeVariableScope scope, Stack<AutoautoPrimitive> stack, Stack<Integer> callStack) {
-        bytecodeEvaluationProgram.pc = callStack.peek();
+        bytecodeEvaluationProgram.pc = callStack.peek() - 1;
         bytecodeEvaluationProgram.yield = true;
     }
 }

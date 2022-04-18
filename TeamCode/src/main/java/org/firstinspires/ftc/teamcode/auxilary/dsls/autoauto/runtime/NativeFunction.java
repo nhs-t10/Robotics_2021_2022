@@ -56,4 +56,8 @@ public abstract class NativeFunction extends AutoautoPrimitive implements Autoau
     public NativeFunction clone() {
         return this;
     }
+
+    public String toString() {
+        return this.getString();
+    }
 }

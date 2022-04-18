@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.Mana
 
 import java.util.Stack;
 
-public class makefunction_Bytecode extends AutoautoBytecode {
+public class makefunction_i_Bytecode extends AutoautoBytecode {
 
     @Override
     public void invoke(BytecodeEvaluationProgram bytecodeEvaluationProgram, AutoautoRuntimeVariableScope scope, Stack<AutoautoPrimitive> stack, Stack<Integer> callStack) {
@@ -119,6 +119,10 @@ public class makefunction_Bytecode extends AutoautoBytecode {
         @Override
         public int dataWidth() {
             return 5;
+        }
+
+        public String toString() {
+            return getString();
         }
     }
 }

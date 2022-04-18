@@ -415,7 +415,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
                 depth: depth,
                 self: nonce,
                 depends: [unit.varname],
-                definition: `AutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname});`
+                definition: `AutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname}, true);`
             });
 
             result = {

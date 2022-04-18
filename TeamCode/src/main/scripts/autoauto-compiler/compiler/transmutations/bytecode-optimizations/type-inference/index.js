@@ -135,7 +135,7 @@ function calcType(instruction, currentTypeKey, typeSystem, blocks) {
         case bytecodeSpec.subtr.code:
             return getBinaryOperatorType(instruction, currentTypeKey, typeSystem, "-");
         
-        case bytecodeSpec.makefunction.code:
+        case bytecodeSpec.makefunction_l.code:
             return recordFunctionType(instruction, currentTypeKey, typeSystem, blocks);
             
         default: 

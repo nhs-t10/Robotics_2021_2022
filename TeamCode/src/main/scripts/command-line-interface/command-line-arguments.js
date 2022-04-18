@@ -5,8 +5,8 @@ module.exports = function(schema) {
 }
 
 function cascadeDefaults(schema) {
-    Object.values(schema).forEach(x=> {
-        if(typeof schema[x] === "object") schema[x] = schema.value;
+    Object.keys(schema).forEach(x=> {
+        if(typeof schema[x] === "object") schema[x] = schema[x].value;
     });
 }
 
