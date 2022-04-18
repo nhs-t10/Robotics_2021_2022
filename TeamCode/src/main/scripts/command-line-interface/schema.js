@@ -4,6 +4,7 @@
  * @property {boolean} color
  * @property {boolean} quiet
  * @property {boolean} no-cache
+ * @property {number} threads
  */
 
 
@@ -22,6 +23,10 @@ module.exports = {
     },
     "no-cache": {
         value: false,
+        short: []
+    },
+    threads: {
+        value: require("os").cpus().length,
         short: []
     }
 }

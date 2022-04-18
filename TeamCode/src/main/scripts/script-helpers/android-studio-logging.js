@@ -48,10 +48,12 @@ function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
     if (logLevel <= l || l === -1) {
-        if(capturingOutput) captured.push(msg);
-
-        formatAndSendJsonFormat(msg);
-        formatAndSendHumanyFormat(msg);
+        if(capturingOutput) {
+            captured.push(msg);
+        } else {
+            formatAndSendJsonFormat(msg);
+            formatAndSendHumanyFormat(msg);
+        }
     }
 }
 

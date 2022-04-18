@@ -9,7 +9,7 @@ const cache = require("../../cache");
 const CACHE_VERSION = require("../config").CACHE_VERSION;
 const commandLineInterface = require("../../command-line-interface");
 const safeFsUtils = require("../../script-helpers/safe-fs-utils");
-const compileFile = require("./compile-file");
+const makeWorkersPool = require("./workers-pool");
 
 var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".length + 1);
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
@@ -20,16 +20,24 @@ compileEachFile(autoautoFileNames);
 
 function compileEachFile(autoautoFileNames) {
 
-    var autoautoFileContexts = [], codebaseTasks = {};
+    var compilerWorkers = makeWorkersPool();
+
+    var autoautoFileContexts = [], codebaseTasks = {}, finished = 0;
 
     for(var i = 0; i < autoautoFileNames.length; i++) {
-        autoautoFileContexts.push(makeContextAndCompileFile(autoautoFileNames[i], codebaseTasks));
-    }
+        makeContextAndCompileFile(autoautoFileNames[i], codebaseTasks, compilerWorkers, function(finishedFileContext) {
+            autoautoFileContexts.push(finishedFileContext);
 
-    evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
+            finished++;
+            if(finished == autoautoFileNames.length) {
+                evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
+                compilerWorkers.close();
+            }
+        });
+    }
 }
 
-function makeContextAndCompileFile(filename, codebaseTasks) {    
+function makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, cb) {  
     var fileContext = makeFileContext(filename);
     var fileCache = `autoauto compiler file cache ${fileContext.sourceFullFileName}`;
     var doCaching = !commandLineInterface["no-cache"];
@@ -38,23 +46,24 @@ function makeContextAndCompileFile(filename, codebaseTasks) {
     markCodebaseTasks(fileContext, codebaseTasks);
 
     if(cacheEntry.subkey == fileContext.cacheKey) {
-        Object.assign(fileContext, cacheEntry.data);
         androidStudioLogging.sendMessages(cacheEntry.log);
+        writeAndCallback(cacheEntry.data);
     } else {
-        var run = compileFile(fileContext);
-        Object.assign(fileContext, run.fileContext);
-
-        if(run.success) cache.save(fileCache, {
-            subkey: fileContext.cacheKey,
-            data: run.fileContext,
-            log: run.log
+        compilerWorkers.giveJob(fileContext, function(run) {
+            if(run.success) cache.save(fileCache, {
+                subkey: fileContext.cacheKey,
+                data: run.fileContext,
+                log: run.log
+            });
+            androidStudioLogging.sendMessages(run.log);
+            writeAndCallback(run.fileContext);
         });
-        androidStudioLogging.sendMessages(run.log);
     }
 
-    writeWrittenFiles(fileContext);
-
-    return fileContext;
+    function writeAndCallback(finishedFileContext) {
+        writeWrittenFiles(finishedFileContext);
+        cb(finishedFileContext)
+    }
 }
 
 
