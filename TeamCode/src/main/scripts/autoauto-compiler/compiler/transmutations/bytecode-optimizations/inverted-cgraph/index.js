@@ -1,13 +1,7 @@
-require("../..").registerTransmutation({
-    id: "inverted-cgraph",
-    requires: ["build-cgraph"],
-    type: "information",
-    run: function (context) {
-
-        context.output = invertControlGraph(context.inputs["build-cgraph"]);
-        context.status = "pass";
-    }
-});
+module.exports = function run(context) {
+    context.output = invertControlGraph(context.inputs["build-cgraph"]);
+    context.status = "pass";
+}
 
 function invertControlGraph(cgraph) {
     var igc = {};

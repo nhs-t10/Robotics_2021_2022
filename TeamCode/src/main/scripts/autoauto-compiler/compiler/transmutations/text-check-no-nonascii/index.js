@@ -2,18 +2,13 @@ var path = require("path");
 
 var unicode = require("../../../../script-helpers/unicode");
 
-require("..").registerTransmutation({
-    id: "text-check-no-nonascii",
-    type: "check",
-    requires: [],
-    run: function(context) {
-        var fileContent = context.lastInput;
-        var warning = getUnicodeWarning(fileContent);
-        
-        if(warning) return warning;
-        else context.status = "pass";
-    }
-})
+module.exports = function(context) {
+    var fileContent = context.lastInput;
+    var warning = getUnicodeWarning(fileContent);
+    
+    if(warning) return warning;
+    else context.status = "pass";
+}
 
 function getUnicodeWarning(fileContent) {
     var inQuotes = false;

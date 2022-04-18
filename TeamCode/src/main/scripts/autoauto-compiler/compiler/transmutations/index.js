@@ -16,13 +16,18 @@ module.exports = {
     },
     /**
      * 
-     * @param {string} id 
-     * @returns {Transmutation}
+     * @param {string|string[]} id 
+     * @returns {TransmutationFunction}
      */
     get: function(id) {
         if (!transmutations[id]) throw "No such registered " + id;
-        return transmutations[id];
+        return require(transmutations[id].sourceFile);
     },
+    /**
+     * 
+     * @param {string} s 
+     * @returns {SerializableTransmutationInstance[]}
+     */
     expandTasks: function(s) {
         var tasks = memoizedParseSpecExpandAliases(s);
         insertDeps(tasks);
@@ -128,11 +133,21 @@ function loadTransmutations(dirname) {
         var p = path.join(dirname, dir[i].name);
         
         if(dir[i].isDirectory()) {
-            var pFil = path.join(p, "index.js");
-            if(fs.existsSync(pFil)) require(pFil);
-            else loadTransmutations(p);
+            var pIdxFile = path.join(p, "index.transmute-meta.js");
+            if(fs.existsSync(pIdxFile)) {
+                loadTransmutation(path.join(p, "index.js"), pIdxFile);
+            }
+            else {
+                loadTransmutations(p);
+            }
         }
     }
+}
+
+function loadTransmutation(sourceFile, metaFile) {
+    var meta = require(metaFile);
+    meta.sourceFile = sourceFile;
+    transmutations[meta.id] = meta;
 }
 
 /**
@@ -142,6 +157,18 @@ function loadTransmutations(dirname) {
  * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
  * @property {TransmutationFunction} run
  * @property {string[]?} readsFiles
+ * @property {string} sourceFile
+ */
+
+
+/**
+ * @typedef {object} SerializableTransmutationInstance
+ * @property {string[]} requires
+ * @property {string} id
+ * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
+ * @property {string[]?} readsFiles
+ * @property {boolean} isDependency
+ * @property {string} sourceFile
  */
 
 /**
@@ -174,7 +201,7 @@ function loadTransmutations(dirname) {
  * @property {string[]} readsAllFiles
  *
  * @property {object} fileFrontmatter
- * @property {string[]} transmutationIds
+ * @property {SerializableTransmutationInstance[]} transmutations
  * 
  * @property {string} cacheKey
  */

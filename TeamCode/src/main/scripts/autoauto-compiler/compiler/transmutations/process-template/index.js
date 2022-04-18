@@ -1,33 +1,24 @@
 var fs = require("fs");
-
-var TEMPLATE_FILENAME = require("./template-filename");
-
-var template = fs.readFileSync(TEMPLATE_FILENAME).toString();
+var template = fs.readFileSync(require("./template-filename")).toString();
 
 var n = 0;
 
 var ZWSP = "\u200C";
 
-require("..").registerTransmutation({
-    requires: ["make-runtime-flag-setters", "text-to-syntax-tree", "get-json-outline-java", "get-result-package"],
-    id: "process-template",
-    type: "information",
-    readsFiles: [TEMPLATE_FILENAME],
-    run: function(context) {
+module.exports = function(context) {
 
-        var className = context.resultBaseFileName.split(".")[0];
-        
-        var java = context.lastInput;
-        if(typeof java != "string") java = "return null;";
-        
-        context.output = processTemplate(className, context.fileFrontmatter, 
-                                java, context.sourceFullFileName,
-                                context.inputs["get-json-outline-java"], context.inputs["get-result-package"],
-                                context.sourceBaseFileName + ZWSP.repeat(n++),
-                                context.inputs["make-runtime-flag-setters"]);
-        context.status = "pass";
-    }
-});
+    var className = context.resultBaseFileName.split(".")[0];
+    
+    var java = context.lastInput;
+    if(typeof java != "string") java = "return null;";
+    
+    context.output = processTemplate(className, context.fileFrontmatter, 
+                            java, context.sourceFullFileName,
+                            context.inputs["get-json-outline-java"], context.inputs["get-result-package"],
+                            context.sourceBaseFileName + ZWSP.repeat(n++),
+                            context.inputs["make-runtime-flag-setters"]);
+    context.status = "pass";
+}
 
 function processTemplate(className, frontMatter, javaCreationCode, sourceFileName, jsonSettingCode, package, classNameNoConflict, flagSet) {
     return template

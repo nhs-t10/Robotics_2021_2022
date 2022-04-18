@@ -3,15 +3,11 @@ var unitConversion = require("../../../../unit-conversion");
 const androidStudioLogging = require("../../../../script-helpers/android-studio-logging");
 var collapseSpace = require("../../../../script-helpers/collapsespace-templatetag");
 
-require("..").registerTransmutation({
-    requires: ["text-to-syntax-tree"],
-    id: "pre-convert-tree-units",
-    type: "transmutation",
-    run: function (context) {
-        context.output = convert(context.inputs["text-to-syntax-tree"], context.sourceFullFileName, context.fileFrontmatter);
-        context.status = "pass";
-    }
-});
+module.exports = function (context) {
+    context.output = convert(context.inputs["text-to-syntax-tree"], context.sourceFullFileName, context.fileFrontmatter);
+    context.status = "pass";
+}
+
 
 var dimensionConversions = {
     "L": {//length

@@ -46,7 +46,7 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         cacheKey: undefined,
         writtenFiles: {},
 
-        transmutationIds: tPath.map(x=>x.id),
+        transmutations: tPath,
         readsAllFiles: tPath.map(x=>x.readsFiles || []).flat()
     };
     autoautoFileContexts[file] = fileContext;
@@ -91,37 +91,6 @@ for(var id in codebaseTasks) {
     mut.run(allFileContexts[0], allFileContexts);
 }
 
-function cachedRunTransmutation(transmutation, fileContext) {
-    var miss = {};
-    var k = `autoauto compiler task ${fileContext.cacheKey} ${transmutation.id}`;
-    
-    var cacheEntry = cache.get(k, miss);
-    if(transmutation.neverCache || cacheEntry == miss || cacheEntry.v != CACHE_VERSION || commandLineInterface["no-cache"]) {
-
-        androidStudioLogging.beginOutputCapture();
-        runTransmutation(transmutation, fileContext);
-        var log = androidStudioLogging.getCapturedOutput();
-        
-        if(fileContext.status == "pass") {
-            try {
-                cache.save(k, { v: CACHE_VERSION, c: fileContext.inputs[transmutation.id], log: log });
-
-                fileContext.cacheKey = sha(fileContext.cacheKey + JSON.stringify(fileContext.inputs[transmutation.id]));
-            } catch(e) {
-                throw "Problem caching result of " + transmutation.id;
-            }
-        }
-        
-    } else {
-        fileContext.status = "pass";
-
-        if(cacheEntry.log) androidStudioLogging.sendMessages(cacheEntry.log);
-        
-        fileContext.inputs[transmutation.id] = cacheEntry.c;
-        if (cacheEntry.c !== undefined && !transmutation.isDependency) fileContext.lastInput = cacheEntry.c;
-    }
-}
-
 function sha(s) {
     return crypto.createHash("sha256").update(s).digest("hex");
 }
@@ -139,8 +108,9 @@ function writeWrittenFiles(fileContext) {
 function makeCacheKey(fileContext) {
     
     var readFileShas = fileContext.readsAllFiles.map(x=>sha(safeFsUtils.cachedSafeReadFile(x))).join("");
-    
-    var keyDataToSha = [CACHE_VERSION, readFileShas, fileContext.sourceFullFileName, fileContext.fileContentText];
+    var transmutationIdList = fileContext.transmutations.map(x=>x.id).join("\t");
+
+    var keyDataToSha = [CACHE_VERSION, readFileShas, fileContext.sourceFullFileName, fileContext.fileContentText, transmutationIdList];
 
     return sha(keyDataToSha.join("\0"));
 }
