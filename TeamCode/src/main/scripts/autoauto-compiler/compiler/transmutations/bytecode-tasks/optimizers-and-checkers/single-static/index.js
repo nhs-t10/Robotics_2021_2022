@@ -1,4 +1,4 @@
-const bytecodeSpec = require("../bytecode-spec");
+const bytecodeSpec = require("../../bytecode-spec");
 
 module.exports = function run(context) {
     var bb = context.inputs["bc-basic-dead-code-elimination"];

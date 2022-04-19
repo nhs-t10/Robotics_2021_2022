@@ -130,7 +130,9 @@ function loadTransmutations(dirname) {
 function loadTransmutation(sourceFile, metaFile) {
     var meta = require(metaFile);
     meta.sourceFile = sourceFile;
-    transmutations[meta.id] = meta;
+
+    if(transmutations[meta.id]) throw "The transmutation `" + meta.id + "` is already registered!";
+    else transmutations[meta.id] = meta;
 }
 
 /**

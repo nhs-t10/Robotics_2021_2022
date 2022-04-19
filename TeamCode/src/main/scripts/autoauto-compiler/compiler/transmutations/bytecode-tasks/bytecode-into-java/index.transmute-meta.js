@@ -1,5 +1,5 @@
 module.exports = {
-    id: "bytecode-for-java",
+    id: "bytecode-into-java",
     requires: ["bytecode-flatten", "get-result-package"],
     type: "transmutation"
 }

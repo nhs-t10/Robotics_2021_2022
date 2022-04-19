@@ -1,6 +1,6 @@
-var cache = require("../../../../../cache");
+var cache = require("../../../../../../cache");
 
-var cacheKey = require("../../../../config").CACHE_KEY;
+var cacheKey = require("../../../../../config").CACHE_KEY;
 
 var functions = cache.get(cacheKey, {});
 module.exports = flCacheToTypes(functions);

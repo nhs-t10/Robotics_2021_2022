@@ -1,9 +1,7 @@
-var util = require("util");
-
 var cPool = require("./constant-pool");
 
 var treeBlockToBytecodeBlock = require("./ast-to-bytecode");
-const bytecodeSpec = require("./bytecode-spec");
+const bytecodeSpec = require("../bytecode-spec");
 
 module.exports = function(ast) {
     var constantPool = cPool();

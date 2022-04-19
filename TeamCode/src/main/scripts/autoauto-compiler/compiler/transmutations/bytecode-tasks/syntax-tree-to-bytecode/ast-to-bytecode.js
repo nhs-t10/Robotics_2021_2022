@@ -1,5 +1,4 @@
-var bytecodeSpec = require("./bytecode-spec");
-const constantPool = require("./constant-pool");
+var bytecodeSpec = require("../bytecode-spec");
 
 var STATE_INIT_PREFIX = "{+STATE_INIT ";
 

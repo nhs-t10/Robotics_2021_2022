@@ -1,6 +1,5 @@
-const bytecodeTools = require("../bytecode-tools");
-const bc = require("../bc");
-const bytecodeSpec = require("../bytecode-spec");
+const bc = require("../../bc");
+const bytecodeSpec = require("../../bytecode-spec");
 const typeSystemCreator = require("./type-system-creator");
 
 module.exports = function run(context) {

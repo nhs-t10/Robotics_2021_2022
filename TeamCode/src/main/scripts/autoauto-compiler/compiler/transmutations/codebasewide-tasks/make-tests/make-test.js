@@ -1,5 +1,5 @@
 var path = require("path");
-var safeFsUtils = require("../../../../script-helpers/safe-fs-utils");
+var safeFsUtils = require("../../../../../script-helpers/safe-fs-utils");
 
 var template = safeFsUtils.safeReadFile(__dirname + "/test.notjava").toString();
 

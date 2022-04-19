@@ -1,4 +1,4 @@
-var bytecodeSpec = require("./bytecode-spec");
+var bytecodeSpec = require("../../bytecode-spec");
 
 module.exports = function(block, bytecodeBlocks) {
     bcArrLabelToIndex(block.code, bytecodeBlocks);
