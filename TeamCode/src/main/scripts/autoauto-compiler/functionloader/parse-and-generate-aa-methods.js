@@ -136,17 +136,19 @@ function findWidestOverload(overloads) {
 }
 
 function getTypeWideness(type) {
-    return  ({
-        "byte": 1,
-        "short": 1,
-        "int": 1,
-        "long": 2,
-        "float": 3,
-        "double": 3,
-        "boolean": 1,
-        "char": 4,
-        "String": 5
-    })[type] || 0;
+    switch(type) {
+        case "byte": return 1;
+        case "short": return 1;
+        case "int": return 1;
+        case "long": return 2;
+        case "float": return 3;
+        case "double": return 3;
+        case "boolean": return 1;
+        case "char": return 4;
+        case "String": return 5;
+
+        default: return 0;
+    }
 }
 
 function replaceNumbers(str) {

@@ -26,80 +26,78 @@ function bufferToObject(buf) {
     return pool[0].value;
 }
 
-var byteParsers = {
-    "undefined": function(entry, pool, thisId) {
-        entry.value = undefined;
-        entry.hydrated = true;
-    },
-    "boolean": function(entry, pool, thisId) {
-        entry.value = !!entry.bytes[0];
-        entry.hydrated = true;
-    },
-    "number": function(entry, pool, thisId) {
-        entry.value = bitwiseyHelpers.numberFromBytes(entry.bytes);
-        entry.hydrated = true;
-    },
-    "string": function(entry, pool, thisId) {
-        entry.value = Buffer.from(entry.bytes).toString("utf8");
-        entry.hydrated = true;
-    },
-    "null": function(entry) {
-        entry.value = null;
-        entry.hydrated = true;
-    },
-    "object": function(entry, pool) {
-        var o = entry.value || {};
-        var reader = arrayReader(entry.bytes);
+function hydrateUndefined(entry) {
+    entry.value = undefined;
+    entry.hydrated = true;
+}
+function hydrateBoolean(entry) {
+    entry.value = !!entry.bytes[0];
+    entry.hydrated = true;
+}
+function hydrateNumber(entry) {
+    entry.value = bitwiseyHelpers.numberFromBytes(entry.bytes);
+    entry.hydrated = true;
+}
+function hydrateString(entry) {
+    entry.value = Buffer.from(entry.bytes, 0, entry.bytes.length).toString("utf8");
+    entry.hydrated = true;
+}
+function hydrateNull(entry) {
+    entry.value = null;
+    entry.hydrated = true;
+}
+function hydrateObject(entry, pool) {
+    var o = entry.value || {};
+    var reader = arrayReader(entry.bytes);
+    
+    entry.value = o;
+    
+    while(reader.hasNext()) {
+        var k = pool[reader.readVarint()];
+        if(!k.hydrated) return;
         
-        entry.value = o;
-        
-        while(reader.hasNext()) {
-            var k = pool[reader.readVarint()];
-            if(!k.hydrated) return;
-            
-            var v = pool[reader.readVarint()];   
-            if(!v.hasOwnProperty("value")) return;
+        var v = pool[reader.readVarint()];   
+        if(!v.hasOwnProperty("value")) return;
 
-            o[k.value] = v.value;
-        }
-        entry.hydrated = true;
-    },
-    "wellKnownObject": function(entry, pool) {
-        var reader = arrayReader(entry.bytes);
-        
-        var constrNameEntry = pool[reader.readVarint()];
-        if(!constrNameEntry.hydrated) return;
-        var constrName = constrNameEntry.value;
-        
-        var constrArg = undefined;
-        var constrArgId = reader.readVarint();
-        if(constrArgId && constrArgId != entry.id) {
-            var constrArgEntry = pool[constrArgId];
-            if(!constrArgEntry.hydrated) return;
-            constrArg = constrArgEntry.value;
-        }
-        
-        var constr = wellKnownConstructors.byName(constrName);
-        var o = entry.value;
-        
-        if(!o) {
-            try { o = constrArg ? new constr(constrArg) : new constr(); }
-            catch(e) { o = Object.create(constr.prototype); }
-        }
-        
-        entry.value = o;
-        
-        while(reader.hasNext()) {
-            var k = pool[reader.readVarint()];
-            if(!k.hydrated) return;
-            
-            var v = pool[reader.readVarint()];   
-            if(!v.hasOwnProperty("value")) return;
-
-            o[k.value] = v.value;
-        }
-        entry.hydrated = true;
+        o[k.value] = v.value;
     }
+    entry.hydrated = true;
+}
+function hydrateWellKnownObject(entry, pool) {
+    var reader = arrayReader(entry.bytes);
+    
+    var constrNameEntry = pool[reader.readVarint()];
+    if(!constrNameEntry.hydrated) return;
+    var constrName = constrNameEntry.value;
+    
+    var constrArg = undefined;
+    var constrArgId = reader.readVarint();
+    if(constrArgId && constrArgId != entry.id) {
+        var constrArgEntry = pool[constrArgId];
+        if(!constrArgEntry.hydrated) return;
+        constrArg = constrArgEntry.value;
+    }
+    
+    var constr = wellKnownConstructors.byName(constrName);
+    var o = entry.value;
+    
+    if(!o) {
+        try { o = constrArg ? new constr(constrArg) : new constr(); }
+        catch(e) { o = Object.create(constr.prototype); }
+    }
+    
+    entry.value = o;
+    
+    while(reader.hasNext()) {
+        var k = pool[reader.readVarint()];
+        if(!k.hydrated) return;
+        
+        var v = pool[reader.readVarint()];   
+        if(!v.hasOwnProperty("value")) return;
+
+        o[k.value] = v.value;
+    }
+    entry.hydrated = true;
 }
 
 function hydratePool(pool) {
@@ -108,11 +106,26 @@ function hydratePool(pool) {
         for(var i = pool.length - 1; i >= 0; i--) {
             var entry = pool[i];
             if(!entry.hydrated) {
-                byteParsers[entry.type](entry, pool, i);
+                hydratePoolEntry(pool, entry);
                 if(!entry.hydrated) allHy = false;
             }
         }
         if(allHy) break;
+    }
+}
+
+function hydratePoolEntry(pool, entry) {
+    switch(entry.type) {
+        case "undefined": hydrateUndefined(entry); break;
+        case "boolean": hydrateBoolean(entry); break;
+        case "number": hydrateNumber(entry); break;
+        case "string": hydrateString(entry); break;
+        case "null": hydrateNull(entry); break;
+
+        case "object": hydrateObject(entry, pool); break;
+        case "wellKnownObject": hydrateWellKnownObject(entry, pool); break;
+
+        default: throw new Error("Unknown structured-serialize type '" + entry.type + "'");
     }
 }
 

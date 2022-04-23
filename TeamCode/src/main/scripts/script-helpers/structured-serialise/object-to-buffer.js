@@ -74,9 +74,9 @@ function getEntriesBytes(obj, valuePool) {
     var propNames = Object.getOwnPropertyNames(obj);
     var b = [];
     
-    for(var i = 0; i < propNames.length; i++) {
-        var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(propNames[i], valuePool));
-        var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(obj[propNames[i]], valuePool));
+    for(const prop of propNames) {
+        var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(prop, valuePool));
+        var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(obj[prop], valuePool));
 
         b.push(kB, vB);
     }
