@@ -1,0 +1,177 @@
+Statistical profiling result from isolate-0000018AD2964BE0-77540-v8.log, (65 ticks, 0 unaccounted, 0 excluded).
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+     48   73.8%          C:\Program Files\nodejs\node.exe
+     12   18.5%          C:\WINDOWS\SYSTEM32\ntdll.dll
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+      1    1.5%   20.0%  LazyCompile: *wellKnownObject C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:65:32
+      1    1.5%   20.0%  LazyCompile: *readVarint C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\array-reader.js:9:29
+      1    1.5%   20.0%  LazyCompile: *object C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:48:23
+      1    1.5%   20.0%  LazyCompile: *numberFromBytes C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\bitwisey-helpers.js:57:26
+      1    1.5%   20.0%  LazyCompile: *normalizeString path.js:52:25
+
+ [C++]:
+   ticks  total  nonlib   name
+
+ [Summary]:
+   ticks  total  nonlib   name
+      5    7.7%  100.0%  JavaScript
+      0    0.0%    0.0%  C++
+      5    7.7%  100.0%  GC
+     60   92.3%          Shared libraries
+
+ [C++ entry points]:
+   ticks    cpp   total   name
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 1.0% are not shown.
+
+   ticks parent  name
+     48   73.8%  C:\Program Files\nodejs\node.exe
+     35   72.9%    C:\Program Files\nodejs\node.exe
+     16   45.7%      C:\Program Files\nodejs\node.exe
+     15   93.8%        LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+     15  100.0%          LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+     15  100.0%            LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1    6.3%        LazyCompile: ~createOrGetIdInValuepool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\object-to-buffer.js:24:34
+      1  100.0%          LazyCompile: ~getEntriesBytes C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\object-to-buffer.js:67:25
+      1  100.0%            LazyCompile: ~createOrGetIdInValuepool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\object-to-buffer.js:24:34
+      4   11.4%      LazyCompile: ~readdirSync fs.js:847:21
+      4  100.0%        LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      4  100.0%          LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      4  100.0%            LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      3    8.6%      LazyCompile: ~NativeModule.compile internal/bootstrap/loaders.js:272:42
+      3  100.0%        LazyCompile: ~nativeModuleRequire internal/bootstrap/loaders.js:183:29
+      1   33.3%          LazyCompile: ~setupPrepareStackTrace internal/bootstrap/node.js:300:32
+      1  100.0%            Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      1   33.3%          Eval: ~<anonymous> internal/bootstrap/node.js:1:1
+      1   33.3%          Eval: ~<anonymous> _stream_readable.js:1:1
+      1  100.0%            LazyCompile: ~NativeModule.compile internal/bootstrap/loaders.js:272:42
+      2    5.7%      LazyCompile: ~realpathSync fs.js:1448:22
+      2  100.0%        LazyCompile: ~toRealPath internal/modules/cjs/loader.js:336:20
+      1   50.0%          LazyCompile: ~tryFile internal/modules/cjs/loader.js:328:17
+      1  100.0%            LazyCompile: ~tryExtensions internal/modules/cjs/loader.js:343:23
+      1   50.0%          LazyCompile: ~Module._findPath internal/modules/cjs/loader.js:463:28
+      1  100.0%            LazyCompile: ~Module._resolveFilename internal/modules/cjs/loader.js:742:35
+      2    5.7%      LazyCompile: ~Module._compile internal/modules/cjs/loader.js:868:37
+      2  100.0%        LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:968:37
+      2  100.0%          LazyCompile: ~Module.load internal/modules/cjs/loader.js:807:33
+      2  100.0%            LazyCompile: ~Module._load internal/modules/cjs/loader.js:671:24
+      1    2.9%      LazyCompile: ~writeSync fs.js:559:19
+      1  100.0%        LazyCompile: ~writeFileSync fs.js:1260:23
+      1  100.0%          LazyCompile: ~safeWriteFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\safe-fs-utils.js:28:23
+      1  100.0%            LazyCompile: ~writeWrittenFiles C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:112:27
+      1    2.9%      LazyCompile: ~reconstructPool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:117:25
+      1  100.0%        LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%          LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%            LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1    2.9%      LazyCompile: ~readSync fs.js:482:18
+      1  100.0%        LazyCompile: ~tryReadSync fs.js:327:21
+      1  100.0%          LazyCompile: ~readFileSync fs.js:339:22
+      1  100.0%            LazyCompile: ~Module._extensions..js internal/modules/cjs/loader.js:968:37
+      1    2.9%      LazyCompile: ~openSync fs.js:431:18
+      1  100.0%        LazyCompile: ~readFileSync fs.js:339:22
+      1  100.0%          LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1  100.0%            LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+      1    2.9%      LazyCompile: ~number C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:36:23
+      1  100.0%        LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%          LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%            LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1    2.9%      LazyCompile: ~digest internal/crypto/hash.js:84:40
+      1  100.0%        LazyCompile: ~sha C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:76:13
+      1  100.0%          LazyCompile: ~<anonymous> C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:135:54
+      1  100.0%            C:\Program Files\nodejs\node.exe
+      1    2.9%      LazyCompile: ~Module.runMain internal/modules/cjs/loader.js:1033:26
+      1  100.0%        Eval: ~<anonymous> internal/main/run_main_module.js:1:1
+      1    2.9%      LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%        LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%          LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%            LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      3    6.3%    LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      3  100.0%      LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      3  100.0%        LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      3  100.0%          LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      3  100.0%            LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+      1    2.1%    LazyCompile: ~toNamespacedPath path.js:549:19
+      1  100.0%      LazyCompile: ~readdirSync fs.js:847:21
+      1  100.0%        LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%          LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%            LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1    2.1%    LazyCompile: ~number C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:36:23
+      1  100.0%      LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%        LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%          LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%            LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1    2.1%    LazyCompile: ~getDirents internal/fs/utils.js:137:20
+      1  100.0%      LazyCompile: ~readdirSync fs.js:847:21
+      1  100.0%        LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%          LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%            LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1    2.1%    LazyCompile: ~allocate buffer.js:382:18
+      1  100.0%      LazyCompile: ~fromArrayLike buffer.js:433:23
+      1  100.0%        LazyCompile: ~fromObject buffer.js:472:20
+      1  100.0%          LazyCompile: ~from buffer.js:282:28
+      1  100.0%            LazyCompile: ~string C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:40:23
+      1    2.1%    LazyCompile: ~Module._nodeModulePaths internal/modules/cjs/loader.js:544:37
+      1  100.0%      LazyCompile: ~Module.load internal/modules/cjs/loader.js:807:33
+      1  100.0%        LazyCompile: ~Module._load internal/modules/cjs/loader.js:671:24
+      1  100.0%          LazyCompile: ~Module.require internal/modules/cjs/loader.js:844:36
+      1  100.0%            LazyCompile: ~require internal/modules/cjs/helpers.js:73:31
+      1    2.1%    LazyCompile: *loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%      LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%        LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%          LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1  100.0%            LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+
+     12   18.5%  C:\WINDOWS\SYSTEM32\ntdll.dll
+      8   66.7%    LazyCompile: *loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      8  100.0%      LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      8  100.0%        LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      8  100.0%          LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      8  100.0%            LazyCompile: ~loadAutoautoFilesFromFolder C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:182:37
+      1    8.3%    C:\Program Files\nodejs\node.exe
+      1  100.0%      LazyCompile: ~makeFileContext C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:80:25
+      1  100.0%        LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+      1  100.0%          LazyCompile: ~compileEachFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:21:25
+      1  100.0%            Eval: ~<anonymous> C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:1:1
+
+      1    1.5%  LazyCompile: *wellKnownObject C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:65:32
+      1  100.0%    LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%      LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%        LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%          LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1  100.0%            LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+
+      1    1.5%  LazyCompile: *readVarint C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\array-reader.js:9:29
+      1  100.0%    LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%      LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%        LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%          LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1  100.0%            LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+
+      1    1.5%  LazyCompile: *object C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:48:23
+      1  100.0%    LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%      LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%        LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%          LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+      1  100.0%            LazyCompile: ~makeContextAndCompileFile C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\autoauto-compiler\compiler\index.js:40:35
+
+      1    1.5%  LazyCompile: *numberFromBytes C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\bitwisey-helpers.js:57:26
+      1  100.0%    LazyCompile: ~number C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:36:23
+      1  100.0%      LazyCompile: *hydratePool C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:103:21
+      1  100.0%        LazyCompile: ~module.exports C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\structured-serialise\buffer-to-object.js:10:26
+      1  100.0%          LazyCompile: ~deserialiseData C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:80:25
+      1  100.0%            LazyCompile: ~get C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\cache\index.js:27:18
+
+      1    1.5%  LazyCompile: *normalizeString path.js:52:25
+      1  100.0%    LazyCompile: ~normalize path.js:265:12
+      1  100.0%      LazyCompile: ~join path.js:367:7
+      1  100.0%        LazyCompile: ~<anonymous> C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\safe-fs-utils.js:71:19
+      1  100.0%          C:\Program Files\nodejs\node.exe
+      1  100.0%            LazyCompile: ~cleanDirectory C:\Users\coleh\Robotics_2021_2022\TeamCode\src\main\scripts\script-helpers\safe-fs-utils.js:68:24
+
