@@ -15,7 +15,11 @@ const autoautoFolderScanner = require("./folder-scanner");
 var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".length + 1);
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
 
-compileAllFromSourceDirectory();
+
+(async function main() {
+    await transmutations.loadTaskList();
+    compileAllFromSourceDirectory();
+})();
 
 async function compileAllFromSourceDirectory() {
     const compilerWorkers = makeWorkersPool();

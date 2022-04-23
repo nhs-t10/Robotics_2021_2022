@@ -16,10 +16,12 @@ module.exports = {
         insertDeps(tasks);
         
         return idsToTras(tasks);
+    },
+    loadTaskList: async function(s) {
+        //TODO: implement `loadTransmutations()` asynchronously. See the file-scanner for example.
+        loadTransmutations(__dirname);
     }
 };
-
-loadTransmutations(__dirname);
 
 function idsToTras(ids) {
     return ids.map(x=>{
