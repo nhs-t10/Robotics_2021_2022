@@ -11,15 +11,16 @@ module.exports = bufferToObject
 
 
 function bufferToObject(buf) {
-    buf = buf.subarray(magic.length);
+    var reader = arrayReader(buf);
+
+    reader.skip(magic.length);
     
-    var bVersion = buf[0];
+    var bVersion = reader.read();
     if(version != bVersion) throw new Error("Version mismatch in structured-serialise!");
-    buf = buf.subarray(1);
     
     var pool = [];
     
-    reconstructPool(pool, arrayReader(buf));
+    reconstructPool(pool, reader);
     
     hydratePool(pool);
     return pool[0].value;

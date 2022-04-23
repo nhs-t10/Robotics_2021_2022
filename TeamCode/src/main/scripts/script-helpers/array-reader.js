@@ -3,6 +3,9 @@
 module.exports = function(arr) {
     var index = 0;
     return {
+        skip: function(l) {
+            index += (l|0);
+        },
         read: function() {
             return arr[index++];
         },

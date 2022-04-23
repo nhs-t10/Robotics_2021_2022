@@ -2,6 +2,7 @@ var crypto = require("crypto");
 
 var fs = require("fs");
 var path = require("path");
+const commandLineInterface = require("../command-line-interface");
 
 var safeFsUtils = require("../script-helpers/safe-fs-utils");
 const structuredSerialise = require("../script-helpers/structured-serialise");
@@ -25,6 +26,8 @@ module.exports = {
         fs.writeFileSync(file, serialiseData(value) || null);
     },
     get: function(key, defaultValue) {
+        if(commandLineInterface["no-cache"]) return defaultValue;
+
         var encodedKey = sha(key);
         
         var possibleFilesInAgeOrder = [

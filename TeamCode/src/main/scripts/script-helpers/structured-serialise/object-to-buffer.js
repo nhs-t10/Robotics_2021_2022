@@ -13,9 +13,14 @@ module.exports = function(obj) {
 
     createOrGetIdInValuepool(obj, valuePool);
 
-    var buffer = valuePool.pool.map(x=>x.bytes).flat(6);
-    
+    return poolToBuffer(valuePool.pool);
+}
 
+function poolToBuffer(pool) {
+    return packageIntoBuffer([].concat(...pool.map(x=>x.bytes)));
+}
+
+function packageIntoBuffer(buffer) {
     return Buffer.from(
         [].concat(magic, [version], buffer)
     );
@@ -59,7 +64,7 @@ function createOrGetIdInValuepool(obj, valuePool) {
             poolEntry.bytes = getWellKnownInfo(cstr, obj, valuePool).concat(getEntriesBytes(obj, valuePool));
     }
 
-    poolEntry.bytes.splice(0, 0, typeCodes[type], bitwiseyTools.toVarintBytes(poolEntry.bytes.length));
+    poolEntry.bytes = [typeCodes[type]].concat(bitwiseyTools.toVarintBytes(poolEntry.bytes.length), poolEntry.bytes);
 
     return poolEntry.id;
 }

@@ -5,10 +5,15 @@
  * @property {boolean} quiet
  * @property {boolean} no-cache
  * @property {number} threads
+ * @property {boolean} progress
  */
 
 
 module.exports = {
+    progress: {
+        value: false,
+        short: ["p"]
+    },
     quiet: {
         value: false,
         short: ["q"]

@@ -1,68 +1,68 @@
-var fs = require("fs");
-var path = require("path");
-var crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 const androidStudioLogging = require("../../script-helpers/android-studio-logging");
 
-var transmutations = require("./transmutations");
+const transmutations = require("./transmutations");
 const cache = require("../../cache");
 const CACHE_VERSION = require("../config").CACHE_VERSION;
 const commandLineInterface = require("../../command-line-interface");
 const safeFsUtils = require("../../script-helpers/safe-fs-utils");
 const makeWorkersPool = require("./workers-pool");
+const autoautoFolderScanner = require("./folder-scanner");
 
 var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".length + 1);
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
 
 compileAllFromSourceDirectory();
 
-function compileAllFromSourceDirectory() {
-    var compilerWorkers = makeWorkersPool();
-    var autoautoFileContexts = [], codebaseTasks = {}, finished = 0, totalFileCount = 0, endJobGiven = false;
+async function compileAllFromSourceDirectory() {
+    const compilerWorkers = makeWorkersPool();
+    const autoautoFileContexts = [], codebaseTasks = {};
 
     //this callback will call once for each file.
     //this way, we don't have to wait for ALL filenames in order to start compiling.
-    loadAutoautoFilesFromFolder(SRC_DIRECTORY, function(filename, end) {
-        if(end) endJobGiven = true;
-        totalFileCount++;
+    //it starts after the first one!
+    var aaFiles = autoautoFolderScanner(SRC_DIRECTORY);
 
-        makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, function(finishedFileContext) {
-            autoautoFileContexts.push(finishedFileContext);
+    while(true) {
+        var next = aaFiles.next();
+        if(next.done) break;
+        await makeContextAndCompileFile(next.value, codebaseTasks, compilerWorkers, autoautoFileContexts);
+    }
 
-            finished++;
-            if(endJobGiven && finished == totalFileCount) {
-                evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
-                compilerWorkers.close();
-            }
-        });
-    })
+    evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
+    compilerWorkers.close();
 }
 
-function makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, cb) {  
+function makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, autoautoFileContexts) {  
     var fileContext = makeFileContext(filename);
     var fileCache = `autoauto compiler file cache ${fileContext.sourceFullFileName}`;
-    var doCaching = !commandLineInterface["no-cache"];
-    var cacheEntry = doCaching ? cache.get(fileCache, false) : false;
+    var cacheEntry = cache.get(fileCache, false);
 
     markCodebaseTasks(fileContext, codebaseTasks);
 
-    if(cacheEntry.subkey == fileContext.cacheKey) {
-        androidStudioLogging.sendMessages(cacheEntry.log);
-        writeAndCallback(cacheEntry.data, cb);
-    } else {
-        compilerWorkers.giveJob(fileContext, function(run) {
-            if(run.success) cache.save(fileCache, {
-                subkey: fileContext.cacheKey,
-                data: run.fileContext,
-                log: run.log
+    return new Promise(function(resolve, reject) {
+        if(cacheEntry.subkey == fileContext.cacheKey) {
+            androidStudioLogging.sendMessages(cacheEntry.log);
+            writeAndCallback(cacheEntry.data, autoautoFileContexts, resolve);
+        } else {
+            compilerWorkers.giveJob(fileContext, function(run) {
+                if(run.success) cache.save(fileCache, {
+                    subkey: fileContext.cacheKey,
+                    data: run.fileContext,
+                    log: run.log
+                });
+                androidStudioLogging.sendMessages(run.log);
+                writeAndCallback(run.fileContext, autoautoFileContexts, resolve);
             });
-            androidStudioLogging.sendMessages(run.log);
-            writeAndCallback(run.fileContext, cb);
-        });
-    }
+        }
+    });
 }
 
-function writeAndCallback(finishedFileContext, cb) {
+function writeAndCallback(finishedFileContext, autoautoFileContexts, cb) {
+    autoautoFileContexts.push(finishedFileContext);
     writeWrittenFiles(finishedFileContext);
     cb(finishedFileContext);
 }
@@ -133,7 +133,7 @@ function markCodebaseTasks(fileContext, codebaseTasks) {
  */
 function makeCacheKey(fileContext) {
     
-    var readFileShas = fileContext.readsAllFiles.map(x=>sha(safeFsUtils.cachedSafeReadFile(x))).join("");
+    var readFileShas = fileContext.readsAllFiles.map(x=>sha(safeFsUtils.cachedSafeReadFile(x))).join("\t");
     var transmutationIdList = fileContext.transmutations.map(x=>x.id).join("\t");
 
     var keyDataToSha = [CACHE_VERSION, readFileShas, fileContext.sourceFullFileName, fileContext.fileContentText, transmutationIdList];
@@ -178,51 +178,4 @@ function loadFrontmatter(fCont) {
     } catch(e) {
         return {};
     }
-}
-
-async function loadAutoautoFilesFromFolder(folder, cb) {
-    let results = [];
-
-    let folderContents = await getFolderAutoautoContents(folder);
-
-    for(var i = 0; i < folderContents.length; i++) {
-        let subfile = folderContents[i];
-
-        if(subfile.directory) {
-            var subfolderContents = await getFolderAutoautoContents(subfile.name);
-            folderContents = folderContents.concat(subfolderContents);
-        } else {
-            cb(subfile.name, i == folderContents.length - 1);
-        }
-    }
-
-    return results;
-}
-
-async function getFolderAutoautoContents(folder) {
-
-    return new Promise(function(resolve, reject) {
-        fs.readdir(folder, {
-            withFileTypes: true
-        }, function(err, files) {
-            if(err) throw err;
-
-            var unsorted = files.map(x=>({
-                name: path.join(folder,x.name),
-                directory: x.isDirectory(),
-                file: x.isFile()
-            }));
-
-            var foldersFirst = [];
-
-            unsorted.forEach(x=>{
-                if(x.directory) foldersFirst.push(x);
-            });
-            unsorted.forEach(x=>{
-                if(x.file && x.name.endsWith(".autoauto")) foldersFirst.push(x);
-            });
-
-            resolve(foldersFirst);
-        });
-    });
 }

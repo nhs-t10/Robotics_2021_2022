@@ -38,14 +38,14 @@ function processLongFlag(schema, arg, aliasMap) {
     var key = keyVal[0];
     var val = keyVal[1];
 
-    if(keyVal.length == 1) val = true;
+    if(keyVal.length == 1) val = "true";
 
     if(!schema[key]) throw `No command-line flag '${key}'.`;
-    else schema[key] = castToSchema(schema[key].value, arg);
+    else schema[key] = castToSchema(schema[key].value, val);
 }
 
-function castToSchema(value, arg) {
-    switch(typeof value) {
+function castToSchema(typeDesired, arg) {
+    switch(typeof typeDesired) {
         case "number": return (+arg) || 0;
         case "boolean": return arg == "true";
         default: return arg;
