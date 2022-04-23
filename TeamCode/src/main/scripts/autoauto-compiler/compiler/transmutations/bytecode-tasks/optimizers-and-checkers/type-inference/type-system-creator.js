@@ -36,6 +36,8 @@ function restoreFromMappings(cannonical, historical, a) {
 
 function upsertInterpretMapping(cannonical, mappingTitle, uninterpertedMapping, a, loc) {
     var original = cannonical[getType(cannonical, mappingTitle, a)];
+
+    if(uninterpertedMapping == undefined) throw new Error("Undefined type mapping");
     
     Object.assign(original, interpertMapping(cannonical, uninterpertedMapping, a));
     original.location = loc;

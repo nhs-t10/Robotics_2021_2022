@@ -1,3 +1,7 @@
+$
+compilerMode: "optimized-bytecode"
+$
+
 let highest = 1000,
 let primes = [2 = true], let isComposite = [], goto startAlgorithm;
 
@@ -18,4 +22,4 @@ let currentLowestPrime = i, let primes[currentLowestPrime] = true, goto startNex
 
 #outputDone:
 log(primes), next;
-pass
+exit()

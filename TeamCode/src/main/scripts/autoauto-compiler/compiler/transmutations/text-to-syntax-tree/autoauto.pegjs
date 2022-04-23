@@ -74,12 +74,12 @@ singleStatement "statement" =
  
 provideStatement = PROVIDE _ v:value {return { type: "ProvideStatement", value:v, location: location() }; }
 
-delegateStatement = DELEGATE _ f:(
+delegatorExpression = DELEGATE _ f:(
 	OPEN_PAREN d:stringLiteral _ a:(COMMA valueList)? CLOSE_PAREN { return [d, (a||[])[1] ] } / 
     d:stringLiteral a:(_ WITH _ valueList)? { return [d, (a||[])[3] ]; }
 ) {
    return {
-       type: "DelegateStatement",
+       type: "DelegatorExpression",
        delegateTo: f[0],
        location: location(),
        args: f[1] || {type:"ArgumentList",args:[], location: location()}
@@ -186,7 +186,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens / delegateStatement) _ {
+ _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens / delegatorExpression) _ {
    return x;
  }
 

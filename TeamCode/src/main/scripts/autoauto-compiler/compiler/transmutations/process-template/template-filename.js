@@ -1,2 +1,2 @@
 var path = require("path");
-module.exports = path.join(__dirname, "template.notjava");
+module.exports = path.join(__dirname, "../../data/template.notjava");

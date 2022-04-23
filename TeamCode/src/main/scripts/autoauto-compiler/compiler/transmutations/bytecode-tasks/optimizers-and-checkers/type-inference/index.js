@@ -34,6 +34,8 @@ function gatherReturnTypeFrom(entryBlock, blocks, typeSystem) {
     var possibleTypes = processBlockChildrenForReturnTypes(entryBlock, blocks, typeSystem);
     var uniqTypes = Array.from(new Set(possibleTypes));
 
+    console.log(uniqTypes);
+
     if (uniqTypes.length == 1) return uniqTypes[0];
     else return { type: "union", types: uniqTypes };
 
@@ -44,6 +46,7 @@ function findReturnTypeInSingleBlock(block) {
             return block.code[i].args[0].__typekey;
         }
     }
+    return "undefined";
 }
 function processBlockChildrenForReturnTypes(block, blocks, typeSystem) {
     processBytecodeBlock(block, blocks, typeSystem);
@@ -93,7 +96,7 @@ function calcType(instruction, currentTypeKey, typeSystem, blocks) {
         case bytecodeSpec.jmp_l_cond.code:
         case bytecodeSpec.yieldto_l.code:
         case bytecodeSpec.yieldto_i.code:
-
+        case bytecodeSpec.spec_setvar.code:
         case bytecodeSpec.ret.code:
         case bytecodeSpec.pass.code:
             return "undefined";

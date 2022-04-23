@@ -203,7 +203,7 @@ module.exports = /*
         peg$c13 = function (d, a) { return [d, (a || [])[3]]; },
         peg$c14 = function (f) {
           return {
-            type: "DelegateStatement",
+            type: "DelegatorExpression",
             delegateTo: f[0],
             location: location(),
             args: f[1] || { type: "ArgumentList", args: [], location: location() }
@@ -1309,7 +1309,7 @@ module.exports = /*
         return s0;
       }
 
-      function peg$parsedelegateStatement() {
+      function peg$parsedelegatorExpression() {
         var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
         var key = peg$currPos * 108 + 11,
@@ -2476,7 +2476,7 @@ module.exports = /*
                         if (s2 === peg$FAILED) {
                           s2 = peg$parsevalueInParens();
                           if (s2 === peg$FAILED) {
-                            s2 = peg$parsedelegateStatement();
+                            s2 = peg$parsedelegatorExpression();
                           }
                         }
                       }

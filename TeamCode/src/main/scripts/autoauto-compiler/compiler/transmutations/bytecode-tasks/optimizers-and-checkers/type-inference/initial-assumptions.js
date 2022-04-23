@@ -83,7 +83,6 @@ module.exports = {
     "Math@0/trunc": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "Math@0/sign": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "Math@0/cbrt": { "type": "function", "args": ["number"], "return": "number|undefined" },
-    "var log@0": { type: "function", "args": [], varargs: "*", "return": "undefined" },
     "number|undefined": { type: "union", types: ["undefined", "number"] },
     "unit_currentv<>": { type: "bytecode", pop: ["unit"], push: ["number"] },
     "abs_dif<>": { type: "bytecode", pop: ["number", "number"], push: ["number"] },
@@ -105,4 +104,17 @@ module.exports = {
     "string": { type: "primitive", primitive: "string" },
     "boolean": { type: "primitive", primitive: "boolean" },
     "unit": { type: "primitive", primitive: "unit" },
+
+    "var delegate@0": {type: "function", args: ["string"], varargs: "*", return: "undefined"},
+    "var provide@0": {type: "function", args: ["*"], return: "undefined"},
+    "var typeof@0": {type: "function", args: ["*"], return: "string"},
+    "var log@0": { type: "function", "args": [], varargs: "*", "return": "undefined" },
+
+    "var True@0": { type: "alias", typeTo: "boolean" },
+    "var TRUE@0": { type: "alias", typeTo: "boolean" },
+    "var False@0": { type: "alias", typeTo: "boolean" },
+    "var FALSE@0": { type: "alias", typeTo: "boolean" },
+
+    "var e@0": { type: "alias", typeTo: "number" },
+    "var pi@0": { type: "alias", typeTo: "number" },
 }

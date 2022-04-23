@@ -61,11 +61,11 @@ module.exports = {
             state.statepathListInitiated = true;
         }
         if (state.selectedButton) state.selectedButton.classList.remove("selected");
-        if (state.statepaths[data.fields.__statepathName]) {
-            var statepathsButtons = state.statepaths[data.fields.__statepathName];
+        if (state.statepaths[data.fields["--statepathName"]) {
+            var statepathsButtons = state.statepaths[data.fields["--statepathName"]];
 
-            if (statepathsButtons[+data.fields.__stateNumber]) {
-                state.selectedButton = statepathsButtons[+data.fields.__stateNumber];
+            if (statepathsButtons[+data.fields["--stateNumber"]]) {
+                state.selectedButton = statepathsButtons[+data.fields["--stateNumber"]];
                 state.selectedButton.classList.add("selected");
             }
         }

@@ -539,7 +539,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             });
             result.noLocation = true;
             break;
-        case "DelegateStatement":
+        case "DelegatorExpression":
             result = process({
                 type: "FunctionCall",
                 location: ast.location,

@@ -1,3 +1,4 @@
+const systemVariableNames = require("../../../data/system-variable-names");
 var bytecodeSpec = require("../bytecode-spec");
 
 var STATE_INIT_PREFIX = "{+STATE_INIT ";
@@ -105,10 +106,12 @@ function statementToBytecodeBlocks(ast, label, constantPool, afterThisJumpToLabe
             return afterStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel, stateCountInPath);
         case "ValueStatement":
             return valueStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel);
+        case "ProvideStatement":
+            return provideStatementToBytecode(ast, label, constantPool, afterThisJumpToLabel);
         default:
             console.error(ast);
-            console.error("Can't convert " + ast.type + " to bytecode!");
-            HTMLFormControlsCollection.fgssdfg.af.basdfdsa
+            throw new Error("Can't convert " + ast.type + " to bytecode!");
+            
     }
 }
 
@@ -154,7 +157,34 @@ function valueToBytecodeBlocks(valueAst, constantPool) {
             return functionCallToBytecode(valueAst, constantPool);
         case "TailedValue":
             return tailedValueToBytecode(valueAst, constantPool);
+        case "DelegatorExpression":
+            return delegatorExpressionToBytecode(valueAst, constantPool);
     }
+    throw new Error("Unknown value type " + valueAst.type);
+}
+
+function delegatorExpressionToBytecode(ast, constantPool) {
+    var simulatedCall = {
+        type: "FunctionCall",
+        location: ast.location,
+        func: {
+            type: "VariableReference",
+            location: ast.location,
+            variable: {
+                type: "Identifier",
+                location: ast.location,
+                value: "delegate"
+            }
+        },
+        args: {
+            type: "ArgumentList",
+            location: ast.location,
+            len: ast.args.len + 1,
+            args: [ast.delegateTo].concat(ast.args.args)
+        }
+    };
+
+    return functionCallToBytecode(simulatedCall, constantPool);
 }
 
 function functionCallToBytecode(ast, constantPool) {
@@ -300,6 +330,7 @@ function primitiveValueToSimpleBytecode(valueAst, constantPool) {
         case "UnitValue": 
             return emitConstantWithLocation(unitwrap(valueAst), constantPool, valueAst);
     };
+    return undefined
 }
 
 function unitwrap(ast) {
@@ -343,6 +374,20 @@ function getOperationBytecodeInstruction(comp) {
         case "**": return bytecodeSpec.exp;
     }
     throw "Unrecognized comparison " + comp;
+}
+
+function provideStatementToBytecode(ast, label, constantPool, nextLabel) {
+    var val = valueToBytecodeBlocks(ast.value, constantPool);
+
+    return [{
+        label: label,
+        code: [emitBytecodeWithLocation(bytecodeSpec.spec_setvar, [
+                emitConstantWithLocation(systemVariableNames.EXPORTS, constantPool, ast),
+                val.computation
+            ], ast)
+        ],
+        jumps: [jumpToLabel(nextLabel, constantPool)]
+    }].concat(val.dependentBlocks);
 }
 
 /**
