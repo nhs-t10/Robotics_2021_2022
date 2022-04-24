@@ -67,6 +67,7 @@ function getHydratedValue(entry, pool) {
     if(entry.hydrated) return entry.value;
 
     switch(entry.typeId) {
+        case types.array: return getHydratedArray(entry, pool);
         case types.object: return getHydratedObject(entry, pool);
         case types.wellKnownObject: return getHydratedWellKnownObject(entry, pool);
         default: throw new Error("Attempt to hydrate unknown or unsuited type " + entry.typeId);
@@ -74,7 +75,7 @@ function getHydratedValue(entry, pool) {
 }
 
 function getHydratedObject(entry, pool) {
-    if(!("value" in entry)) entry.value = {};
+    if(!entry.hydrated) entry.value = {};
     entry.hydrated = true;
 
     for(const kv of entry.keyValues) {
@@ -87,8 +88,17 @@ function getHydratedObject(entry, pool) {
     return entry.value;
 }
 
+function getHydratedArray(entry, pool) {
+    if(!entry.hydrated) {
+        entry.value = [];
+        entry.hydrated = true;
+    }
+
+    return getHydratedObject(entry, pool);
+}
+
 function getHydratedWellKnownObject(entry, pool) {
-    if(!("value" in entry)) {
+    if(!entry.hydrated) {
         var constrName = getHydratedValue(entry.constructorName, pool);
         var constr = wellKnownConstructors.byName(constrName);
 
@@ -99,6 +109,7 @@ function getHydratedWellKnownObject(entry, pool) {
             entry.value = Object.create(constr.prototype);
         }
     }
+    entry.hydrated = true;
 
     return getHydratedObject(entry, pool);
 }
@@ -113,7 +124,9 @@ function readPoolEntry(entry, reader, pool) {
         case types.number: readNumber(entry, reader); break;
         case types.string: readString(entry, reader); break;
 
+        case types.array: 
         case types.object: readObject(entry, reader, pool); break;
+
         case types.wellKnownObject: readWellKnownObject(entry, reader, pool); break;
 
         default: throw new Error("Unknown structured-serialize'd type '" + entry.typeId + "'");
@@ -129,7 +142,7 @@ function reconstructPool(pool, reader) {
         var typeCode = reader.read();
         var length = reader.readVarint();
         
-        var entry = upsertIntoPool(pool, index, { typeId: typeCode, contentLength: length, id: index });
+        var entry = upsertIntoPool(pool, index, { typeId: typeCode, contentLength: length, id: index, hydrated: false, value: null, keyValues: [], constructorName: "" });
 
         readPoolEntry(entry, reader, pool);
 

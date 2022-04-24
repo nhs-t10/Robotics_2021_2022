@@ -44,17 +44,8 @@ function packageIntoBuffer(originBlob) {
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {
-    var type = (obj === null ? "null" : typeof obj) + "";
-    var cstr;
-    if(type === "object") {
-        cstr = wellKnownConstructors.getName(obj);
-        if(cstr) type = "wellKnownObject";
-    }
-    
-    if(typeCodes[type] === undefined) {
-        console.error(obj);
-        throw new Error("Could not serialise value of type " + type);
-    }
+
+    const type = getStructureType(obj);
 
     //by searching from the back, we get more-recent values first
     if(valuePool.invertedPoolMap.has(obj)) return valuePool.invertedPoolMap.get(obj);
@@ -68,17 +59,18 @@ function createOrGetIdInValuepool(obj, valuePool) {
         break;
         case "boolean": poolEntry.bytes = [+obj];
         break;
-        case "number": poolEntry.bytes = bitwiseyTools.numberToVarBytes(obj);
+        case "number": poolEntry.bytes = bitwiseyTools.numberToBytes(obj);
         break;
         case "string": poolEntry.bytes = Array.from(Buffer.from(obj, "utf8"));
         break;
+        case "array":
         case "object": poolEntry.bytes = getEntriesBytes(obj, valuePool);
         break;
         case "null": poolEntry.bytes = [];
         break;
         case "wellKnownObject":
             //wellknownobjects record their constructor so they can be re-constructed later
-            poolEntry.bytes = getWellKnownInfo(cstr, obj, valuePool).concat(getEntriesBytes(obj, valuePool));
+            poolEntry.bytes = getWellKnownInfo(obj, valuePool).concat(getEntriesBytes(obj, valuePool));
     }
 
     poolEntry.bytes = [typeCodes[type]].concat(bitwiseyTools.toVarintBytes(poolEntry.bytes.length), poolEntry.bytes);
@@ -86,22 +78,43 @@ function createOrGetIdInValuepool(obj, valuePool) {
     return poolEntry.id;
 }
 
+function getStructureType(obj) {
+    var type = (obj === null ? "null" : typeof obj) + "";
+    if(Array.isArray(obj)) {
+        type = "array";
+    } else if(type === "object") {
+        if(wellKnownConstructors.isWellKnownObject(obj)) type = "wellKnownObject";
+    }
+    
+    if(typeCodes[type] === undefined) {
+        throw new Error("Could not serialise value of type " + type);
+    }
+
+    return type;
+}
+
 function getEntriesBytes(obj, valuePool) {
 
     var propNames = Object.getOwnPropertyNames(obj);
-    var b = [];
+    var b = new Array(propNames.length * 2);
     
+    var i = 0;
     for(const prop of propNames) {
         var kB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(prop, valuePool));
         var vB = bitwiseyTools.toVarintBytes(createOrGetIdInValuepool(obj[prop], valuePool));
 
-        b.push(kB, vB);
+        b[i] = kB;
+        b[i + 1] = vB;
+
+        i += 2;
     }
 
-    return b.flat();
+    return [].concat(...b);
 }
 
-function getWellKnownInfo(constructorName, obj, valuePool) {
+function getWellKnownInfo(obj, valuePool) {
+
+    var constructorName = wellKnownConstructors.getName(obj);
     var constructorPoolId = createOrGetIdInValuepool(constructorName, valuePool);
     var constructorPoolBytes = bitwiseyTools.toVarintBytes(constructorPoolId);
     

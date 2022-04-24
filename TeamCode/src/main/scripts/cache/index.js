@@ -32,18 +32,10 @@ module.exports = {
 
         var encodedKey = sha(key);
         
-        var possibleFilesInAgeOrder = [
-            keyFile(encodedKey),
-            //keyFile(encodedKey, 3, OLD_CACHE_DIR),
-            //keyFile(encodedKey, 0, OLD_CACHE_DIR)
-        ];
-
-        for(var i = 0; i < possibleFilesInAgeOrder.length; i++) {
-            var f = possibleFilesInAgeOrder[i];
-            if(fs.existsSync(f)) return deserialiseData(fs.readFileSync(f));
-        }
+        var file = keyFile(encodedKey);
         
-        return defaultValue;
+        if(fs.existsSync(file)) return deserialiseData(fs.readFileSync(file));
+        else return defaultValue;
     },
     remove: function(key) {
         var encodedKey = sha(key);

@@ -40,7 +40,8 @@ toVarintBytes: function toVarintBytes(num) {
 },
 
 numberToBytes: function(num) {
-    var buf = new DataView(new ArrayBuffer(8));
+    var ab = new ArrayBuffer(8);
+    var buf = new DataView(ab);
     buf.setFloat64(0, num);
 
     var b = [];
