@@ -1,5 +1,6 @@
 var fs = require("fs");
 const path = require("path");
+const folderScanner = require("../folder-scanner");
 
 var memoizeParsedAliases = {};
 
@@ -112,20 +113,12 @@ function expandAlias(spk) {
 }
 
 function loadTransmutations(dirname) {
-    var dir = fs.readdirSync(dirname, { withFileTypes: true });
+    var files = folderScanner(dirname, ".transmute-meta.js");
     
-    for(var i = 0; i < dir.length; i++) {
-        var p = path.join(dirname, dir[i].name);
-        
-        if(dir[i].isDirectory()) {
-            var pIdxFile = path.join(p, "index.transmute-meta.js");
-            if(fs.existsSync(pIdxFile)) {
-                loadTransmutation(path.join(p, "index.js"), pIdxFile);
-            }
-            else {
-                loadTransmutations(p);
-            }
-        }
+    while(true) {
+        var f = files.next();
+        if(f.done) break;
+        else loadTransmutation(f.value.replace(".transmute-meta.js", ".js"), f.value);
     }
 }
 

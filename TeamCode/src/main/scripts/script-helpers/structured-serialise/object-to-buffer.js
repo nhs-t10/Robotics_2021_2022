@@ -1,12 +1,14 @@
-var version = require("./version");
-var magic = require("./magic");
+const version = require("./version");
+const magic = require("./magic");
 
-var typeCodes = require("./types");
-var bitwiseyTools = require("../../script-helpers/bitwisey-helpers");
-var wellKnownConstructors = require("./well-known-constructors");
+const typeCodes = require("./types");
+const bitwiseyTools = require("../../script-helpers/bitwisey-helpers");
+const wellKnownConstructors = require("./well-known-constructors");
 
-module.exports = function(obj) {
-    var valuePool = {
+module.exports = objectToBuffer;
+
+function objectToBuffer(obj) {
+    const valuePool = {
         pool: [],
         invertedPoolMap: new Map()
     };
@@ -17,13 +19,28 @@ module.exports = function(obj) {
 }
 
 function poolToBuffer(pool) {
-    return packageIntoBuffer([].concat(...pool.map(x=>x.bytes)));
+    var buf = [];
+    for(const x of pool) buf.push(...x.bytes);
+    return packageIntoBuffer(buf);
 }
 
-function packageIntoBuffer(buffer) {
+//WARNING: USES UNSAFE MEMORY THINGS.
+//WORKS, BUT DON'T MESS WITH!
+//here is a more understandable version:
+/*
     return Buffer.from(
-        [].concat(magic, [version], buffer)
+        [].concat(magic, [version], originBlob)
     );
+*/
+function packageIntoBuffer(originBlob) {
+    const magicLen = magic.length;
+    const b = Buffer.allocUnsafe(magicLen + originBlob.length + 1);
+
+    for(let i = 0; i < magicLen; i++) b[i] = magic[i];
+    b[magicLen] = version;
+    for(let i = magicLen + 1; i < b.length; i++) b[i] = originBlob[i - magicLen - 1];
+
+    return b;
 }
 
 function createOrGetIdInValuepool(obj, valuePool) {

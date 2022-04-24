@@ -1,15 +1,18 @@
 const path = require("path");
 const fs = require("fs");
 
-module.exports = loadAutoautoFilesFromFolder
+module.exports = folderScanner
 
 
-function* loadAutoautoFilesFromFolder(folder) {
-    let folderContents = getFolderAutoautoContents(folder);
+function* folderScanner(folder, ending) {
+    let folderContents = getMatchingFolderContents(folder, ending);
 
-    for(const subfile of folderContents) {
+
+    for(var i = 0; i < folderContents.length; i++) {
+        const subfile = folderContents[i];
+
         if(subfile.directory) {
-            folderContents = folderContents.concat(...getFolderAutoautoContents(subfile.name));
+            folderContents = folderContents.concat(...getMatchingFolderContents(subfile.name, ending));
         } else {
             yield path.normalize(subfile.name);
         }
@@ -17,7 +20,7 @@ function* loadAutoautoFilesFromFolder(folder) {
     return undefined;
 }
 
-function getFolderAutoautoContents(folder) {
+function getMatchingFolderContents(folder, ending) {
     const unsorted = fs.readdirSync(folder, {
         withFileTypes: true
     });
@@ -26,13 +29,13 @@ function getFolderAutoautoContents(folder) {
 
     for(const x of unsorted) {
         if(x.isDirectory()) foldersFirst.push({
-            name: folder + path.sep + x.name,
+            name: path.join(folder, x.name),
             directory: true
         });
     }
     for(const x of unsorted) {
-        if(x.isFile() && x.name.endsWith(".autoauto")) foldersFirst.push({
-            name: folder + path.sep + x.name
+        if(x.isFile() && x.name.endsWith(ending)) foldersFirst.push({
+            name: path.join(folder, x.name)
         });
     }
 

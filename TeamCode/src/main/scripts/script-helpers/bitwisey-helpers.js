@@ -33,10 +33,10 @@ toVarintBytes: function toVarintBytes(num) {
 
         var isLastChunk = sectionsScanned == 0;
         var encodedChunk = (currentSection << 1) | (isLastChunk ? 1 : 0);
-        result.push(encodedChunk);
+        result.unshift(encodedChunk);
         sectionsScanned++;
     }
-    return result.reverse();
+    return result;
 },
 
 numberToBytes: function(num) {
@@ -53,10 +53,10 @@ numberToVarBytes: function(num) {
     while(b[b.length - 1] == 0) b.pop();
     return b;
 },
-
 numberFromBytes: function(bytes) {
-    var buf = new DataView(new ArrayBuffer(8));
-    for(var i = 0; i < 8; i++) buf.setUint8(i, (bytes[i] & 0xff)|0);
+    var ab = new ArrayBuffer(8);
+    bytes.copy(new Uint8Array(ab, 0, 8));
+    var buf = new DataView(ab);
 
     return buf.getFloat64(0);
 },

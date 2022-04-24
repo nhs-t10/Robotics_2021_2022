@@ -12,6 +12,7 @@ var parser = require("../../script-helpers/javaparser/parser.js");
 var processTemplate = require("./make-robotfunction-class.js");
 
 var parserTools = require("../../script-helpers/parser-tools");
+const safeFsUtils = require("../../script-helpers/safe-fs-utils.js");
 
 module.exports = function(javaSource, preexistingNames) {
     try {
@@ -108,8 +109,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
 
     var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
 
-     fs.mkdirSync(path.dirname(ourPath), { recursive: true});
-     fs.writeFileSync(ourPath, template); //SAFE
+    safeFsUtils.safeWriteFile(ourPath, template);
 
     return {
         shimClassFunction: { nameToUseInAutoauto: noConflictName, javaImplementationClass: classname},

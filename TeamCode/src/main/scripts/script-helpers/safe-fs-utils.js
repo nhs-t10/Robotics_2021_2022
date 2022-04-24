@@ -65,7 +65,7 @@ function createDirectoryIfNotExist(fileName) {
     }
 }
 
-function cleanDirectory(dir, dontDeleteFiles) {
+function cleanDirectory(dir, dontDeleteFiles, dontDeleteTopDirectory) {
     var files = fs.readdirSync(dir, { withFileTypes: true });
     var filesLeft = files.length;
     files.forEach(x=> {
@@ -76,12 +76,12 @@ function cleanDirectory(dir, dontDeleteFiles) {
                 filesLeft--;
             }
         } else if(x.isDirectory()) {
-            if(cleanDirectory(name, dontDeleteFiles)) filesLeft--;
+            if(cleanDirectory(name, dontDeleteFiles, false)) filesLeft--;
         }
     });
 
     try {
-        if(filesLeft == 0) fs.rmdirSync(dir);
+        if(filesLeft == 0 && !dontDeleteTopDirectory) fs.rmdirSync(dir);
     } catch(e) {
         return false;
     }

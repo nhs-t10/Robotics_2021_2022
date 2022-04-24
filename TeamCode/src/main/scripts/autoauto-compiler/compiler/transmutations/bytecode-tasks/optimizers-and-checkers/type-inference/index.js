@@ -34,8 +34,6 @@ function gatherReturnTypeFrom(entryBlock, blocks, typeSystem) {
     var possibleTypes = processBlockChildrenForReturnTypes(entryBlock, blocks, typeSystem);
     var uniqTypes = Array.from(new Set(possibleTypes));
 
-    console.log(uniqTypes);
-
     if (uniqTypes.length == 1) return uniqTypes[0];
     else return { type: "union", types: uniqTypes };
 

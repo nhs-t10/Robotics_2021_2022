@@ -7,23 +7,25 @@ const commandLineInterface = require("../command-line-interface");
 var safeFsUtils = require("../script-helpers/safe-fs-utils");
 const structuredSerialise = require("../script-helpers/structured-serialise");
 
-var oldCacheDir = path.join(__dirname, ".cache");
+const CACHE_DIR = findCacheDirectory();
+const CACHE_MAX_BYTES = 20_000_000; //20 MB
+const CACHE_META_FILE = path.join(__dirname, ".cache.meta.json");
 
-var cacheDir = findCacheDirectory();
+if(!fs.existsSync(CACHE_META_FILE)) fs.writeFileSync(CACHE_META_FILE, "{}");
+var cacheMeta = require(CACHE_META_FILE);
 
-var CACHE_MAX_BYTES = 100000000; //100 MB
-
-cleanOldCache();
+cleanOldCache(cacheMeta);
 
 module.exports = {
     save: function(key, value) {
         var encodedKey = sha(key);
-        
-        var file = keyFile(encodedKey);
-        
-        safeFsUtils.createDirectoryIfNotExist(file);
+        var filename = keyFile(encodedKey);
+        var dataBuffer = serialiseData(value);
 
-        fs.writeFileSync(file, serialiseData(value) || null);
+        cacheMeta[encodedKey] = { key: encodedKey, file: filename, size: dataBuffer.length, lastWrite: Date.now() };
+
+        safeFsUtils.createDirectoryIfNotExist(filename);
+        fs.writeFileSync(filename, dataBuffer);
     },
     get: function(key, defaultValue) {
         if(commandLineInterface["no-cache"]) return defaultValue;
@@ -32,8 +34,8 @@ module.exports = {
         
         var possibleFilesInAgeOrder = [
             keyFile(encodedKey),
-            keyFile(encodedKey, 3, oldCacheDir),
-            keyFile(encodedKey, 0, oldCacheDir)
+            //keyFile(encodedKey, 3, OLD_CACHE_DIR),
+            //keyFile(encodedKey, 0, OLD_CACHE_DIR)
         ];
 
         for(var i = 0; i < possibleFilesInAgeOrder.length; i++) {
@@ -93,7 +95,7 @@ function isStructuredSerialised(dataBuffer) {
 
 function keyFile(encodedKey, n, pfx) {
     if(n === undefined) n = 2;
-    if(!pfx) pfx = cacheDir;
+    if(!pfx) pfx = CACHE_DIR;
 
     return path.join(pfx, encodedKey.substring(0,n), encodedKey.substring(n) + ".cached");
 }
@@ -102,17 +104,34 @@ function sha(k) {
     return crypto.createHash("sha256").update(JSON.stringify(k)).digest("hex");
 }
 
-function cleanOldCache() {
-    var cacheFiles = fs.readdirSync(cacheDir);
-    var cacheFileStats = cacheFiles.map(x=>({name: x, stats: fs.statSync(path.join(cacheDir, x)) }) );
+function cleanOldCache(cacheMeta) {
+    const metaEntries = Object.values(cacheMeta);
+    let cacheFiles = [], totalSize = 0, oldestCacheEntry = undefined, oldestLastWrite = 0;
     
-    var sortedYoungestToOldest = cacheFileStats.sort((a,b)=>b.stats.mtimeMs - a.stats.mtimeMs);
-    
-    var totalSize = cacheFileStats.reduce((a,b)=>a + b.stats.size, 0);
-    
-    while(totalSize > CACHE_MAX_BYTES) {
-        var toRm = sortedYoungestToOldest.pop();
-        totalSize -= toRm.stats.size;
-        fs.unlinkSync(path.join(cacheDir, toRm.name));
+    for(const cacheMetaEntry of metaEntries) {
+
+        cacheFiles.push(cacheMetaEntry.file);
+
+        if(cacheMetaEntry.size > CACHE_MAX_BYTES) removeMetaEntry(cacheMeta, cacheMetaEntry);
+        else totalSize += cacheMetaEntry.size;
+
+        if(cacheMetaEntry.lastWrite < oldestLastWrite) {
+            oldestTime = cacheMetaEntry.lastWrite;
+            oldestCacheEntry = cacheMetaEntry;
+        }
     }
+
+    safeFsUtils.cleanDirectory(CACHE_DIR, cacheFiles, true);
+
+    if(totalSize > CACHE_MAX_BYTES) removeMetaEntry(cacheMeta, oldestCacheEntry);
 }
+
+function removeMetaEntry(cacheMeta, cacheMetaEntry) {
+    console.warn("Flushing cache entry " + cacheMetaEntry.key);
+    delete cacheMeta[cacheMetaEntry.key];
+    fs.unlinkSync(cacheMetaEntry.file);
+}
+
+process.on("exit", function() {
+    fs.writeFileSync(CACHE_META_FILE, JSON.stringify(cacheMeta));
+});

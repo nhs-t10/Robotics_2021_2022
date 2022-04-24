@@ -10,7 +10,7 @@ const CACHE_VERSION = require("../config").CACHE_VERSION;
 const commandLineInterface = require("../../command-line-interface");
 const safeFsUtils = require("../../script-helpers/safe-fs-utils");
 const makeWorkersPool = require("./workers-pool");
-const autoautoFolderScanner = require("./folder-scanner");
+const folderScanner = require("./folder-scanner");
 
 var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".length + 1);
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
@@ -28,7 +28,7 @@ async function compileAllFromSourceDirectory() {
     //this callback will call once for each file.
     //this way, we don't have to wait for ALL filenames in order to start compiling.
     //it starts after the first one!
-    var aaFiles = autoautoFolderScanner(SRC_DIRECTORY);
+    var aaFiles = folderScanner(SRC_DIRECTORY, ".autoauto");
 
     while(true) {
         var next = aaFiles.next();

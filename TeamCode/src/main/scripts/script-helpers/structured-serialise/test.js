@@ -15,10 +15,11 @@ function generateRandomObject(d) {
     for(var i = 0; i < f; i++) {
         var t = Math.random();
 
-        if(t < 0.2) o[i.toString(16)] = null;
-        else if(t < 0.4) o[i.toString(16)] = Math.random() * 3000;
-        else if(t < 0.6) o[i.toString(16)] = (Math.random() * 3000).toString(16);
-        else if(t < 0.8) o[i.toString(16)] = generateRandomObject(d - 1);
+        //if(t < 0.1) o[i] = o;
+        if(t < 0.2) o[i] = null;
+        else if(t < 0.4) o[i] = Math.random() * 3000;
+        else if(t < 0.6) o[i] = (Math.random() * 3000).toString(16);
+        else if(t < 0.8) o[i] = generateRandomObject(d - 1);
         else o[i] = Array.from(generateRandomObject(d - 1));
 
         if(t > 0.8) o.length = i + 1;

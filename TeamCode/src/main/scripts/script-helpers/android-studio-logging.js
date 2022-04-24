@@ -68,7 +68,7 @@ function formatAndSendHumanyFormat(msg) {
 }
 
 function sendRawText(txt) {
-    console.log(txt);
+    console.info(txt);
 }
 
 function humanReadableFormat(msg) {

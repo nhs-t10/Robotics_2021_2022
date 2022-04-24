@@ -1,40 +1,44 @@
 //Like Java's stream classes, this array-reader keeps a reference of where it is, and allows the user to read 1 item at once.
 
-module.exports = function(arr) {
-    var index = 0;
+module.exports = function(buffer, i) {
+    var index = i|0;
+    var len = buffer.length;
     return {
         skip: function(l) {
             index += (l|0);
         },
         read: function() {
-            return arr[index++];
+            return buffer[index++];
         },
         readVarint: function() {
-            var vIntBytes = [];
-            for(; index < arr.length; index++) {
-                vIntBytes.push(arr[index]);
-                //if the last bit's set, this is the last item
-                if(arr[index] & 0b1) break;
+            var result = 0;
+            for(; index < len; index++) {
+                result |= (buffer[index] >>> 1);
+
+                if(buffer[index] & 0b1) break;
+                else result <<= 7;
             }
-            
+
             //move the pointer off of the last item
             index++;
-            
-            var result = 0;
-            for(var i = vIntBytes.length - 1; i >= 0; i--) {
-                var reverseIndex = vIntBytes.length - i - 1;
-                result |= ((vIntBytes[i] >>> 1) << (7 * reverseIndex));
-            }
             return result;
         },
         readNextBytes: function(l) {
-            var r = [];
-            var n = index + l;
-            for(; index < n; index++) r.push(arr[index]);
-            return r;
+            l|=0;
+            index += l;
+            return buffer.slice(index - l, index);
         },
         hasNext: function() {
-            return index < arr.length;
+            return index < len;
+        },
+        setBound: function(nextByteCount) {
+            len = index + nextByteCount;
+        },
+        releaseBound: function() {
+            len = buffer.length;
+        },
+        skipToBound: function() {
+            index = len;
         }
     }
 }
