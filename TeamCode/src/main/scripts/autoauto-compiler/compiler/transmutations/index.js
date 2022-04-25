@@ -20,7 +20,7 @@ module.exports = {
     },
     loadTaskList: async function(s) {
         //TODO: implement `loadTransmutations()` asynchronously. See the file-scanner for example.
-        loadTransmutations(__dirname);
+        await loadTransmutations(__dirname);
     }
 };
 
@@ -112,11 +112,11 @@ function expandAlias(spk) {
     }).flat(2);
 }
 
-function loadTransmutations(dirname) {
+async function loadTransmutations(dirname) {
     var files = folderScanner(dirname, ".transmute-meta.js");
     
     while(true) {
-        var f = files.next();
+        var f = await files.next();
         if(f.done) break;
         else loadTransmutation(f.value.replace(".transmute-meta.js", ".js"), f.value);
     }

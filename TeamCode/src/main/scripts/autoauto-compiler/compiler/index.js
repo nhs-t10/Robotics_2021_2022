@@ -29,12 +29,18 @@ async function compileAllFromSourceDirectory() {
     //this way, we don't have to wait for ALL filenames in order to start compiling.
     //it starts after the first one!
     var aaFiles = folderScanner(SRC_DIRECTORY, ".autoauto");
-
+    var jobPromises = [];
+    
     while(true) {
-        var next = aaFiles.next();
+        var next = await aaFiles.next();
         if(next.done) break;
-        await makeContextAndCompileFile(next.value, codebaseTasks, compilerWorkers, autoautoFileContexts);
+        
+        jobPromises.push(
+            makeContextAndCompileFile(next.value, codebaseTasks, compilerWorkers, autoautoFileContexts)
+        );
     }
+    
+    await Promise.all(jobPromises);
 
     evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
     compilerWorkers.close();
