@@ -84,20 +84,6 @@ module.exports = {
     "Math@0/sign": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "Math@0/cbrt": { "type": "function", "args": ["number"], "return": "number|undefined" },
     "number|undefined": { type: "union", types: ["undefined", "number"] },
-    "unit_currentv<>": { type: "bytecode", pop: ["unit"], push: ["number"] },
-    "abs_dif<>": { type: "bytecode", pop: ["number", "number"], push: ["number"] },
-    
-    "int": { type: "alias", typeTo: "number" },
-    "float": { type: "alias", typeTo: "number" },
-    "double": { type: "alias", typeTo: "number" },
-    "long": { type: "alias", typeTo: "number" },
-    "short": { type: "alias", typeTo: "number" },
-    "byte": { type: "alias", typeTo: "number" },
-    
-    "char": { type: "alias", typeTo: "string" },
-    "String": { type: "alias", typeTo: "string" },
-    
-    "void": { type: "alias", typeTo: "undefined" },
     
     "number": { type: "primitive", primitive: "number" },
     "undefined": { type: "primitive", primitive: "undefined" },

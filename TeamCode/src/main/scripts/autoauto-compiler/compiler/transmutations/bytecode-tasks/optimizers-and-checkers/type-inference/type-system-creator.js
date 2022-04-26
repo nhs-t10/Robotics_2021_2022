@@ -35,14 +35,59 @@ function restoreFromMappings(cannonical, historical, a) {
 }
 
 function upsertInterpretMapping(cannonical, mappingTitle, uninterpertedMapping, a, loc) {
+    mappingTitle += "";
+
     var original = cannonical[getType(cannonical, mappingTitle, a)];
 
     if(uninterpertedMapping == undefined) throw new Error("Undefined type mapping");
     
-    Object.assign(original, interpertMapping(cannonical, uninterpertedMapping, a));
-    original.location = loc;
+    var interperted = interpertMapping(cannonical, uninterpertedMapping, a);
+    if(original.type == "?") {
+        Object.assign(original, interperted);
+        original.location = loc;
+    } else {
+        mergeTypes(original, interperted, cannonical, a);
+    }
     
     return original;
+}
+
+function mergeTypes(original, interperted, cannonical, a) {
+    original = descendAlias(original, cannonical);
+    interperted = descendAlias(interperted, cannonical);
+
+    if("primitive" in original) return;
+
+    if(original.type != interperted.type) {
+        Object.assign(original, interperted);
+    } else {
+        switch(original.type) {
+            case "union": original.types = original.types.concat(interperted.types);
+            break;
+            case "object": mergeObjects(original, interperted, cannonical, a);
+            break;
+            default: throw "bad merge of " + original.type;
+        }
+    }
+}
+
+function mergeObjects(original, interperted, cannonical, a) {
+    Object.assign(original.properties, interperted.properties);
+
+    if(original.some != "undefined" && interperted.some != "undefined") {
+        original.some = getType(cannonical, { type: "union", types: [original.some, interperted.some] }, a);
+    } else if(interperted.some != "undefined") {
+        original.some = interperted.some;
+    }
+}
+
+function descendAlias(t, cannonical) {
+    if(t.type == "union" && t.types.length == 1) {
+        return descendAlias(cannonical[t.types[0]], cannonical);
+    }
+    else {
+        return t;
+    }
 }
 
 function makeAnonymousTypeName(anonymousInnerTypeCounter) {
@@ -52,11 +97,11 @@ function makeAnonymousTypeName(anonymousInnerTypeCounter) {
     return anonKey;
 }
 
-function getType(cannonical, typeName, a) {
+function getType(cannonical, typeName, a, loc) {
     if(typeof typeName !== "string") {
         var type = typeName;
         var anonKey = makeAnonymousTypeName(a);
-        upsertInterpretMapping(cannonical, anonKey, type, a);
+        upsertInterpretMapping(cannonical, anonKey, type, a, loc);
         return anonKey;
     }
     
@@ -72,6 +117,7 @@ function interpertMapping(cannonical, mapping, a) {
     switch(mapping.type) {
         case "primitive": return Object.assign({}, mapping);
         
+        case "object_apply": return resolveObjectApply(cannonical, mapping, a);
         case "alias": return resolveAliasType(cannonical, mapping, a);
         case "union": return resolveUnionType(cannonical, mapping, a);
         case "object": return resolveObjectType(cannonical, mapping, a);
@@ -80,6 +126,7 @@ function interpertMapping(cannonical, mapping, a) {
         case "binary_operator": return resolveBinaryOperatorType(cannonical, mapping, a);
         case "apply": return resolveFunctionApplicationType(cannonical, mapping, a);
     }
+    console.error(mapping);
     throw new Error("Unknown type-mapping variant '" + mapping.type + "'");
 }
 
@@ -108,8 +155,8 @@ function resolveBinaryOperatorType(cannonical, bOpMapping, a) {
 
 function resolveAliasType(cannonical, aliasMapping, a) {
     return {
-        type: "alias",
-        typeTo: getType(cannonical, aliasMapping.typeTo, a)
+        type: "union",
+        types: [getType(cannonical, aliasMapping.typeTo, a)]
     }
 }
 
@@ -125,6 +172,14 @@ function resolveUnionType(cannonical, unionMapping, a) {
     return {
         type: "union",
         types: unionMapping.types.map(x => getType(cannonical, x, a))
+    };
+}
+
+function resolveObjectApply(cannonical, mapping, a) {
+    return {
+        type: "object_apply",
+        object: getType(cannonical, mapping.object, a),
+        key: mapping.key
     };
 }
 

@@ -207,7 +207,7 @@ function addRowNumbers(text, startRow) {
     return rows
         .map((x,i)=> {
             var rN = startRow + i;
-            return colourString("#666666", `${pad(rN, w)} \u2502 `) + x.replace(/\r/g, "");
+            return colourString("#666666", `${pad(rN, w)} ${lineCharacter} `) + x.replace(/\r/g, "");
         })
         .join("\n");
 }

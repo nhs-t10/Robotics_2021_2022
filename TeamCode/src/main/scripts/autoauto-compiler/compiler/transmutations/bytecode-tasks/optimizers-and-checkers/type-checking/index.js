@@ -1,11 +1,15 @@
 const bytecodeSpec = require("../../bytecode-spec");
 const verifyTypeSystem = require("./verify-type-system");
 
+/**
+ * 
+ * @param {import("../../../index").TransmutateContext} context 
+ */
 module.exports = function run(context) {
     var typeSystem = context.inputs["type-inference"];
     var bytecode = context.inputs["single-static"];
 
-    verifyTypeSystem(typeSystem);
+    verifyTypeSystem(typeSystem, context.sourceFullFileName);
 
     removeTypeCruft(bytecode);
 

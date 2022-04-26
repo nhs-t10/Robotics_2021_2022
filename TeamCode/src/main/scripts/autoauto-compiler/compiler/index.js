@@ -48,27 +48,45 @@ async function compileAllFromSourceDirectory() {
 
 function makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, autoautoFileContexts) {  
     var fileContext = makeFileContext(filename);
-    var fileCache = `autoauto compiler file cache ${fileContext.sourceFullFileName}`;
-    var cacheEntry = cache.get(fileCache, false);
+    var cacheEntry = getCacheEntry(fileContext);
 
     markCodebaseTasks(fileContext, codebaseTasks);
 
     return new Promise(function(resolve, reject) {
-        if(cacheEntry.subkey == fileContext.cacheKey) {
+        if(cacheEntry) {
             androidStudioLogging.sendMessages(cacheEntry.log);
             writeAndCallback(cacheEntry.data, autoautoFileContexts, resolve);
         } else {
             compilerWorkers.giveJob(fileContext, function(run) {
-                if(run.success) cache.save(fileCache, {
-                    subkey: fileContext.cacheKey,
-                    data: run.fileContext,
-                    log: run.log
-                });
+                saveCacheEntry(run);
                 androidStudioLogging.sendMessages(run.log);
                 writeAndCallback(run.fileContext, autoautoFileContexts, resolve);
             });
         }
     });
+}
+
+function saveCacheEntry(finishedRun) {
+    if(finishedRun.success) {
+        cache.save(mFileCacheKey(finishedRun.fileContext), {
+            subkey: finishedRun.fileContext.cacheKey,
+            data: finishedRun.fileContext,
+            log: finishedRun.log
+        });
+    }
+}
+
+function getCacheEntry(fileContext) {
+    if(commandLineInterface["no-cache"]) return false;
+
+    var cacheEntry = cache.get(mFileCacheKey(fileContext), false);
+
+    if(cacheEntry.subkey == fileContext.cacheKey) return cacheEntry;
+    else return false;
+}
+
+function mFileCacheKey(fileContext) {
+    return "autoauto compiler file cache " + fileContext.sourceFullFileName;
 }
 
 function writeAndCallback(finishedFileContext, autoautoFileContexts, cb) {

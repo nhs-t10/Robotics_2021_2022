@@ -66,6 +66,9 @@ log("ULS!"), goto afterStatements;
     log(u), next;
     log(u.sjkdla), next;
     log(0/0), next;
+    let fdjk = [], next;
+    if(Math.random() > 0.5) let dd = fdjk / 2 else let dd = ohoho = 0 / 0, next;
+    log(dd), next;
     goto typing;
 
 #typing:
