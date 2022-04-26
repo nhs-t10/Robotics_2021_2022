@@ -115,7 +115,8 @@ function calcType(instruction, currentTypeKey, typeSystem, blocks) {
             return getGetpropReturnType(instruction, currentTypeKey, typeSystem);
 
         case bytecodeSpec.setprop.code:
-            return recordSetpropType(instruction, currentTypeKey, typeSystem);
+            recordSetpropType(instruction, currentTypeKey, typeSystem);
+            return "undefined";
 
         case bytecodeSpec.add.code:
             return getBinaryOperatorType(instruction, currentTypeKey, typeSystem, "+");
@@ -185,27 +186,39 @@ function getBinaryOperatorType(instruction, key, typeSystem, op) {
 }
 
 function recordSetpropType(setpropInstr, key, typeSystem) {
-
+    var prop = setpropInstr.args[1];
+    
+    if("__value" in prop) {
+        typeSystem.upsertType(setpropInstr.args[0].__typekey, {
+            type: "object",
+            properties: {
+                [prop.__value + ""]: setpropInstr.args[2].__typekey
+            }
+        }, setpropInstr.location);
+    } else {
+        typeSystem.upsertType(setpropInstr.args[0].__typekey, {
+            type: "object",
+            properties: {},
+            some: setpropInstr.args[2].__typekey
+        }, setpropInstr.location);
+    }
 }
 
 function getGetpropReturnType(getpropInstr, key, typeSystem) {
-    var getFromTypeKey = getpropInstr.args[0].__typekey;
-    var getFromType = typeSystem.getType(getFromTypeKey);
 
-    if (!getFromType.properties) getFromType.properties = {};
-
-    var resultTypeKey = "";
-
-    var key = getpropInstr.args[1];
-    if (key.hasOwnProperty("__value") && getFromType.properties[key.__value]) {
-        resultTypeKey = typeSystem.getKeyOf(getFromType.properties[key.__value]);
-    } else {
-        resultTypeKey = typeSystem.getKeyOf(getFromType.some);
+    var propInstr = getpropInstr.args[1];
+    var propText = null;
+    if ("__value" in propInstr) {
+        propText = propInstr.__value + "";
     }
+    
+    typeSystem.upsertType(key, {
+        type: "object_apply",
+        object: getpropInstr.args[0].__typekey,
+        key: propText
+    }, getpropInstr.location);
 
-    if (!resultTypeKey) resultTypeKey = "*";
-
-    return resultTypeKey;
+    return key;
 }
 
 function getFunctionReturnType(callfunctionInstr, key, typeSystem) {
@@ -284,8 +297,8 @@ function assembleObjectType(constructTableInstr, currentTypeKey, typeSystem) {
         some: { type: "union", types: [] },
         properties: {}
     };
-    for (var i = 0; i < constructTableInstr.args.length; i += 2) {
-        var key = constructTableInstr.args[i].__value;
+    for (var i = 1; i < constructTableInstr.args.length; i += 2) {
+        var key = constructTableInstr.args[i - 1].__value;
         if (key === undefined) continue;
 
         var valueType = constructTableInstr.args[i].__typekey;

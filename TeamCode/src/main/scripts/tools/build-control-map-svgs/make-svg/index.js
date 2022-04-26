@@ -119,7 +119,7 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
         case undefined:
         case "StaticValue":
             return [];
-        default: console.log(inputNodeStructure); throw "aa";
+        default: console.error(inputNodeStructure); throw new Error("aa");
     }
 }
 

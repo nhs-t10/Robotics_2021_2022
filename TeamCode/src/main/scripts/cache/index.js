@@ -28,8 +28,6 @@ module.exports = {
         fs.writeFileSync(filename, dataBuffer);
     },
     get: function(key, defaultValue) {
-        if(commandLineInterface["no-cache"]) return defaultValue;
-
         var encodedKey = sha(key);
         
         var file = keyFile(encodedKey);

@@ -6,7 +6,7 @@ var functions = cache.get(cacheKey, {});
 module.exports = flCacheToTypes(functions);
 
 function flCacheToTypes(flCache) {
-    
+
     var methodTypeMap = {};
     
     for(var k in flCache) {
@@ -31,17 +31,32 @@ function insertMethod(method, methodTypeMap) {
     for(var i = 0; i < method.functionTypes.length; i++) {
         var typing = method.functionTypes[i];
         var argdata = typing.argumentTypes;
-        returnPossibilities.push(argdata.returnType);
+        returnPossibilities.push(aaType(argdata.returnType));
         
         if (argNames.length < argdata.argNames.length) argNames = argdata.argNames;
         
         for(var i = 0; i < typing.argCount; i++) {
             if(!argPossibilities[i]) argPossibilities.push(["undefined"]);
-            argPossibilities[i].push(argdata.argTypes[i]);
+            argPossibilities[i].push(aaType(argdata.argTypes[i]));
         }
     }
     
     methodTypeMap[key] = assembleFunctionType(returnPossibilities, argPossibilities, argNames);
+}
+
+function aaType(t) {
+    switch(t) {
+        case "String": return "string";
+        case "int": return "number";
+        case "float": return "number";
+        case "double": return "number";
+        case "long": return "number";
+        case "short": return "number";
+        case "byte": return "number";
+        case "char": return "string";
+        //void is covered by the default
+        default: return "undefined";
+    }
 }
 
 function assembleFunctionType(returnPossibilities, argPossibilities, argNames) {

@@ -33,7 +33,7 @@ module.exports = function() {
 }
 
 function getGenealogyCommits() {
-    console.log(getGitRootDirectory());
+    console.info(getGitRootDirectory());
     return cp.execSync("git rev-list HEAD -- **/genealogy/*", {
         cwd: getGitRootDirectory()
     })

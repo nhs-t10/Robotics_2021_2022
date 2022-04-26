@@ -202,7 +202,8 @@ baseExpression = a:atom _ t:tail* _ {
      return value;
 }
 
-tail = arrayStyleGetter / callFunction / dotStyleGetter
+settableTail = arrayStyleGetter / dotStyleGetter
+tail = settableTail / callFunction
 
 callFunction "function call" = OPEN_PAREN _ a:valueList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
 
