@@ -2,12 +2,12 @@
 var initial = require("./initial-assumptions");
 var javaFuncs = require("./java-functions");
 
-module.exports = function() {
+module.exports = function (javaManagers) {
     var tsMap = {};
     var anonymousInnerTypeCounter = { k: 0, inverseMap: new Map() };
     
     restoreFromMappings(tsMap, initial, anonymousInnerTypeCounter);
-    restoreFromMappings(tsMap, javaFuncs, anonymousInnerTypeCounter);
+    restoreFromMappings(tsMap, javaFuncs(javaManagers), anonymousInnerTypeCounter);
     
     return {
         __t: tsMap,

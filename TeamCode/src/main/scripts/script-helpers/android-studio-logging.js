@@ -12,14 +12,31 @@ module.exports = {
     beginOutputCapture: beginOutputCapture,
     getCapturedOutput: getCapturedOutput,
 
-    sendMessages: sendMessages
+    sendMessages: sendMessages,
+    
+    printTypeCounts: printTypeCounts
 };
+
+
+
+const COLOURS = {
+    WARNING: "#999900",
+    ERROR: "#ff0033",
+    INFO: "#6666aa",
+    UNKNOWN_MESSAGE_KIND: "#99cccc",
+    HINT: "#cc66cc",
+    LINE_NUMBER: "#666666"
+}
 
 var capturingOutput = false;
 var captured = [];
 
-var logLevel = 0;
-if(commandLineArguments.quiet) logLevel = 2;
+var counts = {
+    ERROR: 0,
+    WARNING: 0,
+    INFO: 0
+};
+const logLevel = commandLineArguments.quiet ? 2 : 0;
 
 function beginOutputCapture() {
     capturingOutput = true;
@@ -47,14 +64,33 @@ function sendMessages(msgs) {
 function sendPlainMessage (msg) {
     var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
     
+    incrementTypeCount(msg.kind);
+    
     if (logLevel <= l || l === -1) {
         if(capturingOutput) {
             captured.push(msg);
-        } else {
+        } else {            
             formatAndSendJsonFormat(msg);
             formatAndSendHumanyFormat(msg);
         }
     }
+}
+
+function incrementTypeCount(kind) {
+    kind = ("" + kind).toUpperCase();
+    
+    if(!counts[kind]) counts[kind] = 0;
+    
+    counts[kind]++;
+}
+
+function printTypeCounts() {
+    sendRawText(
+        "Compilation finished. " +
+        colourString(COLOURS.ERROR, counts.ERROR + " errors") + ", " +
+        colourString(COLOURS.WARNING, counts.WARNING + " warnings") + ", " +
+        colourString(COLOURS.INFO, counts.INFO + " informational")
+    );
 }
 
 function formatAndSendJsonFormat(msg) {
@@ -168,13 +204,7 @@ function formatPointerToCode(file, location, kind, label, hints) {
     var selectionStart = location.start.offset - lineStart;
     var selectionEnd = location.end.offset - lineStart;
     
-    var colour = ({
-        "WARNING": "#999900",
-        "ERROR": "#ff0033",
-        "INFO": "#000099"
-    })[kind];
-    
-    if(!colour) colour = "#009999";
+    var colour = getKindColour(kind);
     
     var selBeg = snippet.substring(1, selectionStart);
     var sel = snippet.substring(selectionStart, selectionEnd);
@@ -190,9 +220,13 @@ function formatPointerToCode(file, location, kind, label, hints) {
     
     var pointer = margin + colourString(colour, "^ " + label);
     
-    var hintText = hints.map(x => `\n${margin}  ${colourString("#cc66cc", x)}`).join("");
+    var hintText = hints.map(x => `\n${margin}  ${colourString(COLOURS.HINT, x)}`).join("");
     
     return selectedWithRowNumbers + "\n" + pointer +  hintText;
+}
+
+function getKindColour(kind) {
+    return COLOURS[kind] || COLOURS.UNKNOWN_MESSAGE_KIND;
 }
 
 function addRowNumbers(text, startRow) {
@@ -207,7 +241,7 @@ function addRowNumbers(text, startRow) {
     return rows
         .map((x,i)=> {
             var rN = startRow + i;
-            return colourString("#666666", `${pad(rN, w)} ${lineCharacter} `) + x.replace(/\r/g, "");
+            return colourString(COLOURS.LINE_NUMBER, `${pad(rN, w)} ${lineCharacter} `) + x.replace(/\r/g, "");
         })
         .join("\n");
 }

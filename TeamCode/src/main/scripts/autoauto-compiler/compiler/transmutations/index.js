@@ -4,7 +4,9 @@ const folderScanner = require("../folder-scanner");
 
 var memoizeParsedAliases = {};
 
+var preprocessTransmutations = [];
 var transmutations = {};
+var postprocessTransmutations = [];
 
 module.exports = {
     /**
@@ -21,6 +23,12 @@ module.exports = {
     loadTaskList: async function(s) {
         //TODO: implement `loadTransmutations()` asynchronously. See the file-scanner for example.
         await loadTransmutations(__dirname);
+    },
+    getPostProcessTransmutations: function() {
+        return postprocessTransmutations;
+    },
+    getPreProcessTransmutations: function () {
+        return preprocessTransmutations;
     }
 };
 
@@ -125,9 +133,15 @@ async function loadTransmutations(dirname) {
 function loadTransmutation(sourceFile, metaFile) {
     var meta = require(metaFile);
     meta.sourceFile = sourceFile;
-
-    if(transmutations[meta.id]) throw "The transmutation `" + meta.id + "` is already registered!";
-    else transmutations[meta.id] = meta;
+    
+    if(meta.type == "codebase_postprocess") {
+        postprocessTransmutations.push(meta);
+    } else if(meta.type == "codebase_preprocess") {
+        preprocessTransmutations.push(meta);
+    } else {
+        if (transmutations[meta.id]) throw "The transmutation `" + meta.id + "` is already registered!";
+        else transmutations[meta.id] = meta;
+    }
 }
 
 /**

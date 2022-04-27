@@ -5,14 +5,14 @@ var directory = __dirname.split(path.sep);
 var rootDirectory = directory.slice(0, directory.indexOf("TeamCode")).join(path.sep);
 var robotFunctionsDirectory = path.join(rootDirectory, "TeamCode/gen/org/firstinspires/ftc/teamcode/auxilary/dsls/autoauto/runtime/robotfunctions");
 
-var parser = require("../../script-helpers/javaparser/parser.js");
+var parser = require("../../../../../../script-helpers/javaparser/parser.js");
 
 
 
 var processTemplate = require("./make-robotfunction-class.js");
 
-var parserTools = require("../../script-helpers/parser-tools");
-const safeFsUtils = require("../../script-helpers/safe-fs-utils.js");
+var parserTools = require("../../../../../../script-helpers/parser-tools");
+const safeFsUtils = require("../../../../../../script-helpers/safe-fs-utils.js");
 
 module.exports = function(javaSource, preexistingNames) {
     try {

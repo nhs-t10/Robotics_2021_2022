@@ -16,14 +16,19 @@ var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".len
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
 
 
-(async function main() {
+module.exports = (async function main() {
     await transmutations.loadTaskList();
-    compileAllFromSourceDirectory();
-})();
+    await compileAllFromSourceDirectory();
+    
+    androidStudioLogging.printTypeCounts();
+});
 
 async function compileAllFromSourceDirectory() {
     const compilerWorkers = makeWorkersPool();
-    const autoautoFileContexts = [], codebaseTasks = {};
+    const autoautoFileContexts = [];
+    
+    var preprocessInputs = {};
+    await evaluateCodebaseTasks(autoautoFileContexts, transmutations.getPreProcessTransmutations(), preprocessInputs);
 
     //this callback will call once for each file.
     //this way, we don't have to wait for ALL filenames in order to start compiling.
@@ -36,21 +41,19 @@ async function compileAllFromSourceDirectory() {
         if(next.done) break;
         
         jobPromises.push(
-            makeContextAndCompileFile(next.value, codebaseTasks, compilerWorkers, autoautoFileContexts)
+            makeContextAndCompileFile(next.value, compilerWorkers, autoautoFileContexts, preprocessInputs)
         );
     }
     
     await Promise.all(jobPromises);
 
-    evaluateCodebaseTasks(autoautoFileContexts, codebaseTasks);
+    await evaluateCodebaseTasks(autoautoFileContexts, transmutations.getPostProcessTransmutations(), {});
     compilerWorkers.close();
 }
 
-function makeContextAndCompileFile(filename, codebaseTasks, compilerWorkers, autoautoFileContexts) {  
-    var fileContext = makeFileContext(filename);
+function makeContextAndCompileFile(filename, compilerWorkers, autoautoFileContexts, preprocessInputs) {
+    var fileContext = makeFileContext(filename, preprocessInputs);
     var cacheEntry = getCacheEntry(fileContext);
-
-    markCodebaseTasks(fileContext, codebaseTasks);
 
     return new Promise(function(resolve, reject) {
         if(cacheEntry) {
@@ -95,10 +98,12 @@ function writeAndCallback(finishedFileContext, autoautoFileContexts, cb) {
     cb(finishedFileContext);
 }
 
-function evaluateCodebaseTasks(allFileContexts, codebaseTasks) {
-    for(var id in codebaseTasks) {
-        var mutFunc = require(codebaseTasks[id].sourceFile);
-        mutFunc(allFileContexts[0], allFileContexts);
+async function evaluateCodebaseTasks(allFileContexts, codebaseTasks, codebaseInputs) {
+    for(var transmut of codebaseTasks) {
+        var o = { output: undefined };
+        var mutFunc = require(transmut.sourceFile);
+        await mutFunc(o, allFileContexts);
+        codebaseInputs[transmut.id] = o.output;
     }
 }
 
@@ -106,7 +111,8 @@ function sha(s) {
     return crypto.createHash("sha256").update(s).digest("hex");
 }
 
-function makeFileContext(file) {
+function makeFileContext(file, preprocessInputs) {
+        
     var resultFile = getResultFor(file);
     var fileContent = fs.readFileSync(file).toString();
     var frontmatter = loadFrontmatter(fileContent);
@@ -132,8 +138,9 @@ function makeFileContext(file) {
         transmutations: tPath,
         readsAllFiles: tPath.map(x=>x.readsFiles || []).flat()
     };
-
-    ctx.cacheKey = makeCacheKey(ctx);
+    
+    Object.assign(ctx.inputs, preprocessInputs);
+    ctx.cacheKey = makeCacheKey(ctx, preprocessInputs);
 
     return ctx;
 }
@@ -144,27 +151,22 @@ function writeWrittenFiles(fileContext) {
     }
 }
 
-function markCodebaseTasks(fileContext, codebaseTasks) {
-    for(var i = 0; i < fileContext.transmutations.length; i++) {
-        var mut = fileContext.transmutations[i];
-        if(mut.type.startsWith("codebase_")) {
-            codebaseTasks[mut.id] = mut;
-            fileContext.transmutations.splice(i,1);
-            i--;
-        }
-    }
-}
-
 /**
  * 
  * @param {import("./transmutations").TransmutateContext} fileContext 
  */
-function makeCacheKey(fileContext) {
+function makeCacheKey(fileContext, preprocessInputs) {
+    
+    var preprocessInputSerial = "";
+    for(var ppI in preprocessInputs) {
+        preprocessInputSerial += sha(JSON.stringify(preprocessInputs[ppI]));
+    }
     
     var readFileShas = fileContext.readsAllFiles.map(x=>sha(safeFsUtils.cachedSafeReadFile(x))).join("\t");
     var transmutationIdList = fileContext.transmutations.map(x=>x.id).join("\t");
 
-    var keyDataToSha = [CACHE_VERSION, readFileShas, fileContext.sourceFullFileName, fileContext.fileContentText, transmutationIdList];
+    var keyDataToSha = [CACHE_VERSION, preprocessInputSerial, readFileShas, 
+        fileContext.sourceFullFileName, fileContext.fileContentText, transmutationIdList];
 
     return sha(keyDataToSha.join("\0"));
 }

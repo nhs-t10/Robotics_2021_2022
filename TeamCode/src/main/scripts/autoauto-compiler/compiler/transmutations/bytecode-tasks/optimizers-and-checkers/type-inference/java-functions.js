@@ -1,12 +1,6 @@
-var cache = require("../../../../../../cache");
-
-var cacheKey = require("../../../../../config").CACHE_KEY;
-
-var functions = cache.get(cacheKey, {});
-module.exports = flCacheToTypes(functions);
+module.exports = flCacheToTypes;
 
 function flCacheToTypes(flCache) {
-
     var methodTypeMap = {};
     
     for(var k in flCache) {

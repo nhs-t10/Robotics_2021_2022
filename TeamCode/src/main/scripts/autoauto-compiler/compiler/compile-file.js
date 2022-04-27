@@ -1,9 +1,9 @@
 const androidStudioLogging = require("../../script-helpers/android-studio-logging");
 
 
-module.exports = function(fileContext) {
+module.exports = async function(fileContext) {
     androidStudioLogging.beginOutputCapture();
-    var success = compileFile(fileContext);
+    var success = await compileFile(fileContext);
     var log = androidStudioLogging.getCapturedOutput();
 
     return {
@@ -17,22 +17,22 @@ module.exports = function(fileContext) {
  * 
  * @param {import("./transmutations").TransmutateContext} fileContext 
  */
-function compileFile(fileContext) {
+async function compileFile(fileContext) {
     var transmuts = fileContext.transmutations;
     for(var i = 0; i < transmuts.length; i++) {
         
-        var mutRan = tryRunTransmutation(transmuts[i], fileContext);
+        var mutRan = await tryRunTransmutation(transmuts[i], fileContext);
         
         if(!mutRan) break;
     }
     return i == transmuts.length;
 }
 
-function tryRunTransmutation(transmutation, fileContext) {
+async function tryRunTransmutation(transmutation, fileContext) {
     try {
         delete fileContext.status;
         
-        runTransmutation(transmutation, fileContext);
+        await runTransmutation(transmutation, fileContext);
         
         if(fileContext.status != "pass") throw {kind: "ERROR", text: `Task ${transmutation.id} didn't report success` };
         
@@ -46,7 +46,7 @@ function tryRunTransmutation(transmutation, fileContext) {
     }
 }
 
-function runTransmutation(transmutation, fileContext) {
+async function runTransmutation(transmutation, fileContext) {
     
     var c = {};
     Object.assign(c, fileContext);
@@ -54,7 +54,7 @@ function runTransmutation(transmutation, fileContext) {
     c.writtenFiles = {};
     
     var tRunMethod = require(transmutation.sourceFile);
-    tRunMethod(c);
+    await tRunMethod(c);
     
     fileContext.status = c.status;
     Object.assign(fileContext.writtenFiles, c.writtenFiles);

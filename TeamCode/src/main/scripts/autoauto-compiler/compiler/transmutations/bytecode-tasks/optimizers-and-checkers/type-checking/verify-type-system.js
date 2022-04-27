@@ -1,9 +1,8 @@
-const { writeFileSync } = require("fs");
 const androidStudioLogging = require("../../../../../../script-helpers/android-studio-logging");
 
 const getBinaryOperatorResult = require("./binary-operator-result");
 
-module.exports = function(typeSystem, filename) {
+module.exports = function(typeSystem, filename) {    
     let typeUnfounded = false;
     for(const typeName in typeSystem) {
         const type = typeSystem[typeName];

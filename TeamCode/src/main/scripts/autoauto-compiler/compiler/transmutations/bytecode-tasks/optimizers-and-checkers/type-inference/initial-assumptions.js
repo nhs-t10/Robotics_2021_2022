@@ -1,4 +1,9 @@
 module.exports = {
+    "var module_args@0": {
+        type: "object",
+        some: "*",
+        properties: {}  
+    },
     "var Math@0": {
         type: "object",
         some: "undefined",

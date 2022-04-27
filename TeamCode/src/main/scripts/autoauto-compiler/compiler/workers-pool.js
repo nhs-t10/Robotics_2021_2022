@@ -36,8 +36,9 @@ module.exports = function () {
 function fakeWorkerPool() {
     var worker = require("./worker");
     return {
-        giveJob: function(fileContext, cb) {
-            cb(worker(fileContext));
+        giveJob: async function(fileContext, cb) {
+            var fin = await worker(fileContext);
+            cb(fin);
         },
         close: function() {
 

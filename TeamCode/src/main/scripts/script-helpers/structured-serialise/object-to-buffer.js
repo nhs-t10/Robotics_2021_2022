@@ -54,28 +54,35 @@ function createOrGetIdInValuepool(obj, valuePool) {
     valuePool.pool[poolEntry.id] = poolEntry;
     valuePool.invertedPoolMap.set(obj, poolEntry.id);
 
-    switch(type) {
-        case "undefined": poolEntry.bytes = [];
-        break;
-        case "boolean": poolEntry.bytes = [+obj];
-        break;
-        case "number": poolEntry.bytes = bitwiseyTools.numberToBytes(obj);
-        break;
-        case "string": poolEntry.bytes = Array.from(Buffer.from(obj, "utf8"));
-        break;
-        case "array":
-        case "object": poolEntry.bytes = getEntriesBytes(obj, valuePool);
-        break;
-        case "null": poolEntry.bytes = [];
-        break;
-        case "wellKnownObject":
-            //wellknownobjects record their constructor so they can be re-constructed later
-            poolEntry.bytes = getWellKnownInfo(obj, valuePool).concat(getEntriesBytes(obj, valuePool));
-    }
 
-    poolEntry.bytes = [typeCodes[type]].concat(bitwiseyTools.toVarintBytes(poolEntry.bytes.length), poolEntry.bytes);
+    poolEntry.bytes = [typeCodes[type]].concat(
+        bitwiseyTools.toVarintBytes(poolEntry.bytes.length),
+        getValueBytes(type, obj)
+    );
 
     return poolEntry.id;
+}
+
+function getValueBytes(type, obj) {
+    switch (type, obj) {
+        case "undefined": return [];
+            break;
+        case "boolean": return [+obj];
+            break;
+        case "number": return bitwiseyTools.numberToBytes(obj);
+            break;
+        case "string": return Array.from(Buffer.from(obj, "utf8"));
+            break;
+        case "array":
+        case "object": return getEntriesBytes(obj, valuePool);
+            break;
+        case "null": return [];
+            break;
+        case "wellKnownObject":
+            //wellknownobjects record their constructor so they can be re-constructed later
+            return getWellKnownInfo(obj, valuePool).concat(getEntriesBytes(obj, valuePool));
+        default: return [];
+    }
 }
 
 function getStructureType(obj) {

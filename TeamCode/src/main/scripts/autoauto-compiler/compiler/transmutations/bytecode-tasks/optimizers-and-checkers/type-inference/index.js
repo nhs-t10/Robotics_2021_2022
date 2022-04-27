@@ -4,7 +4,9 @@ const typeSystemCreator = require("./type-system-creator");
 
 module.exports = function run(context) {
     var bytecode = context.inputs["single-static"];
-    var typeSystem = typeSystemCreator();
+    var javaFunctions = context.inputs["java-function-loader"];
+    
+    var typeSystem = typeSystemCreator(javaFunctions);
 
     Object.values(bytecode).forEach(x => processBytecodeBlock(x, bytecode, typeSystem));
 

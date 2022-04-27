@@ -5,12 +5,14 @@ if(workerThreads.isMainThread) {
     module.exports = evaluateJob;
 } else {
     process.argv = process.argv.concat(workerThreads.workerData);
-    workerThreads.parentPort.on("message", function(m) {
+    workerThreads.parentPort.on("message", async function(m) {
         if(m.type == "newJob") {
+            var evaledJob = await evaluateJob(m.body);
+            
             workerThreads.parentPort.postMessage({
                 type: "jobDone",
                 id: m.id,
-                body: evaluateJob(m.body)
+                body: evaledJob
             });
         }
     });
@@ -19,6 +21,6 @@ if(workerThreads.isMainThread) {
 
 
 
-function evaluateJob(fileContext) {
-    return compileFile(fileContext);
+async function evaluateJob(fileContext) {
+    return await compileFile(fileContext);
 }
