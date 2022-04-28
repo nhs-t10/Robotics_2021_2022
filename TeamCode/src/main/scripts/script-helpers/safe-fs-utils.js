@@ -55,14 +55,14 @@ function safeWriteFile(fileName, content) {
     fs.writeFileSync(fileName, content);
 }
 
-function addToGitignore(path) {
+function addToGitignore(globToAdd) {
     var gitRoot = cachedGitDirectory;
     if(!gitRoot) return false;
 
     var gitignore = path.join(gitRoot, ".gitignore");
     //if it doesn't exist, just create it with the required content
     if(!fs.existsSync(gitignore)) {
-        fs.writeFileSync(gitignore, path + "\n");
+        fs.writeFileSync(gitignore, globToAdd + "\n");
         return true;
     }
     
@@ -70,8 +70,8 @@ function addToGitignore(path) {
     var gLines = gContent.split(/\r?\n/);
 
     //early exit if the gitignore already has the path
-    if(gLines.includes(path)) return true;
-    else gLines.push(path);
+    if (gLines.includes(globToAdd)) return true;
+    else gLines.push(globToAdd);
 
     fs.writeFileSync(gitignore, gLines.join("\n"));
     return true;
