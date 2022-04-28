@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primitives;
 
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.Location;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.AutoautoCallableValue;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoRuntimeVariableScope;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.AutoautoSystemVariableNames;
 import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.AutoautoNameException;
+import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.runtime.errors.ManagerSetupException;
 import org.jetbrains.annotations.NotNull;
 
-public class AutoautoUndefined extends AutoautoPrimitive {
+public class AutoautoUndefined extends AutoautoPrimitive implements AutoautoCallableValue {
     private boolean complainAboutUndefinedUsage = false;
 
     public static final int USER_CODE_OR_MATHEMATICAL_USAGE = 0;
@@ -90,5 +92,15 @@ public class AutoautoUndefined extends AutoautoPrimitive {
     @Override
     public int dataWidth() {
         return 0;
+    }
+
+    @Override
+    public String[] getArgNames() {
+        return new String[0];
+    }
+
+    @Override
+    public AutoautoPrimitive call(AutoautoPrimitive thisValue, AutoautoPrimitive[] args) throws ManagerSetupException {
+        return this;
     }
 }

@@ -1,5 +1,3 @@
-var path = require("path");
-
 var query = require("../query");
 
 module.exports = {

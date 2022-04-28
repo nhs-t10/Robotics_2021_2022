@@ -319,11 +319,16 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             break;
         case "ArgumentList":
             var childDefs = ast.args.map(x => process(x));
+            
+            var arrType = "AutoautoValue";
+            //if one item is an Identifer, then all of them must be.
+            if (ast.args[0] && ast.args[0].type == "Identifier") arrType = "String";
+            
             addDepthMappedDefinition({
                 depth: depth,
                 self: nonce,
                 depends: childDefs.map(x => x.varname),
-                definition: `AutoautoValue[] ${nonce} = {${childDefs.map(x => x.varname).join(", ")}};`
+                definition: `${arrType}[] ${nonce} = {${childDefs.map(x => x.varname).join(", ")}};`
             });
 
             result = {
@@ -410,7 +415,7 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
                 depth: depth,
                 self: nonce,
                 depends: [unit.varname],
-                definition: `AutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname});`
+                definition: `AutoautoUnitValue ${nonce} = ${STATIC_CONSTRUCTOR_SHORTNAMES.AutoautoUnitValue}(${ast.value.v}, ${unit.varname}, true);`
             });
 
             result = {
@@ -481,6 +486,80 @@ module.exports = function astToString(ast, statepath, stateNumber, depth) {
             result = {
                 varname: nonce,
             };
+            break;
+        case "ProvideStatement":
+            result = process({
+                type: "ValueStatement",
+                location: ast.location,
+                call: {
+                    type: "FunctionCall",
+                    location: ast.location,
+                    func: {
+                        type: "VariableReference",
+                        location: ast.location,
+                        variable: {
+                            type: "Identifier",
+                            location: ast.location,
+                            value: "provide"
+                        }
+                    },
+                    args: {
+                        type: "ArgumentList",
+                        location: ast.location,
+                        len: 1,
+                        args: [ast.value]
+                    }
+                }
+            });
+            result.noLocation = true;
+            break;
+        case "ReturnStatement":
+            result = process({
+                type: "ValueStatement",
+                location: ast.location,
+                call: {
+                    type: "FunctionCall",
+                    location: ast.location,
+                    func: {
+                        type: "VariableReference",
+                        location: ast.location,
+                        variable: {
+                            type: "Identifier",
+                            location: ast.location,
+                            value: "return"
+                        }
+                    },
+                    args: {
+                        type: "ArgumentList",
+                        location: ast.location,
+                        len: ast.value ? 1 : 0,
+                        args: ast.value ? [ast.value] : []
+                    }
+                }
+            });
+            result.noLocation = true;
+            break;
+        case "DelegatorExpression":
+            result = process({
+                type: "FunctionCall",
+                location: ast.location,
+                func: {
+                    type: "VariableReference",
+                    location: ast.location,
+                    variable: {
+                        type: "Identifier",
+                        location: ast.location,
+                        value: "delegate"
+                    }
+                },
+                args: {
+                    type: "ArgumentList",
+                    location: ast.location,
+                    len: ast.args.len + 1,
+                    args: [ast.delegateTo].concat(ast.args.args)
+                }
+            });
+            result.noLocation = true;
             break;
         case "BooleanLiteral":
             addDepthMappedDefinition({

@@ -24,6 +24,18 @@ public class FunctionDefStatement extends Statement {
     public static FunctionDefStatement J (String functionName, AutoautoValue[] args, State val) {
         return new FunctionDefStatement(functionName, args, val);
     }
+    public static FunctionDefStatement J (AutoautoValue functionName, String[] args, State val) {
+        AutoautoValue[] aStr = new AutoautoValue[args.length];
+        for(int i = 0; i < aStr.length; i++) aStr[i] = new AutoautoString(args[i]);
+
+        return new FunctionDefStatement(functionName, aStr, val);
+    }
+    public static FunctionDefStatement J (String functionName, String[] args, State val) {
+        AutoautoValue[] aStr = new AutoautoValue[args.length];
+        for(int i = 0; i < aStr.length; i++) aStr[i] = new AutoautoString(args[i]);
+
+        return new FunctionDefStatement(functionName, aStr, val);
+    }
     public FunctionDefStatement(AutoautoValue fName, AutoautoValue[] args, State body) {
         this.fName = fName;
         this.args = args;

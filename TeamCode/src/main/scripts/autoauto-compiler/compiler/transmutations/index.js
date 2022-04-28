@@ -1,36 +1,36 @@
 var fs = require("fs");
 const path = require("path");
-var cache = require("../../../cache");
+const folderScanner = require("../folder-scanner");
 
+var memoizeParsedAliases = {};
+
+var preprocessTransmutations = [];
 var transmutations = {};
+var postprocessTransmutations = [];
 
 module.exports = {
     /**
      * 
-     * @param {Transmutation} t 
+     * @param {string} s 
+     * @returns {SerializableTransmutationInstance[]}
      */
-     registerTransmutation: function (t) {
-        if (transmutations[t.id]) throw "Re-registered " + t.id;
-        transmutations[t.id] = t;
-    },
-    /**
-     * 
-     * @param {string} id 
-     * @returns {Transmutation}
-     */
-    get: function(id) {
-        if (!transmutations[id]) throw "No such registered " + id;
-        return transmutations[id];
-    },
     expandTasks: function(s) {
-        var tasks = cachedParseSpecExpandAliases(s);
+        var tasks = memoizedParseSpecExpandAliases(s);
         insertDeps(tasks);
         
         return idsToTras(tasks);
+    },
+    loadTaskList: async function(s) {
+        //TODO: implement `loadTransmutations()` asynchronously. See the file-scanner for example.
+        await loadTransmutations(__dirname);
+    },
+    getPostProcessTransmutations: function() {
+        return postprocessTransmutations;
+    },
+    getPreProcessTransmutations: function () {
+        return preprocessTransmutations;
     }
 };
-
-loadTransmutations(__dirname);
 
 function idsToTras(ids) {
     return ids.map(x=>{
@@ -41,20 +41,15 @@ function idsToTras(ids) {
     });
 }
 
-function cachedParseSpecExpandAliases(sp) {
-    var keys = Object.keys(transmutations);
+function memoizedParseSpecExpandAliases(sp) {
     
-    var t = {
-        k: "aa-compiler-transmutation-cache",
-        ver: keys,
-        v: sp
-    };
+    var t = JSON.stringify(sp);
     
-    var cVal = false;//cache.get(t, false);
+    var cVal = memoizeParsedAliases[t];
     
-    if(cVal === false) {
+    if(!cVal) {
         cVal = parseSpecExpandAliases(sp);
-        cache.save(t, cVal);
+        memoizeParsedAliases[t] = cVal;
     }
     return cVal;
 }
@@ -86,7 +81,7 @@ function insertDeps(insertInto, findDepsIn) {
     
     for(var i = 0; i < findDepsIn.length; i++) {
         var req = transmutations[findDepsIn[i].id].requires;
-        var reqExpanded = cachedParseSpecExpandAliases(req);
+        var reqExpanded = memoizedParseSpecExpandAliases(req);
         
         var intoIndex = insertInto.findIndex(x=>x.id == findDepsIn[i].id);
         
@@ -125,17 +120,27 @@ function expandAlias(spk) {
     }).flat(2);
 }
 
-function loadTransmutations(dirname) {
-    var dir = fs.readdirSync(dirname, { withFileTypes: true });
+async function loadTransmutations(dirname) {
+    var files = folderScanner(dirname, ".transmute-meta.js");
     
-    for(var i = 0; i < dir.length; i++) {
-        var p = path.join(dirname, dir[i].name);
-        
-        if(dir[i].isDirectory()) {
-            var pFil = path.join(p, "index.js");
-            if(fs.existsSync(pFil)) require(pFil);
-            else loadTransmutations(p);
-        }
+    while(true) {
+        var f = await files.next();
+        if(f.done) break;
+        else loadTransmutation(f.value.replace(".transmute-meta.js", ".js"), f.value);
+    }
+}
+
+function loadTransmutation(sourceFile, metaFile) {
+    var meta = require(metaFile);
+    meta.sourceFile = sourceFile;
+    
+    if(meta.type == "codebase_postprocess") {
+        postprocessTransmutations.push(meta);
+    } else if(meta.type == "codebase_preprocess") {
+        preprocessTransmutations.push(meta);
+    } else {
+        if (transmutations[meta.id]) throw "The transmutation `" + meta.id + "` is already registered!";
+        else transmutations[meta.id] = meta;
     }
 }
 
@@ -145,6 +150,19 @@ function loadTransmutations(dirname) {
  * @property {string} id
  * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
  * @property {TransmutationFunction} run
+ * @property {string[]?} readsFiles
+ * @property {string} sourceFile
+ */
+
+
+/**
+ * @typedef {object} SerializableTransmutationInstance
+ * @property {string[]} requires
+ * @property {string} id
+ * @property {"output"|"transformation"|"input"|"information"|"check","codebase_postprocess"|"alias"} type
+ * @property {string[]?} readsFiles
+ * @property {boolean} isDependency
+ * @property {string} sourceFile
  */
 
 /**
@@ -161,6 +179,7 @@ function loadTransmutations(dirname) {
  * @property {Object.<string, *>} inputs
  * @property {*} lastInput
  *
+ * @property {string} fileContentText
  * @property {string} sourceDir
  * @property {string} sourceBaseFileName
  * @property {string} sourceFullFileName
@@ -171,6 +190,12 @@ function loadTransmutations(dirname) {
  *
  * @property {string} resultRoot
  * @property {string} sourceRoot
+ * 
+ * @property {Object.<string, string>} writtenFiles
+ * @property {string[]} readsAllFiles
  *
  * @property {object} fileFrontmatter
+ * @property {SerializableTransmutationInstance[]} transmutations
+ * 
+ * @property {string} cacheKey
  */

@@ -2,62 +2,126 @@ var crypto = require("crypto");
 
 var fs = require("fs");
 var path = require("path");
+const commandLineInterface = require("../command-line-interface");
 
 var safeFsUtils = require("../script-helpers/safe-fs-utils");
+const structuredSerialise = require("../script-helpers/structured-serialise");
 
-var cacheDir = path.join(__dirname, ".cache");
-if(!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
+const CACHE_DIR = findCacheDirectory();
+const CACHE_MAX_BYTES = 20_000_000; //20 MB
+const CACHE_META_FILE = path.join(__dirname, ".cache.meta.json");
 
-var CACHE_MAX_BYTES = 100000000; //100 MB
+if(!fs.existsSync(CACHE_META_FILE)) fs.writeFileSync(CACHE_META_FILE, "{}");
+var cacheMeta = require(CACHE_META_FILE);
 
-cleanOldCache();
+cleanOldCache(cacheMeta);
 
 module.exports = {
     save: function(key, value) {
         var encodedKey = sha(key);
-        
-        var file = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
-        
-        safeFsUtils.createDirectoryIfNotExist(file);
+        var filename = keyFile(encodedKey);
+        var dataBuffer = serialiseData(value);
 
-        fs.writeFileSync(file, JSON.stringify(value) || null);
+        cacheMeta[encodedKey] = { key: encodedKey, file: filename, size: dataBuffer.length, lastWrite: Date.now() };
+
+        safeFsUtils.createDirectoryIfNotExist(filename);
+        fs.writeFileSync(filename, dataBuffer);
     },
-    get: function(key, defaultValue) {        
+    get: function(key, defaultValue) {
         var encodedKey = sha(key);
         
-        var newFile = path.join(cacheDir, encodedKey.substring(0,3), encodedKey.substring(3) + ".cached");
-        var file = path.join(cacheDir, encodedKey);
+        var file = keyFile(encodedKey);
         
-        if(fs.existsSync(file)) return JSON.parse(fs.readFileSync(file).toString());
-        
-        else if(fs.existsSync(newFile)) return JSON.parse(fs.readFileSync(newFile).toString());
-        
+        if(fs.existsSync(file)) return deserialiseData(fs.readFileSync(file));
         else return defaultValue;
+    },
+    remove: function(key) {
+        var encodedKey = sha(key);
+        var file = keyFile(encodedKey);
+        if(fs.existsSync(file)) fs.unlinkSync(file);
     }
 }
 
-function migrateKeys(oldKey, newKey) {
-    var oldFile = path.join(cacheDir, oldKey);
-    var newFile = path.join(cacheDir, newKey);
-    
-    if(fs.existsSync(oldFile) && !fs.existsSync(newFile)) fs.renameSync(oldFile, newFile);
+function findCacheDirectory() {
+    var SIGIL = ".autoauto-compiler-cache-directory";
+
+    var gitRoot = safeFsUtils.getGitRootDirectory();
+    var folder = "";
+    if(gitRoot) {
+        var gradleFolder = path.join(gitRoot, ".gradle");
+        if(fs.existsSync(gradleFolder)) {
+            folder = path.join(gradleFolder, SIGIL)
+        } else {
+            folder = path.join(gitRoot, SIGIL);
+            safeFsUtils.addToGitignore(SIGIL + "/**");
+        }
+    } else {
+        folder = path.join(require("os").homedir(), SIGIL);
+    }
+
+    if(!fs.existsSync(folder)) fs.mkdirSync(folder);
+    return folder;
+}
+
+function serialiseData(data) {
+    try {
+        return structuredSerialise.toBuffer(data);
+    } catch(e) {
+        console.error(data);
+        throw new Error("Couldn't serialise. " + e.message);
+    }
+}
+
+function deserialiseData(dataBuffer) {
+    if(isStructuredSerialised(dataBuffer)) return structuredSerialise.fromBuffer(dataBuffer);
+    else return JSON.parse(dataBuffer.toString());
+}
+
+function isStructuredSerialised(dataBuffer) {
+    var maybeMagic = dataBuffer.slice(0, structuredSerialise.magic.length);
+    if(maybeMagic.join(",") == structuredSerialise.magic.join(",")) return true;
+    else return false;
+}
+
+function keyFile(encodedKey, n, pfx) {
+    if(n === undefined) n = 2;
+    if(!pfx) pfx = CACHE_DIR;
+
+    return path.join(pfx, encodedKey.substring(0,n), encodedKey.substring(n) + ".cached");
 }
 
 function sha(k) {
     return crypto.createHash("sha256").update(JSON.stringify(k)).digest("hex");
 }
 
-function cleanOldCache() {
-    var cacheFiles = fs.readdirSync(cacheDir);
-    var cacheFileStats = cacheFiles.map(x=>({name: x, stats: fs.statSync(path.join(cacheDir, x)) }) );
+function cleanOldCache(cacheMeta) {
+    const metaEntries = Object.values(cacheMeta);
+    let cacheFiles = [], totalSize = 0, oldestCacheEntry = undefined, oldestLastWrite = 0;
     
-    var sortedYoungestToOldest = cacheFileStats.sort((a,b)=>b.stats.mtimeMs - a.stats.mtimeMs);
-    
-    var totalSize = cacheFileStats.reduce((a,b)=>a + b.stats.size, 0);
-    
-    while(totalSize > CACHE_MAX_BYTES) {
-        var toRm = sortedYoungestToOldest.pop();
-        totalSize -= toRm.stats.size;
-        fs.unlinkSync(path.join(cacheDir, toRm.name));
+    for(const cacheMetaEntry of metaEntries) {
+
+        cacheFiles.push(cacheMetaEntry.file);
+
+        if(cacheMetaEntry.size > CACHE_MAX_BYTES) removeMetaEntry(cacheMeta, cacheMetaEntry);
+        else totalSize += cacheMetaEntry.size;
+
+        if(cacheMetaEntry.lastWrite < oldestLastWrite) {
+            oldestTime = cacheMetaEntry.lastWrite;
+            oldestCacheEntry = cacheMetaEntry;
+        }
     }
+
+    safeFsUtils.cleanDirectory(CACHE_DIR, cacheFiles, true);
+
+    if(totalSize > CACHE_MAX_BYTES) removeMetaEntry(cacheMeta, oldestCacheEntry);
 }
+
+function removeMetaEntry(cacheMeta, cacheMetaEntry) {
+    console.warn("Flushing cache entry " + cacheMetaEntry.key);
+    delete cacheMeta[cacheMetaEntry.key];
+    fs.unlinkSync(cacheMetaEntry.file);
+}
+
+process.on("exit", function() {
+    fs.writeFileSync(CACHE_META_FILE, JSON.stringify(cacheMeta));
+});

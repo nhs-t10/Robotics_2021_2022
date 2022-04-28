@@ -1,12 +1,7 @@
-require("..").registerTransmutation({
-    requires: [],
-    id: "make-runtime-flag-setters",
-    type: "information",
-    run: function(context) {
-        context.output = getCompatModeSetter(context.fileFrontmatter);
-        context.status = "pass";
-    }
-});
+module.exports = function(context) {
+    context.output = getCompatModeSetter(context.fileFrontmatter);
+    context.status = "pass";
+}
 
 function getCompatModeSetter(frontMatter) {
     var keys = Object.keys(frontMatter);

@@ -1,6 +1,7 @@
 var qCache = new Map();
-
+var parentCache = new Map();
 var vScopeCache = new Map();
+
 
 module.exports = {
     getOneOfType: function(ast, type) {
@@ -15,14 +16,21 @@ module.exports = {
         addVariableScopes(ast);
 
         return vScopeCache.get(node);
-    }
+    },
+    getParentOf: getParentOf
+}
+
+function getParentOf(ast) {
+    return parentCache.get(ast);
 }
 
 function addVariableScopes(ast) {
     var parentScope;
+
+    var parent = getParentOf(ast);
     //if this is the root parent, add it to the thing
-    if(ast.getParent === undefined) vScopeCache.set(ast, {});
-    else parentScope = vScopeCache.get(ast.getParent());
+    if(parent === undefined) vScopeCache.set(ast, {});
+    else parentScope = vScopeCache.get(parent);
 
     //for these guys, make a new scope
     if(ast.type == "FunctionLiteral" || ast.type == "FunctionDefStatement" || ast.type == "Block") {
@@ -92,7 +100,7 @@ function getAstChildren(ast) {
         .flat()
         .filter(x => x && typeof x.type === "string");
 
-    c.forEach(x=>x.getParent = ()=>ast);
+    c.forEach(x=>parentCache.set(x, ast));
 
     return c;
 }

@@ -1,28 +1,125 @@
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+
 const androidStudioLogging = require("../../script-helpers/android-studio-logging");
 
-var transmutations = require("./transmutations");
+const transmutations = require("./transmutations");
+const cache = require("../../cache");
+const CACHE_VERSION = require("../config").CACHE_VERSION;
+const commandLineInterface = require("../../command-line-interface");
+const safeFsUtils = require("../../script-helpers/safe-fs-utils");
+const makeWorkersPool = require("./workers-pool");
+const folderScanner = require("./folder-scanner");
 
-var directory = __dirname.split(path.sep);
-
-var SRC_DIRECTORY = directory.slice(0, directory.indexOf("src") + 1).join(path.sep);
-
+var SRC_DIRECTORY = __dirname.substring(0 , __dirname.indexOf("src") + "src".length + 1);
 var COMPILED_RESULT_DIRECTORY = path.join(SRC_DIRECTORY, "../gen/org/firstinspires/ftc/teamcode/__compiledautoauto");
-createDirectoryIfNotExist(COMPILED_RESULT_DIRECTORY);
 
-var autoautoFileNames = loadAutoautoFilesFromFolder(SRC_DIRECTORY);
 
-var autoautoFileContexts = {};
-
-var codebaseTasks = [];
-
-for(var i = 0; i < autoautoFileNames.length; i++) {
-    var file = autoautoFileNames[i];
-    var resultFile = getResultFor(file);
-    var frontmatter = loadFrontmatter(file);
+module.exports = (async function main() {
+    await transmutations.loadTaskList();
+    await compileAllFromSourceDirectory();
     
-    var fileContext = {
+    androidStudioLogging.printTypeCounts();
+});
+
+async function compileAllFromSourceDirectory() {
+    const compilerWorkers = makeWorkersPool();
+    const autoautoFileContexts = [];
+    
+    var preprocessInputs = {};
+    await evaluateCodebaseTasks(autoautoFileContexts, transmutations.getPreProcessTransmutations(), preprocessInputs);
+
+    //this callback will call once for each file.
+    //this way, we don't have to wait for ALL filenames in order to start compiling.
+    //it starts after the first one!
+    var aaFiles = folderScanner(SRC_DIRECTORY, ".autoauto");
+    var jobPromises = [];
+    
+    while(true) {
+        var next = await aaFiles.next();
+        if(next.done) break;
+        
+        jobPromises.push(
+            makeContextAndCompileFile(next.value, compilerWorkers, autoautoFileContexts, preprocessInputs)
+        );
+    }
+    
+    await Promise.all(jobPromises);
+
+    await evaluateCodebaseTasks(autoautoFileContexts, transmutations.getPostProcessTransmutations(), {});
+    compilerWorkers.close();
+}
+
+function makeContextAndCompileFile(filename, compilerWorkers, autoautoFileContexts, preprocessInputs) {
+    var fileContext = makeFileContext(filename, preprocessInputs);
+    var cacheEntry = getCacheEntry(fileContext);
+
+    return new Promise(function(resolve, reject) {
+        if(cacheEntry) {
+            androidStudioLogging.sendMessages(cacheEntry.log);
+            writeAndCallback(cacheEntry.data, autoautoFileContexts, resolve);
+        } else {
+            compilerWorkers.giveJob(fileContext, function(run) {
+                saveCacheEntry(run);
+                androidStudioLogging.sendMessages(run.log);
+                writeAndCallback(run.fileContext, autoautoFileContexts, resolve);
+            });
+        }
+    });
+}
+
+function saveCacheEntry(finishedRun) {
+    if(finishedRun.success) {
+        cache.save(mFileCacheKey(finishedRun.fileContext), {
+            subkey: finishedRun.fileContext.cacheKey,
+            data: finishedRun.fileContext,
+            log: finishedRun.log
+        });
+    }
+}
+
+function getCacheEntry(fileContext) {
+    if(commandLineInterface["no-cache"]) return false;
+
+    var cacheEntry = cache.get(mFileCacheKey(fileContext), false);
+
+    if(cacheEntry.subkey == fileContext.cacheKey) return cacheEntry;
+    else return false;
+}
+
+function mFileCacheKey(fileContext) {
+    return "autoauto compiler file cache " + fileContext.sourceFullFileName;
+}
+
+function writeAndCallback(finishedFileContext, autoautoFileContexts, cb) {
+    autoautoFileContexts.push(finishedFileContext);
+    writeWrittenFiles(finishedFileContext);
+    cb(finishedFileContext);
+}
+
+async function evaluateCodebaseTasks(allFileContexts, codebaseTasks, codebaseInputs) {
+    for(var transmut of codebaseTasks) {
+        var o = { output: undefined };
+        var mutFunc = require(transmut.sourceFile);
+        await mutFunc(o, allFileContexts);
+        codebaseInputs[transmut.id] = o.output;
+    }
+}
+
+function sha(s) {
+    return crypto.createHash("sha256").update(s).digest("hex");
+}
+
+function makeFileContext(file, preprocessInputs) {
+        
+    var resultFile = getResultFor(file);
+    var fileContent = fs.readFileSync(file).toString();
+    var frontmatter = loadFrontmatter(fileContent);
+
+    var tPath = transmutations.expandTasks(frontmatter.compilerMode || "default");
+    
+    var ctx = {
         sourceBaseFileName: path.basename(file),
         sourceDir: path.dirname(file),
         sourceFullFileName: file,
@@ -32,68 +129,46 @@ for(var i = 0; i < autoautoFileNames.length; i++) {
         resultFullFileName: resultFile,
         resultRoot: COMPILED_RESULT_DIRECTORY,
         fileFrontmatter: frontmatter,
-        lastInput: null,
-        inputs: {}
+        fileContentText: fileContent,
+        lastInput: fileContent,
+        inputs: {},
+        cacheKey: undefined,
+        writtenFiles: {},
+
+        transmutations: tPath,
+        readsAllFiles: tPath.map(x=>x.readsFiles || []).flat()
     };
     
-    autoautoFileContexts[file] = fileContext;
-    
-    
-    var tPath = transmutations.expandTasks(frontmatter.compilerMode || "default");
-    
-    for(var j = 0; j < tPath.length; j++) {
-        var mut = tPath[j];
-        
-        if(mut.type.startsWith("codebase_")) {
-            codebaseTasks.push(mut);
-            continue;
-        }
-        
-        var mutRan = tryRunTransmutation(mut, fileContext);
-        
-        if(!mutRan) break;
+    Object.assign(ctx.inputs, preprocessInputs);
+    ctx.cacheKey = makeCacheKey(ctx, preprocessInputs);
+
+    return ctx;
+}
+
+function writeWrittenFiles(fileContext) {
+    for(var filename in fileContext.writtenFiles) {
+        safeFsUtils.safeWriteFileEventually(filename, fileContext.writtenFiles[filename]);
     }
 }
 
-var allFileContexts = Object.values(autoautoFileContexts);
+/**
+ * 
+ * @param {import("./transmutations").TransmutateContext} fileContext 
+ */
+function makeCacheKey(fileContext, preprocessInputs) {
     
-for(var j = 0; j < codebaseTasks.length; j++) {
-    var mut = codebaseTasks[j];
-    
-    mut.run(allFileContexts[0], allFileContexts);
-}
-
-function tryRunTransmutation(transmutation, fileContext) {
-    try {
-        delete fileContext.status;
-        
-        var m = runTransmutation(transmutation, fileContext);
-        
-        if(m) androidStudioLogging.sendTreeLocationMessage(m, fileContext.sourceFullFileName);
-        
-        if(fileContext.status != "pass") throw {kind: "WARNING", text: `Task ${transmutation.id} didn't report success` };
-        
-        return true;
-    } catch(e) {
-        fileContext.status = "fail";
-
-        androidStudioLogging.sendTreeLocationMessage(e, fileContext.sourceFullFileName, "ERROR");
-        
-        return false;
+    var preprocessInputSerial = "";
+    for(var ppI in preprocessInputs) {
+        preprocessInputSerial += sha(JSON.stringify(preprocessInputs[ppI]));
     }
-}
+    
+    var readFileShas = fileContext.readsAllFiles.map(x=>sha(safeFsUtils.cachedSafeReadFile(x))).join("\t");
+    var transmutationIdList = fileContext.transmutations.map(x=>x.id).join("\t");
 
-function runTransmutation(transmutation, fileContext) {
-    
-    var c = {};
-    Object.assign(c, fileContext);
-    
-    transmutation.run(c);
-    
-    fileContext.status = c.status;
-    
-    fileContext.inputs[transmutation.id] = c.output;
-    if(c.output !== undefined && !transmutation.isDependency) fileContext.lastInput = c.output;
+    var keyDataToSha = [CACHE_VERSION, preprocessInputSerial, readFileShas, 
+        fileContext.sourceFullFileName, fileContext.fileContentText, transmutationIdList];
+
+    return sha(keyDataToSha.join("\0"));
 }
 
 function getResultFor(filename) {
@@ -117,8 +192,7 @@ function capitalize(str) {
     return str[0].toUpperCase() + str.substring(1);
 }
 
-function loadFrontmatter(filename) {
-    var fCont = fs.readFileSync(filename).toString();
+function loadFrontmatter(fCont) {
     
     try {
         var fmI = fCont.indexOf("$");
@@ -134,31 +208,4 @@ function loadFrontmatter(filename) {
     } catch(e) {
         return {};
     }
-}
-
-function createDirectoryIfNotExist(fileName) {
-    var dirName = path.dirname(fileName);
-    if(!fs.existsSync(dirName)) {
-        fs.mkdirSync(dirName, {recursive: true});
-    }
-}
-
-function loadAutoautoFilesFromFolder(folder) {
-    let results = [];
-
-    let folderContents = fs.readdirSync(folder, {
-        withFileTypes: true
-    });
-
-    for(var i = 0; i < folderContents.length; i++) {
-        let subfile = folderContents[i];
-
-        if(subfile.isDirectory()) {
-            results = results.concat(loadAutoautoFilesFromFolder(path.resolve(folder, subfile.name)));
-        } else if(subfile.isFile() && subfile.name.endsWith(".autoauto")) {
-            results.push(path.resolve(folder, subfile.name));
-        }
-    }
-
-    return results;
 }

@@ -18,7 +18,5 @@ function getAstChildren(ast) {
         .flat()
         .filter(x => x && typeof x.type === "string");
 
-    c.forEach(x=>x.getParent = ()=>ast);
-
     return c;
 }

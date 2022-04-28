@@ -20,7 +20,14 @@ public class LogFunction extends NativeFunction {
 
     @Override
     public AutoautoPrimitive call(AutoautoPrimitive thisArg, AutoautoPrimitive[] args) {
-        for(AutoautoPrimitive a : args) FeatureManager.logger.log((a == null ? new AutoautoUndefined() : a).getString(), this.getLocation());
+        StringBuilder sb = new StringBuilder();
+
+        for(AutoautoPrimitive a : args) {
+            sb.append((a == null ? new AutoautoUndefined() : a).getString()).append('\t');
+        }
+
+        FeatureManager.logger.log(sb.toString());
+
         return new AutoautoUndefined();
     }
 }

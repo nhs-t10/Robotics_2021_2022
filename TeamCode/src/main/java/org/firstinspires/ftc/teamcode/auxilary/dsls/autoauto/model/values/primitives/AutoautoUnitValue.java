@@ -45,33 +45,42 @@ public class AutoautoUnitValue extends AutoautoNumericValue {
         return new AutoautoUnitValue(baseAmount, unit);
     }
 
+    public static AutoautoUnitValue E(double baseAmount, String unit, boolean attemptConversion) {
+        return new AutoautoUnitValue(baseAmount, unit, attemptConversion);
+    }
+
     public AutoautoUnitValue(double baseAmount, String unit) {
+        this(baseAmount, unit, false);
+    }
+
+    public AutoautoUnitValue(double baseAmount, String unit, boolean attemptConversion) {
         super(baseAmount);
         this.baseAmount = baseAmount;
         this.unit = unit;
 
-        TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
-        DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
-        RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
+        if(attemptConversion) {
+            TimeUnit timeUnit = TimeUnit.forAbbreviation(unit);
+            DistanceUnit distanceUnit = DistanceUnit.forAbbreviation(unit);
+            RotationUnit rotationUnit = RotationUnit.forAbbreviation(unit);
 
-        if(timeUnit != null) {
-            this.baseAmount = TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount);
-            this.unit = TimeUnit.naturalTimeUnit.name;
-            this.unitType = UnitType.TIME;
-        } else if(distanceUnit != null) {
-            this.baseAmount = DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount);
-            this.unit = DistanceUnit.naturalDistanceUnit.name;
-            this.unitType = UnitType.DISTANCE;
-        } else if(rotationUnit != null) {
-            this.baseAmount = RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount);
-            this.unit = RotationUnit.naturalRotationUnit.name;
-            this.unitType = UnitType.ROTATION;
-        } else {
-            this.unitType = UnitType.UNKNOWN;
-            FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
+            if (timeUnit != null) {
+                this.baseAmount = TimeUnit.convertBetween(timeUnit, TimeUnit.naturalTimeUnit, baseAmount);
+                this.unit = TimeUnit.naturalTimeUnit.name;
+                this.unitType = UnitType.TIME;
+            } else if (distanceUnit != null) {
+                this.baseAmount = DistanceUnit.convertBetween(distanceUnit, DistanceUnit.naturalDistanceUnit, baseAmount);
+                this.unit = DistanceUnit.naturalDistanceUnit.name;
+                this.unitType = UnitType.DISTANCE;
+            } else if (rotationUnit != null) {
+                this.baseAmount = RotationUnit.convertBetween(rotationUnit, RotationUnit.naturalRotationUnit, baseAmount);
+                this.unit = RotationUnit.naturalRotationUnit.name;
+                this.unitType = UnitType.ROTATION;
+            } else {
+                this.unitType = UnitType.UNKNOWN;
+                FeatureManager.logger.warn("Unknown unit `" + unit + "`; please use a distance, time, or rotational unit listed under the auxilary.units package.");
+            }
+            super.value = (float) this.baseAmount;
         }
-
-        super.value = (float) this.baseAmount;
     }
 
     //Methods
