@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.auxilary.dsls.autoauto.model.values.primit
 import org.firstinspires.ftc.teamcode.managers.feature.FeatureManager;
 import org.firstinspires.ftc.teamcode.managers.imu.ImuManager;
 import org.firstinspires.ftc.teamcode.managers.movement.MovementManager;
-
+//THE DEAD RECKONER!!!!!!!!!!
 public class AutocorrectionManager extends FeatureManager {
     MovementManager driving;
     ImuManager imu;
@@ -39,35 +39,38 @@ public class AutocorrectionManager extends FeatureManager {
         int delt_bl = bl - lastBL;
         int delt_br = br - lastBR;
 //Compute displacements for each wheel
-        float displ_m0 = PaulMath.encoderDistanceCm(delt_fl);
-        float displ_m1 = PaulMath.encoderDistanceCm(delt_fr);
-        float displ_m2 = PaulMath.encoderDistanceCm(delt_bl);
-        float displ_m3 = PaulMath.encoderDistanceCm(delt_br);
+        float displ_fl = PaulMath.encoderDistanceCm(delt_fl);
+        float displ_fr = PaulMath.encoderDistanceCm(delt_fr);
+        float displ_bl = PaulMath.encoderDistanceCm(delt_bl);
+        float displ_br = PaulMath.encoderDistanceCm(delt_br);
 //Compute the average displacement in order to untangle rotation from displacement
-        float displ_average = (float) ((displ_m0 + displ_m1 + displ_m2 + displ_m3) / 4.0);
+        float displ_average = (float) ((displ_fl + displ_fr + displ_bl + displ_br) / 4.0);
 //Compute the component of the wheel displacements that yield robot displacement
-        float dev_m0 = displ_m0 - displ_average;
-        float dev_m1 = displ_m1 - displ_average;
-        float dev_m2 = displ_m2 - displ_average;
-        float dev_m3 = displ_m3 - displ_average;
+        float dev_fl = displ_fl - displ_average;
+        float dev_fr = displ_fr - displ_average;
+        float dev_bl= displ_bl - displ_average;
+        float dev_br = displ_br - displ_average;
 //Compute the displacement of the holonomic drive, in robot reference frame
         //float twoSqrtTwo = (float) (2.0*Math.sqrt(2));
         float delt_Xr = 0;
         float delt_Yr = 0;
-        if(displ_m1 == displ_m2&&displ_m2 == displ_m0&&displ_m0 == displ_m3){
+        if(displ_fr == displ_bl&&displ_bl == displ_fl&&displ_fl == displ_br){
             logger.log("Displacements match (Moving forward or backward");
             delt_Yr = displ_average;
             delt_Xr = 0;
-        }else if(displ_m0 == displ_m3&&displ_m3 == -displ_m1&&displ_m1 == displ_m2){
+        }else if(displ_fl == displ_br&&displ_br == -displ_fr&&displ_fr == displ_bl){
             logger.log("Displacements inverse (Moving left or right)");
-            delt_Xr = (float) ((float)displ_m3*0.675);
+            delt_Xr = (float) ((float)displ_br*0.675);
         }
 //Move this holonomic displacement from robot to field frame of reference
         float robotTheta = imu.getThirdAngleOrientation();
         float cosTheta = (float)Math.cos(robotTheta);
         float sinTheta = (float)Math.sin(robotTheta);
-        float delt_Xf = delt_Xr * cosTheta - delt_Yr * sinTheta;
-        float delt_Yf = delt_Yr * cosTheta + delt_Xr * sinTheta;
+
+        //TODO: DEVIATIONS OR DISPLACEMENTS?
+        float[] vhr = PaulMath.omniCalcInverse(dev_fl, dev_fr, dev_bl, dev_br, true);
+        float delt_Xf = vhr[1];
+        float delt_Yf = vhr[0];
 //Update the position
         lastX = X;
         lastY = Y;

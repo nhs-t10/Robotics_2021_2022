@@ -116,10 +116,11 @@ function getButtonDescriptors(inputNodeStructure, attributes) {
             var a = inputNodeStructure.args.map(x=>getButtonDescriptors(x, attributes)).flat(Infinity);
             a.forEach(x=>a.forEach(y=>x==y?0:setAttribute(x, "Combo", y.button)));
             return a;
+        case "InputVariable":
         case undefined:
         case "StaticValue":
             return [];
-        default: console.log(inputNodeStructure); throw "aa";
+        default: console.error(inputNodeStructure); throw new Error("aa");
     }
 }
 

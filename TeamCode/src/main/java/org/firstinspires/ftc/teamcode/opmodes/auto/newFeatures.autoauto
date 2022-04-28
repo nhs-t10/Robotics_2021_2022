@@ -14,7 +14,8 @@
     }, goto a
 
 #a:
-    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(), goto ["Position" + (CVReading + 1)]
+    let CVReading = getCVPositionNumberWhereZeroIsLeftOneIsMiddleAndTwoIsRight(),
+        if (CVReading == 0) goto Position1 else if (CVReading == 1) goto Position2 else goto Position3
 
 #Position1:
     driveOmni(1, 0, 0), after 13.5in next;

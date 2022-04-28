@@ -121,18 +121,18 @@ public abstract class PaulMath extends FeatureManager {
      * @param _fr
      * @param _br
      * @param _bl
-     * @param isRawMotorPowers
+     * @param measurementsFromRawMotor
      * @return the omni coefficients, in VHR order.
      */
-    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl, boolean isRawMotorPowers) {
+    public static float[] omniCalcInverse(float _fl, float _fr, float _br, float _bl, boolean measurementsFromRawMotor) {
         RobotConfiguration configuration = FeatureManager.getRobotConfiguration();
 
         //undo motor-level coefficients, if requested
         //ugh i don't like android studio's "ooh don't modify parameters" rule >:(
-        float fl = isRawMotorPowers ? _fl / configuration.motorCoefficients.fl : _fl;
-        float fr = isRawMotorPowers ? _fr / configuration.motorCoefficients.fr : _fr;
-        float bl = isRawMotorPowers ? _bl / configuration.motorCoefficients.bl : _bl;
-        float br = isRawMotorPowers ? _br / configuration.motorCoefficients.br : _br;
+        float fl = measurementsFromRawMotor ? _fl / configuration.motorCoefficients.fl : _fl;
+        float fr = measurementsFromRawMotor ? _fr / configuration.motorCoefficients.fr : _fr;
+        float bl = measurementsFromRawMotor ? _bl / configuration.motorCoefficients.bl : _bl;
+        float br = measurementsFromRawMotor ? _br / configuration.motorCoefficients.br : _br;
 
         //for each motor, divide its coefficients (expected full power) with the given motor powers (actual power).
         float[] flPercentages = {

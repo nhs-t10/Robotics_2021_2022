@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 public abstract class AutoautoPrimitive extends AutoautoValue implements AutoautoPropertyBearingObject {
 
+    public final static AutoautoPrimitive[] EMPTY_ARRAY = new AutoautoPrimitive[0];
+
     public AutoautoPrimitive() {
         setPrototype(UniversalPrototype.getMap());
     }
@@ -116,7 +118,7 @@ public abstract class AutoautoPrimitive extends AutoautoValue implements Autoaut
                 return new AutoautoNumericValue(Float.parseFloat(t));
             } catch (NumberFormatException ignored) {
                 if(t.length() == 0) return new AutoautoNumericValue(0f);
-                else return new AutoautoNumericValue(Float.POSITIVE_INFINITY);
+                else return new AutoautoNumericValue(-1f);
             }
         }
 

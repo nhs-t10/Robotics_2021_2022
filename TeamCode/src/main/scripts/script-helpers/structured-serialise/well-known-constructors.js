@@ -17,6 +17,9 @@ module.exports = {
     },
     byName: function(name) {
         return constructors[name];
+    },
+    isWellKnownObject: function(obj) {
+        return this.getName(obj) !== undefined;
     }
 }
 

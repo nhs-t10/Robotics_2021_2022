@@ -1,11 +1,8 @@
 var makeJava = require("./make-java");
+var functionLookup = require("./function-lookup");
 
-require("..").registerTransmutation({
-    requires: ["text-to-syntax-tree"],
-    id: "ast-to-human-java-method",
-    type: "transformation",
-    run: function(context) {
-        context.output = makeJava(context.inputs["text-to-syntax-tree"]);
-        context.status = "pass";
-    }
-})
+module.exports = function run(context) {    
+    context.output = makeJava(context.inputs["text-to-syntax-tree"],
+                            functionLookup(context.inputs["java-function-loader"]));
+    context.status = "pass";
+}

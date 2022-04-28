@@ -1,40 +1,31 @@
+const { writeFileSync } = require("fs");
 var structuredSerialise = require("./index");
 
+// for(var i = 0; i < 100; i++) {
+//     t.push(generateRandomObject(10));
+// }
 
-var t = [{
-    foo: 3,
-    fef: [
-        32,
-        24,
-        "fhaisld",
-        {
-            fef: 3
-        }
-    ]
-}];
+// function generateRandomObject(d) {
+//     if(d < 0) return "";
 
-for(var i = 0; i < 100; i++) {
-    t.push(generateRandomObject(3));
-}
+//     var o = {};
+//     var f = Math.random() * 10;
+//     for(var i = 0; i < f; i++) {
+//         var t = Math.random();
 
-function generateRandomObject(d) {
-    if(d < 0) return "";
+//         //if(t < 0.1) o[i] = o;
+//         if(t < 0.2) o[i] = null;
+//         else if(t < 0.4) o[i] = Math.random() * 3000;
+//         else if(t < 0.6) o[i] = (Math.random() * 3000).toString(16);
+//         else if(t < 0.8) o[i] = generateRandomObject(d - 1);
+//         else o[i] = Array.from(generateRandomObject(d - 1));
 
-    var o = {};
-    var f = Math.random() * 10;
-    for(var i = 0; i < f; i++) {
-        var t = Math.random();
+//         if(t > 0.8) o.length = i + 1;
+//     }
+//     return o;
+// }
 
-        if(t < 0.2) o[i.toString(16)] = null;
-        else if(t < 0.4) o[i.toString(16)] = Math.random() * 3000;
-        else if(t < 0.6) o[i.toString(16)] = (Math.random() * 3000).toString(16);
-        else if(t < 0.8) o[i.toString(16)] = generateRandomObject(d - 1);
-        else o[i] = Array.from(generateRandomObject(d - 1));
-
-        if(t > 0.8) o.length = i + 1;
-    }
-    return o;
-}
+var t = require("./test-file.json");
 
 var timeStart = Date.now();
 

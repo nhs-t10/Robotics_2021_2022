@@ -24,9 +24,8 @@ module.exports = {
             if(!statepathsThatHaveAGoto[statepaths[i].label]) {
                 warns.push({
                     kind: "WARNING",
-                    text: `There is no \`goto\` to statepath \`${statepaths[i].label}\``,
+                    text: `The program will never reach the statepath \`${statepaths[i].label}\``,
                     location: statepaths[i].location,
-                    titleNote: statepaths[i].label
                 });
             }
         }

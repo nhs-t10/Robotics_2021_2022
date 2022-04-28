@@ -16,6 +16,9 @@ public class TitledArgument extends AutoautoValue {
     public static TitledArgument V(AutoautoValue title, AutoautoValue value) {
         return new TitledArgument(title, value);
     }
+    public static TitledArgument V(String title, AutoautoValue value) {
+        return new TitledArgument(new AutoautoString(title), value);
+    }
 
     public TitledArgument(AutoautoValue title, AutoautoValue value) {
         if(title instanceof VariableReference) this.title = new AutoautoString(((VariableReference) title).name);

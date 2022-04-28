@@ -60,9 +60,9 @@ public class AfterStatement extends Statement {
         return c;
     }
 
-    String[][] unitMethodMapping = new String[][] {
-            {"D", DistanceUnit.naturalDistanceUnit.name, "getCentimeters"},
-            {"D", RotationUnit.naturalRotationUnit.name, "getThirdAngleOrientation"},
+    public final static String[][] unitMethodMapping = new String[][] {
+            {"D", DistanceUnit.naturalDistanceUnit.name, AutoautoSystemVariableNames.GET_CENTIMETERS_FUNCTION_NAME},
+            {"D", RotationUnit.naturalRotationUnit.name, AutoautoSystemVariableNames.GET_DEGREES_FUNCTION_NAME},
             {"D", "ticks", "getTicks"}
     };
 

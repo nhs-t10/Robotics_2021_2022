@@ -1,7 +1,6 @@
-var functionLookup = require("./function-lookup");
 var nicelyIndent = require("./good-indenting");
 
-module.exports = function(ast) {
+module.exports = function(ast, functionLookup) {
     var states = ast.statepaths.map(x=> 
         x.statepath.states.map((y,i)=> {
             y.index = i;
@@ -14,7 +13,7 @@ module.exports = function(ast) {
 
     var variablePool = makeVariablePool();
 
-    states.forEach(x=>x.case = stateToJavaCase(x, variablePool, states));
+    states.forEach(x => x.case = stateToJavaCase(x, variablePool, states, functionLookup));
 
     var switchStatement = "switch(step) {\n" + states.map(x=>`case ${x.globalIndexId}:\n${x.case}\nbreak;`).join("\n") + "}";
 
@@ -36,14 +35,14 @@ module.exports = function(ast) {
     return nicelyIndent(src, 2);
 }
 
-function stateToJavaCase(state, variables, states) {
-    return state.statement.map(x=>statementToJava(x, variables, states)).join("\n");
+function stateToJavaCase(state, variables, states, functionLookup) {
+    return state.statement.map(x => statementToJava(x, variables, states, functionLookup)).join("\n");
 }
 
-function statementToJava(stmt, variables, states) {
+function statementToJava(stmt, variables, states, functionLookup) {
     switch(stmt.type) {
         case "Block":
-            return "{" + stateToJavaCase(stmt.state, variables, states) + "\n}";
+            return "{" + stateToJavaCase(stmt.state, variables, states, functionLookup) + "\n}";
         case "PassStatement":
             return "//pass";
         case "AfterStatement":
@@ -55,7 +54,7 @@ function statementToJava(stmt, variables, states) {
                 location: stmt.location
             }
 
-            var getter = unitValueGetter(stmt.unitValue);
+            var getter = unitValueGetter(stmt.unitValue, functionLookup);
 
             return `if(${initedVar} == false) {
                 ${timeVar} = ${getter};
@@ -63,17 +62,17 @@ function statementToJava(stmt, variables, states) {
             }
             if(Math.abs(${getter} - ${timeVar}) > ${stmt.unitValue.value.v}) {
                 ${initedVar} = false;
-                ${statementToJava(stmt.statement, variables, states)}
+                ${statementToJava(stmt.statement, variables, states, functionLookup)}
             }`;
         case "IfStatement":
-            return `if (${valueToJava(stmt.conditional, variables)}) ${statementToJava(stmt.statement, variables, states)}`;
+            return `if (${valueToJava(stmt.conditional, variables, functionLookup)}) ${statementToJava(stmt.statement, variables, states, functionLookup)}`;
         case "NextStatement":
             return `step++;`
         case "SkipStatement":
             return `step += ${stmt.skip};`;
         case "LetStatement":
-            var v = valueToJava(stmt.variable, variables);
-            return `${v} = ${valueToJava(stmt.value, variables)};`;
+            var v = valueToJava(stmt.variable, variables, functionLookup);
+            return `${v} = ${valueToJava(stmt.value, variables, functionLookup)};`;
         case "GotoStatement":
             var destName = stmt.path.value;
             var destStartState = states.find(x=>x.statepathName == destName);
@@ -81,7 +80,7 @@ function statementToJava(stmt, variables, states) {
 
             return `step = ${destStartState.globalIndexId};\n`;
         case "ValueStatement":
-            return valueToJava(stmt.call, variables) + ";";
+            return valueToJava(stmt.call, variables, functionLookup) + ";";
         default:
             throw {
                 text: `A ${stmt.type} is not allowed in the Human-Readable Java CompilerMode.`,
@@ -91,17 +90,17 @@ function statementToJava(stmt, variables, states) {
     }
 }
 
-function valueToJava(value, variables) {
+function valueToJava(value, variables, functionLookup) {
     switch(value.type) {
         case "OperatorExpression":
         case "ComparisonOperator":
-            return `${valueToJava(value.left, variables)} ${value.operator} ${valueToJava(value.right, variables)}`;
+            return `${valueToJava(value.left, variables, functionLookup)} ${value.operator} ${valueToJava(value.right, variables, functionLookup)}`;
         case "BooleanLiteral":
             return value.value + "";
         case "StringLiteral":
             return JSON.stringify(value.str);
         case "UnitValue":
-            return valueToJava(value.value, variables);
+            return valueToJava(value.value, variables, functionLookup);
         case "BooleanLiteral":
             return value.value;
         case "NumericValue":
@@ -123,8 +122,8 @@ function valueToJava(value, variables) {
             } 
             functionName = functionName.variable.value;
 
-            return `${functionLookup.managerName(functionName)}.${functionName}(${
-                value.args.args.map(x=>valueToJava(x, variables)).join(",")
+            return `${functionLookup(functionName)}.${functionName}(${
+                value.args.args.map(x => valueToJava(x, variables, functionLookup)).join(",")
             })`;
         default:
             throw {
@@ -173,13 +172,13 @@ function unitValueType(unitValue) {
     })[unitValue.unit.value];
 }
 
-function unitValueGetter(unitValue) {
+function unitValueGetter(unitValue, functionLookup) {
     var unit = unitValue.unit.value;
     var value = unitValue.value.v;
 
     var methodName = ({
-        "cm":  functionLookup.managerName("getCentimeters") + ".getCentimeters()",
-        "degs": functionLookup.managerName("getThirdAngleOrientation") + ".getThirdAngleOrientation()",
+        "cm":  functionLookup("getCentimeters") + ".getCentimeters()",
+        "degs": functionLookup("getThirdAngleOrientation") + ".getThirdAngleOrientation()",
         "ms": "System.currentTimeMillis()"
     })[unit];
 

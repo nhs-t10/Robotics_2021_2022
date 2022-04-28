@@ -54,12 +54,16 @@ state =
 
 statement = singleStatement / multiStatement
 
-multiStatement = c:commentedWhitespace OPEN_CURLY_BRACKET s:state CLOSE_CURLY_BRACKET _ {
-	return { type: "Block", state: s, location: location(), comments: c }
+multiStatement "block" = c:commentedWhitespace OPEN_CURLY_BRACKET s:state? CLOSE_CURLY_BRACKET _ {
+	return { type: "Block", 
+          state: s || {comments:[], type: "State", location: location(), statement: []},
+          location: location(), 
+          comments: c 
+        };
 }
 
-singleStatement =
-  c:commentedWhitespace  s:(passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)
+singleStatement "statement" =
+  c:commentedWhitespace  s:(returnStatement/provideStatement/passStatement/valueStatement/funcDefStatement/afterStatement/gotoStatement/ifStatement/letStatement/nextStatement/skipStatement)
 
   {
     if(s.comments && s.comments.length) s.comments = c.concat(s.comments);
@@ -67,6 +71,24 @@ singleStatement =
     
     return s;
   }
+ 
+provideStatement = PROVIDE _ v:value {return { type: "ProvideStatement", value:v, location: location() }; }
+
+delegatorExpression = DELEGATE _ f:(
+	OPEN_PAREN d:stringLiteral _ a:(COMMA valueList)? CLOSE_PAREN { return [d, (a||[])[1] ] } / 
+    d:stringLiteral a:(_ WITH _ valueList)? { return [d, (a||[])[3] ]; }
+) {
+   return {
+       type: "DelegatorExpression",
+       delegateTo: f[0],
+       location: location(),
+       args: f[1] || {type:"ArgumentList",args:[], location: location()}
+   }
+}
+  
+returnStatement = RETURN u:(_ value)? { 
+	return { type: "ReturnStatement", location:location(), value:u?u[1]:undefined }; 
+}
 
 afterStatement =
  AFTER _ u:value _ s:statement { return { type: "AfterStatement", location: location(), unitValue: u, statement: s } }
@@ -75,11 +97,11 @@ valueStatement =
  f:value { return { type: "ValueStatement", location: location(), call: f } }
 
 funcDefStatement = FUNCTION _
-	name:(IDENTIFIER/dynamicValue) _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
+	name:IDENTIFIER _ OPEN_PAREN args:argumentList? _ CLOSE_PAREN _ b:statement
     { return { type: "FunctionDefStatement", name: name, args: args || {type:"ArgumentList",args:[], location: location()}, body: b, location: location() }; }
 
 gotoStatement =
- GOTO _ p:(IDENTIFIER/dynamicValue) { return { type: "GotoStatement", location: location(), path: p } }
+ GOTO _ p:IDENTIFIER { return { type: "GotoStatement", location: location(), path: p } }
 
 ifStatement =
  (IF/WHEN) _ OPEN_PAREN t:value CLOSE_PAREN s:statement e:elseClause? {
@@ -164,7 +186,7 @@ arithmeticValue =
  }
 
 atom =
- _  x:(arrayLiteral / stringLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens) _ {
+ _  x:(arrayLiteral / stringLiteral / relationLiteral / unitValue / booleanLiteral / NUMERIC_VALUE / functionLiteral / variableReference / valueInParens / delegatorExpression) _ {
    return x;
  }
 
@@ -180,9 +202,10 @@ baseExpression = a:atom _ t:tail* _ {
      return value;
 }
 
-tail = arrayStyleGetter / callFunction / dotStyleGetter
+settableTail = arrayStyleGetter / dotStyleGetter
+tail = settableTail / callFunction
 
-callFunction "function call" = OPEN_PAREN _ a:argumentList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
+callFunction "function call" = OPEN_PAREN _ a:valueList? CLOSE_PAREN { return { type: "FunctionCall", func: null, args: a || {type:"ArgumentList",args:[], location: location()}, location: location() } }
 
 arrayStyleGetter "array-style property getter (obj[i])" = OPEN_SQUARE_BRACKET a:value CLOSE_SQUARE_BRACKET { return {type: "TailedValue", head: null, tail: a, location: location() } }
 
@@ -192,7 +215,7 @@ variableReference =
  i:IDENTIFIER { return { type: "VariableReference", location: location(), variable: i }; }
 
 arrayLiteral =
- OPEN_SQUARE_BRACKET _ a:argumentList? CLOSE_SQUARE_BRACKET {
+ OPEN_SQUARE_BRACKET _ a:valueList? CLOSE_SQUARE_BRACKET {
  return {
    type: "ArrayLiteral", location: location(),
    elems: a || {type:"ArgumentList",args:[], location: location()}
@@ -229,9 +252,20 @@ argumentList =
  }
 }
 
-argument = n:value v:(TITLE_ARG_SEP value)? {
-	if(v) return { type: "TitledArgument", value: v[1], name: n, location: location()  };
-    else return n;
+relationLiteral = titledArgument
+
+valueList = head:value tail:(COMMA value)* {
+  return {
+   type: "ArgumentList", location: location(),
+   len: tail.length + 1,
+   args: [head].concat(tail.map(x=> x[1]))
+ }
+}
+
+argument = titledArgument / _ f:IDENTIFIER _ { return f; }
+
+titledArgument = _ n:IDENTIFIER _ TITLE_ARG_SEP _ v:value {
+  return { type: "TitledArgument", value: v, name: n, location: location()  };
 }
 
 dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type: "DynamicValue", value: v, location: location() } }
@@ -239,7 +273,7 @@ dynamicValue = OPEN_SQUARE_BRACKET v:value CLOSE_SQUARE_BRACKET { return { type:
 _ "whitespace" = [ \t\n\r]*
 
 commentedWhitespace "comment" =
-    _ c:comment* _ { return c; }
+    _ c:( comment _)* { return c.map(x=>x[1]); }
 
 comment = "//" t:[^\n]* (EOL/EOF) { return t.join("") }
   / "/*" t:commentText* END_OF_COMMENT { return t.join("") }
@@ -277,8 +311,8 @@ CLOSE_PAREN "closing paren" =
     ")"
 LET =
     "let"
-TITLE_ARG_SEP "titled argument separator (=)" =
-    EQUALS
+TITLE_ARG_SEP "key/value separator (= or :)" =
+    EQUALS / COLON
 EQUALS "equals sign" =
     "="
 NEXT =
@@ -324,14 +358,18 @@ OPEN_CURLY_BRACKET "opening curly bracket" =
 CLOSE_CURLY_BRACKET "closing curly bracket" =
     "}"
 DOT "dot (.)" = "."
+RETURN = "return"
+PROVIDE = "provide"
+DELEGATE = "delegate"
 PASS = "pass"
 ELSE = "else"
 OTHERWISE = "otherwise"
+WITH = "with"
 IDENTIFIER =
     l:(LETTER / DIGIT)+
     &{
     var name = l.join("");
-    var reserved = ["if", "goto", "skip", "let", "next", "function", "func", "when", "after"];
+    var reserved = ["if", "goto", "skip", "let", "next", "function", "func", "when", "after","return","provide","delegate"];
     if(reserved.indexOf(name) == -1) return true;
     else return false;
     }
@@ -341,7 +379,7 @@ LETTER "letter" = [A-Za-z_]
 NUMERIC_VALUE = m:MINUS? v:(
     h:DIGIT* '.' t:DIGIT+ { return h.join("") + "." + t.join("") }
     /
-    d:DIGIT+ { return d.join(""); }) 'f'?
+    d:DIGIT+ { return d.join(""); })
 {
     return { type: "NumericValue", location: location(), v: parseFloat((m||"") + v ) }
 }

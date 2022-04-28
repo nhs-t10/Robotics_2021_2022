@@ -177,4 +177,8 @@ public class AutoautoNumericValue extends AutoautoPrimitive implements
     public AutoautoPrimitive opTimes(AutoautoPrimitive other, boolean otherIsLeft) {
         return new AutoautoNumericValue(other.castToNumber().value * this.value);
     }
+
+    public int getInt() {
+        return (int)value;
+    }
 }
