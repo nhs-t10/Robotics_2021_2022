@@ -12,7 +12,7 @@ module.exports = function(typeSystem, filename) {
     if(typeUnfounded) androidStudioLogging.sendTreeLocationMessage({
         text: "Type checking limited",
         original: `Because of the halting problem, a type system is undecidable. The type checker was unable to verify everything in this file. There may be unseen errors!`,
-        kind: "WARNING"
+        kind: "BARELY_WARNING"
     }, filename)
 }
 

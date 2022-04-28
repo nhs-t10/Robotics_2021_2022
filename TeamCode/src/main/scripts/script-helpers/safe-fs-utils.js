@@ -1,5 +1,6 @@
 var fs = require("fs");
 var path = require("path");
+const androidStudioLogging = require("./android-studio-logging");
 const cachedFs = require("./cached-fs");
 
 
@@ -12,6 +13,7 @@ module.exports = {
     addToGitignore: addToGitignore,
     safeReadFile: safeReadFile,
     cachedSafeReadFile: cachedSafeReadFile,
+    safeWriteFileEventually: safeWriteFileEventually,
     getGitRootDirectory: ()=>cachedGitDirectory
 }
 
@@ -23,6 +25,27 @@ function cachedSafeReadFile(filename) {
 function safeReadFile(filename) {
     if(fs.existsSync(filename)) return fs.readFileSync(filename);
     else return Buffer.from([]);
+}
+
+function safeWriteFileEventually(fileName, content) {
+    var dir = path.dirname(fileName);
+
+    if(!fs.existsSync(dir)) {
+        fs.mkdir(dir, {recursive: true}, function(err) {
+            if(err) reportNodeJSFileError(err, fileName);
+            else dirMadeWrite();
+        })
+    } else dirMadeWrite();
+
+    function dirMadeWrite() {
+        fs.writeFile(fileName, content, function(err) {
+            if(err) reportNodeJSFileError(err, fileName);
+        })
+    }
+}
+
+function reportNodeJSFileError(err, file) {
+    androidStudioLogging.sendTreeLocationMessage(err, file, "ERROR");
 }
 
 function safeWriteFile(fileName, content) {

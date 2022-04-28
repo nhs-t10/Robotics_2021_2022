@@ -23,6 +23,7 @@ var managerArgs = {};
 
 var generateAaMethods = require("./parse-and-generate-aa-methods.js");
 var deleteUnusedMethodClasses = require("./delete-unused-method-classes.js");
+const safeFsUtils = require("../../../../../../script-helpers/safe-fs-utils");
 
 if (!fs.existsSync(managersDir)) throw "Managers directory `" + managersDir + "` doesn't exist";
 
@@ -68,7 +69,7 @@ module.exports = async function() {
             ),
         Object.entries(managerArgs),
     );
-    fs.writeFileSync(robotFunctionLoaderAddress, robotFunctionLoader);
+    safeFsUtils.safeWriteFileEventually(robotFunctionLoaderAddress, robotFunctionLoader);
 
     cache.save("autoauto-managers", cacheManagers);
     return cacheManagers.managers;

@@ -109,7 +109,7 @@ function generateRobotFunction(overload, definedClass, preexistingNames) {
 
     var ourPath = path.join(robotFunctionsDirectory, classname + ".java");
 
-    safeFsUtils.safeWriteFile(ourPath, template);
+    safeFsUtils.safeWriteFileEventually(ourPath, template);
 
     return {
         shimClassFunction: { nameToUseInAutoauto: noConflictName, javaImplementationClass: classname},

@@ -3,15 +3,6 @@
     "cognomen": "Gerner",
     "builds": [
         {
-            "name": "Bear Gerner",
-            "time": "2022-04-15T21:23:54.320Z",
-            "buildHash": "2cc06aa49aeb98ca7f28eef5518a32a30d5ee0411aa22100cce21746eacf1c6c",
-            "w3w": "ballet flask china",
-            "phrase": "Beside him straight at Selby Royal.",
-            "perceptualHash": "9f3f7263a5",
-            "colors": "#84da34,#2f80b6"
-        },
-        {
             "name": "Remi Gerner",
             "time": "2022-04-15T21:29:35.852Z",
             "buildHash": "a38b045ab0af58130c6f7b1d586e166bc2327ca7981e34e325a7524f573b292b",
@@ -901,8 +892,17 @@
             "phrase": "After he answered. “It will laugh she sneered. “Why, even to wait for this morning he affected, had it. You shrug your short by good.” “Yes.”",
             "perceptualHash": "9fdf9d5f0fc3dfc24fe526fc4f9fef9",
             "colors": "#088e04,#17ad9c,#8e25d2,#8047c3,#03d286,#fa6ed0"
+        },
+        {
+            "name": "Indie Gerner",
+            "time": "2022-04-27T21:28:06.283Z",
+            "buildHash": "bddd58a360cf91b4202129a51bd6315e4994d9a6c46e9732747410f3526ebf9c",
+            "w3w": "firing gusto bullion",
+            "phrase": "Road. The Globe that accursed thing off than capture.” she did but money.” “Oh! I hope. Remember, Patti is Imogen. I suffered.” The girl may happen to me.” “But they were stern, harsh, offensive. You see, I remember.",
+            "perceptualHash": "f9fefcf254f9fd2cf35fdfd83b5fdf8fbfcfbfc2fdfb64f6fc4fc14f8f4f6f3fcfa7fd98d6df66fcf3fdf4f9fefcf23fdfaf512fe5fe91fcf3fd131375fafa1f86fe9f41f2f5bfefef9fc4fa77af3f4f78f9fc13f49f84f54152f2962fdfb264f9fdbfdf8245f1fef5f7f71bf83fe7f06af6fdf8fbfb3f5fafef4da52f73f6bf4165fbf8d219899fbf2f9fefbb7",
+            "colors": "#488069,#7bd482,#6580c5,#7ddb8f,#8f0dc8,#019742,#180c80,#db8163,#d24f81,#96e6b7,#4497c9,#8042f4,#8fdff6,#3e8054,#6c3e80,#81ccf6,#8fd380,#6980c6,#81f16c,#bc4f80,#55e382,#dcc080,#cc8648,#10847b,#15fd87,#6ae482,#c3df4d,#8149bc,#85ec49,#2a84cc,#c48653,#de668f,#80410c,#8f14cd,#5e8039,#83bd59,#cc6d83,#2cde84,#804876,#48cc81,#87d16f,#bfac46,#72cc84,#dc8115,#96b556,#329fbf,#0187fd,#fb3e6d"
         }
     ],
-    "buildCount": 128,
-    "lastBuildTimeUnixMs": 1650971103499
+    "buildCount": 129,
+    "lastBuildTimeUnixMs": 1651094889630
 }

@@ -147,7 +147,7 @@ function makeFileContext(file, preprocessInputs) {
 
 function writeWrittenFiles(fileContext) {
     for(var filename in fileContext.writtenFiles) {
-        safeFsUtils.safeWriteFile(filename, fileContext.writtenFiles[filename]);
+        safeFsUtils.safeWriteFileEventually(filename, fileContext.writtenFiles[filename]);
     }
 }
 

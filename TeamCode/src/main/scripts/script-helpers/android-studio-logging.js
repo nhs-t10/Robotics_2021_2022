@@ -21,6 +21,7 @@ module.exports = {
 
 const COLOURS = {
     WARNING: "#999900",
+    BARELY_WARNING: "#669900",
     ERROR: "#ff0033",
     INFO: "#6666aa",
     UNKNOWN_MESSAGE_KIND: "#99cccc",
@@ -34,9 +35,10 @@ var captured = [];
 var counts = {
     ERROR: 0,
     WARNING: 0,
-    INFO: 0
+    INFO: 0,
+    BARELY_WARNING: 0
 };
-const logLevel = commandLineArguments.quiet ? 2 : 0;
+const logLevel = commandLineArguments.quiet ? 3 : 0;
 
 function beginOutputCapture() {
     capturingOutput = true;
@@ -62,7 +64,7 @@ function sendMessages(msgs) {
 }
 
 function sendPlainMessage (msg) {
-    var l = ["INFO","WARNING","ERROR"].indexOf(msg.kind);
+    var l = ["INFO", "BARELY_WARNING", "WARNING","ERROR"].indexOf(msg.kind);
     
     incrementTypeCount(msg.kind);
     
@@ -79,23 +81,25 @@ function sendPlainMessage (msg) {
 function incrementTypeCount(kind) {
     kind = ("" + kind).toUpperCase();
     
-    if(!counts[kind]) counts[kind] = 0;
-    
-    counts[kind]++;
+    if(kind in counts) counts[kind]++
 }
 
 function printTypeCounts() {
     sendRawText(
         "Compilation finished. " +
         colourString(COLOURS.ERROR, counts.ERROR + " errors") + ", " +
-        colourString(COLOURS.WARNING, counts.WARNING + " warnings") + ", " +
+        colourString(COLOURS.WARNING, (counts.WARNING + counts.BARELY_WARNING) + " warnings") + " (" +
+        colourString(COLOURS.BARELY_WARNING, counts.BARELY_WARNING + " barely") + "), " +
         colourString(COLOURS.INFO, counts.INFO + " informational")
     );
 }
 
 function formatAndSendJsonFormat(msg) {
     var f = Object.assign({}, msg);
+
+    if(f.kind == "BARELY_WARNING") f.kind = "WARNING";
     f.original = humanReadableFormat(msg);
+
     sendRawText("AGPBI: " + JSON.stringify(f));
 }
 
